@@ -1,1 +1,1 @@
-# RU-EliminatingDNASequencesPatterns
+# Eliminating DNA Sequences Patterns
