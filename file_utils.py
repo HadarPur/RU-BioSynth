@@ -17,4 +17,5 @@ def read_patterns_from_file(file_path):
                 continue
             patterns = line.strip().split(',')
             res.extend(patterns)
+
     return res

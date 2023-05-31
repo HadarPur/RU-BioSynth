@@ -24,8 +24,8 @@ def handle_input_params(argv):
     if s_file_path is None:
         print("The sequence file is none ")
         sys.exit()
-    if p_file_path is None:
-        print("The pattern file is none ")
-        sys.exit()
+    # if p_file_path is None:
+    #     print("The pattern file is none ")
+    #     sys.exit()
 
     return s_file_path, p_file_path
