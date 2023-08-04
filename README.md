@@ -1,4 +1,4 @@
-# Eliminating DNA Sequences Patterns
+# Flexible and comprehensive software app for design of synthetic DNA sequences without unwanted patterns
 
 To utilize the Biopython library for this project, please execute the following command within your working environment:
 ```
