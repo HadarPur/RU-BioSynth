@@ -9,5 +9,5 @@ python -m pip install biopython
 To execute the elimination tool from the command prompt (CMD), please use the following command:
 
 ```
-python ./eliminating_dna_seq.py -s <seq_file_path> -p <pattern_file_path>
+python ./main.py -s <seq_file_path> -p <pattern_file_path>
 ```
