@@ -1,4 +1,5 @@
 import re
+from typing import Set
 
 
 class DNASequencePrinter:
@@ -29,7 +30,7 @@ class DNASequencePrinter:
         print(f'\n{title}:\n\t' + ' '.join(S[i:i + 3] for i in range(0, len(S), 3)))
 
     @staticmethod
-    def print_patterns(unwanted_patterns: set[str]):
+    def print_patterns(unwanted_patterns: Set[str]):
         print(f"Pattern list:\n\t{unwanted_patterns}")
 
     @staticmethod

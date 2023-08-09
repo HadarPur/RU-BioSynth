@@ -1,15 +1,13 @@
 from itertools import chain, combinations, product
 
-
 class DNASequenceAnalyzer:
     def __init__(self):
         self.alphabet = {'A', 'G', 'T', 'C'}
 
     def cost_function(self, C):
-        sigma = self.alphabet
 
-        def cost(i, sigma):
-            return C[i - 1][sigma]
+        def cost(i, alphabet):
+            return C[i - 1][alphabet]
 
         return cost
 

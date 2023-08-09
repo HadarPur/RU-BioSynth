@@ -1,16 +1,14 @@
-from collections import defaultdict
 from algorithms.elimination_manager import *
 from algorithms.fsm import *
 from utils.table_cost_utils import *
-
-Sigma = {'A', 'G', 'T', 'C'}
+from typing import Set
 
 
 class EliminateSequence:
     def __init__(self):
         pass
 
-    def _eliminate(S: str, P: set[str], C: list[dict[str, float]], mitigator_class: type[DNAMitigator]) -> str | None:
+    def _eliminate(S: str, P: Set[str], C: list[dict[str, float]], mitigator_class: type[DNAMitigator]) -> str | None:
         """Computing a min-cost valid sequence of length n
 
         A valid sequence is defined by the given mitigator.
@@ -96,11 +94,11 @@ class EliminateSequence:
         return ''.join(target_seq)
 
     @staticmethod
-    def eliminate(S: str, P: set[str], C: list[dict[str, float]]) -> str | None:
+    def eliminate(S: str, P: Set[str], C: list[dict[str, float]]) -> str | None:
         """Computing a min-cost valid sequence of length n
 
         A valid sequence is defined by these mitigators:
-            - SimpleCleaner:                    No occurences of unwanted patterns are allowed.
+            - NoneOccurrenceReducer:            No occurences of unwanted patterns are allowed.
             - OneOccurrenceReducer:             One occurence of any unwanted patten is allowed.
             - MultipleOccurrencesReducer:       One occurence of each unwanted patten is allowed.
 
@@ -112,7 +110,7 @@ class EliminateSequence:
         Returns:
             str | None: target DNA sequence
         """
-        mitigators: list[type[DNAMitigator]] = [SimpleCleaner, OneOccurrenceReducer, MultipleOccurrencesReducer]
+        mitigators: list[type[DNAMitigator]] = [NoneOccurrenceReducer, OneOccurrenceReducer, MultipleOccurrencesReducer]
 
         for mitigator in mitigators:
             target_seq = EliminateSequence._eliminate(S, P, C, mitigator)

@@ -1,6 +1,8 @@
 from collections import deque, defaultdict
-from settings.shared_settings import StateType
-from typing import Callable, TypeVar, Generic
+from typing import Callable, Generic, Set
+from typing import TypeVar
+
+StateType = TypeVar('S')
 
 class FSM(Generic[StateType]):
     """A Finite State Machine implementation.
@@ -12,7 +14,7 @@ class FSM(Generic[StateType]):
         self.states = states
         self.transition_function = transition_function
 
-    def generate_valid_sequences(self, sequence_length: int) -> tuple[set[str], defaultdict[int, set[str]], defaultdict[StateType, set[tuple[StateType, str]]]]:
+    def generate_valid_sequences(self, sequence_length: int) -> tuple[Set[str], defaultdict[int, set[str]], defaultdict[StateType, set[tuple[StateType, str]]]]:
         """Generate valid sequences of a given length using the deterministic transition function.
 
         Args:

@@ -1,7 +1,8 @@
 from typing import Callable, Generic, Set, Tuple, Union, FrozenSet
-from settings.shared_settings import StateType
 from utils.table_cost_utils import DNASequenceAnalyzer
+from typing import TypeVar
 
+StateType = TypeVar('S')
 state = str
 linear_reduced_state = Tuple[Union[str, None], str]
 reduced_state = Tuple[FrozenSet[str], str]
@@ -20,9 +21,9 @@ class DNAMitigator(Generic[StateType]):
         return StateType
 
 
-class SimpleCleaner(DNAMitigator[state]):
-    def __init__(self, unwanted_patterns: set[str]):
-        super(SimpleCleaner, self).__init__(unwanted_patterns)
+class NoneOccurrenceReducer(DNAMitigator[state]):
+    def __init__(self, unwanted_patterns: Set[str]):
+        super(NoneOccurrenceReducer, self).__init__(unwanted_patterns)
 
     def calculate_states_and_transition(self) -> Tuple[state, Set[state], Callable[[state, str], state | None]]:
         dna_analyzer = DNASequenceAnalyzer()
@@ -40,7 +41,7 @@ class SimpleCleaner(DNAMitigator[state]):
 
 
 class OneOccurrenceReducer(DNAMitigator[linear_reduced_state]):
-    def __init__(self, unwanted_patterns: set[str]):
+    def __init__(self, unwanted_patterns: Set[str]):
         super(OneOccurrenceReducer, self).__init__(unwanted_patterns)
 
     def calculate_states_and_transition(self) -> Tuple[linear_reduced_state, Set[linear_reduced_state], Callable[[linear_reduced_state, str], linear_reduced_state | None]]:
