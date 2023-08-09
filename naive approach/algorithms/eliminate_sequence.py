@@ -100,9 +100,9 @@ class EliminateSequence:
         """Computing a min-cost valid sequence of length n
 
         A valid sequence is defined by these mitigators:
-            - Cleaner:          No occurences of unwanted patterns are allowed.
-            - LinearReducer:    One occurence of any unwanted patten is allowed.
-            - Reducer:          One occurence of each unwanted patten is allowed.
+            - SimpleCleaner:                    No occurences of unwanted patterns are allowed.
+            - OneOccurrenceReducer:             One occurence of any unwanted patten is allowed.
+            - MultipleOccurrencesReducer:       One occurence of each unwanted patten is allowed.
 
         Args:
             S (str):                                DNA sequence
