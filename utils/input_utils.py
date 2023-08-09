@@ -54,7 +54,7 @@ def handle_elimination_coding_regions_input(coding_regions):
         print(f"[{i + 1}]: {region}")
 
     while True:
-        response = input("\nYour response should be with the appropriate format ('1,2,3', ... or '1 2 3 ...'): ")
+        response = input("Your response should be with the appropriate format ('1,2,3', ... or '1 2 3 ...'): ")
 
         if response.lower() == "exit":
             print("Program terminated.")

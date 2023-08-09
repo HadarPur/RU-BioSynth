@@ -33,12 +33,13 @@ class Shared:
         # Print the number of coding regions found
         print(f"\nNumber of coding regions is: {len(coding_regions)}")
 
-        # Ask the user if they want to eliminate coding regions
-        # elimination_response = handle_elimination_input_response()
-        #
-        # if elimination_response is False:
-        #     # If the response is negative, ask for coding regions to eliminate
-        #     coding_regions = handle_elimination_coding_regions_input(coding_regions)
+        if len(coding_regions) > 0:
+            # Ask the user if they want to eliminate coding regions
+            elimination_response = handle_elimination_input_response()
+
+            if elimination_response is False:
+                # If the response is negative, ask for coding regions to eliminate
+                coding_regions = handle_elimination_coding_regions_input(coding_regions)
 
         # Eliminate coding regions and get the resulting sequence
         target_seq = EliminateSequence.eliminate(self.seq, self.unwanted_patterns, self.cost_table)
