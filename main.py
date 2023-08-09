@@ -1,17 +1,14 @@
-from execution.terminal import *
-from execution.app import *
-
-
-def gui():
-    return
+from executions.terminal_execution import *
+from executions.app_execution import *
+from executions.gui_execution import *
 
 
 def main():
     if __name__ == "__main__":
         # for development testing
-        App().run()
+        App().execute()
     else:
-        Terminal(sys.argv[1:]).run()
+        Terminal(sys.argv[1:]).execute()
 
 
 if __name__ == "__main__":

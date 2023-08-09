@@ -54,13 +54,16 @@ def handle_elimination_coding_regions_input(coding_regions):
         print(f"[{i + 1}]: {region}")
 
     while True:
-        response = input("Your response should be with the appropriate format ('1,2,3', ... or '1 2 3 ...'): ")
+        response = input("\nYour response should be with the appropriate format ('1,2,3', ... or '1 2 3 ...'): ")
+
+        if response.lower() == "exit":
+            print("Program terminated.")
+            exit(1)
 
         # Remove spaces and split response into segments
         response = response.strip()
         segments = re.split(r"[,\s]\s*", response)
         segments = list(filter(None, segments))
-        # print(segments)
 
         # Validate segments as digits and within valid range
         valid_indices = all(item.isdigit() for item in segments)
@@ -68,9 +71,9 @@ def handle_elimination_coding_regions_input(coding_regions):
             # Remove duplications
             segments = list(dict.fromkeys(segments))
             if len(segments) > len(coding_regions):
-                print("You've selected more regions than actually available. Please try again.")
-            elif min(int(item) for item in segments) < 0 or max(int(item) for item in segments) > len(coding_regions):
-                print("The selected regions do not exist. Please try again.")
+                print("\033[91mYou've selected more regions than actually available. Please try again.\033[0m")
+            elif min(int(item) for item in segments) <= 0 or max(int(item) for item in segments) > len(coding_regions):
+                print("\033[91mThe selected regions do not exist. Please try again.\033[0m")
             else:
                 selected_regions = [coding_regions[int(segment) - 1] for segment in segments]
                 print("Selected regions:", selected_regions)

@@ -6,5 +6,5 @@ class GUI:
     def __init__(self):
         self.seq = ""
 
-    def run(self):
+    def execute(self):
         return
