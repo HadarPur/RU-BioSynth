@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/RU-EliminatingDNASequencesPatterns.iml" filepath="$PROJECT_DIR$/.idea/RU-EliminatingDNASequencesPatterns.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/naive approach.iml" filepath="$PROJECT_DIR$/.idea/naive approach.iml" />
     </modules>
   </component>
 </project>
