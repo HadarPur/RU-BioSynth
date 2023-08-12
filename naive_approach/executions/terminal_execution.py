@@ -10,7 +10,7 @@ class Terminal:
     def execute(self):
         parser = CommandLineParser()
 
-        s_file_path, p_file_path, c_file_path = parser.handle_initial_input_params(self.argv)
+        s_file_path, p_file_path, c_file_path = parser.parse_args(self.argv)
         seq = SequenceReader(s_file_path).read_sequence()
         unwanted_patterns = PatternReader(p_file_path).read_patterns()
         cost_table = CostReader(c_file_path).read_costs()
