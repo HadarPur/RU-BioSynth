@@ -77,23 +77,26 @@ class OneOccurrenceReducer(DNAMitigator[linear_reduced_state]):
 
 
 class MultipleOccurrencesReducer(DNAMitigator[reduced_state]):
+    def __init__(self, unwanted_patterns: Set[str]):
+        super(MultipleOccurrencesReducer, self).__init__(unwanted_patterns)
+
     def calculate_states_and_transition(self) -> Tuple[reduced_state, Set[reduced_state], Callable[[reduced_state, str], reduced_state]]:
         dna_analyzer = DNASequenceAnalyzer()
         prefix_patterns = dna_analyzer.get_pref(self.unwanted_patterns)
-        occurred_pattern = prefix_patterns.powerset(self.unwanted_patterns)
+        occurred_pattern = dna_analyzer.powerset(self.unwanted_patterns)
         valid_prefixes = set(w for w in prefix_patterns if not dna_analyzer.has_suffix(w, self.unwanted_patterns))
         valid_occurrences = dna_analyzer.cartesian_product(occurred_pattern, valid_prefixes)
         initial_state = (frozenset(), '')
 
         print(f"|V| = {len(valid_prefixes)}")
 
-        def transition_function(current_state: reduced_state, sigma: str) -> reduced_state | None:
+        def transition_function(current_state: reduced_state, sigma: str) -> reduced_state:
             occurred_patterns, current_sequence = current_state
             new_sequence = f"{current_sequence}{sigma}"
             suffix = dna_analyzer.longest_suffix_in_set(new_sequence, self.unwanted_patterns)
 
-            if suffix is not None:  # has_suffix(w_sigma, P)
-                if suffix in occurred_patterns:    # we allow only one occurence
+            if suffix is not None:
+                if suffix in occurred_patterns:
                     return None
 
                 # this is the first occurence
@@ -101,7 +104,7 @@ class MultipleOccurrencesReducer(DNAMitigator[reduced_state]):
                 tmp.add(suffix)
                 occurred_patterns = frozenset(tmp)
 
-                u = dna_analyzer.longest_suffix_in_set(new_sequence, prefix_patterns)
+            u = dna_analyzer.longest_suffix_in_set(new_sequence, prefix_patterns)
 
             return occurred_patterns, u
 

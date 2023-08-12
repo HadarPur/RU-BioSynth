@@ -1,4 +1,6 @@
 from itertools import chain, combinations, product
+from typing import Iterable
+
 
 class DNASequenceAnalyzer:
     def __init__(self):
@@ -35,7 +37,7 @@ class DNASequenceAnalyzer:
                 return suf
         return None
 
-    def powerset(self, iterable):
+    def powerset(self, iterable: Iterable) -> set:
         s = list(iterable)
         return set(chain.from_iterable(combinations(s, r) for r in range(len(s) + 1)))
 

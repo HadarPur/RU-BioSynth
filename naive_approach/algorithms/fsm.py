@@ -9,13 +9,15 @@ class FSM(Generic[StateType]):
     """A Finite State Machine implementation.
     """
 
-    def __init__(self, alphabet: set[str], initial_state: StateType, states: set[StateType], transition_function: Callable[[StateType, str], StateType]):
+    def __init__(self, alphabet: set[str], initial_state: StateType, states: set[StateType],
+                 transition_function: Callable[[StateType, str], StateType]):
         self.alphabet = alphabet
         self.initial_state = initial_state
         self.states = states
         self.transition_function = transition_function
 
-    def generate_valid_sequences(self, sequence_length: int) -> tuple[Set[str], defaultdict[int, set[str]], defaultdict[StateType, set[tuple[StateType, str]]]]:
+    def generate_valid_sequences(self, sequence_length: int) -> tuple[
+        Set[str], defaultdict[int, set[str]], defaultdict[StateType, set[tuple[StateType, str]]]]:
         """Generate valid sequences of a given length using the deterministic transition function.
 
         Args:
