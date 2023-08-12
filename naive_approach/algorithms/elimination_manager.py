@@ -7,13 +7,14 @@ state = str
 linear_reduced_state = Tuple[Union[str, None], str]
 reduced_state = Tuple[FrozenSet[str], str]
 
+
 class DNAMitigator(Generic[StateType]):
 
     def __init__(self, unwanted_patterns: Set[str]):
         self.unwanted_patterns = unwanted_patterns
         self.initial_state, self.states, self.transition_function = self.calculate_states_and_transition()
 
-    def calculate_states_and_transition(self) -> Tuple[StateType, Set[StateType], Callable[[StateType, str], StateType | None]]:
+    def calculate_states_and_transition(self) -> Tuple[StateType, Set[StateType], Callable[[StateType, str], StateType]]:
         pass
 
     @property
@@ -25,7 +26,7 @@ class NoneOccurrenceReducer(DNAMitigator[state]):
     def __init__(self, unwanted_patterns: Set[str]):
         super(NoneOccurrenceReducer, self).__init__(unwanted_patterns)
 
-    def calculate_states_and_transition(self) -> Tuple[state, Set[state], Callable[[state, str], state | None]]:
+    def calculate_states_and_transition(self) -> Tuple[state, Set[state], Callable[[state, str], state]]:
         dna_analyzer = DNASequenceAnalyzer()
         prefix_patterns = dna_analyzer.get_pref(self.unwanted_patterns)
         valid_states = set(w for w in prefix_patterns if not dna_analyzer.has_suffix(w, self.unwanted_patterns))
@@ -34,7 +35,7 @@ class NoneOccurrenceReducer(DNAMitigator[state]):
         print(f"|V| = {len(valid_states)}")
         print(f"V:\n\t{valid_states}")
 
-        def transition_function(current_state: state, sigma: str) -> state | None:
+        def transition_function(current_state: state, sigma: str) -> state:
             new_state = f"{current_state}{sigma}"
             if dna_analyzer.has_suffix(new_state, self.unwanted_patterns):
                 return None
@@ -47,7 +48,7 @@ class OneOccurrenceReducer(DNAMitigator[linear_reduced_state]):
     def __init__(self, unwanted_patterns: Set[str]):
         super(OneOccurrenceReducer, self).__init__(unwanted_patterns)
 
-    def calculate_states_and_transition(self) -> Tuple[linear_reduced_state, Set[linear_reduced_state], Callable[[linear_reduced_state, str], linear_reduced_state | None]]:
+    def calculate_states_and_transition(self) -> Tuple[linear_reduced_state, Set[linear_reduced_state], Callable[[linear_reduced_state, str], linear_reduced_state]]:
         dna_analyzer = DNASequenceAnalyzer()
         prefix_patterns = dna_analyzer.get_pref(self.unwanted_patterns)
         valid_prefixes = set(w for w in prefix_patterns if not dna_analyzer.has_suffix(w, self.unwanted_patterns))
@@ -56,7 +57,7 @@ class OneOccurrenceReducer(DNAMitigator[linear_reduced_state]):
 
         print(f"|V| = {len(valid_states)}")
 
-        def transition_function(current_state: linear_reduced_state, sigma: str) -> linear_reduced_state | None:
+        def transition_function(current_state: linear_reduced_state, sigma: str) -> linear_reduced_state:
             occurred_pattern, current_sequence = current_state
             new_sequence = f"{current_sequence}{sigma}"
 
@@ -76,7 +77,7 @@ class OneOccurrenceReducer(DNAMitigator[linear_reduced_state]):
 
 
 class MultipleOccurrencesReducer(DNAMitigator[reduced_state]):
-    def calculate_states_and_transition(self) -> Tuple[reduced_state, Set[reduced_state], Callable[[reduced_state, str], reduced_state | None]]:
+    def calculate_states_and_transition(self) -> Tuple[reduced_state, Set[reduced_state], Callable[[reduced_state, str], reduced_state]]:
         dna_analyzer = DNASequenceAnalyzer()
         prefix_patterns = dna_analyzer.get_pref(self.unwanted_patterns)
         occurred_pattern = prefix_patterns.powerset(self.unwanted_patterns)

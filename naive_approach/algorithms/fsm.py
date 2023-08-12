@@ -9,7 +9,7 @@ class FSM(Generic[StateType]):
     """A Finite State Machine implementation.
     """
 
-    def __init__(self, alphabet: set[str], initial_state: StateType, states: set[StateType], transition_function: Callable[[StateType, str], StateType | None]):
+    def __init__(self, alphabet: set[str], initial_state: StateType, states: set[StateType], transition_function: Callable[[StateType, str], StateType]):
         self.alphabet = alphabet
         self.initial_state = initial_state
         self.states = states

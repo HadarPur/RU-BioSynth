@@ -9,7 +9,7 @@ class EliminateSequence:
     def __init__(self):
         pass
 
-    def _eliminate(S: str, P: Set[str], C: list[dict[str, float]], mitigator_class: type[DNAMitigator]) -> str | None:
+    def _eliminate(S: str, P: Set[str], C: list[dict[str, float]], mitigator_class: type[DNAMitigator]) -> str:
         """Computing a min-cost P-clean sequence of length n
 
         A valid sequence is defined by the given mitigator.
@@ -100,7 +100,7 @@ class EliminateSequence:
         return ''.join(target_seq)
 
     @staticmethod
-    def eliminate(S: str, P: Set[str], C: list[dict[str, float]]) -> str | None:
+    def eliminate(S: str, P: Set[str], C: list[dict[str, float]]) -> str:
         """Computing a min-cost valid sequence of length n
 
         A valid sequence is defined by these mitigators:
