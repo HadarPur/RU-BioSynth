@@ -2,6 +2,7 @@ from naive_approach.utils.dna_utils import DNAHighlighter
 from naive_approach.algorithms.eliminate_sequence import EliminateSequence
 from naive_approach.utils.display_utils import DNASequencePrinter
 from naive_approach.utils.input_utils import UserInputHandler
+from naive_approach.utils.table_cost_utils import DNASequenceAnalyzer
 
 
 class Shared:
@@ -23,6 +24,9 @@ class Shared:
 
         # Print the unwanted patterns list
         DNASequencePrinter.print_patterns(self.unwanted_patterns)
+
+        # Print the cost table list
+        DNASequencePrinter.print_cost_table(self.cost_table)
 
         dna_highlighter = DNAHighlighter(self.seq)
 
@@ -49,3 +53,16 @@ class Shared:
 
         # Return control back, indicating the end of the method
         return
+
+    # def test(self):
+    #     codon = "TAC"
+    #     dna_analyzer = DNASequenceAnalyzer()
+    #
+    #     codon_scores = dna_analyzer.get_codon_scores(self.cost_table, codon)
+    #
+    #     if codon_scores is not None:
+    #         for scoring_dict in codon_scores:
+    #             print(scoring_dict)  # Print the scoring values for each nucleotide
+    #     else:
+    #         print("Codon not found in the scoring scheme.")
+    #     return

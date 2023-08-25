@@ -60,3 +60,28 @@ class DNAHighlighter:
                 i += 1
 
         return coding_regions
+
+
+class CodonScorer:
+    def __init__(self, C):
+        self.C = C
+
+    def get_codon_scores(self, codon):
+        for amino_acid_dict in self.C:
+            for codon_key, scoring_dicts in amino_acid_dict.items():
+                if codon_key == codon:
+                    return scoring_dicts
+        return None  # Codon not found
+
+    def calculate_scores(self, sequence):
+        scores_array = []  # To store scores for each codon
+
+        for i in range(0, len(sequence), 3):
+            codon = sequence[i:i + 3]
+            codon_scores = self.get_codon_scores(codon)
+            if codon_scores is not None:
+                scores_array = scores_array + codon_scores
+            else:
+                print(f"Warning: Codon {codon} not found in the scoring scheme.")
+
+        return scores_array

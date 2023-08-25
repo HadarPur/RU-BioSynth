@@ -31,7 +31,22 @@ class DNASequencePrinter:
 
     @staticmethod
     def print_patterns(unwanted_patterns: Set[str]):
-        print(f"Pattern list:\n\t{unwanted_patterns}")
+        print(f"\nPattern list:\n\t{unwanted_patterns}")
+
+    @staticmethod
+    def print_cost_table(C: list[dict[str, float]]):
+        """print Cost
+
+        Args:
+            C (list[dict[str, float]]): Cost
+        """
+        if len(C) > 0:
+            print("\ncost:")
+            for sigma in C[0].keys():
+                for i in range(0, len(C), 12):
+                    print(
+                        f"\tcost(i, {sigma}) = {' '.join([f'{c[sigma]}' for c in C[i: i + 12]])}")
+                print('-' * 100)
 
     @staticmethod
     def print_highlighted_sequence(S: str):
