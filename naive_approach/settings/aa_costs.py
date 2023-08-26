@@ -8,12 +8,12 @@ P = {
 }
 
 # DNA sequence
-S = "TACATACAG"     # Y, I, Q
+S = "ATGTACATACAGTAA"     # Y, I, Q
 
 # Cost
 inf = float('inf')      # stop codon
 o = 0.                  # origin
-w = sys.float_info.max  # changes codons
+w = "{:.3e}".format(sys.float_info.max) # changes codons
 # w = inf # changes codons
 x = 1.                  # does not change codons
 

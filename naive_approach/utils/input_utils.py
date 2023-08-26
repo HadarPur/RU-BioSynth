@@ -7,11 +7,10 @@ class CommandLineParser:
     def __init__(self):
         self.p_file_path = None
         self.s_file_path = None
-        self.c_file_path = None
 
     def parse_args(self, argv):
         try:
-            opts, args = getopt.getopt(argv, "hp:s:r:c:t", ["p_file=", "s_file=", "c_file="])
+            opts, args = getopt.getopt(argv, "hp:s:r:c:t", ["p_file=", "s_file="])
         except getopt.GetoptError:
             print("\033[91mError while getting elimination arguments.\033[0m")
             sys.exit(2)
@@ -24,14 +23,12 @@ class CommandLineParser:
                 self.s_file_path = arg
             elif opt in ("-p", "--p_file"):
                 self.p_file_path = arg
-            elif opt in ("-c", "--c_file"):
-                self.c_file_path = arg
 
-        if self.s_file_path is None or self.p_file_path is None or self.c_file_path is None:
+        if self.s_file_path is None or self.p_file_path is None:
             print("\033[91mOne or more input files are missing.\033[0m")
             sys.exit()
 
-        return self.s_file_path, self.p_file_path, self.c_file_path
+        return self.s_file_path, self.p_file_path
 
 
 class UserInputHandler:

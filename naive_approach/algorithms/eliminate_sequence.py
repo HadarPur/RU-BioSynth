@@ -1,4 +1,4 @@
-from naive_approach.algorithms.elimination_manager import DNAMitigator, Reducer
+from naive_approach.algorithms.elimination_manager import Reducer
 from naive_approach.algorithms.fsm import FSM
 from naive_approach.utils.table_cost_utils import DNASequenceAnalyzer
 from typing import Set
@@ -8,7 +8,7 @@ from naive_approach.utils.display_utils import DNASequencePrinter
 
 class EliminateSequence:
     @staticmethod
-    def _eliminate(S: str, P: Set[str], C: list[dict[str, float]], reducer_class: type[DNAMitigator]) -> str:
+    def _eliminate(S: str, P: Set[str], C: list[dict[str, float]], reducer_class: type[Reducer]) -> str:
         """Computing a min-cost P-clean sequence of length n
 
         A valid sequence is defined by the given mitigator.
@@ -110,7 +110,7 @@ class EliminateSequence:
             str | None: target DNA sequence
         """
 
-        reducer: type[DNAMitigator] = Reducer
+        reducer: type[Reducer] = Reducer
         target_seq = EliminateSequence._eliminate(S, P, C, reducer)
         if target_seq is not None:
             DNASequencePrinter.print_target_sequence(target_seq)

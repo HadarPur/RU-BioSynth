@@ -33,8 +33,11 @@ class DNASequencePrinter:
     def print_patterns(unwanted_patterns: Set[str]):
         print(f"\nPattern list:\n\t{unwanted_patterns}")
 
+    def split_string_every_n_chars(S: str, n: int):
+        return [S[i:i + n] for i in range(0, len(S), n)]
+
     @staticmethod
-    def print_cost_table(C: list[dict[str, float]]):
+    def print_cost_table(S: str, C: list[dict[str, float]]):
         """print Cost
 
         Args:
@@ -42,11 +45,22 @@ class DNASequencePrinter:
         """
         if len(C) > 0:
             print("\ncost:")
+            codons = DNASequencePrinter.split_string_every_n_chars(S, 3)
+            colored_separator = "\033[91m{:<10}\033[0m".format("||")  # ANSI escape code for red text
+            codon_table = "\t\t\t\t {}".format(colored_separator)
+            for item in codons:
+                codon_table += "{:<13} {:<13} {:<13}{} ".format(*item, colored_separator)
+
+            print(codon_table)
+            print('-' * len(codon_table))
+
             for sigma in C[0].keys():
-                for i in range(0, len(C), 12):
-                    print(
-                        f"\tcost(i, {sigma}) = {' '.join([f'{c[sigma]}' for c in C[i: i + 12]])}")
-                print('-' * 100)
+                for i in range(0, len(C), len(C)):
+                    line = f"\tcost(i, {sigma}) = {colored_separator}"
+                    line += ' '.join(["{:<13}".format(c[sigma]) + (f'{colored_separator}' if (index + 1) % 3 == 0 and index < len(C)-1 else '') for index, c in enumerate(C[i: i + len(C)])])
+                    line += "{}".format(colored_separator)
+                    print(line)
+                print('-' * len(codon_table))
 
     @staticmethod
     def print_highlighted_sequence(S: str):
