@@ -1,21 +1,10 @@
 import sys
 
-# Unwanted Patterns set
-P = {
-    "TACA",        # BlaI
-    "TATC",        #
-    "ATTC",        #
-}
-
-# DNA sequence
-S = "ATGTACATACAGTAA"     # Y, I, Q
-
 # Cost
-inf = float('inf')      # stop codon
-o = 0.                  # origin
-w = "{:.3e}".format(sys.float_info.max) # changes codons
-# w = inf # changes codons
-x = 1.                  # does not change codons
+inf = float('inf')                          # stop codon
+o = 0.                                      # origin
+w = sys.float_info.max                      # changes codons
+x = 1.                                      # does not change codons
 
 
 # Symmetric amino acids scoring scheme - 1 aa

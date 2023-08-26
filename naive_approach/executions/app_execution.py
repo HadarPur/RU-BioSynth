@@ -1,7 +1,8 @@
 from naive_approach.executions.shared_execution import Shared
-# from naive_approach.settings.app_settings import S, P, C
-# from naive_approach.settings.naive_settings import S, P, C
-from naive_approach.settings.aa_costs import S, P, C
+from naive_approach.settings.sequence_settings import S
+from naive_approach.settings.pattern_settings import P
+from naive_approach.settings.costs_settings import C
+
 from naive_approach.utils.dna_utils import CodonScorer
 
 

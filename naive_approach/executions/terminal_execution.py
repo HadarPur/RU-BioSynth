@@ -2,7 +2,7 @@ from naive_approach.utils.file_utils import SequenceReader, PatternReader, CostR
 from naive_approach.executions.shared_execution import Shared
 from naive_approach.utils.input_utils import CommandLineParser
 from naive_approach.utils.dna_utils import CodonScorer
-from naive_approach.settings.aa_costs import C
+from naive_approach.settings.costs_settings import C
 
 
 class Terminal:

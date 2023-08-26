@@ -30,7 +30,7 @@ class EliminateSequence:
         cost = dna_analyzer.cost_function(C)
         reducer = reducer_class(P)
 
-        # Compute an FSM(V(f) over alphabet {'A', 'G', 'T', 'C'} that generates all and only P-clean sequences.
+        # Compute an FSM(V(f)) over alphabet {'A', 'G', 'T', 'C'} that generates all and only P-clean sequences.
         fsm = FSM[reducer.state_type](dna_analyzer.alphabet, reducer.initial_state, reducer.states, reducer.transition_function)
         valid_set, vs_by_seq_len, transition_back_tracker = fsm.generate_valid_sequences(n)
         # print(f"{len(valid_set)} valid sequences were found.")

@@ -9,7 +9,7 @@ class FSM(Generic[StateType]):
     """A Finite State Machine implementation.
     """
 
-    def __init__(self, alphabet: set[str], initial_state: StateType, states: set[StateType],
+    def __init__(self, alphabet: Set[str], initial_state: StateType, states: Set[StateType],
                  transition_function: Callable[[StateType, str], StateType]):
         self.alphabet = alphabet
         self.initial_state = initial_state
@@ -17,7 +17,7 @@ class FSM(Generic[StateType]):
         self.transition_function = transition_function
 
     def generate_valid_sequences(self, sequence_length: int) -> tuple[
-        Set[str], defaultdict[int, set[str]], defaultdict[StateType, set[tuple[StateType, str]]]]:
+        Set[str], defaultdict[int, Set[str]], defaultdict[StateType, Set[tuple[StateType, str]]]]:
         """Generate valid sequences of a given length using the deterministic transition function.
 
         Args:
@@ -34,15 +34,15 @@ class FSM(Generic[StateType]):
         states_by_sequence_length = defaultdict(set)
         transition_back_tracker = defaultdict(set)
 
-        while len(queue) > 0:
-            sequence, current_state = queue.pop()
+        while queue:
+            sequence, current_state = queue.popleft()  # Use popleft() to pop from the left of deque
             states_by_sequence_length[len(sequence)].add(current_state)
 
             if len(sequence) == sequence_length:
                 valid_sequences.add(sequence)
             else:
                 for symbol in self.alphabet:
-                    new_sequence = f"{sequence}{symbol}"
+                    new_sequence = ''.join([sequence, symbol])  # Use list and join for efficient string concatenation
                     new_state = self.transition_function(current_state, symbol)
                     if new_state is not None:
                         queue.append((new_sequence, new_state))

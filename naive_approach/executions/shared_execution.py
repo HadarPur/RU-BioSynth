@@ -37,34 +37,21 @@ class Shared:
         highlighted_sequence = dna_highlighter.highlight_coding_regions(coding_regions)
         DNASequencePrinter.print_highlighted_sequence(highlighted_sequence)
 
-        # Print the number of coding regions found
-        print(f"\nNumber of coding regions is: {len(coding_regions)}")
+        # # Print the number of coding regions found
+        # print(f"\nNumber of coding regions is: {len(coding_regions)}")
 
-        if len(coding_regions) > 0:
-            # Ask the user if they want to eliminate coding regions
-            elimination_response = UserInputHandler.handle_elimination_input_response()
-
-            if elimination_response is False:
-                # If the response is negative, ask for coding regions to eliminate
-                coding_regions = UserInputHandler.handle_elimination_coding_regions_input(coding_regions)
-        else:
-            print("Continue without coding regions")
+        # if len(coding_regions) > 0:
+        #     # Ask the user if they want to eliminate coding regions
+        #     elimination_response = UserInputHandler.handle_elimination_input_response()
+        #
+        #     if elimination_response is False:
+        #         # If the response is negative, ask for coding regions to eliminate
+        #         coding_regions = UserInputHandler.handle_elimination_coding_regions_input(coding_regions)
+        # else:
+        #     print("Continue without coding regions")
 
         # Eliminate coding regions and get the resulting sequence
         EliminateSequence.eliminate(self.seq, self.unwanted_patterns, self.cost_table)
 
         # Return control back, indicating the end of the method
         return
-
-    # def test(self):
-    #     codon = "TAC"
-    #     dna_analyzer = DNASequenceAnalyzer()
-    #
-    #     codon_scores = dna_analyzer.get_codon_scores(self.cost_table, codon)
-    #
-    #     if codon_scores is not None:
-    #         for scoring_dict in codon_scores:
-    #             print(scoring_dict)  # Print the scoring values for each nucleotide
-    #     else:
-    #         print("Codon not found in the scoring scheme.")
-    #     return
