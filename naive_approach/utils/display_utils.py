@@ -80,7 +80,7 @@ class DNASequencePrinter:
             print("\ncost:")
             codons = DNASequencePrinter.split_string_every_n_chars(S, 3)
             colored_separator = "\033[91m{:<10}\033[0m".format("||")  # ANSI escape code for red text
-            codon_table = "\t\t\t\t {}".format(colored_separator)
+            codon_table = "\t{:<13}{}".format(" ", colored_separator)
             for item in codons:
                 codon_table += "{:<13} {:<13} {:<13}{} ".format(*item, colored_separator)
 
