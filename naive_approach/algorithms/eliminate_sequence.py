@@ -5,7 +5,6 @@ from typing import Set
 from collections import defaultdict
 from naive_approach.utils.display_utils import DNASequencePrinter
 
-
 class EliminateSequence:
     @staticmethod
     def _eliminate(S: str, P: Set[str], C: list[dict[str, float]], reducer_class: type[Reducer]) -> str:
@@ -84,7 +83,7 @@ class EliminateSequence:
             print(100*'*' + '\n')
             return None
 
-        print(f"min_cost={min_cost}")
+        print("min_cost = {}".format('{:.10g}'.format(min_cost)))
 
         print(f"Constructing target sequence using A*...")
         target_seq = []

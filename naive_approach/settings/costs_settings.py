@@ -1,9 +1,7 @@
-import sys
-
 # Cost
 inf = float('inf')                          # stop codon
 o = 0.                                      # origin
-w = sys.float_info.max                      # changes codons
+w = 1000000000000000                        # changes codons
 x = 1.                                      # does not change codons
 
 
@@ -329,7 +327,7 @@ Stop = {
     "TGA": [
         dict(A=inf,   T=o,      C=inf,    G=inf),
         dict(A=x,     T=inf,    C=inf,    G=o),
-        dict(A=o,     T=inf,    C=inf,    G=x)]
+        dict(A=o,     T=inf,    C=inf,    G=inf)]
     }
 
 C = [

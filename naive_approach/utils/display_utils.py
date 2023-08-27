@@ -82,7 +82,7 @@ class DNASequencePrinter:
             colored_separator = "\033[91m{:<10}\033[0m".format("||")  # ANSI escape code for red text
             codon_table = "\t{:<13}{}".format(" ", colored_separator)
             for item in codons:
-                codon_table += "{:<13} {:<13} {:<13}{} ".format(*item, colored_separator)
+                codon_table += "{:<8} {:<8} {:<8}{} ".format(*item, colored_separator)
 
             print(codon_table)
             print('-' * (7*len(codon_table)//8))
@@ -90,7 +90,7 @@ class DNASequencePrinter:
             for sigma in C[0].keys():
                 for i in range(0, len(C), len(C)):
                     line = f"\tcost(i, {sigma}) = {colored_separator}"
-                    line += ' '.join(["{:<13}".format(c[sigma] if c[sigma] < sys.float_info.max else "{:.3e}".format(c[sigma])) + (f'{colored_separator}' if (index + 1) % 3 == 0 and index < len(C)-1 else '') for index, c in enumerate(C[i: i + len(C)])])
+                    line += ' '.join(["{:<8}".format("{:.6g}".format(c[sigma])) + (f'{colored_separator}' if (index + 1) % 3 == 0 and index < len(C)-1 else '') for index, c in enumerate(C[i: i + len(C)])])
                     line += "{}".format(colored_separator)
                     print(line)
                 print('-' * (7 * len(codon_table) // 8))

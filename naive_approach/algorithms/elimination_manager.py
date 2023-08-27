@@ -1,7 +1,6 @@
 from typing import Callable, Generic, Set, Tuple, Union, FrozenSet
 from naive_approach.utils.table_cost_utils import DNASequenceAnalyzer
 from typing import TypeVar
-from itertools import product
 
 StateType = TypeVar('S')
 state = str
