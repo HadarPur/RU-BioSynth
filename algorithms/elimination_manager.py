@@ -1,5 +1,5 @@
 from typing import Callable, Generic, Set, Tuple, Union, FrozenSet
-from naive_approach.utils.table_cost_utils import DNASequenceAnalyzer
+from utils.table_cost_utils import DNASequenceAnalyzer
 from typing import TypeVar
 
 StateType = TypeVar('S')

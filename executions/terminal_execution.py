@@ -1,8 +1,8 @@
-from naive_approach.utils.file_utils import SequenceReader, PatternReader, CostReader
-from naive_approach.executions.shared_execution import Shared
-from naive_approach.utils.input_utils import CommandLineParser
-from naive_approach.utils.dna_utils import CodonScorer
-from naive_approach.settings.costs_settings import C
+from utils.file_utils import SequenceReader, PatternReader
+from executions.shared_execution import Shared
+from utils.input_utils import CommandLineParser
+from utils.dna_utils import CodonScorer
+from settings.costs_settings import C
 
 
 class Terminal:

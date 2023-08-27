@@ -1,9 +1,10 @@
-from naive_approach.algorithms.elimination_manager import Reducer
-from naive_approach.algorithms.fsm import FSM
-from naive_approach.utils.table_cost_utils import DNASequenceAnalyzer
+from algorithms.elimination_manager import Reducer
+from algorithms.fsm import FSM
+from utils.table_cost_utils import DNASequenceAnalyzer
 from typing import Set
 from collections import defaultdict
-from naive_approach.utils.display_utils import DNASequencePrinter
+from utils.display_utils import DNASequencePrinter
+
 
 class EliminateSequence:
     @staticmethod

@@ -1,8 +1,6 @@
-from naive_approach.utils.dna_utils import DNAHighlighter
-from naive_approach.algorithms.eliminate_sequence import EliminateSequence
-from naive_approach.utils.display_utils import DNASequencePrinter
-from naive_approach.utils.input_utils import UserInputHandler
-from naive_approach.utils.table_cost_utils import DNASequenceAnalyzer
+from utils.dna_utils import DNAHighlighter
+from algorithms.eliminate_sequence import EliminateSequence
+from utils.display_utils import DNASequencePrinter
 
 
 class Shared:
