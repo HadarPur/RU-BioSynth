@@ -85,7 +85,7 @@ class DNASequencePrinter:
                 codon_table += "{:<8} {:<8} {:<8}{} ".format(*item, colored_separator)
 
             print(codon_table)
-            print('-' * (7*len(codon_table)//8))
+            print('-' * ((3 * len(codon_table) // 4) + 6))
 
             for sigma in C[0].keys():
                 for i in range(0, len(C), len(C)):
@@ -93,7 +93,7 @@ class DNASequencePrinter:
                     line += ' '.join(["{:<8}".format("{:.6g}".format(c[sigma])) + (f'{colored_separator}' if (index + 1) % 3 == 0 and index < len(C)-1 else '') for index, c in enumerate(C[i: i + len(C)])])
                     line += "{}".format(colored_separator)
                     print(line)
-                print('-' * (7 * len(codon_table) // 8))
+                print('-' * ((3 * len(codon_table) // 4) + 6))
 
     @staticmethod
     def print_highlighted_sequence(S: str):

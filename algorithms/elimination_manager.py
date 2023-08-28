@@ -21,7 +21,7 @@ class Reducer(Generic[StateType]):
         initial_state = ''
 
         print(f"|V| = {len(valid_prefixes)}")
-        print(f"V:\n\t{valid_prefixes}")
+        print(f" V:\n\t{valid_prefixes}")
 
         def transition_function(current_state: state, sigma: str) -> state:
             new_state = f"{current_state}{sigma}"
