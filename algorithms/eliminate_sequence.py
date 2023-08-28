@@ -112,7 +112,7 @@ class EliminateSequence:
 
         reducer: type[Reducer] = Reducer
         target_seq = EliminateSequence._eliminate(S, P, C, reducer)
-        if target_seq is not None:
+        if target_seq:
             DNASequencePrinter.print_target_sequence(target_seq)
         else:
             print("No valid sequence matches the unwanted pattern list.")

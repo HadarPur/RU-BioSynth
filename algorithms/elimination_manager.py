@@ -20,6 +20,9 @@ class Reducer(Generic[StateType]):
         valid_prefixes = set(w for w in prefix_patterns if not dna_analyzer.has_suffix(w, self.unwanted_patterns))
         initial_state = ''
 
+        print(f"|V| = {len(valid_prefixes)}")
+        print(f"V:\n\t{valid_prefixes}")
+
         def transition_function(current_state: state, sigma: str) -> state:
             new_state = f"{current_state}{sigma}"
             if dna_analyzer.has_suffix(new_state, self.unwanted_patterns):

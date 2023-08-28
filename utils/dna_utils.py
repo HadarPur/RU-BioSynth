@@ -79,7 +79,7 @@ class CodonScorer:
         for i in range(0, len(sequence), 3):
             codon = sequence[i:i + 3]
             codon_scores = self.get_codon_scores(codon)
-            if codon_scores is not None:
+            if codon_scores:
                 scores_array = scores_array + codon_scores
             else:
                 print(f"Warning: Codon {codon} not found in the scoring scheme.")

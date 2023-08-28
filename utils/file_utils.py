@@ -7,6 +7,15 @@ class FileDataReader:
             return file.readlines()
 
 
+class FileDataWriter:
+    def __init__(self, file_path):
+        self.file_path = file_path
+
+    def write(self, sentence):
+        with open(self.file_path, 'w') as file:
+            file.write(sentence + '\n')
+
+
 class SequenceReader(FileDataReader):
     def read_sequence(self):
         raw_seq = self.read_lines()
