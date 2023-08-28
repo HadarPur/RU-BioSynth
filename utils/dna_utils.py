@@ -4,9 +4,24 @@ import random
 
 class DNAHighlighter:
     def __init__(self, seq):
+        """
+        Initializes a DNAHighlighter object with a DNA sequence.
+
+        Parameters:
+            seq (str): DNA sequence as a string.
+        """
         self.seq = seq
 
     def highlight_coding_regions(self, coding_regions):
+        """
+        Highlights coding regions within the DNA sequence using colored escape codes.
+
+        Parameters:
+            coding_regions (list of Seq): List of coding regions (Seq objects) to be highlighted.
+
+        Returns:
+            str: DNA sequence with highlighted coding regions using escape codes.
+        """
         available_color_codes = [code for code in range(91, 98) if code not in [93, 97]]
         region_color_mapping = {}
 
@@ -38,6 +53,12 @@ class DNAHighlighter:
         return highlighted_seq
 
     def get_coding_regions(self):
+        """
+        Identifies and returns coding regions within the DNA sequence.
+
+        Returns:
+            list of Seq: List of coding regions (Seq objects) found in the DNA sequence.
+        """
         dna_seq = Seq(self.seq)
         start_codon = Seq("ATG")
         stop_codons = [Seq("TAA"), Seq("TAG"), Seq("TGA")]
@@ -61,12 +82,26 @@ class DNAHighlighter:
 
         return coding_regions
 
-
 class CodonScorer:
     def __init__(self, C):
+        """
+        Initializes a CodonScorer object with a codon scoring scheme.
+
+        Parameters:
+            C (list of dict): List of dictionaries representing codon scoring information.
+        """
         self.C = C
 
     def get_codon_scores(self, codon):
+        """
+        Retrieves the scoring information for a given codon.
+
+        Parameters:
+            codon (str): Codon sequence for which scoring information is needed.
+
+        Returns:
+            list or None: List of scoring information for the codon, or None if codon is not found.
+        """
         for amino_acid_dict in self.C:
             for codon_key, scoring_dicts in amino_acid_dict.items():
                 if codon_key == codon:
@@ -74,6 +109,15 @@ class CodonScorer:
         return None  # Codon not found
 
     def calculate_scores(self, sequence):
+        """
+        Calculates scores for each codon in a given sequence using the provided scoring scheme.
+
+        Parameters:
+            sequence (str): DNA sequence for which codon scores are to be calculated.
+
+        Returns:
+            list: List of scores for each codon in the sequence.
+        """
         scores_array = []  # To store scores for each codon
 
         for i in range(0, len(sequence), 3):

@@ -5,10 +5,26 @@ import re
 
 class CommandLineParser:
     def __init__(self):
+        """
+        Initializes a CommandLineParser object with attributes for storing file paths.
+
+        Attributes:
+            p_file_path (str): Path to patterns file.
+            s_file_path (str): Path to sequence file.
+        """
         self.p_file_path = None
         self.s_file_path = None
 
     def parse_args(self, argv):
+        """
+        Parses command-line arguments and extracts file paths from them.
+
+        Parameters:
+            argv (list): List of command-line arguments.
+
+        Returns:
+            tuple: A tuple containing the paths to the patterns file and sequence file.
+        """
         try:
             opts, args = getopt.getopt(argv, "hp:s:r:c:t", ["p_file=", "s_file="])
         except getopt.GetoptError:
@@ -30,10 +46,15 @@ class CommandLineParser:
 
         return self.s_file_path, self.p_file_path
 
-
 class UserInputHandler:
     @staticmethod
     def handle_elimination_input_response():
+        """
+        Handles user input for proceeding with code elimination.
+
+        Returns:
+            bool: True if the user wants to proceed, False if not.
+        """
         while True:
             response = input("Would you like to proceed with all of the code sections? (yes/no/exit): ")
             response = response.strip()
@@ -50,6 +71,15 @@ class UserInputHandler:
 
     @staticmethod
     def handle_elimination_coding_regions_input(coding_regions):
+        """
+        Handles user input for choosing coding regions to exclude.
+
+        Parameters:
+            coding_regions (list): List of coding regions to choose from.
+
+        Returns:
+            list: List of selected coding regions.
+        """
         print("Please choose the areas you wish to exclude: ")
         for i, region in enumerate(coding_regions):
             print(f"[{i + 1}]: {region}")

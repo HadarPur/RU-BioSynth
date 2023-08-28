@@ -1,8 +1,8 @@
 # Cost
-inf = float('inf')                          # stop codon
-o = 0.                                      # origin
-w = 1000000000000000                        # changes codons
-x = 1.                                      # does not change codons
+inf = float('inf')    # stop codon
+o = 0.                # origin
+w = 1e+15             # changes codons
+x = 1.                # does not change codons
 
 
 # Symmetric amino acids scoring scheme - 1 aa

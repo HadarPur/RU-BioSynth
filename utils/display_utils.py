@@ -77,7 +77,7 @@ class DNASequencePrinter:
             C (list[dict[str, float]]): List of dictionaries containing cost values.
         """
         if len(C) > 0:
-            print("\ncost:")
+            print("\nScoring scheme:")
             codons = DNASequencePrinter.split_string_every_n_chars(S, 3)
             colored_separator = "\033[91m{:<10}\033[0m".format("||")  # ANSI escape code for red text
             codon_table = "\t{:<13}{}".format(" ", colored_separator)
