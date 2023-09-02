@@ -82,6 +82,7 @@ class DNAHighlighter:
 
         return coding_regions
 
+
 class CodonScorer:
     def __init__(self, C):
         """

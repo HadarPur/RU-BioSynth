@@ -1,6 +1,3 @@
-from itertools import chain, combinations, product
-from typing import Iterable
-
 class DNASequenceAnalyzer:
     def __init__(self):
         """
@@ -25,17 +22,20 @@ class DNASequenceAnalyzer:
 
         return cost
 
-    def get_prefixes(self, s):
+    def get_prefixes(self, input_str):
         """
-        Generates a list of all prefixes of the input string s.
+        Computes the set of all prefixes of the given input string.
 
         Args:
-            s (str): Input string.
+            input_str (str): The input string for which prefixes need to be computed.
 
         Returns:
-            list of str: List of all prefixes of the input string.
+            set of str: Set containing all prefixes of the input string.
         """
-        return [s[:i] for i in range(len(s) + 1)]
+        prefixes = set()
+        for i in range(len(input_str) + 1):
+            prefixes.add(input_str[:i])
+        return prefixes
 
     def get_suffixes(self, s):
         """
@@ -62,6 +62,7 @@ class DNASequenceAnalyzer:
         pref_P = set()
         for p in P:
             pref_P.update(self.get_prefixes(p))
+
         return pref_P
 
     def has_suffix(self, w, P):
@@ -95,29 +96,3 @@ class DNASequenceAnalyzer:
             if suf in arr:
                 return suf
         return None
-
-    def powerset(self, iterable: Iterable) -> set:
-        """
-        Generates the powerset of the input iterable.
-
-        Args:
-            iterable (Iterable): Input iterable.
-
-        Returns:
-            set: Powerset of the input iterable, containing all possible combinations of its elements.
-        """
-        s = list(iterable)
-        return set(chain.from_iterable(combinations(s, r) for r in range(len(s) + 1)))
-
-    def cartesian_product(self, l1, l2):
-        """
-        Computes the Cartesian product of two input lists.
-
-        Args:
-            l1 (list): First input list.
-            l2 (list): Second input list.
-
-        Returns:
-            set: Set of tuples representing the Cartesian product of the input lists' elements.
-        """
-        return set(product(l1, l2))

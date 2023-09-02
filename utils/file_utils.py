@@ -17,6 +17,7 @@ class FileDataReader:
         with open(self.file_path, 'r') as file:
             return file.readlines()
 
+
 # Inherit from FileDataReader to read sequences from a file.
 class SequenceReader(FileDataReader):
     def read_sequence(self):
@@ -31,6 +32,7 @@ class SequenceReader(FileDataReader):
                 continue
             return line.strip()
         return None
+
 
 # Inherit from FileDataReader to read patterns from a file.
 class PatternReader(FileDataReader):
@@ -48,37 +50,3 @@ class PatternReader(FileDataReader):
             patterns = line.strip().split(',')
             res.update(patterns)
         return res
-
-# Inherit from FileDataReader to read costs from a file.
-class CostReader(FileDataReader):
-    def __init__(self, file_path):
-        """
-        Initializes a CostReader object.
-
-        :param file_path: Path to the file containing cost data.
-        """
-        super().__init__(file_path)
-        self.value_mapping = {
-            'inf': float('inf'),
-            'o': 0.0,
-            'w': 1e+15,
-            'x': 1.0
-        }
-
-    def read_costs(self):
-        """
-        Reads cost data from the file, creating dictionaries based on key-value pairs.
-
-        :return: A list of dictionaries representing cost mappings.
-        """
-        costs = []
-        raw_costs = self.read_lines()
-        for line in raw_costs:
-            if line.strip():
-                pairs = line.strip().split(',')
-                cost_dict = {}
-                for pair in pairs:
-                    key, value = pair.strip().split('=')
-                    cost_dict[key.strip()] = self.value_mapping[value.strip()]
-                costs.append(cost_dict)
-        return costs

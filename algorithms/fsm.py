@@ -42,9 +42,9 @@ class FSM(Generic[StateType]):
                 valid_sequences.add(sequence)
             else:
                 for symbol in self.alphabet:
-                    new_sequence = ''.join([sequence, symbol])
                     new_state = self.transition_function(current_state, symbol)
                     if new_state:
+                        new_sequence = ''.join([sequence, symbol])
                         queue.append((new_sequence, new_state))
                         transition_back_tracker[new_state].add((current_state, symbol))
 

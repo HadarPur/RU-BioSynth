@@ -7,6 +7,7 @@ state = str  # Alias for state, representing a string
 linear_reduced_state = Tuple[Union[str, None], str]  # Tuple representing a linear reduced state
 reduced_state = Tuple[FrozenSet[str], str]  # Tuple representing a reduced state
 
+
 class Reducer(Generic[StateType]):
     """
     A generic Reducer class that performs state reduction operations.
@@ -57,6 +58,7 @@ class Reducer(Generic[StateType]):
             new_state = f"{current_state}{sigma}"
             if dna_analyzer.has_suffix(new_state, self.unwanted_patterns):
                 return None
+
             return dna_analyzer.longest_suffix_in_set(new_state, prefix_patterns)
 
         return initial_state, valid_prefixes, transition_function

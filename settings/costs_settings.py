@@ -12,11 +12,18 @@ Tryptophan = {"TGG":  [
     dict(A=inf,   T=w,    C=w,    G=o)]
     }
 
+# # start codon
+# Methionine = {"ATG" : [
+#     dict(A=o,     T=inf,    C=inf,    G=inf),
+#     dict(A=inf,   T=o,      C=inf,    G=inf),
+#     dict(A=inf,   T=inf,    C=inf,    G=o)]
+#     }
+
 # start codon
 Methionine = {"ATG" : [
-    dict(A=o,     T=inf,    C=inf,    G=inf),
-    dict(A=inf,   T=o,      C=inf,    G=inf),
-    dict(A=inf,   T=inf,    C=inf,    G=o)]
+    dict(A=o,   T=w,    C=w,    G=w),
+    dict(A=w,   T=o,    C=w,    G=w),
+    dict(A=w,   T=w,    C=w,    G=o)]
     }
 
 # Symmetric amino acids scoring scheme - 2 aa
