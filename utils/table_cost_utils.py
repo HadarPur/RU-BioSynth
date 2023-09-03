@@ -6,7 +6,8 @@ class DNASequenceAnalyzer:
         """
         self.alphabet = {'A', 'G', 'T', 'C'}
 
-    def cost_function(self, C):
+    @staticmethod
+    def cost_function(C):
         """
         Creates a cost function based on the given cost matrix C.
 
@@ -22,7 +23,8 @@ class DNASequenceAnalyzer:
 
         return cost
 
-    def get_prefixes(self, input_str):
+    @staticmethod
+    def get_prefixes(input_str):
         """
         Computes the set of all prefixes of the given input string.
 
@@ -37,7 +39,8 @@ class DNASequenceAnalyzer:
             prefixes.add(input_str[:i])
         return prefixes
 
-    def get_suffixes(self, s):
+    @staticmethod
+    def get_suffixes(s):
         """
         Generates a list of all suffixes of the input string s.
 

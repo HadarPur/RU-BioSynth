@@ -2,5 +2,5 @@
 P = {
     "TACA",         # BlaI
     "TATC",         #
-    # "ATTC",         #
+    "ATTC",         #
 }

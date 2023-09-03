@@ -1,5 +1,5 @@
 from utils.dna_utils import DNAHighlighter
-from algorithms.eliminate_sequence import EliminateSequence
+from algorithm.eliminate_sequence import EliminateSequence
 from utils.display_utils import DNASequencePrinter
 from utils.input_utils import UserInputHandler
 

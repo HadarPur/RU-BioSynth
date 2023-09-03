@@ -13,7 +13,7 @@ Tryptophan = {"TGG":  [
     }
 
 # # start codon
-# Methionine = {"ATG" : [
+# Methionine = {"ATG": [
 #     dict(A=o,     T=inf,    C=inf,    G=inf),
 #     dict(A=inf,   T=o,      C=inf,    G=inf),
 #     dict(A=inf,   T=inf,    C=inf,    G=o)]
