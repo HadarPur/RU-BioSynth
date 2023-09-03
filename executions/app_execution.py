@@ -2,7 +2,6 @@ from executions.shared_execution import Shared
 from settings.sequence_settings import S
 from settings.pattern_settings import P
 from settings.costs_settings import C
-
 from utils.dna_utils import CodonScorer
 
 

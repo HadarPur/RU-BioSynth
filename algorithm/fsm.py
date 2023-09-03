@@ -22,7 +22,7 @@ class FSM:
         self.valid_sequences = set()
         self.states_by_sequence_length = defaultdict(set)
         self.transition_back_tracker = defaultdict(set)
-        self.memoization = {}  # Memoization dictionary to store computed transitions
+        self.memoization = {}
 
     def calculate_states_and_transition(self) -> Tuple[str, Set[str], Callable[[str, str], Union[None, str]]]:
         """
