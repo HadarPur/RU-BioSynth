@@ -1,23 +1,17 @@
+
+
 # Cost
-inf = float('inf')    # stop codon
+s = float('inf')    # stop codon
 o = 0.                # origin
 w = 1e+15             # changes codons
 x = 1.                # does not change codons
 
-
 # Symmetric amino acids scoring scheme - 1 aa
 Tryptophan = {"TGG":  [
-    dict(A=w,     T=o,    C=w,    G=w),
-    dict(A=inf,   T=w,    C=w,    G=o),
-    dict(A=inf,   T=w,    C=w,    G=o)]
+    dict(A=w,   T=o,    C=w,    G=w),
+    dict(A=s,   T=w,    C=w,    G=o),
+    dict(A=s,   T=w,    C=w,    G=o)]
     }
-
-# # start codon
-# Methionine = {"ATG": [
-#     dict(A=o,     T=inf,    C=inf,    G=inf),
-#     dict(A=inf,   T=o,      C=inf,    G=inf),
-#     dict(A=inf,   T=inf,    C=inf,    G=o)]
-#     }
 
 # start codon
 Methionine = {"ATG" : [
@@ -75,42 +69,42 @@ Tyrosine = {
     "TAT": [
         dict(A=w,     T=o,    C=w,    G=w),
         dict(A=o,     T=w,    C=w,    G=w),
-        dict(A=inf,   T=o,    C=x,    G=inf)],
+        dict(A=s,     T=o,    C=x,    G=s)],
     "TAC": [
         dict(A=w,     T=o,    C=w,    G=w),
         dict(A=o,     T=w,    C=w,    G=w),
-        dict(A=inf,   T=x,    C=o,    G=inf)]
+        dict(A=s,     T=x,    C=o,    G=s)]
     }
 
 Glutamine = {
     "CAA": [
-        dict(A=w,     T=inf,  C=o,    G=w),
+        dict(A=w,     T=s,    C=o,    G=w),
         dict(A=o,     T=w,    C=w,    G=w),
         dict(A=o,     T=w,    C=w,    G=x)],
     "CAG": [
-        dict(A=w,     T=inf,  C=o,    G=w),
+        dict(A=w,     T=s,    C=o,    G=w),
         dict(A=o,     T=w,    C=w,    G=w),
         dict(A=x,     T=w,    C=w,    G=o)]
     }
 
 Lysine = {
     "AAA": [
-        dict(A=o,     T=inf,  C=w,    G=w),
+        dict(A=o,     T=s,    C=w,    G=w),
         dict(A=o,     T=w,    C=w,    G=w),
         dict(A=o,     T=w,    C=w,    G=x)],
     "AAG": [
-        dict(A=o,     T=inf,  C=w,    G=w),
+        dict(A=o,     T=s,    C=w,    G=w),
         dict(A=o,     T=w,    C=w,    G=w),
         dict(A=x,     T=w,    C=w,    G=o)]
     }
 
 Glutamic_acid = {
     "GAA": [
-        dict(A=w,     T=inf,  C=w,    G=o),
+        dict(A=w,     T=s,    C=w,    G=o),
         dict(A=o,     T=w,    C=w,    G=w),
         dict(A=o,     T=w,    C=w,    G=x)],
     "GAG": [
-        dict(A=w,     T=inf,  C=w,    G=o),
+        dict(A=w,     T=s,    C=w,    G=o),
         dict(A=o,     T=w,    C=w,    G=w),
         dict(A=x,     T=w,    C=w,    G=o)]
     }
@@ -123,7 +117,7 @@ Cysteine = {
     "TGC": [
         dict(A=w,     T=o,    C=w,    G=w),
         dict(A=w,     T=w,    C=w,    G=o),
-        dict(A=w,   T=x,    C=o,    G=w)]
+        dict(A=w,     T=x,    C=o,    G=w)]
     }
 
 # Symmetric amino acids scoring scheme - 3 aa
@@ -230,7 +224,7 @@ Glycine = {
         dict(A=w,     T=w,    C=w,    G=o),
         dict(A=x,     T=x,    C=o,    G=x)],
     "GGA": [
-        dict(A=w,     T=inf,  C=w,    G=o),
+        dict(A=w,     T=s,    C=w,    G=o),
         dict(A=w,     T=w,    C=w,    G=o),
         dict(A=o,     T=x,    C=x,    G=x)],
     "GGG": [
@@ -250,7 +244,7 @@ Arginine = {
         dict(A=w,     T=w,    C=w,    G=o),
         dict(A=x,     T=x,    C=o,    G=x)],
     "CGA": [
-        dict(A=x,     T=inf,  C=o,    G=w),
+        dict(A=x,     T=s,    C=o,    G=w),
         dict(A=w,     T=w,    C=w,    G=o),
         dict(A=x,     T=x,    C=o,    G=x)],
     "CGG": [
@@ -258,7 +252,7 @@ Arginine = {
         dict(A=w,     T=w,    C=w,    G=o),
         dict(A=x,     T=x,    C=x,    G=o)],
     "AGA": [
-        dict(A=o,     T=inf,  C=x,    G=w),
+        dict(A=o,     T=s,    C=x,    G=w),
         dict(A=w,     T=w,    C=w,    G=o),
         dict(A=o,     T=w,    C=w,    G=x)],
     "AGG": [
@@ -278,7 +272,7 @@ Serine = {
         dict(A=x,     T=x,    C=o,    G=x)],
     "TCA": [
         dict(A=w,     T=o,    C=w,    G=w),
-        dict(A=w,     T=w,    C=o,    G=inf),
+        dict(A=w,     T=w,    C=o,    G=s),
         dict(A=o,     T=x,    C=x,    G=x)],
     "TCG": [
         dict(A=w,     T=o,    C=w,    G=w),
@@ -313,28 +307,28 @@ Leucine = {
         dict(A=x,     T=x,    C=x,    G=o)],
     "TTA": [
         dict(A=w,     T=o,    C=x,    G=w),
-        dict(A=inf,   T=o,    C=w,    G=inf),
+        dict(A=s,     T=o,    C=w,    G=s),
         dict(A=w,     T=o,    C=x,    G=w)],
     "TTG": [
         dict(A=w,     T=o,    C=x,    G=w),
-        dict(A=inf,   T=o,    C=w,    G=w),
+        dict(A=s,     T=o,    C=w,    G=w),
         dict(A=w,     T=x,    C=o,    G=w)]
     }
 
 # stop codons
 Stop = {
     "TAA": [
-        dict(A=inf,   T=o,      C=inf,    G=inf),
-        dict(A=o,     T=inf,    C=inf,    G=x),
-        dict(A=o,     T=inf,    C=inf,    G=x)],
+        dict(A=s, T=o, C=s, G=s),
+        dict(A=o, T=s, C=s, G=x),
+        dict(A=o, T=s, C=s, G=x)],
     "TAG": [
-        dict(A=inf,   T=o,      C=inf,    G=inf),
-        dict(A=o,     T=inf,    C=inf,    G=inf),
-        dict(A=x,     T=inf,    C=inf,    G=o)],
+        dict(A=s, T=o, C=s, G=s),
+        dict(A=o, T=s, C=s, G=s),
+        dict(A=x, T=s, C=s, G=o)],
     "TGA": [
-        dict(A=inf,   T=o,      C=inf,    G=inf),
-        dict(A=x,     T=inf,    C=inf,    G=o),
-        dict(A=o,     T=inf,    C=inf,    G=inf)]
+        dict(A=s, T=o, C=s, G=s),
+        dict(A=x, T=s, C=s, G=o),
+        dict(A=o, T=s, C=s, G=s)]
     }
 
 C = [

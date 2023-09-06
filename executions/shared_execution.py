@@ -24,12 +24,13 @@ class Shared:
         DNASequencePrinter.print_patterns(self.unwanted_patterns)
 
         # Print the cost table list
-        DNASequencePrinter.print_cost_table(self.seq, self.cost_table)
+        # DNASequencePrinter.print_cost_table(self.seq, self.cost_table)
 
         dna_highlighter = DNAHighlighter(self.seq)
 
         # Extract coding regions from the sequence
-        coding_regions = dna_highlighter.get_coding_regions()
+        region_list = dna_highlighter.get_coding_and_non_coding_regions()
+        coding_regions = dna_highlighter.extract_coding_regions(region_list)
 
         # Highlight coding regions and print the sequence
         highlighted_sequence = dna_highlighter.highlight_coding_regions(coding_regions)
@@ -44,7 +45,12 @@ class Shared:
 
             if elimination_response is False:
                 # If the response is negative, ask for coding regions to eliminate
-                coding_regions = UserInputHandler.handle_elimination_coding_regions_input(coding_regions)
+                coding_regions_to_exclude = UserInputHandler.handle_elimination_coding_regions_input(coding_regions)
+                print(f"coding_regions_to_exclude = {coding_regions_to_exclude}")
+                coding_regions = dna_highlighter.update_coding_regions(region_list, coding_regions_to_exclude)
+
+                print(f"updated_coding_regions = {coding_regions}")
+
         else:
             print("Continue without coding regions")
 

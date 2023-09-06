@@ -52,81 +52,79 @@ class DNAHighlighter:
 
         return highlighted_seq
 
-    def get_coding_regions(self):
+    def get_coding_and_non_coding_regions(self):
         """
         Identifies and returns coding regions within the DNA sequence.
 
         Returns:
-            list of Seq: List of coding regions (Seq objects) found in the DNA sequence.
+            list of dict: List of dictionaries containing "seq" (Seq object) and "is_coding_region" (bool) keys.
         """
-        dna_seq = Seq(self.seq)
         start_codon = Seq("ATG")
         stop_codons = [Seq("TAA"), Seq("TAG"), Seq("TGA")]
         coding_regions = []
-        i = 0
 
-        while i < len(dna_seq):
-            if dna_seq[i:i + 3] == start_codon:
+        i = 0
+        non_coding_region = ""
+        in_coding_region = True
+
+        while i < len(self.seq):
+            if self.seq[i:i + 3] == start_codon:
+                if in_coding_region is False:
+                    coding_regions.append({
+                        "seq": non_coding_region,
+                        "is_coding_region": False
+                    })
+                    non_coding_region = ""
+
                 start_idx = i
                 in_coding_region = True
-                for j in range(i + 3, len(dna_seq), 3):
-                    if dna_seq[j:j + 3] in stop_codons:
-                        coding_regions.append(dna_seq[start_idx:j + 3])
+                for j in range(i + 3, len(self.seq), 3):
+                    if self.seq[j:j + 3] in stop_codons:
+                        coding_regions.append({
+                            "seq": self.seq[start_idx:j + 3],
+                            "is_coding_region": True
+                        })
                         i = j + 3
                         in_coding_region = False
                         break
                 if in_coding_region:
                     i += 3
             else:
-                i += 1
+                in_coding_region = False
+                non_coding_region += self.seq[i:i + 3]
+                i += 3
 
         return coding_regions
 
-
-class CodonScorer:
-    def __init__(self, C):
+    def extract_coding_regions(self, region_list):
         """
-        Initializes a CodonScorer object with a codon scoring scheme.
+        Extracts only the coding regions from a list of dictionaries.
 
-        Parameters:
-            C (list of dict): List of dictionaries representing codon scoring information.
-        """
-        self.C = C
-
-    def get_codon_scores(self, codon):
-        """
-        Retrieves the scoring information for a given codon.
-
-        Parameters:
-            codon (str): Codon sequence for which scoring information is needed.
+        Args:
+            region_list (list of dict): List of dictionaries containing "seq" (Seq object) and "is_coding_region" (bool) keys.
 
         Returns:
-            list or None: List of scoring information for the codon, or None if codon is not found.
+            list of Seq: List of Seq objects representing coding regions.
         """
-        for amino_acid_dict in self.C:
-            for codon_key, scoring_dicts in amino_acid_dict.items():
-                if codon_key == codon:
-                    return scoring_dicts
-        return None  # Codon not found
+        coding_regions = [region["seq"] for region in region_list if region["is_coding_region"]]
+        return coding_regions
 
-    def calculate_scores(self, sequence):
+    def update_coding_regions(self, region_list, sequences_to_exclude):
         """
-        Calculates scores for each codon in a given sequence using the provided scoring scheme.
+        Update the 'is_coding_region' values in a list of dictionaries at specified indices.
 
-        Parameters:
-            sequence (str): DNA sequence for which codon scores are to be calculated.
+        Args:
+            region_list (list of dict): List of dictionaries containing "seq" (Seq object) and "is_coding_region" (bool) keys.
+            indices_to_update (list of int): List of indices to update.
+            new_values (list of bool): List of new values corresponding to the indices.
 
         Returns:
-            list: List of scores for each codon in the sequence.
+            None
         """
-        scores_array = []  # To store scores for each codon
+        for seq_to_exclude in sequences_to_exclude:
+            for item in region_list:
+                if item['seq'] == seq_to_exclude:
+                    item['is_coding_region'] = False
+                    break
 
-        for i in range(0, len(sequence), 3):
-            codon = sequence[i:i + 3]
-            codon_scores = self.get_codon_scores(codon)
-            if codon_scores:
-                scores_array = scores_array + codon_scores
-            else:
-                print(f"Warning: Codon {codon} not found in the scoring scheme.")
-
-        return scores_array
+        return region_list

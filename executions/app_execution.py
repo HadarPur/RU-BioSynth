@@ -2,7 +2,7 @@ from executions.shared_execution import Shared
 from settings.sequence_settings import S
 from settings.pattern_settings import P
 from settings.costs_settings import C
-from utils.dna_utils import CodonScorer
+from utils.cost_utils import CodonScorer
 
 
 class App:
@@ -11,8 +11,7 @@ class App:
         self.unwanted_patterns = P
 
         scorer = CodonScorer(C)
-        scores = scorer.calculate_scores(self.seq)
-        self.cost_table = scores
+        self.cost_table = scorer.calculate_scores(self.seq)
 
     def execute(self):
         Shared(self.seq, self.unwanted_patterns, self.cost_table).run()

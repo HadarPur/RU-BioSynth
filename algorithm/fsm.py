@@ -1,6 +1,6 @@
 from collections import defaultdict
 from typing import Callable, Set, Tuple, Union
-from utils.table_cost_utils import DNASequenceAnalyzer
+from utils.elimination_utils import DNASequenceAnalyzer
 
 
 class FSM:

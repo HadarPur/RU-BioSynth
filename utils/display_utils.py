@@ -125,4 +125,4 @@ class DNASequencePrinter:
             for idx, chunk in enumerate(colored_chunks)
         ]
 
-        print(f'\n{title}:\n\t' + ''.join(spaced_chunks))
+        print(f'\n{title}:\n\t' + ' '.join(spaced_chunks))

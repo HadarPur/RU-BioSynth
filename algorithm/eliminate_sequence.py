@@ -1,5 +1,5 @@
 from algorithm.fsm import FSM
-from utils.table_cost_utils import DNASequenceAnalyzer
+from utils.elimination_utils import DNASequenceAnalyzer
 from typing import Set
 from collections import defaultdict
 from utils.display_utils import DNASequencePrinter
