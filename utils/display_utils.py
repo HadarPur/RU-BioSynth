@@ -1,6 +1,5 @@
 import re
 from typing import Set
-import sys
 
 
 class DNASequencePrinter:
