@@ -96,35 +96,47 @@ class DNAHighlighter:
 
         return coding_regions
 
-    def extract_coding_regions(self, region_list):
+    def extract_coding_regions_with_indexes(self, region_list):
         """
-        Extracts only the coding regions from a list of dictionaries.
+        Extracts coding regions and their indexes from a list of dictionaries.
 
         Args:
             region_list (list of dict): List of dictionaries containing "seq" (Seq object) and "is_coding_region" (bool) keys.
 
         Returns:
-            list of Seq: List of Seq objects representing coding regions.
+            tuple: A tuple containing two lists:
+                - List of Seq objects representing coding regions.
+                - List of indexes (int) corresponding to the coding regions.
         """
-        coding_regions = [region["seq"] for region in region_list if region["is_coding_region"]]
-        return coding_regions
 
-    def update_coding_regions(self, region_list, sequences_to_exclude):
+        coding_regions = []
+        coding_indexes = []
+
+        for index, region in enumerate(region_list):
+            if region["is_coding_region"]:
+                coding_regions.append(region["seq"])
+                coding_indexes.append(index)
+
+        return coding_regions, coding_indexes
+
+    def update_coding_regions(self, region_list, coding_indexes, coding_regions_to_exclude):
         """
         Update the 'is_coding_region' values in a list of dictionaries at specified indices.
 
         Args:
             region_list (list of dict): List of dictionaries containing "seq" (Seq object) and "is_coding_region" (bool) keys.
-            indices_to_update (list of int): List of indices to update.
-            new_values (list of bool): List of new values corresponding to the indices.
+            coding_regions_to_exclude (dict of str): Dictionary of sequences to exclude.
 
         Returns:
-            None
+            region_list
         """
-        for seq_to_exclude in sequences_to_exclude:
-            for item in region_list:
-                if item['seq'] == seq_to_exclude:
-                    item['is_coding_region'] = False
-                    break
+
+        for key, value in coding_regions_to_exclude.items():
+            coding_region_index = coding_indexes[key]
+            region = region_list[coding_region_index]
+            if region['seq'] == value:
+                region['is_coding_region'] = False
+                region_list[coding_region_index] = region
 
         return region_list
+

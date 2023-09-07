@@ -103,8 +103,12 @@ class UserInputHandler:
                         max(int(item) for item in segments) > len(coding_regions):
                     print("\033[91mInvalid selection. Please try again.\033[0m")
                 else:
-                    selected_regions = [coding_regions[int(segment) - 1] for segment in segments]
-                    print("Selected regions:", selected_regions)
+                    print("Selected regions:")
+                    selected_regions = {}
+                    for segment in segments:
+                        coding_region = coding_regions[int(segment) - 1]
+                        print(f"[{int(segment)}] {coding_region}")
+                        selected_regions[int(segment) - 1] = coding_region
                     return selected_regions
             else:
                 print("\033[91mInvalid input. Please provide valid indices separated by commas or spaces.\033[0m")

@@ -37,7 +37,7 @@ class FSM:
         initial_state = ''
 
         print(f"|V| = {len(valid_prefixes)}")
-        print(f"V = {valid_prefixes}")
+        print(f" V = {valid_prefixes}")
 
         def transition_function(current_state, sigma):
             new_state = f"{current_state}{sigma}"

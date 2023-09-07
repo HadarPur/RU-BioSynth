@@ -1,13 +1,14 @@
 from utils.dna_utils import DNAHighlighter
-from algorithm.eliminate_sequence import EliminateSequence
 from utils.display_utils import DNASequencePrinter
 from utils.input_utils import UserInputHandler
+from utils.cost_utils import CodonScorer
+from algorithm.eliminate_sequence import EliminateSequence
+
 
 class Shared:
-    def __init__(self, seq, unwanted_patterns, cost_table):
+    def __init__(self, seq, unwanted_patterns):
         self.seq = seq
         self.unwanted_patterns = unwanted_patterns
-        self.cost_table = cost_table
 
     def run(self):
         """
@@ -30,7 +31,7 @@ class Shared:
 
         # Extract coding regions from the sequence
         region_list = dna_highlighter.get_coding_and_non_coding_regions()
-        coding_regions = dna_highlighter.extract_coding_regions(region_list)
+        coding_regions, coding_indexes = dna_highlighter.extract_coding_regions_with_indexes(region_list)
 
         # Highlight coding regions and print the sequence
         highlighted_sequence = dna_highlighter.highlight_coding_regions(coding_regions)
@@ -46,16 +47,17 @@ class Shared:
             if elimination_response is False:
                 # If the response is negative, ask for coding regions to eliminate
                 coding_regions_to_exclude = UserInputHandler.handle_elimination_coding_regions_input(coding_regions)
-                print(f"coding_regions_to_exclude = {coding_regions_to_exclude}")
-                coding_regions = dna_highlighter.update_coding_regions(region_list, coding_regions_to_exclude)
-
-                print(f"updated_coding_regions = {coding_regions}")
+                region_list = dna_highlighter.update_coding_regions(region_list, coding_indexes, coding_regions_to_exclude)
 
         else:
             print("Continue without coding regions")
 
+        # update cost table
+        scorer = CodonScorer()
+        cost_table = scorer.calculate_scores(region_list)
+
         # Eliminate coding regions and get the resulting sequence
-        EliminateSequence.eliminate(self.seq, self.unwanted_patterns, self.cost_table)
+        EliminateSequence.eliminate(self.seq, self.unwanted_patterns, cost_table)
 
         # Return control back, indicating the end of the method
         return
