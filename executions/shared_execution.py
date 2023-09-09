@@ -52,12 +52,18 @@ class Shared:
         else:
             print("Continue without coding regions")
 
-        # update cost table
+        # Update the cost table based on coding region scores
         scorer = CodonScorer()
         cost_table = scorer.calculate_scores(region_list)
 
-        # Eliminate coding regions and get the resulting sequence
-        EliminateSequence.eliminate(self.seq, self.unwanted_patterns, cost_table)
+        # Eliminate coding regions and generate the resulting sequence
+        target_seq = EliminateSequence.eliminate(self.seq, self.unwanted_patterns, cost_table)
 
-        # Return control back, indicating the end of the method
+        # Prompt the user if they want to save the resulting sequence to a file
+        # If the user chooses to save, handle the saving process
+        saving_response = UserInputHandler.handle_saving_input_response()
+        if saving_response:
+            UserInputHandler.save_sequence_to_file(target_seq)
+
+        # Return control, indicating the end of the method
         return

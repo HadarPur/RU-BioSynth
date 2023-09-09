@@ -59,11 +59,11 @@ class UserInputHandler:
             response = input("Would you like to proceed with all of the code sections? (yes/no/exit): ")
             response = response.strip()
 
-            if response.lower() == "yes":
+            if response.lower() == "yes" or response.lower() == "y":
                 return True
-            elif response.lower() == "no":
+            elif response.lower() == "no" or response.lower() == "n":
                 return False
-            elif response.lower() == "exit":
+            elif response.lower() == "exit" or response.lower() == "e":
                 print("Program terminated.")
                 exit(1)
             else:
@@ -112,3 +112,52 @@ class UserInputHandler:
                     return selected_regions
             else:
                 print("\033[91mInvalid input. Please provide valid indices separated by commas or spaces.\033[0m")
+
+    @staticmethod
+    def handle_saving_input_response():
+        """
+        Handles user input for deciding whether to save the target sequence to a file.
+
+        Returns:
+            bool: True if the user chooses to save, False if not.
+        """
+        while True:
+            response = input("\nWould you like to save the target sequence to a file? (yes/no/exit): ")
+            response = response.strip()
+
+            if response.lower() == "yes" or response.lower() == "y":
+                return True
+            elif response.lower() == "no" or response.lower() == "n" or response.lower() == "exit" or response.lower() == "e":
+                print("Program terminated.\n")
+                exit(1)
+                return False
+            else:
+                print("\033[91mInvalid input. Please enter 'yes', 'no', or 'exit'.\033[0m")
+
+    @staticmethod
+    def save_sequence_to_file(sequence):
+        """
+        Saves a sequence to a file specified by the user.
+
+        Parameters:
+            sequence (str): The sequence to save.
+
+        Returns:
+            None
+        """
+
+        while True:
+            file_path = input("\nPlease provide the file path for saving: ")
+
+            if file_path.lower() == "exit" or file_path.lower() == "e":
+                print("Program terminated.")
+                exit(1)
+
+            try:
+                file_path += "/results.txt"
+                with open(file_path, 'w') as file:
+                    file.write(sequence)
+                print(f"Sequence saved to {file_path}\n")
+                break
+            except OSError:
+                print("\033[91mError: Unable to save the sequence to the specified file path. Please try again.\033[0m")
