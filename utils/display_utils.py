@@ -125,3 +125,28 @@ class DNASequencePrinter:
         ]
 
         print(f'\n{title}:\n\t' + ' '.join(spaced_chunks))
+        return ' '.join(spaced_chunks)
+
+    @staticmethod
+    def mark_non_equal_codons(seq1, seq2):
+        if len(seq1) != len(seq2):
+            raise ValueError("Input sequences must have the same length")
+
+        marked_seq1 = []
+        marked_seq2 = []
+
+        for i in range(0, len(seq1), 3):
+            codon1 = seq1[i:i + 3]
+            codon2 = seq2[i:i + 3]
+
+            if codon1 != codon2:
+                marked_seq1.append(f"[{codon1}]")
+                marked_seq2.append(f"[{codon2}]")
+            else:
+                marked_seq1.append(codon1)
+                marked_seq2.append(codon2)
+
+        marked_seq1 = ' '.join(marked_seq1)
+        marked_seq2 = ' '.join(marked_seq2)
+
+        print(f"The elimination results:\n\t{marked_seq1}\n\t{marked_seq2}\n")

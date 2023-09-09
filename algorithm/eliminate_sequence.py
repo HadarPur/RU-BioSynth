@@ -84,6 +84,4 @@ class EliminateSequence:
 
         # Print the constructed target sequence
         print(100 * '*' + '\n')
-        DNASequencePrinter.print_target_sequence(''.join(target_seq))
-
         return ''.join(target_seq)

@@ -53,13 +53,23 @@ class Shared:
             print("Continue without coding regions")
 
         # Update the cost table based on coding region scores
+        # Create an instance of the CodonScorer class to calculate scores for a list of regions
         scorer = CodonScorer()
         cost_table = scorer.calculate_scores(region_list)
 
         # Eliminate coding regions and generate the resulting sequence
+        # Use the EliminateSequence class to eliminate unwanted patterns in the sequence
+        # based on the calculated cost table
         target_seq = EliminateSequence.eliminate(self.seq, self.unwanted_patterns, cost_table)
 
+        # Mark non-equal codons and print the target sequence
+        # Use the DNASequencePrinter class to mark and print the unequal codons between
+        # the original sequence and the target sequence
+        DNASequencePrinter.mark_non_equal_codons(self.seq, target_seq)
+        DNASequencePrinter.print_target_sequence(target_seq)
+
         # Prompt the user if they want to save the resulting sequence to a file
+        # Use the UserInputHandler class to handle user input for saving the sequence
         # If the user chooses to save, handle the saving process
         saving_response = UserInputHandler.handle_saving_input_response()
         if saving_response:
@@ -67,3 +77,4 @@ class Shared:
 
         # Return control, indicating the end of the method
         return
+

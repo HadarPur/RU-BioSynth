@@ -144,3 +144,4 @@ class DNAHighlighter:
                 region_list[coding_region_index] = region  # Update the 'is_coding_region' value
 
         return region_list  # Return the updated list of dictionaries
+
