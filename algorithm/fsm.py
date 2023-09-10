@@ -19,10 +19,9 @@ class FSM:
         self.unwanted_patterns = unwanted_patterns
         self.alphabet = alphabet
         self.initial_state, self.states, self.transition_function = self.calculate_states_and_transition()
-        self.valid_sequences = set()
         self.states_by_sequence_length = defaultdict(set)
         self.transition_back_tracker = defaultdict(set)
-        self.memoization = {}
+        self.memoization = []
 
     def calculate_states_and_transition(self) -> Tuple[str, Set[str], Callable[[str, str], Union[None, str]]]:
         """
@@ -31,18 +30,39 @@ class FSM:
         Returns:
             tuple: A tuple containing the initial state, set of valid states, and transition function.
         """
+        # Create a DNASequenceAnalyzer object to work with DNA sequences
         dna_analyzer = DNASequenceAnalyzer()
+
+        # Calculate prefix patterns of unwanted patterns
         prefix_patterns = dna_analyzer.get_pref(self.unwanted_patterns)
+
+        # Filter valid prefix patterns that do not have unwanted suffixes
         valid_prefixes = {w for w in prefix_patterns if not dna_analyzer.has_suffix(w, self.unwanted_patterns)}
+
+        # Initialize the initial state to an empty string
         initial_state = ''
 
         print(f"|V| = {len(valid_prefixes)}")
         print(f" V = {valid_prefixes}")
 
         def transition_function(current_state, sigma):
+            """
+            Transition function to determine the next state given the current state and symbol.
+
+            Parameters:
+                current_state (str): Current state in the FSM.
+                sigma (str): Input symbol.
+
+            Returns:
+                str or None: The next state if valid, or None if it leads to an unwanted pattern.
+            """
             new_state = f"{current_state}{sigma}"
+
+            # Check if the new state has an unwanted suffix
             if dna_analyzer.has_suffix(new_state, self.unwanted_patterns):
                 return None
+
+            # Find the longest valid suffix in the prefix patterns
             return dna_analyzer.longest_suffix_in_set(new_state, prefix_patterns)
 
         return initial_state, valid_prefixes, transition_function
@@ -59,18 +79,19 @@ class FSM:
         self.states_by_sequence_length[len(sequence)].add(current_state)
 
         if len(sequence) == sequence_length:
-            self.valid_sequences.add(sequence)
-        else:
-            for symbol in self.alphabet:
-                new_state = self.transition_function(current_state, symbol)
-                if new_state is not None:
-                    new_sequence = sequence + symbol
-                    self.transition_back_tracker[new_state].add((current_state, symbol))
-                    if (new_state, sequence_length - len(new_sequence)) not in self.memoization:
-                        self.dfs(new_sequence, new_state, sequence_length)
-                        self.memoization[(new_state, sequence_length - len(new_sequence))] = True
+            return
 
-    def generate_valid_sequences(self, sequence_length: int) -> Tuple[set[str], defaultdict[int, set[str]], defaultdict[str, set[Tuple[str, str]]]]:
+        for symbol in self.alphabet:
+            new_state = self.transition_function(current_state, symbol)
+            if new_state is not None:
+                new_sequence = sequence + symbol
+                self.transition_back_tracker[new_state].add((current_state, symbol))
+                if (new_state, sequence_length - len(new_sequence)) not in self.memoization:
+                    self.dfs(new_sequence, new_state, sequence_length)
+                    self.memoization.append((new_state, sequence_length - len(new_sequence)))
+
+    def generate(self, sequence_length: int) -> Tuple[
+        set[str], defaultdict[int, set[str]], defaultdict[str, set[Tuple[str, str]]]]:
         """
         Generate valid sequences of a given length using the deterministic transition function.
 
@@ -79,10 +100,9 @@ class FSM:
 
         Returns:
             tuple[set[str], defaultdict[int, set[str]], defaultdict[str, set[Tuple[str, str]]]]:
-                - valid_sequences
                 - states_by_sequence_length - states that can generate sequences of a given length.
                 - transition_back_tracker - mapping of {(new_state, symbol) | such that transition_function(current_state, symbol) = new_state} for each current_state.
         """
         self.dfs('', self.initial_state, sequence_length)
         print('Generation completed.')
-        return self.valid_sequences, self.states_by_sequence_length, self.transition_back_tracker
+        return self.states_by_sequence_length, self.transition_back_tracker

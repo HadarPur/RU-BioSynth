@@ -2,7 +2,6 @@ from algorithm.fsm import FSM
 from utils.elimination_utils import DNASequenceAnalyzer
 from typing import Set
 from collections import defaultdict
-from utils.display_utils import DNASequencePrinter
 
 
 class EliminateSequence:
@@ -22,7 +21,7 @@ class EliminateSequence:
 
         # Create a finite state machine (FSM) instance ('fsm') to generate P-clean sequences
         fsm = FSM(unwanted_patterns=P, alphabet=dna_analyzer.alphabet)
-        _, states_by_sequence_length, transition_back_tracker = fsm.generate_valid_sequences(sequence_length=n)
+        states_by_sequence_length, transition_back_tracker = fsm.generate(sequence_length=n)
 
         # Initialize a list 'A' to hold cost information for each state
         inf = float('inf')
