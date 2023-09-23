@@ -21,7 +21,7 @@ class EliminateSequence:
 
         # Create a finite state machine (FSM) instance ('fsm') to generate P-clean sequences
         fsm = FSM(unwanted_patterns=P, alphabet=dna_analyzer.alphabet)
-        states_by_sequence_length, transition_back_tracker = fsm.generate(sequence_length=n)
+        transition_back_tracker = fsm.generate()
 
         # Initialize a list 'A' to hold cost information for each state
         inf = float('inf')
@@ -36,7 +36,7 @@ class EliminateSequence:
         for i in range(1, n + 1):
             A_i = defaultdict(lambda: inf)
             A_star_i = dict()
-            V_i = states_by_sequence_length[i]
+            V_i = transition_back_tracker.keys()
             for v in V_i:
                 u_star = ''
                 sigma_star = ''
