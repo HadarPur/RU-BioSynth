@@ -19,7 +19,7 @@ class Shared:
         """
 
         # Print the original sequence
-        DNASequencePrinter.print_sequence(self.seq)
+        DNASequencePrinter.print_sequence("DNA sequence", self.seq)
 
         # Print the unwanted patterns list
         DNASequencePrinter.print_patterns(self.unwanted_patterns)
@@ -27,14 +27,14 @@ class Shared:
         # Print the cost table list
         # DNASequencePrinter.print_cost_table(self.seq, self.cost_table)
 
-        dna_highlighter = DNAHighlighter(self.seq)
+        dna_highlighter = DNAHighlighter()
 
         # Extract coding regions from the sequence
-        region_list = dna_highlighter.get_coding_and_non_coding_regions()
+        region_list = dna_highlighter.get_coding_and_non_coding_regions(self.seq)
         coding_regions, coding_indexes = dna_highlighter.extract_coding_regions_with_indexes(region_list)
 
         # Highlight coding regions and print the sequence
-        highlighted_sequence = dna_highlighter.highlight_coding_regions(coding_regions)
+        highlighted_sequence = dna_highlighter.highlight_coding_regions(self.seq, coding_regions)
         DNASequencePrinter.print_highlighted_sequence(highlighted_sequence)
 
         # Print the number of coding regions found
@@ -65,8 +65,10 @@ class Shared:
         # Mark non-equal codons and print the target sequence
         # Use the DNASequencePrinter class to mark and print the unequal codons between
         # the original sequence and the target sequence
-        DNASequencePrinter.mark_non_equal_codons(self.seq, target_seq)
-        DNASequencePrinter.print_target_sequence(target_seq)
+        target_seq_region_list = dna_highlighter.get_coding_and_non_coding_regions(target_seq)
+
+        DNASequencePrinter.mark_non_equal_codons(region_list, target_seq_region_list)
+        DNASequencePrinter.print_sequence("DNA target sequence", target_seq)
 
         # Prompt the user if they want to save the resulting sequence to a file
         # Use the UserInputHandler class to handle user input for saving the sequence

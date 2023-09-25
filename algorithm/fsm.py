@@ -1,4 +1,4 @@
-from collections import defaultdict
+from collections import defaultdict, deque
 from typing import Callable, Set, Tuple, Union
 from utils.elimination_utils import DNASequenceAnalyzer
 
@@ -83,6 +83,22 @@ class FSM:
                 new_sequence = sequence + symbol
                 self.transition_back_tracker[new_state].add((current_state, symbol))
                 self.dfs(new_state, visited_states, new_sequence)
+
+    def bfs(self):
+        """
+        Breadth-first search to generate valid sequences using a queue.
+        """
+        queue = deque([(self.initial_state, '')])  # Initialize the queue with (current_state, sequence)
+
+        while queue:
+            current_state, sequence = queue.popleft()
+
+            for symbol in self.alphabet:
+                new_state = self.transition_function(current_state, symbol)
+                if new_state is not None:
+                    new_sequence = sequence + symbol
+                    self.transition_back_tracker[new_state].add((current_state, symbol))
+                    queue.append((new_state, new_sequence))
 
     def generate(self):
         """

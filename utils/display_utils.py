@@ -27,24 +27,14 @@ class DNASequencePrinter:
         return color_start_positions, color_end_positions
 
     @staticmethod
-    def print_sequence(S: str):
+    def print_sequence(title: str, S: str):
         """Print a DNA sequence, broken into groups of three bases.
 
         Args:
             S (str): DNA sequence to be printed.
+            title (str): The kind of the seq
         """
-        title = "DNA sequence"
-        print(f'\n{title}:\n\t' + ' '.join(S[i:i + 3] for i in range(0, len(S), 3)))
-
-    @staticmethod
-    def print_target_sequence(S: str):
-        """Print a target DNA sequence, broken into groups of three bases.
-
-        Args:
-            S (str): Target DNA sequence to be printed.
-        """
-        title = "DNA target sequence"
-        print(f'{title}:\n\t' + ' '.join(S[i:i + 3] for i in range(0, len(S), 3)))
+        print(f'\n{title}:\n\t {S}')
 
     @staticmethod
     def print_patterns(unwanted_patterns: Set[str]):
@@ -109,6 +99,9 @@ class DNASequencePrinter:
         colored_chunks = []
         prev_end = 0
 
+        prefix = "ATG"  # Define the start codon
+        suffix = ["TAA", "TAG", "TGA"]  # Define the stop codons
+
         for start, end in zip(color_starts, color_ends):
             colored_chunks.append(S[prev_end:start])
             colored_chunks.append(S[start:end])
@@ -117,34 +110,60 @@ class DNASequencePrinter:
         colored_chunks.append(S[prev_end:])
 
         # Insert a space after each entry in colored_chunks
-        spaced_chunks = [
-            " ".join(chunk[i:i + chunk_size] for i in range(0, len(chunk), chunk_size))
-            if idx % 2 == 0
-            else chunk
-            for idx, chunk in enumerate(colored_chunks)
-        ]
+        spaced_chunks = []
+        for idx, chunk in enumerate(colored_chunks):
+            if idx % 2 == 0:
+                if chunk.startswith(prefix) and any(chunk.endswith(suf) for suf in suffix):
+                    spaced_chunk = " ".join(chunk[i:i + chunk_size] for i in range(0, len(chunk), chunk_size))
+                else:
+                    spaced_chunk = chunk
+            else:
+                spaced_chunk = chunk
+            spaced_chunks.append(spaced_chunk)
 
         print(f'\n{title}:\n\t' + ' '.join(spaced_chunks))
         return ' '.join(spaced_chunks)
 
     @staticmethod
-    def mark_non_equal_codons(seq1, seq2):
-        if len(seq1) != len(seq2):
+    def mark_non_equal_codons(region_list, target_region_list):
+        if len(region_list) != len(target_region_list):
             raise ValueError("Input sequences must have the same length")
 
         marked_seq1 = []
         marked_seq2 = []
 
-        for i in range(0, len(seq1), 3):
-            codon1 = seq1[i:i + 3]
-            codon2 = seq2[i:i + 3]
+        prefix = "ATG"  # Define the start codon
+        suffix = ["TAA", "TAG", "TGA"]  # Define the stop codons
 
-            if codon1 != codon2:
-                marked_seq1.append(f"[{codon1}]")
-                marked_seq2.append(f"[{codon2}]")
+        for seq_info1, seq_info2 in zip(region_list, target_region_list):
+            sequence1 = seq_info1['seq']
+            is_coding_region1 = seq_info1['is_coding_region']
+            sequence2 = seq_info2['seq']
+            is_coding_region2 = seq_info2['is_coding_region']
+
+            if is_coding_region1 and is_coding_region2:
+                for i in range(0, len(sequence1), 3):
+                    codon1 = sequence1[i:i + 3]
+                    codon2 = sequence2[i:i + 3]
+
+                    if codon1 != codon2:
+                        marked_seq1.append(f"[{codon1}]")
+                        marked_seq2.append(f"[{codon2}]")
+                    else:
+                        marked_seq1.append(codon1)
+                        marked_seq2.append(codon2)
+
             else:
-                marked_seq1.append(codon1)
-                marked_seq2.append(codon2)
+                for i in range(0, len(sequence1)):
+                    letter1 = sequence1[i]
+                    letter2 = sequence2[i]
+
+                    if letter1 != letter2:
+                        marked_seq1.append(f"[{letter1}]")
+                        marked_seq2.append(f"[{letter2}]")
+                    else:
+                        marked_seq1.append(letter1)
+                        marked_seq2.append(letter2)
 
         marked_seq1 = ' '.join(marked_seq1)
         marked_seq2 = ' '.join(marked_seq2)

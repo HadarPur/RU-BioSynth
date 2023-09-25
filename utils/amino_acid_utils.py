@@ -6,7 +6,15 @@ class AminoAcidScheme:
         self.s = s
         self.x = x
 
-    def get_cost_table(self):
+    def get_cost_table_none_coding_region(self):
+        return [{
+            "A": [dict(A=self.o, T=self.x, C=self.w, G=self.w)],
+            "T": [dict(A=self.x, T=self.o, C=self.w, G=self.w)],
+            "C": [dict(A=self.w, T=self.w, C=self.o, G=self.x)],
+            "G": [dict(A=self.w, T=self.w, C=self.x, G=self.o)]
+        }]
+
+    def get_cost_table_coding_region(self):
         # Symmetric amino acids scoring scheme - 1 aa
         Tryptophan = {"TGG": [
             dict(A=self.w, T=self.o, C=self.w, G=self.w),

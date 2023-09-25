@@ -4,16 +4,13 @@ import random  # Import the random module for generating random colors
 
 # Create a class named DNAHighlighter for working with DNA sequences
 class DNAHighlighter:
-    def __init__(self, seq):
+    def __init__(self):
         """
         Initializes a DNAHighlighter object with a DNA sequence.
-
-        Parameters:
-            seq (str): DNA sequence as a string.
         """
-        self.seq = seq  # Store the DNA sequence in the object's instance variable
+        pass
 
-    def highlight_coding_regions(self, coding_regions):
+    def highlight_coding_regions(self, seq, coding_regions):
         """
         Highlights coding regions within the DNA sequence using colored escape codes.
 
@@ -34,7 +31,7 @@ class DNAHighlighter:
             available_color_codes.remove(color_code)  # Remove the used color code from the available list
             region_color_mapping[str(region_seq)] = f'\033[{color_code}m'  # Map the region sequence to the color code
 
-        highlighted_seq = str(self.seq)  # Convert the DNA sequence to a string for highlighting
+        highlighted_seq = str(seq)  # Convert the DNA sequence to a string for highlighting
 
         # Highlight coding regions in the DNA sequence
         for region_seq in coding_regions:
@@ -56,7 +53,7 @@ class DNAHighlighter:
 
         return highlighted_seq  # Return the DNA sequence with highlighted coding regions
 
-    def get_coding_and_non_coding_regions(self):
+    def get_coding_and_non_coding_regions(self, seq):
         """
         Identifies and returns coding regions within the DNA sequence.
 
@@ -72,8 +69,8 @@ class DNAHighlighter:
         in_coding_region = True
 
         # Traverse the DNA sequence to identify coding regions
-        while i < len(self.seq):
-            if self.seq[i:i + 3] == start_codon:  # Check for the start codon
+        while i < len(seq):
+            if seq[i:i + 3] == start_codon:  # Check for the start codon
                 if in_coding_region is False:
                     coding_regions.append({
                         "seq": non_coding_region,
@@ -83,10 +80,10 @@ class DNAHighlighter:
 
                 start_idx = i
                 in_coding_region = True
-                for j in range(i + 3, len(self.seq), 3):
-                    if self.seq[j:j + 3] in stop_codons:  # Check for stop codons
+                for j in range(i + 3, len(seq), 3):
+                    if seq[j:j + 3] in stop_codons:  # Check for stop codons
                         coding_regions.append({
-                            "seq": self.seq[start_idx:j + 3],
+                            "seq": seq[start_idx:j + 3],
                             "is_coding_region": True
                         })
                         i = j + 3
@@ -96,8 +93,8 @@ class DNAHighlighter:
                     i += 3
             else:
                 in_coding_region = False
-                non_coding_region += self.seq[i:i + 3]
-                i += 3
+                non_coding_region += seq[i]
+                i += 1
 
         return coding_regions  # Return a list of dictionaries containing coding and non-coding regions
 

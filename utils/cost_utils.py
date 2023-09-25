@@ -15,8 +15,8 @@ class CodonScorer:
             non_coding_region_scheme (list of dict): List of dictionaries representing codon scoring information for non-coding regions
         """
         # Initialize the object with codon scoring schemes for coding and non-coding regions
-        self.coding_region_scheme = AminoAcidScheme(w_coding_region, o_coding_region, s_coding_region, x_coding_region).get_cost_table()
-        self.non_coding_region_scheme = AminoAcidScheme(w_non_coding_region, o_non_coding_region, s_non_coding_region, x_non_coding_region).get_cost_table()
+        self.coding_region_scheme = AminoAcidScheme(w_coding_region, o_coding_region, s_coding_region, x_coding_region).get_cost_table_coding_region()
+        self.non_coding_region_scheme = AminoAcidScheme(w_non_coding_region, o_non_coding_region, s_non_coding_region, x_non_coding_region).get_cost_table_none_coding_region()
 
     def get_codon_scores(self, codon, codon_scores):
         """
@@ -53,17 +53,22 @@ class CodonScorer:
 
             # Select the appropriate scoring scheme based on 'is_coding_region'
             if is_coding_region:
-                codon_scores = self.coding_region_scheme
+                # Iterate through the sequence in steps of 3 (codons)
+                for i in range(0, len(sequence), 3):
+                    codon = sequence[i:i + 3]
+                    score = self.get_codon_scores(codon, self.coding_region_scheme)
+                    if score:
+                        scores_array = scores_array + score
+                    else:
+                        print(f"Warning: Codon {codon} not found in the scoring scheme.")
             else:
-                codon_scores = self.non_coding_region_scheme
-
-            # Iterate through the sequence in steps of 3 (codons)
-            for i in range(0, len(sequence), 3):
-                codon = sequence[i:i + 3]
-                score = self.get_codon_scores(codon, codon_scores)
-                if score:
-                    scores_array = scores_array + score
-                else:
-                    print(f"Warning: Codon {codon} not found in the scoring scheme.")
+                # Iterate through the sequence in steps of 1
+                for i in range(0, len(sequence)):
+                    codon = sequence[i]
+                    score = self.get_codon_scores(codon, self.non_coding_region_scheme)
+                    if score:
+                        scores_array = scores_array + score
+                    else:
+                        print(f"Warning: Codon {codon} not found in the scoring scheme.")
 
         return scores_array
