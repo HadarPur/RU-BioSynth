@@ -4,6 +4,7 @@ from typing import Set
 from collections import defaultdict
 from utils.graph_creator import FSMUtils
 
+
 class EliminateSequence:
     # Define a static method 'eliminate' with parameters S, P, and C
     @staticmethod

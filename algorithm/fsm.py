@@ -89,9 +89,16 @@ class FSM:
         Breadth-first search to generate valid sequences using a queue.
         """
         queue = deque([(self.initial_state, '')])  # Initialize the queue with (current_state, sequence)
+        visited_states = set()  # Keep track of visited states
 
         while queue:
             current_state, sequence = queue.popleft()
+
+            # Check if the current state has been visited before
+            if current_state in visited_states:
+                continue
+
+            visited_states.add(current_state)
 
             for symbol in self.alphabet:
                 new_state = self.transition_function(current_state, symbol)
@@ -108,5 +115,6 @@ class FSM:
             defaultdict[str, set[Tuple[str, str]]]:
                 - transition_back_tracker - mapping of {(new_state, symbol) | such that transition_function(current_state, symbol) = new_state} for each current_state.
         """
-        self.dfs(self.initial_state)
+        # self.dfs(self.initial_state)
+        self.bfs()
         return self.transition_back_tracker
