@@ -2,7 +2,7 @@ from algorithm.fsm import FSM
 from utils.elimination_utils import DNASequenceAnalyzer
 from typing import Set
 from collections import defaultdict
-from utils.graph_creator import FSMUtils
+from utils.graph_utils import FSMUtils
 
 
 class EliminateSequence:
@@ -24,6 +24,7 @@ class EliminateSequence:
         fsm = FSM(unwanted_patterns=P, alphabet=dna_analyzer.alphabet)
         transition_back_tracker = fsm.generate()
         FSMUtils.generate_graph(transition_back_tracker)
+        FSMUtils.generate_table(transition_back_tracker)
 
         # Initialize a list 'A' to hold cost information for each state
         inf = float('inf')
