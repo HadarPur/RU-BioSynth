@@ -1,0 +1,4 @@
+biopython==1.81
+graphviz==0.20.1
+bio~=1.5.9
+reportlab~=4.0.5

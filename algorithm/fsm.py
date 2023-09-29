@@ -62,28 +62,6 @@ class FSM:
 
         return initial_state, valid_prefixes, transition_function
 
-    def dfs(self, current_state, visited_states=set(), sequence=''):
-        """
-        Depth-first search to generate valid sequences.
-
-        Parameters:
-            sequence (str): Current sequence being generated.
-            current_state (str): Current state in the FSM.
-            visited_states (set): Set of visited states.
-        """
-
-        if current_state in visited_states:
-            return
-
-        visited_states.add(current_state)
-
-        for symbol in self.alphabet:
-            new_state = self.transition_function(current_state, symbol)
-            if new_state is not None:
-                new_sequence = sequence + symbol
-                self.transition_back_tracker[new_state].add((current_state, symbol))
-                self.dfs(new_state, visited_states, new_sequence)
-
     def bfs(self):
         """
         Breadth-first search to generate valid sequences using a queue.
