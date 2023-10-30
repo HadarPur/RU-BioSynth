@@ -93,6 +93,5 @@ class FSM:
             defaultdict[str, set[Tuple[str, str]]]:
                 - transition_back_tracker - mapping of {(new_state, symbol) | such that transition_function(current_state, symbol) = new_state} for each current_state.
         """
-        # self.dfs(self.initial_state)
         self.bfs()
         return self.transition_back_tracker
