@@ -154,10 +154,7 @@ class DNASequencePrinter:
                         marked_seq2.append(codon2)
 
             else:
-                for i in range(0, len(sequence1)):
-                    letter1 = sequence1[i]
-                    letter2 = sequence2[i]
-
+                for i, (letter1, letter2) in enumerate(zip(sequence1, sequence2)):
                     if letter1 != letter2:
                         marked_seq1.append(f"[{letter1}]")
                         marked_seq2.append(f"[{letter2}]")
@@ -169,3 +166,4 @@ class DNASequencePrinter:
         marked_seq2 = ' '.join(marked_seq2)
 
         print(f"The elimination results:\n\t{marked_seq1}\n\t{marked_seq2}\n")
+        return marked_seq1, marked_seq2

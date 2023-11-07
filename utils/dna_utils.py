@@ -70,7 +70,8 @@ class DNAHighlighter:
 
         # Traverse the DNA sequence to identify coding regions
         while i < len(seq):
-            if seq[i:i + 3] == start_codon:  # Check for the start codon
+            found_stop_codons = any(seq[j:j + 3] in stop_codons for j in range(i + 3, len(seq), 3))
+            if seq[i:i + 3] == start_codon and found_stop_codons:  # Check for the start codon
                 if in_coding_region is False:
                     coding_regions.append({
                         "seq": non_coding_region,
@@ -95,6 +96,12 @@ class DNAHighlighter:
                 in_coding_region = False
                 non_coding_region += seq[i]
                 i += 1
+
+        if non_coding_region == seq and len(coding_regions) == 0:
+            coding_regions.append({
+                "seq": non_coding_region,
+                "is_coding_region": False
+            })
 
         return coding_regions  # Return a list of dictionaries containing coding and non-coding regions
 

@@ -2,6 +2,7 @@ from utils.dna_utils import DNAHighlighter
 from utils.display_utils import DNASequencePrinter
 from utils.input_utils import UserInputHandler
 from utils.cost_utils import CodonScorer
+from utils.pdf_report_utils import Report
 from algorithm.eliminate_sequence import EliminateSequence
 
 
@@ -67,15 +68,18 @@ class Shared:
         # the original sequence and the target sequence
         target_seq_region_list = dna_highlighter.get_coding_and_non_coding_regions(target_seq)
 
-        DNASequencePrinter.mark_non_equal_codons(region_list, target_seq_region_list)
+        marked_input_seq, marked_target_seq = DNASequencePrinter.mark_non_equal_codons(region_list, target_seq_region_list)
         DNASequencePrinter.print_sequence("DNA target sequence", target_seq)
 
         # Prompt the user if they want to save the resulting sequence to a file
         # Use the UserInputHandler class to handle user input for saving the sequence
         # If the user chooses to save, handle the saving process
-        saving_response = UserInputHandler.handle_saving_input_response()
-        if saving_response:
-            UserInputHandler.save_sequence_to_file(target_seq)
+
+        Report(self.seq, target_seq, marked_input_seq, marked_target_seq).create_pdf()
+
+        # saving_response = UserInputHandler.handle_saving_input_response()
+        # if saving_response:
+        #     UserInputHandler.save_sequence_to_file(target_seq)
 
         # Return control, indicating the end of the method
         return

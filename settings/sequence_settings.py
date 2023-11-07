@@ -1,6 +1,7 @@
 # DNA sequence
-S = "ATGTACATACAGTAA"     # Y, I, Q
+# S = "ATGTACATACAGTAA"     # Y, I, Q
 # S = "TATAATGTACATACAGTAA"     # Y, I, Q
+# S = "TACAGTAA"     # Y, I, Q
 # S = "TACATACAGTAA"     # Y, I, Q
 # S = "ATGTACATACAG"     # Y, I, Q
 # S = "TACATACAGATG"     # Y, I, Q
