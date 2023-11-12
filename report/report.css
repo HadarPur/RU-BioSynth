@@ -1,0 +1,52 @@
+/* Heading */
+body { font-size: 25px; }
+
+table { width: 100%; border-collapse: collapse; }
+table tr td { padding: 0; }
+table tr td:last-child { text-align: right; }
+
+.logo-container { margin: 20px auto; text-align: center; }
+.logo-container img { height: 80px; }
+
+.report-info-container { font-size: 0.875em; }
+.report-info-container td { padding: 4px 0; }
+.client-name { font-size: 1.5em; vertical-align: top; }
+
+/* Body */
+.line-items-container,
+.line-items-container-process { margin: 30px 0; font-size: 0.875em; }
+
+.line-items-container th,
+.line-items-container-process th {
+  text-align: left;
+  color: #999;
+  border-bottom: 2px solid #ddd;
+  padding: 10px 0 15px 0;
+  font-size: 0.75em;
+  text-transform: uppercase;
+}
+
+.line-items-container tbody tr td,
+.line-items-container-process tbody tr td {
+  direction: ltr;
+  text-align: left;
+  padding: 5px 0;
+}
+
+.line-items-container tbody tr td,
+.line-items-container.has-bottom-border tbody tr:last-child td,
+.line-items-container-process tbody tr td { padding-top: 15px; }
+
+.line-items-container.has-bottom-border tbody tr:last-child td {
+  padding-bottom: 25px;
+  border-bottom: 2px solid #ddd;
+}
+
+.line-items-container.has-bottom-border { margin-bottom: 0; }
+
+/* Footer */
+.footer { position: absolute; bottom: 0; width: 100%; }
+
+.footer-info { float: right; margin-right: 5px; font-size: 0.75em; color: #ccc; }
+.footer-info span { padding: 0 5px; color: black; }
+.footer-info span:last-child { padding-right: 0; }

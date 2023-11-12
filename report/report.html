@@ -1,0 +1,115 @@
+<!--
+/*---------------------------------------------*/
+/*------------------ Heading ------------------*/
+/*--------------------------------------=------*/
+-->
+
+<div class="logo-container">
+  <img src="https://raw.githubusercontent.com/HadarPur/RU-FinalProject-syntheticDNA/main/report/ru.svg" />
+</div>
+
+<table class="report-info-container">
+  <tbody>
+    <tr>
+      <td class="client-name" rowspan="2">{{client_name}}</td>
+      <td>Reichman University</td>
+    </tr>
+    <tr>
+      <td>8 Ha'universita Street</td>
+    </tr>
+    <tr>
+      <td>Report Date: <strong>{{today_date}}</strong></td>
+      <td>Herzliya IL, 4610101</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>hadar.pur@post.runi.ac.il</td>
+    </tr>
+  </tbody>
+</table>
+
+<!--
+/*------------------------------------------*/
+/*------------------ Body ------------------*/
+/*-----------------------------------=------*/
+-->
+
+<table class="line-items-container">
+  <thead>
+    <tr>
+      <th>DNA sequence</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>{{input}}</td>
+    </tr>
+  </tbody>
+</table>
+
+<table class="line-items-container">
+  <thead>
+    <tr>
+      <th>Unwanted Patterns</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>{{patterns}}</td>
+    </tr>
+  </tbody>
+</table>
+
+<table class="line-items-container-process">
+  <thead>
+    <tr>
+      <th>Elimination process</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>The coding regions within the given DNA sequence and mark them for emphasis are:</td>
+    </tr>
+    <tr>
+      <td>{{regions}}</td>
+    </tr>
+  </tbody>
+</table>
+
+<table class="line-items-container">
+  <thead>
+    <tr>
+      <th>Elimination results</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>{{item1}}</td>
+    </tr>
+    <tr>
+      <td>{{item2}}</td>
+    </tr>
+  </tbody>
+</table>
+
+<table class="line-items-container has-bottom-border">
+  <thead>
+    <tr>
+      <th>Target DNA sequence</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>{{target}}</td>
+    </tr>
+  </tbody>
+</table>
+
+<!--
+/*--------------------------------------------*/
+/*------------------ footer ------------------*/
+/*--------------------------------------------*/
+-->
+<div class="footer">
+  <div class="footer-info">hadar.pur@post.runi.ac.il | 054-6418-410 | https://www.runi.ac.il</div>
+</div>

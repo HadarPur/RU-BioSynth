@@ -91,7 +91,7 @@ class DNASequencePrinter:
         Args:
             S (str): DNA sequence with color-coded regions.
         """
-        title = "Highlighted coding regions for the above DNA sequence"
+        title = "Identify the coding regions within the given DNA sequence and mark them for emphasis:"
 
         color_starts, color_ends = DNASequencePrinter._find_color_boundaries(S)
 
