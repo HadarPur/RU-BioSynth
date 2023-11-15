@@ -31,12 +31,19 @@ class Report:
         template_loader = jinja2.FileSystemLoader('./')
         template_env = jinja2.Environment(loader=template_loader)
 
-        html_template = 'report/report.html'
+        html_template = 'report/report2.html'
         template = template_env.get_template(html_template)
         output_text = template.render(context)
 
-        output_pdf = 'report.pdf'
-        pdfkit.from_string(output_text, output_pdf, css='report/report.css', options={"enable-local-file-access": ""})
+        # Save the HTML content to a file
+        html_output_file = 'report_output.html'
+        with open(html_output_file, 'w', encoding='utf-8') as html_file:
+            html_file.write(output_text)
+
+        # If needed, you can still generate a PDF from the HTML file
+        output_pdf = 'report_output.pdf'
+        pdfkit.from_file(html_output_file, output_pdf, css='report/report2.css',
+                         options={"enable-local-file-access": ""})
 
     def ansi_escape_to_html(self, text):
         # Define a mapping of ANSI color codes to HTML styles
