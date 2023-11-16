@@ -2,10 +2,8 @@ import jinja2
 import pdfkit
 from datetime import datetime
 import re
-from flask import Flask, render_template
-
-app = Flask(__name__)
-
+import os
+from pathlib import Path
 
 class Report:
     def __init__(self, input_seq, target_seq, marked_input_seq, marked_target_seq, unwanted_patterns, regions):
@@ -14,9 +12,9 @@ class Report:
         self.marked_input_seq = marked_input_seq
         self.marked_target_seq = marked_target_seq
         self.unwanted_patterns = ', '.join(unwanted_patterns)
-        self.regions = regions
+        self.regions = self.ansi_escape_to_html(regions)
 
-    @app.route('/')
+
     def create_report(self):
         today_date = datetime.today().strftime("%d %b %Y, %H:%M:%S")
 
@@ -26,25 +24,27 @@ class Report:
                    'item1': self.marked_input_seq,
                    'item2': self.marked_target_seq,
                    'patterns': self.unwanted_patterns,
-                   'regions': self.ansi_escape_to_html(self.regions),
+                   'regions': self.regions,
                    }
 
         template_loader = jinja2.FileSystemLoader('./')
         template_env = jinja2.Environment(loader=template_loader)
 
-        html_template = 'report/report2.html'
+        html_template = 'report/report.html'
         template = template_env.get_template(html_template)
         output_text = template.render(context)
 
         # Save the HTML content to a file
-        html_output_file = 'report_output.html'
-        with open(html_output_file, 'w', encoding='utf-8') as html_file:
-            html_file.write(output_text)
+        downloads_path = Path.home() / 'Downloads'
+        html_output_file = 'elimination_output.html'
+        html_output_path = downloads_path / html_output_file
+        with open(html_output_path, 'w', encoding='utf-8') as file:
+            file.write(output_text)
 
-        # Save the HTML content to a Pfile
-        output_pdf = 'report_output.pdf'
-        pdfkit.from_file(html_output_file, output_pdf, css='report/report2.css',
-                         options={"enable-local-file-access": ""})
+        # Get the absolute path of the output PDF/HTML file
+        output_html_path = os.path.abspath(html_output_path)
+
+        print(f"\nOutput HTML file report save in: {output_html_path}")
 
     def ansi_escape_to_html(self, text):
         # Define a mapping of ANSI color codes to HTML styles
@@ -59,6 +59,10 @@ class Report:
             '37': 'color: white;',  # White
         }
 
+        # Replace ANSI color codes with HTML span tags for colors
+        for code, style in color_mapping.items():
+            text = re.sub(fr'\x1B\[{code}m(.*?)(?=\x1B\[0m|\Z)', f'<span style="{style}">\\1</span>', text, flags=re.DOTALL)
+
         # Remove ANSI escape codes
         ansi_escape = re.compile(r'\x1B\[[0-?]*[ -/]*[@-~]')
         text = ansi_escape.sub('', text)
@@ -66,11 +70,6 @@ class Report:
         # Replace newline characters with HTML line breaks
         text = text.replace('\n', '<br>')
 
-        # Replace ANSI color codes with HTML styles
-        for code, style in color_mapping.items():
-            text = text.replace(f'\x1B[{code}m', f'<span style="{style}">')
-            text = text.replace('\x1B[0m', '</span>')
-
-        # Wrap the text in a <pre> tag to preserve whitespace
-        html = f'<pre>{text}</pre>'
+        # Wrap the text in a span with inline styles for font
+        html = f'<span style="color: inherit;">{text}</span>'
         return html
