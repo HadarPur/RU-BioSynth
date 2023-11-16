@@ -2,6 +2,9 @@ import jinja2
 import pdfkit
 from datetime import datetime
 import re
+from flask import Flask, render_template
+
+app = Flask(__name__)
 
 
 class Report:
@@ -13,13 +16,11 @@ class Report:
         self.unwanted_patterns = ', '.join(unwanted_patterns)
         self.regions = regions
 
+    @app.route('/')
     def create_report(self):
-        client_name = "Hadar Pur"
-
         today_date = datetime.today().strftime("%d %b %Y, %H:%M:%S")
 
-        context = {'client_name': client_name,
-                   'today_date': today_date,
+        context = {'today_date': today_date,
                    'input': self.input_seq,
                    'target': self.target_seq,
                    'item1': self.marked_input_seq,
@@ -40,7 +41,7 @@ class Report:
         with open(html_output_file, 'w', encoding='utf-8') as html_file:
             html_file.write(output_text)
 
-        # If needed, you can still generate a PDF from the HTML file
+        # Save the HTML content to a Pfile
         output_pdf = 'report_output.pdf'
         pdfkit.from_file(html_output_file, output_pdf, css='report/report2.css',
                          options={"enable-local-file-access": ""})
