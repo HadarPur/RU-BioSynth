@@ -5,15 +5,16 @@ import re
 import os
 from pathlib import Path
 
+
 class Report:
-    def __init__(self, input_seq, target_seq, marked_input_seq, marked_target_seq, unwanted_patterns, regions):
+    def __init__(self, input_seq, target_seq, marked_input_seq, marked_target_seq, unwanted_patterns, regions, min_cost):
         self.input_seq = input_seq
         self.target_seq = target_seq
         self.marked_input_seq = marked_input_seq
         self.marked_target_seq = marked_target_seq
         self.unwanted_patterns = ', '.join(unwanted_patterns)
         self.regions = self.ansi_escape_to_html(regions)
-
+        self.min_cost = "{}".format('{:.10g}'.format(min_cost))
 
     def create_report(self):
         today_date = datetime.today().strftime("%d %b %Y, %H:%M:%S")
@@ -25,6 +26,7 @@ class Report:
                    'item2': self.marked_target_seq,
                    'patterns': self.unwanted_patterns,
                    'regions': self.regions,
+                   'cost': self.min_cost
                    }
 
         template_loader = jinja2.FileSystemLoader('./')

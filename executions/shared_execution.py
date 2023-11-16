@@ -44,7 +44,7 @@ class Shared:
         cost_table = scorer.calculate_scores(region_list)
 
         # Eliminate unwanted patterns and generate the resulting sequence
-        target_seq = self.eliminate_unwanted_patterns(cost_table)
+        target_seq, min_cost = self.eliminate_unwanted_patterns(cost_table)
 
         # Mark non-equal codons and print the target sequence
         region_list_target = dna_highlighter.get_coding_and_non_coding_regions(target_seq)
@@ -52,7 +52,7 @@ class Shared:
         DNASequencePrinter.print_sequence("Target DNA sequence", target_seq)
 
         # Create a report summarizing the processing and save if the user chooses to
-        self.create_report_and_save(target_seq, marked_input_seq, marked_target_seq, highlighted_sequence)
+        self.create_report_and_save(target_seq, marked_input_seq, marked_target_seq, highlighted_sequence, min_cost)
 
     def print_original_sequence(self):
         # Print the original DNA sequence
@@ -85,17 +85,17 @@ class Shared:
 
     def eliminate_unwanted_patterns(self, cost_table):
         # Eliminate unwanted patterns based on the calculated cost table
-        target_seq = EliminateSequence.eliminate(self.seq, self.unwanted_patterns, cost_table)
-        return target_seq
+        target_seq, min_cost = EliminateSequence.eliminate(self.seq, self.unwanted_patterns, cost_table)
+        return target_seq, min_cost
 
     def mark_and_print_non_equal_codons(self, region_list, region_list_target):
         # Mark non-equal codons between the original and target sequences
         marked_input_seq, marked_target_seq = DNASequencePrinter.mark_non_equal_codons(region_list, region_list_target)
         return marked_input_seq, marked_target_seq
 
-    def create_report_and_save(self, target_seq, marked_input_seq, marked_target_seq, highlighted_sequence):
+    def create_report_and_save(self, target_seq, marked_input_seq, marked_target_seq, highlighted_sequence, min_cost):
         # Create a report summarizing the processing and save if the user chooses to
-        Report(self.seq, target_seq, marked_input_seq, marked_target_seq, self.unwanted_patterns, highlighted_sequence).create_report()
+        Report(self.seq, target_seq, marked_input_seq, marked_target_seq, self.unwanted_patterns, highlighted_sequence, min_cost).create_report()
         # Uncomment the following lines if you want to implement the save functionality
         # saving_response = UserInputHandler.handle_saving_input_response()
         # if saving_response:

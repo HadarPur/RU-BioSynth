@@ -83,4 +83,4 @@ class EliminateSequence:
 
         # Print the constructed target sequence
         print(100 * '*' + '\n')
-        return ''.join(target_seq)
+        return ''.join(target_seq), min_cost
