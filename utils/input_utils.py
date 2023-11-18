@@ -46,9 +46,10 @@ class CommandLineParser:
 
         return self.s_file_path, self.p_file_path
 
+
 class UserInputHandler:
     @staticmethod
-    def handle_elimination_input_response():
+    def handle_elimination_input():
         """
         Handles user input for proceeding with code elimination.
 
@@ -81,11 +82,11 @@ class UserInputHandler:
             list: List of selected coding regions.
         """
         print("Please choose the areas you wish to exclude: ")
-        for i, region in enumerate(coding_regions):
-            print(f"[{i + 1}]: {region}")
+        original_coding_regions = UserInputHandler.get_coding_regions_list(coding_regions)
+        print('\n'.join(f"[{key}] {value}" for key, value in original_coding_regions.items()))
 
         while True:
-            response = input("Your response should be with the appropriate format ('1,2,3', ... or '1 2 3 ...'): ")
+            response = input("\nYour response should be with the appropriate format ('1,2,3', ... or '1 2 3 ...'): ")
 
             if response.lower() == "exit":
                 print("Program terminated.")
@@ -103,15 +104,24 @@ class UserInputHandler:
                         max(int(item) for item in segments) > len(coding_regions):
                     print("\033[91mInvalid selection. Please try again.\033[0m")
                 else:
-                    print("Selected regions:")
+                    print("\nSelected regions:")
                     selected_regions = {}
+                    selected_regions_to_exclude = {}
                     for segment in segments:
                         coding_region = coding_regions[int(segment) - 1]
+                        selected_regions_to_exclude[f'{int(segment)}'] = coding_region
                         print(f"[{int(segment)}] {coding_region}")
                         selected_regions[int(segment) - 1] = coding_region
-                    return selected_regions
+                    return original_coding_regions, selected_regions_to_exclude, selected_regions
             else:
                 print("\033[91mInvalid input. Please provide valid indices separated by commas or spaces.\033[0m")
+
+    @staticmethod
+    def get_coding_regions_list(coding_regions):
+        original_coding_regions = {}
+        for i, region in enumerate(coding_regions):
+            original_coding_regions[f'{i + 1}'] = region
+        return original_coding_regions
 
     @staticmethod
     def handle_saving_input_response():

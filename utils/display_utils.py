@@ -91,7 +91,7 @@ class DNASequencePrinter:
         Args:
             S (str): DNA sequence with color-coded regions.
         """
-        title = "Identify the coding regions within the given DNA sequence and mark them for emphasis:"
+        title = "Identify the coding regions within the given DNA sequence and mark them for emphasis"
 
         color_starts, color_ends = DNASequencePrinter._find_color_boundaries(S)
 
@@ -119,10 +119,17 @@ class DNASequencePrinter:
                     spaced_chunk = chunk
             else:
                 spaced_chunk = chunk
-            spaced_chunks.append(spaced_chunk)
 
-        print(f'\n{title}:\n\t' + ' '.join(spaced_chunks))
-        return ' '.join(spaced_chunks)
+            # Modify spacing logic
+            if idx % 2 == 1 and idx != len(colored_chunks) - 1:  # Check for coding region and not the last item
+                next_chunk = colored_chunks[idx + 1]
+                space_count = min(3, len(next_chunk))  # Maximum of 3 spaces or length of next chunk
+                spaced_chunks.append(spaced_chunk + " " * space_count)
+            else:
+                spaced_chunks.append(spaced_chunk)
+
+        print(f'\n{title}:\n\t' + ''.join(spaced_chunks))
+        return ''.join(spaced_chunks)
 
     @staticmethod
     def mark_non_equal_codons(region_list, target_region_list):
@@ -165,5 +172,5 @@ class DNASequencePrinter:
         marked_seq1 = ' '.join(marked_seq1)
         marked_seq2 = ' '.join(marked_seq2)
 
-        print(f"The elimination results:\n\t{marked_seq1}\n\t{marked_seq2}\n")
+        print(f"The elimination results:\n\t{marked_seq1}\n\t{marked_seq2}")
         return marked_seq1, marked_seq2

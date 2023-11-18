@@ -1,19 +1,32 @@
 import jinja2
-import pdfkit
 from datetime import datetime
-import re
 import os
 from pathlib import Path
+import re
 
 
 class Report:
-    def __init__(self, input_seq, target_seq, marked_input_seq, marked_target_seq, unwanted_patterns, regions, min_cost):
+    def __init__(self, input_seq, target_seq, marked_input_seq, marked_target_seq, unwanted_patterns, regions, chosen_regions, region_list, selected_region_list, min_cost):
         self.input_seq = input_seq
+        self.highlight_input = self.highlight_sequences_to_html(region_list)
         self.target_seq = target_seq
         self.marked_input_seq = marked_input_seq
         self.marked_target_seq = marked_target_seq
         self.unwanted_patterns = ', '.join(unwanted_patterns)
-        self.regions = self.ansi_escape_to_html(regions)
+        self.num_of_coding_regions = len(regions)
+        self.regions = '<br>'.join(f"[{key}] {value}" for key, value in regions.items())
+
+        if chosen_regions is not None and len(chosen_regions) > 0:
+            self.chosen_regions = '''The specific coding regions you wish to exclude from the elimination process are as follows:<br>
+                                  ''' + '<br>'.join(f"[{key}] {value}" for key, value in chosen_regions.items()) + '''
+                                  <br><br>These coding regions will be classified as non-coding areas within the scoring schemes.'''
+
+            self.highlight_selected = '''<br>The full sequence after selection is:<br>
+                                  ''' + ''.join(self.highlight_sequences_to_html(selected_region_list))
+        else:
+            self.chosen_regions = "No coding regions were selected for exclusion. Continuing with the current settings."
+            self.highlight_selected = ""
+
         self.min_cost = "{}".format('{:.10g}'.format(min_cost))
 
     def create_report(self):
@@ -21,10 +34,14 @@ class Report:
 
         context = {'today_date': today_date,
                    'input': self.input_seq,
+                   'highlight_input': self.highlight_input,
+                   'highlight_selected': self.highlight_selected,
                    'target': self.target_seq,
-                   'item1': self.marked_input_seq,
-                   'item2': self.marked_target_seq,
+                   'marked_input_seq': self.marked_input_seq,
+                   'marked_target_seq': self.marked_target_seq,
                    'patterns': self.unwanted_patterns,
+                   'num_of_coding_regions': self.num_of_coding_regions,
+                   'chosen_regions': self.chosen_regions,
                    'regions': self.regions,
                    'cost': self.min_cost
                    }
@@ -48,30 +65,40 @@ class Report:
 
         print(f"\nOutput HTML file report save in: {output_html_path}")
 
-    def ansi_escape_to_html(self, text):
-        # Define a mapping of ANSI color codes to HTML styles
-        color_mapping = {
-            '30': 'color: black;',  # Black
-            '31': 'color: red;',  # Red
-            '32': 'color: green;',  # Green
-            '33': 'color: yellow;',  # Yellow
-            '34': 'color: blue;',  # Blue
-            '35': 'color: magenta;',  # Magenta
-            '36': 'color: cyan;',  # Cyan
-            '37': 'color: white;',  # White
-        }
+    def highlight_sequences_to_html(self, sequences):
+        """
+        Converts DNA sequences to HTML markup with highlighted coding regions.
 
-        # Replace ANSI color codes with HTML span tags for colors
-        for code, style in color_mapping.items():
-            text = re.sub(fr'\x1B\[{code}m(.*?)(?=\x1B\[0m|\Z)', f'<span style="{style}">\\1</span>', text, flags=re.DOTALL)
+        Parameters:
+            sequences (list of dict): List of dictionaries containing sequences and flags for coding regions.
 
-        # Remove ANSI escape codes
-        ansi_escape = re.compile(r'\x1B\[[0-?]*[ -/]*[@-~]')
-        text = ansi_escape.sub('', text)
+        Returns:
+            str: HTML markup with highlighted coding regions.
+        """
+        html_output = ""
 
-        # Replace newline characters with HTML line breaks
-        text = text.replace('\n', '<br>')
+        for seq_info in sequences:
+            if seq_info['is_coding_region']:
+                coding_sequence = seq_info["seq"]
+                coding_sequence_with_spaces = ' '.join(coding_sequence[i:i + 3] for i in range(0, len(coding_sequence), 3))
+                html_output += f' <span style="color: {self.get_color_for_coding_region()};">{coding_sequence_with_spaces} </span>'
+            else:
+                html_output += seq_info['seq']
 
-        # Wrap the text in a span with inline styles for font
-        html = f'<span style="color: inherit;">{text}</span>'
-        return html
+        return html_output
+
+    def get_color_for_coding_region(self):
+        # Define a list of colors or a logic to select colors
+        colors = ["red", "blue", "green", "orange", "purple"]  # Example list of colors
+
+        # Implement logic to cycle through colors or choose based on some criteria
+        # For example, cycling through a list of colors
+        # You can maintain a counter to cycle through the colors
+        if not hasattr(self, 'color_counter'):
+            self.color_counter = 0
+
+        color = colors[self.color_counter % len(colors)]
+        self.color_counter += 1
+
+        return color
+

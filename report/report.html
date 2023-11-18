@@ -49,6 +49,9 @@
       p {
         font-size: 20px;
         line-height: 26px;
+        max-width: 70%; /* Adjust this value as needed */
+        margin-right: auto;
+        overflow-wrap: break-word;
       }
 
       a {
@@ -288,24 +291,9 @@
       /* Add this CSS for horizontal scroll */
       .horizontal-scroll {
         white-space: nowrap;
-        overflow-x: auto;
-        width: 100%;
-      }
-
-      .scroll-container {
-        width: 100%;
-        max-height: 200px;
-        overflow-y: auto;
-      }
-
-      .scroll-content {
-        white-space: nowrap;
-        width: 100%;
-      }
-
-      .scroll-content p {
-        margin: 0;
-        /* Remove default <p> margin */
+        overflow-x: scroll;
+        height: fit-content;
+        max-width: 70%;
       }
 
       /* Extra small-small devices (phones, 420px and down) */
@@ -327,6 +315,23 @@
           float: none;
         }
 
+      }
+
+      ::-webkit-scrollbar {
+        width: 5px;
+        height: 5px;
+      }
+
+      /* Track */
+      ::-webkit-scrollbar-track {
+        box-shadow: inset 0 0 5px grey;
+        border-radius: 10px;
+      }
+
+      /* Handle */
+      ::-webkit-scrollbar-thumb {
+        background: #183698;
+        border-radius: 10px;
       }
 
       /* Extra small devices (phones, 650px and down) */
@@ -379,6 +384,18 @@
           margin-top: 20px;
           margin-left: 0px;
 
+        }
+
+        .monospace {
+          font-family: 'Courier New', monospace; /* Use a monospace font */
+        }
+
+        /* Adjust the width of each character container */
+        .monospace::before {
+          content: '\2003'; /* Add a fixed-width space character */
+          letter-spacing: 0.6em; /* Adjust the spacing between characters */
+          display: inline-block;
+          width: 1ch; /* Set the width of each character container */
         }
       }
 
@@ -458,11 +475,15 @@
 
           <h2>DNA Sequence:</h2>
 
-          <p id="unwanted-patterns" class="scroll-content">{{input}}</p>
+          <p id="unwanted-patterns">
+            {{input}}
+          </p>
 
           <h2>Unwanted Patterns:</h2>
 
-          <p id="elimination">{{patterns}}</p>
+          <p id="elimination">
+            {{patterns}}
+          </p>
 
           <div class="divider" style="width:24%; margin:30px 0;"></div>
 
@@ -470,10 +491,16 @@
 
           <p>
             The coding regions within the provided DNA sequence have been identified and appropriately marked for emphasis. Please refer to the following designated regions:
+            <br>
+            {{highlight_input}}
           </p>
-          <p class="scroll-content">
+
+          <p>
+            The total number of coding regions, {{num_of_coding_regions}}, identifies as follows:
+            <br>
             {{ regions | safe }}
           </p>
+
           <p id="elimination-process">
             In order to discern between coding and non-coding regions within the aforementioned DNA sequence,
             we employ pre-established scoring schemes tailored for this purpose.
@@ -483,7 +510,9 @@
           <h2>Elimination Process</h2>
 
           <p id="elimination-cost">
-            The selected coding regions that you chose are:{{chosen_regions}}
+            {{chosen_regions}}
+            <br>
+            {{highlight_selected}}
           </p>
 
           <h2>Elimination Cost</h2>
@@ -498,15 +527,22 @@
 
           <h2>DNA Sequences Difference:</h2>
 
-          <p id="target-dna-sequence" class="horizontal-scroll">
-            {{item1}}
-            <br>
-            {{item2}}
-          </p>
+          <p id="target-dna-sequence"></p>
+
+          <div class="horizontal-scroll">
+            <p class="monospace">
+              {{marked_input_seq}}
+            </p>
+            <p class="monospace">
+              {{marked_target_seq}}
+            </p>
+          </div>
 
           <h2>Target DNA Sequences:</h2>
 
-          <p id="more-info" class="scroll-content">{{target}}</p>
+          <p id="more-info">
+            {{target}}
+          </p>
 
           <div class="divider" style="width:24%; margin:30px 0;"></div>
 
