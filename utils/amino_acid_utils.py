@@ -1,10 +1,9 @@
 class AminoAcidScheme:
-
-    def __init__(self, w, o, s, x):
+    def __init__(self, w, o, x, s=None):
         self.w = w
         self.o = o
-        self.s = s
         self.x = x
+        self.s = s
 
     def get_cost_table_none_coding_region(self):
         return [{

@@ -2,8 +2,8 @@ import jinja2
 from datetime import datetime
 import os
 from pathlib import Path
-from settings.costs_settings import s_coding_region, o_coding_region, w_coding_region, x_coding_region
-from settings.costs_settings import s_non_coding_region, o_non_coding_region, w_non_coding_region, x_non_coding_region
+from settings.costs_settings import s_coding_region, w_coding_region, x_coding_region
+from settings.costs_settings import w_non_coding_region, x_non_coding_region
 
 
 class Report:
@@ -21,14 +21,15 @@ class Report:
                                   ''' + '<br>'.join(f"[{key}] {value}" for key, value in regions.items()) + '''</p>'''
 
             if chosen_regions is not None and len(chosen_regions) > 0:
-                self.chosen_regions = '''<p id="elimination-cost">The specific coding regions that the user wish to exclude from the elimination process are as follows:<br>
+                self.chosen_regions = '''<p>The specific coding regions that the user wish to exclude from the elimination process are as follows:<br>
                                       ''' + '<br>'.join(f"[{key}] {value}" for key, value in chosen_regions.items()) + '''
                                       <br><br>These coding regions will be classified as non-coding areas.</p>'''
 
                 self.highlight_selected = '''<p>The full sequence after selection is:<br>
                                       ''' + ''.join(self.highlight_sequences_to_html(selected_region_list)) + '''</p>'''
+
             else:
-                self.chosen_regions = "<p>No coding regions were selected for exclusion. Continuing with the current settings.</p>"
+                self.chosen_regions = '''<p>No coding regions were selected for exclusion. Continuing with the current settings.</p>'''
                 self.highlight_selected = ""
         else:
             self.regions = '''<p>No coding region was identified in the provided DNA sequence</p>'''
@@ -53,13 +54,10 @@ class Report:
                    'regions': self.regions,
                    'cost': self.min_cost,
                    's_coding_region': f'"{s_coding_region}"',
-                   'o_coding_region': int(o_coding_region),
-                   'x_coding_region': int(x_coding_region),
+                   'x_coding_region': "{}".format('{:.10g}'.format(x_coding_region)),
                    'w_coding_region': "{}".format('{:.10g}'.format(w_coding_region)),
-                   's_non_coding_region': int(s_non_coding_region),
-                   'o_non_coding_region': int(o_non_coding_region),
-                   'x_non_coding_region': int(x_non_coding_region),
-                   'w_non_coding_region': int(w_non_coding_region)
+                   'x_non_coding_region': "{}".format('{:.10g}'.format(x_non_coding_region)),
+                   'w_non_coding_region': "{}".format('{:.10g}'.format(w_non_coding_region)),
                    }
 
         template_loader = jinja2.FileSystemLoader('./')

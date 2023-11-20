@@ -38,10 +38,22 @@
         font-family: 'Noto Serif', serif;
         font-size: 28px;
         line-height: 30px;
-        text-align: center;
+        text-align: left;
         color: #333;
         margin-block-start: 40px;
         margin-block-end: 30px;
+        margin-inline-start: 0px;
+        margin-inline-end: 0px;
+      }
+
+      h3 {
+        font-family: 'Noto Serif', serif;
+        font-size: 18px;
+        line-height: 30px;
+        text-align: left;
+        color: #333;
+        margin-block-start: 40px;
+        margin-block-end: 0px;
         margin-inline-start: 0px;
         margin-inline-end: 0px;
       }
@@ -449,20 +461,16 @@
           <div class="divider left"></div>
 
           <a class="title" href="#elimination">DNA Elimination</a>
+          <a class="section" href="#elimination-process">Elimination Process</a>
           <a class="section" href="#elimination-cost">Elimination Cost</a>
 
           <div class="divider left"></div>
 
           <a class="title" href="#results">Results</a>
-
+<!--          <a class="section" href="#coding-regions">Coding regions</a>-->
+<!--          <a class="section" href="#non-coding-regions">Non-Coding regions</a>-->
           <a class="section" href="#dna-sequences-difference">DNA Sequences Difference</a>
           <a class="section" href="#target-dna-sequence">Target DNA Sequence</a>
-
-          <div class="divider left"></div>
-
-          <a class="title" href="#more-info">More Info</a>
-          <a class="section" href="#coding-regions">Coding regions</a>
-          <a class="section" href="#non-coding-regions">Non-Coding regions</a>
 
           <div class="space double"></div>
 
@@ -497,9 +505,30 @@
           </p>
 
           {{ regions | safe }}
-
           {{chosen_regions}}
           {{highlight_selected}}
+
+          <p id="elimination-process"></p>
+
+          <h2>Elimination Process</h2>
+
+          <p id="coding-regions">
+            When considering the costs associated with changing DNA sequences in both coding and non-coding regions, different expense structures come into play.
+          </p>
+
+          <h3>Coding regions:</h3>
+
+          <p id="non-coding-regions">
+            In coding regions, a substitution that does not change the amino acid incurs an expense of {{x_coding_region}}.
+            A higher cost of {{w_coding_region}} is associated with substitutions that change the amino acid.
+            A substitution that converts an amino acid to a (premature) stop codon incurs a very high cost of {{s_coding_region}}.
+          </p>
+
+          <h3>Non-Coding regions:</h3>
+          <p id="elimination-cost">
+            Within non-coding sections, altering bases within complementary pairs (A to T, T to A, C to G, G to C) incurs a cost of {{x_non_coding_region}}.
+            Substituting one base for another (e.g., A to G or T to C) raises the expense to {{w_non_coding_region}}.
+          </p>
 
           <h2>Elimination Cost</h2>
 
@@ -530,28 +559,6 @@
             {{target}}
           </p>
 
-          <div class="divider" style="width:24%; margin:30px 0;"></div>
-
-          <h1>More Info</h1>
-
-          <p id="coding-regions">
-            When considering the costs associated with changing DNA sequences in both coding and non-coding regions, different expense structures come into play.
-          </p>
-
-          <h2>Coding regions:</h2>
-
-          <p id="non-coding-regions">
-            In coding regions, the cost of manipulating codons to preserve the same amino acid is minimal, incurring an expense of {{x_coding_region}}.
-            A more significant cost of {{w_coding_region}} is associated with alterations that result in a change to the amino acid itself, whereas staying within the same coding region carries a cost of {{o_coding_region}}.
-            Any alternative that leads to a conversion to a stop codon will incur a cost of {{s_coding_region}}.
-          </p>
-
-          <h2>Non-Coding regions:</h2>
-          <p>
-            Within non-coding sections, altering bases within complementary pairs (A to T, T to A, C to G, G to C) incurs a cost of {{x_non_coding_region}}.
-            Maintaining the same character carries no expense, registering at {{o_non_coding_region}}.
-            Yet, substituting one base for another (e.g., A to G or T to C) raises the expense to {{w_non_coding_region}}.
-          </p>
           <div class="doublespace"></div>
 
         </div>
