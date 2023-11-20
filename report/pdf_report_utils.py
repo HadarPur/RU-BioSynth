@@ -2,7 +2,8 @@ import jinja2
 from datetime import datetime
 import os
 from pathlib import Path
-import re
+from settings.costs_settings import s_coding_region, o_coding_region, w_coding_region, x_coding_region
+from settings.costs_settings import s_non_coding_region, o_non_coding_region, w_non_coding_region, x_non_coding_region
 
 
 class Report:
@@ -14,17 +15,24 @@ class Report:
         self.marked_target_seq = marked_target_seq
         self.unwanted_patterns = ', '.join(unwanted_patterns)
         self.num_of_coding_regions = len(regions)
-        self.regions = '<br>'.join(f"[{key}] {value}" for key, value in regions.items())
 
-        if chosen_regions is not None and len(chosen_regions) > 0:
-            self.chosen_regions = '''The specific coding regions you wish to exclude from the elimination process are as follows:<br>
-                                  ''' + '<br>'.join(f"[{key}] {value}" for key, value in chosen_regions.items()) + '''
-                                  <br><br>These coding regions will be classified as non-coding areas within the scoring schemes.'''
+        if self.num_of_coding_regions > 0:
+            self.regions = '''<p>The total number of coding regions, len(regions), identifies as follows:<br>
+                                  ''' + '<br>'.join(f"[{key}] {value}" for key, value in regions.items()) + '''</p>'''
 
-            self.highlight_selected = '''<br>The full sequence after selection is:<br>
-                                  ''' + ''.join(self.highlight_sequences_to_html(selected_region_list))
+            if chosen_regions is not None and len(chosen_regions) > 0:
+                self.chosen_regions = '''<p id="elimination-cost">The specific coding regions that the user wish to exclude from the elimination process are as follows:<br>
+                                      ''' + '<br>'.join(f"[{key}] {value}" for key, value in chosen_regions.items()) + '''
+                                      <br><br>These coding regions will be classified as non-coding areas.</p>'''
+
+                self.highlight_selected = '''<p>The full sequence after selection is:<br>
+                                      ''' + ''.join(self.highlight_sequences_to_html(selected_region_list)) + '''</p>'''
+            else:
+                self.chosen_regions = "<p>No coding regions were selected for exclusion. Continuing with the current settings.</p>"
+                self.highlight_selected = ""
         else:
-            self.chosen_regions = "No coding regions were selected for exclusion. Continuing with the current settings."
+            self.regions = '''<p>No coding region was identified in the provided DNA sequence</p>'''
+            self.chosen_regions = ""
             self.highlight_selected = ""
 
         self.min_cost = "{}".format('{:.10g}'.format(min_cost))
@@ -43,7 +51,15 @@ class Report:
                    'num_of_coding_regions': self.num_of_coding_regions,
                    'chosen_regions': self.chosen_regions,
                    'regions': self.regions,
-                   'cost': self.min_cost
+                   'cost': self.min_cost,
+                   's_coding_region': f'"{s_coding_region}"',
+                   'o_coding_region': int(o_coding_region),
+                   'x_coding_region': int(x_coding_region),
+                   'w_coding_region': "{}".format('{:.10g}'.format(w_coding_region)),
+                   's_non_coding_region': int(s_non_coding_region),
+                   'o_non_coding_region': int(o_non_coding_region),
+                   'x_non_coding_region': int(x_non_coding_region),
+                   'w_non_coding_region': int(w_non_coding_region)
                    }
 
         template_loader = jinja2.FileSystemLoader('./')
