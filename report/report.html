@@ -196,7 +196,7 @@
       }
 
       .right-col {
-        margin-top: 100px;
+        margin-top: 70px;
         text-align: left;
         width: 100%;
         margin-left: 220px;
@@ -395,7 +395,6 @@
           position: relative;
           margin-top: 20px;
           margin-left: 0px;
-
         }
 
         .monospace {
@@ -467,8 +466,6 @@
           <div class="divider left"></div>
 
           <a class="title" href="#results">Results</a>
-<!--          <a class="section" href="#coding-regions">Coding regions</a>-->
-<!--          <a class="section" href="#non-coding-regions">Non-Coding regions</a>-->
           <a class="section" href="#dna-sequences-difference">DNA Sequences Difference</a>
           <a class="section" href="#target-dna-sequence">Target DNA Sequence</a>
 
@@ -478,72 +475,57 @@
 
         <div class="right-col">
 
-          <h1>Input</h1>
-
-          <p id="dna-sequence"></p>
-
+          <h1 id="dna-sequence">Input</h1>
           <h2>DNA Sequence:</h2>
-
-          <p id="unwanted-patterns">
+          <p>
             {{input}}
           </p>
 
-          <h2>Unwanted Patterns:</h2>
-
-          <p id="elimination">
+          <h2 id="unwanted-patterns">Unwanted Patterns:</h2>
+          <p>
             {{patterns}}
           </p>
 
           <div class="divider" style="width:24%; margin:30px 0;"></div>
 
-          <h1>DNA Elimination</h1>
-
+          <h1 id="elimination">DNA Elimination</h1>
           <p>
             Identifies in the target sequence the following coding regions:
             <br>
             {{highlight_input}}
           </p>
-
           {{ regions | safe }}
           {{chosen_regions}}
           {{highlight_selected}}
 
-          <p id="elimination-process"></p>
-
-          <h2>Elimination Process</h2>
-
-          <p id="coding-regions">
+          <h2 id="elimination-process">Elimination Process</h2>
+          <p>
             When considering the costs associated with changing DNA sequences in both coding and non-coding regions, different expense structures come into play.
           </p>
 
           <h3>Coding regions:</h3>
-
-          <p id="non-coding-regions">
+          <p>
             In coding regions, a substitution that does not change the amino acid incurs an expense of {{x_coding_region}}.
             A higher cost of {{w_coding_region}} is associated with substitutions that change the amino acid.
             A substitution that converts an amino acid to a (premature) stop codon incurs a very high cost of {{s_coding_region}}.
           </p>
 
           <h3>Non-Coding regions:</h3>
-          <p id="elimination-cost">
+          <p>
             Within non-coding sections, altering bases within complementary pairs (A to T, T to A, C to G, G to C) incurs a cost of {{x_non_coding_region}}.
             Substituting one base for another (e.g., A to G or T to C) raises the expense to {{w_non_coding_region}}.
           </p>
 
-          <h2>Elimination Cost</h2>
-
-          <p id="results">We've successfully achieved the minimum elimination cost of {{cost}}</p>
+          <h2 id="elimination-cost">Elimination Cost</h2>
+          <p>
+            We've successfully achieved the minimum elimination cost of {{cost}}
+          </p>
 
           <div class="divider" style="width:24%; margin:30px 0;"></div>
 
-          <h1>Results</h1>
+          <h1 id="results">Results</h1>
 
-          <p id="dna-sequences-difference"></p>
-
-          <h2>DNA Sequences Difference:</h2>
-
-          <p id="target-dna-sequence"></p>
-
+          <h2 id="dna-sequences-difference">DNA Sequences Difference:</h2>
           <div class="horizontal-scroll">
             <p class="monospace">
               {{marked_input_seq}}
@@ -553,19 +535,18 @@
             </p>
           </div>
 
-          <h2>Target DNA Sequences:</h2>
-
-          <p id="more-info">
+          <h2 id="target-dna-sequence">Target DNA Sequences:</h2>
+          <p>
             {{target}}
           </p>
 
           <div class="doublespace"></div>
+          <div class="divider" style="width:24%; margin:30px 0;"></div>
 
         </div>
-
       </div>
-
     </div>
   </body>
 
 </html>
+
