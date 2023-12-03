@@ -70,7 +70,7 @@ class EliminateSequence:
             print("No valid sequence matches the unwanted pattern list.")
 
         # Print the minimum cost
-        print("min_cost = {}".format('{:.10g}'.format(min_cost)))
+        print("cost = {}".format('{:.10g}'.format(min_cost)))
 
         # Construct the target sequence using A* algorithm
         print(f"Constructing target sequence using A*...")
