@@ -1,4 +1,4 @@
-class DNASequenceAnalyzer:
+class EliminationUtils:
     def __init__(self):
         """
         Initializes a DNASequenceAnalyzer object.

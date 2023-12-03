@@ -1,5 +1,5 @@
 from algorithm.fsm import FSM
-from utils.elimination_utils import DNASequenceAnalyzer
+from utils.elimination_utils import EliminationUtils
 from typing import Set
 from collections import defaultdict
 
@@ -16,11 +16,11 @@ class EliminateSequence:
         n = len(S)
 
         # Create an instance of 'DNASequenceAnalyzer' to compute sequence costs
-        dna_analyzer = DNASequenceAnalyzer()
-        cost = dna_analyzer.cost_function(C)
+        elimination_utils = EliminationUtils()
+        cost = elimination_utils.cost_function(C)
 
         # Create a finite state machine (FSM) instance ('fsm') to generate P-clean sequences
-        fsm = FSM(unwanted_patterns=P, alphabet=dna_analyzer.alphabet)
+        fsm = FSM(unwanted_patterns=P, alphabet=elimination_utils.alphabet)
         transition_back_tracker = fsm.generate()
 
         # Initialize a list 'A' to hold cost information for each state
