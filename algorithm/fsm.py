@@ -17,7 +17,7 @@ class FSM:
             alphabet (set of str): Alphabet of symbols for the FSM.
         """
         self.alphabet = alphabet
-        self.initial_state, self.states, self.transition_function = self.calculate_states_and_transition(unwanted_patterns)
+        self.v_init, self.f = self.calculate_states_and_transition(unwanted_patterns)
 
     def calculate_states_and_transition(self, unwanted_patterns: Set[str]) -> Tuple[str, Set[str], Callable[[str, str], Union[None, str]]]:
         """
@@ -30,15 +30,12 @@ class FSM:
         elimination_utils = EliminationUtils()
 
         # Calculate prefix patterns of unwanted patterns
-        prefix_patterns = elimination_utils.get_pref(unwanted_patterns)
-
-        # Filter valid prefix patterns that do not have unwanted suffixes
-        valid_prefixes = {w for w in prefix_patterns if not elimination_utils.has_suffix(w, unwanted_patterns)}
+        pref_P = elimination_utils.get_prefixes(unwanted_patterns)
 
         # Initialize the initial state to an empty string
-        initial_state = ''
+        v_init = ''
 
-        def transition_function(current_state, sigma):
+        def f(current_state, sigma):
             """
             Transition function to determine the next state given the current state and symbol.
 
@@ -49,16 +46,16 @@ class FSM:
             Returns:
                 str or None: The next state if valid, or None if it leads to an unwanted pattern.
             """
-            new_state = f"{current_state}{sigma}"
+            v_sigma = f"{current_state}{sigma}"
 
             # Check if the new state has an unwanted suffix
-            if elimination_utils.has_suffix(new_state, unwanted_patterns):
+            if elimination_utils.has_suffix(v_sigma, unwanted_patterns):
                 return None
 
-            # Find the longest valid suffix in the prefix patterns
-            return elimination_utils.longest_suffix_in_set(new_state, prefix_patterns)
+            # Find the longest valid suffix in the prefix patterns g
+            return elimination_utils.longest_suffix_in_set(v_sigma, pref_P)
 
-        return initial_state, valid_prefixes, transition_function
+        return v_init, f
 
     def generate(self):
         """
@@ -68,7 +65,7 @@ class FSM:
             - transition_back_tracker - mapping of {(new_state, symbol) | such that transition_function(current_state, symbol) = new_state} for each current_state.
         """
 
-        state_queue = deque([(self.initial_state, '')])  # Initialize the queue with (current_state, sequence)
+        state_queue = deque([(self.v_init, '')])  # Initialize the queue with (current_state, sequence)
         visited_states = set()  # Keep track of visited states
 
         transition_back_tracker = defaultdict(set)
@@ -83,7 +80,7 @@ class FSM:
             visited_states.add(current_state)
 
             for symbol in self.alphabet:
-                new_state = self.transition_function(current_state, symbol)
+                new_state = self.f(current_state, symbol)
                 if new_state is not None:
                     new_sequence = sequence + symbol
                     transition_back_tracker[new_state].add((current_state, symbol))

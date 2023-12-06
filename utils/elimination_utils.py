@@ -24,22 +24,6 @@ class EliminationUtils:
         return cost
 
     @staticmethod
-    def get_prefixes(input_str):
-        """
-        Computes the set of all prefixes of the given input string.
-
-        Args:
-            input_str (str): The input string for which prefixes need to be computed.
-
-        Returns:
-            set of str: Set containing all prefixes of the input string.
-        """
-        prefixes = set()
-        for i in range(len(input_str) + 1):
-            prefixes.add(input_str[:i])
-        return prefixes
-
-    @staticmethod
     def get_suffixes(s):
         """
         Generates a list of all suffixes of the input string s.
@@ -52,7 +36,8 @@ class EliminationUtils:
         """
         return [s[i:] for i in range(len(s) + 1)]
 
-    def get_pref(self, P):
+    @staticmethod
+    def get_prefixes(P):
         """
         Computes the set of all prefixes of strings in the given set P.
 
@@ -62,11 +47,14 @@ class EliminationUtils:
         Returns:
             set of str: Set containing all prefixes of strings in the input set.
         """
-        pref_P = set()
+        allPrefixes = set()
         for p in P:
-            pref_P.update(self.get_prefixes(p))
+            prefixes = set()
+            for i in range(len(p)):
+                prefixes.add(p[:i])
+            allPrefixes.update(prefixes)
 
-        return pref_P
+        return allPrefixes
 
     def has_suffix(self, w, P):
         """

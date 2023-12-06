@@ -26,7 +26,7 @@ class EliminateSequence:
         # Initialize a list 'A' to hold cost information for each state
         inf = float('inf')
         A_0 = defaultdict(lambda: inf)
-        A_0[fsm.initial_state] = 0
+        A_0[fsm.v_init] = 0
         A = [A_0]
 
         # Create a list 'A_star' for tracking
