@@ -8,7 +8,7 @@ class FSM:
     A class for performing state reduction operations and implementing a Finite State Machine (FSM).
     """
 
-    def __init__(self, unwanted_patterns: Set[str], alphabet: Set[str]):
+    def __init__(self, unwanted_patterns, alphabet):
         """
         Initializes an FSM object with a set of unwanted patterns and an alphabet.
 
@@ -19,14 +19,16 @@ class FSM:
         self.alphabet = alphabet
         self.v_init, self.f = self.calculate_states_and_transition(unwanted_patterns)
 
-    def calculate_states_and_transition(self, unwanted_patterns: Set[str]) -> Tuple[str, Set[str], Callable[[str, str], Union[None, str]]]:
+    def calculate_states_and_transition(self, unwanted_patterns):
         """
-        Calculates the initial state, valid states, and transition function for the FSM.
+        Calculates the initial state, and transition function for the FSM.
 
+        Parameters:
+            unwanted_patterns (set of str): Set of unwanted patterns.
         Returns:
             tuple: A tuple containing the initial state, set of valid states, and transition function.
         """
-        # Create a DNASequenceAnalyzer object to work with DNA sequences
+        # Create a EliminationUtils object to work with DNA sequences
         elimination_utils = EliminationUtils()
 
         # Calculate prefix patterns of unwanted patterns
