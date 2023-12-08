@@ -17,47 +17,30 @@ class FSM:
             alphabet (set of str): Alphabet of symbols for the FSM.
         """
         self.alphabet = alphabet
-        self.v_init, self.f = self.calculate_states_and_transition(unwanted_patterns)
+        self.unwanted_patterns = unwanted_patterns
+        self.elimination_utils = EliminationUtils()
+        self.pref_P = self.elimination_utils.get_prefixes(self.unwanted_patterns)
+        self.v_init = ''
 
-    def calculate_states_and_transition(self, unwanted_patterns):
+    def f(self, current_state, sigma):
         """
-        Calculates the initial state, and transition function for the FSM.
+        Transition function to determine the next state given the current state and symbol.
 
         Parameters:
-            unwanted_patterns (set of str): Set of unwanted patterns.
+            current_state (str): Current state in the FSM.
+            sigma (str): Input symbol.
+
         Returns:
-            tuple: A tuple containing the initial state, set of valid states, and transition function.
+            str or None: The next state if valid, or None if it leads to an unwanted pattern.
         """
-        # Create a EliminationUtils object to work with DNA sequences
-        elimination_utils = EliminationUtils()
+        v_sigma = f"{current_state}{sigma}"
 
-        # Calculate prefix patterns of unwanted patterns
-        pref_P = elimination_utils.get_prefixes(unwanted_patterns)
+        # Check if the new state has an unwanted suffix
+        if self.elimination_utils.has_suffix(v_sigma, self.unwanted_patterns):
+            return None
 
-        # Initialize the initial state to an empty string
-        v_init = ''
-
-        def f(current_state, sigma):
-            """
-            Transition function to determine the next state given the current state and symbol.
-
-            Parameters:
-                current_state (str): Current state in the FSM.
-                sigma (str): Input symbol.
-
-            Returns:
-                str or None: The next state if valid, or None if it leads to an unwanted pattern.
-            """
-            v_sigma = f"{current_state}{sigma}"
-
-            # Check if the new state has an unwanted suffix
-            if elimination_utils.has_suffix(v_sigma, unwanted_patterns):
-                return None
-
-            # Find the longest valid suffix in the prefix patterns g
-            return elimination_utils.longest_suffix_in_set(v_sigma, pref_P)
-
-        return v_init, f
+        # Find the longest valid suffix in the prefix patterns g
+        return self.elimination_utils.longest_suffix_in_set(v_sigma, self.pref_P)
 
     def generate(self):
         """

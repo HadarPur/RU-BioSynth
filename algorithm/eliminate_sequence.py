@@ -15,7 +15,7 @@ class EliminateSequence:
         # Calculate the length of sequence 'S'
         n = len(S)
 
-        # Create an instance of 'DNASequenceAnalyzer' to compute sequence costs
+        # Create an instance of 'EliminationUtils' to compute sequence costs
         elimination_utils = EliminationUtils()
         cost = elimination_utils.cost_function(C)
 
