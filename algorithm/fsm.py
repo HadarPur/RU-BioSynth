@@ -1,59 +1,52 @@
-from collections import defaultdict, deque
-from typing import Callable, Set, Tuple, Union
 from utils.elimination_utils import EliminationUtils
+from collections import defaultdict, deque
 
 
 class FSM:
-    """
-    A class for performing state reduction operations and implementing a Finite State Machine (FSM).
-    """
-
     def __init__(self, unwanted_patterns, alphabet):
-        """
-        Initializes an FSM object with a set of unwanted patterns and an alphabet.
-
-        Parameters:
-            unwanted_patterns (set of str): Set of unwanted patterns.
-            alphabet (set of str): Alphabet of symbols for the FSM.
-        """
+        # Initialize FSM with unwanted patterns and alphabet
         self.alphabet = alphabet
         self.unwanted_patterns = unwanted_patterns
-        self.elimination_utils = EliminationUtils()
-        self.pref_P = self.elimination_utils.get_prefixes(self.unwanted_patterns)
-        self.v_init = ''
+
+        # Get prefixes from unwanted patterns using EliminationUtils
+        self.pref_P = EliminationUtils().get_prefixes(unwanted_patterns)
+        self.v_init = ''  # Initialize the initial state as an empty string
+
+        # Initializing tables for f and g
+        self.table_f = {}  # Table for function f
+        self.table_g = {}  # Table for function g
 
     def f(self, current_state, sigma):
-        """
-        Transition function to determine the next state given the current state and symbol.
-
-        Parameters:
-            current_state (str): Current state in the FSM.
-            sigma (str): Input symbol.
-
-        Returns:
-            str or None: The next state if valid, or None if it leads to an unwanted pattern.
-        """
+        # Function f: computes transition for given state and symbol
         v_sigma = f"{current_state}{sigma}"
 
-        # Check if the new state has an unwanted suffix
-        if self.elimination_utils.has_suffix(v_sigma, self.unwanted_patterns):
-            return None
+        # Check if transition for current state and symbol exists in table_f
+        if v_sigma in self.table_f:
+            return self.table_f[v_sigma]
 
-        # Find the longest valid suffix in the prefix patterns g
-        return self.elimination_utils.longest_suffix_in_set(v_sigma, self.pref_P)
+        # Check if the combined state has a suffix in unwanted patterns
+        if EliminationUtils().has_suffix(v_sigma, self.unwanted_patterns):
+            self.table_f[v_sigma] = None  # Mark as None if it has an unwanted suffix
+        else:
+            # Find the longest suffix of v_sigma in the prefix set P
+            self.table_f[v_sigma] = EliminationUtils().longest_suffix_in_set(v_sigma, self.pref_P)
+
+        return self.table_f[v_sigma]
+
+    def g(self, state):
+        # Function g: computes transition for given state using the prefix set P
+        if state in self.table_g:
+            return self.table_g[state]
+
+        # Find the longest suffix of the state in the prefix set P
+        result = EliminationUtils().longest_suffix_in_set(state, self.pref_P)
+        self.table_g[state] = result  # Cache the result in table_g
+        return result
 
     def generate(self):
-        """
-        Breadth-first search to generate valid sequences using a queue.
-
-        Returns:
-            - transition_back_tracker - mapping of {(new_state, symbol) | such that transition_function(current_state, symbol) = new_state} for each current_state.
-        """
-
-        state_queue = deque([(self.v_init, '')])  # Initialize the queue with (current_state, sequence)
-        visited_states = set()  # Keep track of visited states
-
         transition_back_tracker = defaultdict(set)
+        state_queue = deque([(self.v_init, '')])
+        visited_states = set()  # Track visited states
 
         while state_queue:
             current_state, sequence = state_queue.popleft()
@@ -65,10 +58,14 @@ class FSM:
             visited_states.add(current_state)
 
             for symbol in self.alphabet:
-                new_state = self.f(current_state, symbol)
+                g_current_state = self.g(current_state)  # Use g() to efficiently get the longest valid suffix
+                new_state = self.f(g_current_state, symbol)
+
                 if new_state is not None:
                     new_sequence = sequence + symbol
-                    transition_back_tracker[new_state].add((current_state, symbol))
+                    transition_back_tracker[new_state].add((g_current_state, symbol))
                     state_queue.append((new_state, new_sequence))
 
-        return transition_back_tracker
+        print(f"self.table_f = {self.table_f}")
+        return transition_back_tracker  # Return transitions
+
