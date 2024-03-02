@@ -104,7 +104,7 @@ class UserInputHandler:
                         max(int(item) for item in segments) > len(coding_regions):
                     print("\033[91mInvalid selection. Please try again.\033[0m")
                 else:
-                    print("\nSelected regions:")
+                    print("\nSelected regions to exclude:")
                     selected_regions = {}
                     selected_regions_to_exclude = {}
                     for segment in segments:

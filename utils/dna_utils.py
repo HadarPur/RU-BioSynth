@@ -1,8 +1,7 @@
-# Import necessary modules
-from Bio.Seq import Seq  # Import the Seq class from the Bio.Seq module
-import random  # Import the random module for generating random colors
+from Bio.Seq import Seq
+import random
 
-# Create a class named DNAHighlighter for working with DNA sequences
+
 class DNAHighlighter:
     def __init__(self):
         """
