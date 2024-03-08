@@ -39,26 +39,25 @@ class FSM:
             return self.table_g[state]
 
         # Find the longest suffix of the state in the prefix set P
-        result = EliminationUtils().longest_suffix_in_set(state, self.pref_P)
-        self.table_g[state] = result  # Cache the result in table_g
-        return result
+        self.table_g[state] = EliminationUtils().longest_suffix_in_set(state, self.pref_P)
+        return self.table_g[state]
 
     def generate(self):
         transition_back_tracker = defaultdict(set)
         state_queue = deque([(self.v_init, '')])
-        visited_states = set()  # Track visited states
+        V = set()  # Track visited states
 
         while state_queue:
             current_state, sequence = state_queue.popleft()
 
             # Check if the current state has been visited before
-            if current_state in visited_states:
+            if current_state in V:
                 continue
 
-            visited_states.add(current_state)
+            V.add(current_state)
 
             for symbol in self.alphabet:
-                g_current_state = self.g(current_state)  # Use g() to efficiently get the longest valid suffix
+                g_current_state = self.g(current_state)
                 new_state = self.f(g_current_state, symbol)
 
                 if new_state is not None:
@@ -66,6 +65,5 @@ class FSM:
                     transition_back_tracker[new_state].add((g_current_state, symbol))
                     state_queue.append((new_state, new_sequence))
 
-        print(f"self.table_f = {self.table_f}")
         return transition_back_tracker  # Return transitions
 
