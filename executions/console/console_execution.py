@@ -7,7 +7,7 @@ from algorithm.eliminate_sequence import EliminateSequence
 import copy
 
 
-class Shared:
+class Console:
     def __init__(self, seq, unwanted_patterns):
         self.seq = seq
         self.unwanted_patterns = unwanted_patterns

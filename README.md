@@ -1,8 +1,8 @@
 # Flexible and comprehensive software app for design of synthetic DNA sequences without unwanted patterns
 
-To utilize the Biopython library for this project, please execute the following command within your working environment:
+Please execute the following command within your working environment:
 ```
-python -m pip install biopython
+pip install -r requirements.txt
 ```
 
 
