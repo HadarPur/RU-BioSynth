@@ -1,6 +1,5 @@
 import sys
-from PySide6.QtCore import Qt
-from PySide6.QtWidgets import QApplication, QLabel
+from PyQt6.QtWidgets import QApplication, QLineEdit, QVBoxLayout, QWidget, QPushButton, QLabel, QFormLayout
 
 
 class GUI:
@@ -8,7 +7,10 @@ class GUI:
         self.seq = ""
 
     def execute(self):
-        app = QApplication(sys.argv)
-        label = QLabel("Hello World", alignment=Qt.AlignCenter)
-        label.show()
-        return sys.exit(app.exec_())
+        app = QApplication([])
+
+        widget = Ui_Form()
+        widget.resize(800, 600)
+        widget.show()
+
+        return sys.exit(app.exec())
