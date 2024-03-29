@@ -1,4 +1,3 @@
-# Import necessary modules
 from utils.amino_acid_utils import AminoAcidScheme
 from settings.costs_settings import s_coding_region, o_coding_region, w_coding_region, x_coding_region
 from settings.costs_settings import o_non_coding_region, w_non_coding_region, x_non_coding_region
@@ -9,11 +8,8 @@ class CodonScorer:
     def __init__(self):
         """
         Initializes a CodonScorer object with a codon scoring scheme.
-
-        Parameters:
-            coding_region_scheme (list of dict): List of dictionaries representing codon scoring information for coding regions
-            non_coding_region_scheme (list of dict): List of dictionaries representing codon scoring information for non-coding regions
         """
+
         # Initialize the object with codon scoring schemes for coding and non-coding regions
         self.coding_region_scheme = AminoAcidScheme(w_coding_region, o_coding_region, x_coding_region, s_coding_region).get_cost_table_coding_region()
         self.non_coding_region_scheme = AminoAcidScheme(w_non_coding_region, o_non_coding_region, x_non_coding_region).get_cost_table_none_coding_region()
@@ -27,6 +23,8 @@ class CodonScorer:
 
         Returns:
             list or None: List of scoring information for the codon, or None if codon is not found.
+            :param codon:
+            :param codon_scores:
         """
         # Iterate through codon scores
         for amino_acid_dict in codon_scores:

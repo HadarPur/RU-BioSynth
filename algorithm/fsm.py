@@ -1,69 +1,83 @@
-from utils.elimination_utils import EliminationUtils
-from collections import defaultdict, deque
+from collections import deque
 
 
 class FSM:
+    """
+    A class representing a finite state machine (FSM) for eliminating unwanted patterns from a sequence.
+
+    Attributes:
+        Σ (set): The alphabet of allowed characters in the sequence.
+        P (set): The set of unwanted patterns to be eliminated.
+        V (set): The set of states in the FSM.
+        f (dict): The transition function of the FSM, mapping (state, character) pairs to new states.
+        g (dict): A helper function used to compute the transition function.
+
+    Methods:
+        __init__(self, unwanted_patterns, alphabet): Initializes the FSM with the given unwanted patterns and alphabet.
+        calculate_fsm(self, P, Σ): Constructs the FSM by calculating the states and transition function.
+    """
+
     def __init__(self, unwanted_patterns, alphabet):
-        # Initialize FSM with unwanted patterns and alphabet
-        self.alphabet = alphabet
-        self.unwanted_patterns = unwanted_patterns
+        """
+        Initializes the FSM with the given unwanted patterns and alphabet.
 
-        # Get prefixes from unwanted patterns using EliminationUtils
-        self.pref_P = EliminationUtils().get_prefixes(unwanted_patterns)
-        self.v_init = ''  # Initialize the initial state as an empty string
+        Args:
+            unwanted_patterns (set): The set of unwanted patterns to be eliminated.
+            alphabet (set): The alphabet of allowed characters in the sequence.
+        """
+        self.Σ = alphabet
+        self.P = unwanted_patterns
 
-        # Initializing tables for f and g
-        self.table_f = {}  # Table for function f
-        self.table_g = {}  # Table for function g
+        self.V, self.f, self.g = self.calculate_fsm(self.P, self.Σ)
 
-    def f(self, current_state, sigma):
-        # Function f: computes transition for given state and symbol
-        v_sigma = f"{current_state}{sigma}"
+    def calculate_fsm(self, P, Σ):
+        """
+        Constructs the FSM by calculating the states and transition function.
 
-        # Check if transition for current state and symbol exists in table_f
-        if v_sigma in self.table_f:
-            return self.table_f[v_sigma]
+        Args:
+            P (set): The set of unwanted patterns.
+            Σ (set): The alphabet of allowed characters.
 
-        # Check if the combined state has a suffix in unwanted patterns
-        if EliminationUtils().has_suffix(v_sigma, self.unwanted_patterns):
-            self.table_f[v_sigma] = None  # Mark as None if it has an unwanted suffix
-        else:
-            # Find the longest suffix of v_sigma in the prefix set P
-            self.table_f[v_sigma] = EliminationUtils().longest_suffix_in_set(v_sigma, self.pref_P)
+        Returns:
+            tuple: A tuple containing the set of states (V), the transition function (f), and the helper function (g).
+        """
+        f = {}
+        g = {}
+        V = set()
 
-        return self.table_f[v_sigma]
+        # Phase 1: Prefix elongation and invalid transitions
+        for p in P:
+            for j in range(1, len(p) + 1):
+                prefix = p[:j]
+                if prefix in P:
+                    f[(p[:j - 1], p[j - 1])] = None  # Invalid transition into complete pattern
+                else:
+                    f[(p[:j - 1], p[j - 1])] = prefix
 
-    def g(self, state):
-        # Function g: computes transition for given state using the prefix set P
-        if state in self.table_g:
-            return self.table_g[state]
+        # Phase 2: Initial state processing
+        state_queue = deque()
+        V.add('')
 
-        # Find the longest suffix of the state in the prefix set P
-        self.table_g[state] = EliminationUtils().longest_suffix_in_set(state, self.pref_P)
-        return self.table_g[state]
+        for σ in Σ:
+            if ('', σ) not in f:
+                f[('', σ)] = ''
+            if f[('', σ)] == σ:
+                g[σ] = ''
+                state_queue.append(σ)
 
-    def generate(self):
-        transition_back_tracker = defaultdict(set)
-        state_queue = deque([(self.v_init, '')])
-        V = set()  # Track visited states
-
+        # Phase 3: Processing the rest of the states
         while state_queue:
-            current_state, sequence = state_queue.popleft()
+            v = state_queue.popleft()
+            V.add(v)
 
-            # Check if the current state has been visited before
-            if current_state in V:
-                continue
+            for σ in Σ:
+                if f.get((g.get(v, ''), σ)) is None:
+                    f[(v, σ)] = None
+                else:
+                    next_state = f.get((v, σ), f[(g.get(v, ''), σ)])
+                    f[(v, σ)] = next_state
+                    if next_state not in V and next_state is not None:
+                        g[next_state] = f[(g.get(v, ''), σ)]
+                        state_queue.append(next_state)
 
-            V.add(current_state)
-
-            for symbol in self.alphabet:
-                g_current_state = self.g(current_state)
-                new_state = self.f(g_current_state, symbol)
-
-                if new_state is not None:
-                    new_sequence = sequence + symbol
-                    transition_back_tracker[new_state].add((g_current_state, symbol))
-                    state_queue.append((new_state, new_sequence))
-
-        return transition_back_tracker  # Return transitions
-
+        return V, f, g
