@@ -30,6 +30,7 @@ class FSM:
 
         self.V, self.f, self.g = self.calculate_fsm(self.P, self.Σ)
 
+
     def calculate_fsm(self, P, Σ):
         """
         Constructs the FSM by calculating the states and transition function.

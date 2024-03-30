@@ -503,20 +503,17 @@
 
           <h2 id="elimination-process">Elimination Process</h2>
           <p>
-            When considering the costs associated with changing DNA sequences in both coding and non-coding regions, different expense structures come into play.
+            {{elimination_process_description}}
           </p>
 
           <h3>Coding regions:</h3>
           <p>
-            In coding regions, a substitution that does not change the amino acid incurs an expense of {{x_coding_region}}.
-            A higher cost of {{w_coding_region}} is associated with substitutions that change the amino acid.
-            A substitution that converts an amino acid to a (premature) stop codon incurs a very high cost of {{s_coding_region}}.
+            {{coding_region_cost_description}}
           </p>
 
           <h3>Non-Coding regions:</h3>
           <p>
-            Within non-coding sections, altering bases within complementary pairs (A to T, T to A, C to G, G to C) incurs a cost of {{x_non_coding_region}}.
-            Substituting one base for another (e.g., A to G or T to C) raises the expense to {{w_non_coding_region}}.
+            {{coding_region_cost_description}}
           </p>
 
           <h2 id="elimination-cost">Elimination Cost</h2>

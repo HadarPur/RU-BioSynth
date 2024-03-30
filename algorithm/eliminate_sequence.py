@@ -2,8 +2,7 @@ from utils.elimination_utils import EliminationUtils
 from algorithm.fsm import FSM
 from typing import Set
 from collections import defaultdict
-from settings.costs_settings import s_coding_region, w_coding_region, x_coding_region
-from settings.costs_settings import w_non_coding_region, x_non_coding_region
+from settings.costs_settings import elimination_process_description, coding_region_cost_description, non_coding_region_cost_description
 
 
 class EliminateSequence:
@@ -13,15 +12,9 @@ class EliminateSequence:
         print(f"Starting Elimination Process")
         print(f"Unwanted Patterns: {P}")
         print(f"Original Sequence: {S}")
-        print('\nWhen considering the costs associated with changing DNA sequences in both coding and non-coding regions, different expense structures come into play.')
-        print(f'\nCoding regions:'
-              f'\nIn coding regions, a substitution that does not change the amino acid incurs an expense of {x_coding_region}.'
-              f'\nA higher cost of {w_coding_region}is associated with substitutions that change the amino acid.'
-              f'\nA substitution that converts an amino acid to a (premature) stop codon incurs a very high cost of {s_coding_region}')
-        print(f'\nNon-Coding regions:'
-              f'\nWithin non-coding sections, altering bases within complementary pairs (A to T, T to A, C to G, G to C) incurs a cost of {x_non_coding_region}.'
-              f'\nSubstituting one base for another (e.g., A to G or T to C) raises the expense to {w_non_coding_region}.\n')
-
+        print(f'\nElimination Process: \n{elimination_process_description}')
+        print(f'\nCoding regions: \n{coding_region_cost_description}')
+        print(f'\nNon-Coding regions: \n{non_coding_region_cost_description}')
         sequence_length = len(S)
         backtrack = {}
 

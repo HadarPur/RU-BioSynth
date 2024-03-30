@@ -2,8 +2,7 @@ import jinja2
 from datetime import datetime
 import os
 from pathlib import Path
-from settings.costs_settings import s_coding_region, w_coding_region, x_coding_region
-from settings.costs_settings import w_non_coding_region, x_non_coding_region
+from settings.costs_settings import elimination_process_description, coding_region_cost_description, non_coding_region_cost_description
 
 
 class Report:
@@ -53,11 +52,10 @@ class Report:
                    'chosen_regions': self.chosen_regions,
                    'regions': self.regions,
                    'cost': self.min_cost,
-                   's_coding_region': f'"{s_coding_region}"',
-                   'x_coding_region': "{}".format('{:.10g}'.format(x_coding_region)),
-                   'w_coding_region': "{}".format('{:.10g}'.format(w_coding_region)),
-                   'x_non_coding_region': "{}".format('{:.10g}'.format(x_non_coding_region)),
-                   'w_non_coding_region': "{}".format('{:.10g}'.format(w_non_coding_region)),
+                   'elimination_process_description': elimination_process_description,
+                   'coding_region_cost_description': coding_region_cost_description,
+                   'non_coding_region_cost_description': non_coding_region_cost_description,
+
                    }
 
         template_loader = jinja2.FileSystemLoader('./')
