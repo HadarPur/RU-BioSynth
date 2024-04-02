@@ -1,6 +1,55 @@
 from collections import deque
 
 
+def calculate_fsm(P, Σ):
+    """
+    Constructs the FSM by calculating the states and transition function.
+
+    Args:
+        P (set): The set of unwanted patterns.
+        Σ (set): The alphabet of allowed characters.
+
+    Returns:
+        tuple: A tuple containing the set of states (V), the transition function (f), and the helper function (g).
+    """
+    f = {}
+    g = {}
+    V = set()
+    ε = ''
+
+    # Prefix elongation and invalid transitions
+    for p in P:
+        for j in range(1, len(p)):
+            f[(p[:j - 1], p[j - 1])] = p[:j]
+        f[(p[:- 1], p[- 1])] = None  # Invalid transition into complete pattern
+
+    # Computing state space V and the functions f and g
+    state_queue = deque()
+    V.add(ε)
+    for σ in Σ:
+        if (ε, σ) not in f:
+            f[(ε, σ)] = ε
+        if f[(ε, σ)] == σ:
+            g[σ] = ε
+            state_queue.append(σ)
+
+    # Efficient BFS State Processing in FSM Pattern Matching
+    while state_queue:
+        v = state_queue.popleft()
+        V.add(v)
+
+        for σ in Σ:
+            if f.get(g.get(v), σ) is None:
+                f[(v, σ)] = None
+            if (v, σ) not in f:
+                f[(v, σ)] = f.get((g.get(v), σ))
+            if f[(v, σ)] == v + σ:
+                g[v + σ] = f.get((g.get(v), σ))
+                state_queue.append(v + σ)
+
+    return V, f, g
+
+
 class FSM:
     """
     A class representing a finite state machine (FSM) for eliminating unwanted patterns from a sequence.
@@ -28,57 +77,4 @@ class FSM:
         self.Σ = alphabet
         self.P = unwanted_patterns
 
-        self.V, self.f, self.g = self.calculate_fsm(self.P, self.Σ)
-
-
-    def calculate_fsm(self, P, Σ):
-        """
-        Constructs the FSM by calculating the states and transition function.
-
-        Args:
-            P (set): The set of unwanted patterns.
-            Σ (set): The alphabet of allowed characters.
-
-        Returns:
-            tuple: A tuple containing the set of states (V), the transition function (f), and the helper function (g).
-        """
-        f = {}
-        g = {}
-        V = set()
-
-        # Phase 1: Prefix elongation and invalid transitions
-        for p in P:
-            for j in range(1, len(p) + 1):
-                prefix = p[:j]
-                if prefix in P:
-                    f[(p[:j - 1], p[j - 1])] = None  # Invalid transition into complete pattern
-                else:
-                    f[(p[:j - 1], p[j - 1])] = prefix
-
-        # Phase 2: Initial state processing
-        state_queue = deque()
-        V.add('')
-
-        for σ in Σ:
-            if ('', σ) not in f:
-                f[('', σ)] = ''
-            if f[('', σ)] == σ:
-                g[σ] = ''
-                state_queue.append(σ)
-
-        # Phase 3: Processing the rest of the states
-        while state_queue:
-            v = state_queue.popleft()
-            V.add(v)
-
-            for σ in Σ:
-                if f.get((g.get(v, ''), σ)) is None:
-                    f[(v, σ)] = None
-                else:
-                    next_state = f.get((v, σ), f[(g.get(v, ''), σ)])
-                    f[(v, σ)] = next_state
-                    if next_state not in V and next_state is not None:
-                        g[next_state] = f[(g.get(v, ''), σ)]
-                        state_queue.append(next_state)
-
-        return V, f, g
+        self.V, self.f, self.g = calculate_fsm(self.P, self.Σ)
