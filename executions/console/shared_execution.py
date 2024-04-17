@@ -1,5 +1,5 @@
 from utils.dna_utils import DNAHighlighter
-from utils.display_utils import DNASequencePrinter
+from utils.display_utils import SequenceUtils
 from utils.input_utils import UserInputHandler
 from utils.cost_utils import CodonScorer
 from report.pdf_report_utils import Report
@@ -7,11 +7,11 @@ from algorithm.eliminate_sequence import EliminateSequence
 import copy
 
 
-class Console:
+class Shared:
+
     def __init__(self, seq, unwanted_patterns):
         self.seq = seq
         self.unwanted_patterns = unwanted_patterns
-        self.region_list = None
 
     def run(self):
         if self.seq is None or len(self.seq) == 0:
@@ -19,37 +19,32 @@ class Console:
             return
 
         # Print the original DNA sequence
-        DNASequencePrinter.print_sequence("DNA sequence",
-                                          self.seq)
+        print(SequenceUtils.get_sequence("DNA sequence", self.seq))
 
         # Print the list of unwanted patterns
-        DNASequencePrinter.print_patterns(self.unwanted_patterns)
-
-        # Initialize DNAHighlighter to process DNA sequences
-        dna_highlighter = DNAHighlighter()
+        print(SequenceUtils.get_patterns(self.unwanted_patterns))
 
         # Extract coding regions from the sequence
-        self.region_list = dna_highlighter.get_coding_and_non_coding_regions(self.seq)
+        region_list = DNAHighlighter.get_coding_and_non_coding_regions(self.seq)
 
         # Extract coding regions and their indexes from the highlighted sequence
-        coding_regions, coding_indexes = dna_highlighter.extract_coding_regions_with_indexes(self.region_list)
+        coding_regions, coding_indexes = DNAHighlighter.extract_coding_regions_with_indexes(region_list)
 
         # Highlight coding regions and print the sequence
-        self.highlight_coding_regions(dna_highlighter,
-                                      coding_regions)
+        highlighted_sequence = DNAHighlighter.highlight_coding_regions(self.seq, coding_regions)
+        print(SequenceUtils.get_highlighted_sequence(highlighted_sequence))
 
         # Print the number of coding regions found
         print(f"\nNumber of coding regions is: {len(coding_regions)}")
 
         # Handle elimination of coding regions if the user chooses to
         if len(coding_regions) > 0:
-            original_coding_regions, selected_regions_to_exclude, selected_region_list = self.handle_coding_region_elimination(dna_highlighter,
-                                                                                                                               self.region_list,
+            original_coding_regions, selected_regions_to_exclude, selected_region_list = self.handle_coding_region_elimination(region_list,
                                                                                                                                coding_indexes,
                                                                                                                                coding_regions)
         else:
             print("Continue without coding regions...")
-            selected_region_list = self.region_list
+            selected_region_list = region_list
             original_coding_regions = UserInputHandler.get_coding_regions_list(coding_regions)
             selected_regions_to_exclude = None
 
@@ -61,11 +56,11 @@ class Console:
         target_seq, min_cost = self.eliminate_unwanted_patterns(cost_table)
 
         # Mark non-equal codons and print the target sequence
-        region_list_target = dna_highlighter.get_coding_and_non_coding_regions(target_seq)
+        region_list_target = DNAHighlighter.get_coding_and_non_coding_regions(target_seq)
         marked_input_seq, marked_target_seq = self.mark_and_print_non_equal_codons(selected_region_list,
                                                                                    region_list_target)
-        DNASequencePrinter.print_sequence("Target DNA sequence",
-                                          target_seq)
+        SequenceUtils.get_sequence("Target DNA sequence",
+                                   target_seq)
 
         # Create a report summarizing the processing and save if the user chooses to
         Report(self.seq,
@@ -75,17 +70,12 @@ class Console:
                self.unwanted_patterns,
                original_coding_regions,
                selected_regions_to_exclude,
-               self.region_list,
+               region_list,
                selected_region_list,
                min_cost).create_report()
 
-    def highlight_coding_regions(self, dna_highlighter, coding_regions):
-        # Highlight coding regions in the sequence
-        highlighted_sequence = dna_highlighter.highlight_coding_regions(self.seq, coding_regions)
-        DNASequencePrinter.print_highlighted_sequence(highlighted_sequence)
-
     @staticmethod
-    def handle_coding_region_elimination(dna_highlighter, region_list, coding_indexes, coding_regions):
+    def handle_coding_region_elimination(region_list, coding_indexes, coding_regions):
         selected_region_list = copy.deepcopy(region_list)
 
         # Ask the user if they want to eliminate coding regions
@@ -94,7 +84,7 @@ class Console:
             # If the response is negative, ask for coding regions to eliminate
             original_coding_regions, selected_regions_to_exclude, coding_regions_to_exclude = UserInputHandler.handle_elimination_coding_regions_input(coding_regions)
             # Update the coding regions based on user input
-            selected_region_list = dna_highlighter.update_coding_regions(selected_region_list, coding_indexes,
+            selected_region_list = DNAHighlighter.update_coding_regions(selected_region_list, coding_indexes,
                                                                          coding_regions_to_exclude)
 
         else:
@@ -113,6 +103,6 @@ class Console:
     @staticmethod
     def mark_and_print_non_equal_codons(region_list, region_list_target):
         # Mark non-equal codons between the original and target sequences
-        marked_input_seq, marked_target_seq = DNASequencePrinter.mark_non_equal_codons(region_list,
-                                                                                       region_list_target)
+        marked_input_seq, marked_target_seq = SequenceUtils.mark_non_equal_codons(region_list,
+                                                                                  region_list_target)
         return marked_input_seq, marked_target_seq

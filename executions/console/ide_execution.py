@@ -1,4 +1,4 @@
-from executions.console.console_execution import Console
+from executions.console.shared_execution import Shared
 from settings.sequence_settings import S
 from settings.pattern_settings import P
 
@@ -9,5 +9,5 @@ class App:
         self.unwanted_patterns = P
 
     def execute(self):
-        Console(self.seq, self.unwanted_patterns).run()
+        Shared(self.seq, self.unwanted_patterns).run()
         return

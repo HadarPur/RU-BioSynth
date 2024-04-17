@@ -27,7 +27,7 @@ class EliminateSequence:
 
         for i in range(1, sequence_length + 1):
             for v in fsm.V:
-                for σ in fsm.Σ:
+                for σ in fsm.sigma:
                     u = fsm.f.get((v, σ))
                     if u is not None:
                         cost = A[(i - 1, v)] + cost_function(i, σ)

@@ -1,5 +1,5 @@
 from utils.file_utils import SequenceReader, PatternReader
-from executions.console.console_execution import Console
+from executions.console.shared_execution import Shared
 from utils.input_utils import CommandLineParser
 
 
@@ -14,6 +14,6 @@ class Terminal:
         seq = SequenceReader(s_file_path).read_sequence()
         unwanted_patterns = PatternReader(p_file_path).read_patterns()
 
-        Console(seq, unwanted_patterns).run()
+        Shared(seq, unwanted_patterns).run()
         return
 

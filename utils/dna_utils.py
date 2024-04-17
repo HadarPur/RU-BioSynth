@@ -3,17 +3,14 @@ import random
 
 
 class DNAHighlighter:
-    def __init__(self):
-        """
-        Initializes a DNAHighlighter object with a DNA sequence.
-        """
-        pass
 
-    def highlight_coding_regions(self, seq, coding_regions):
+    @staticmethod
+    def highlight_coding_regions(seq, coding_regions):
         """
         Highlights coding regions within the DNA sequence using colored escape codes.
 
         Parameters:
+            seq (string): DNA sequence string
             coding_regions (list of Seq): List of coding regions (Seq objects) to be highlighted.
 
         Returns:
@@ -52,7 +49,8 @@ class DNAHighlighter:
 
         return highlighted_seq  # Return the DNA sequence with highlighted coding regions
 
-    def get_coding_and_non_coding_regions(self, seq):
+    @staticmethod
+    def get_coding_and_non_coding_regions(seq):
         """
         Identifies and returns coding regions within the DNA sequence.
 
@@ -104,7 +102,8 @@ class DNAHighlighter:
 
         return coding_regions  # Return a list of dictionaries containing coding and non-coding regions
 
-    def extract_coding_regions_with_indexes(self, region_list):
+    @staticmethod
+    def extract_coding_regions_with_indexes(region_list):
         """
         Extracts coding regions and their indexes from a list of dictionaries.
 
@@ -127,12 +126,14 @@ class DNAHighlighter:
 
         return coding_regions, coding_indexes  # Return coding regions and their corresponding indexes
 
-    def update_coding_regions(self, region_list, coding_indexes, coding_regions_to_exclude):
+    @staticmethod
+    def update_coding_regions(region_list, coding_indexes, coding_regions_to_exclude):
         """
         Update the 'is_coding_region' values in a list of dictionaries at specified indices.
 
         Args:
             region_list (list of dict): List of dictionaries containing "seq" (Seq object) and " is_coding_region" (bool) keys.
+            coding_indexes (list of dict): List of indexes that contains the indexes of each coding region
             coding_regions_to_exclude (dict of str): Dictionary of sequences to exclude.
 
         Returns:

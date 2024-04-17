@@ -2,9 +2,10 @@ import re
 from typing import Set
 
 
-class DNASequencePrinter:
+class SequenceUtils:
     """Utility class for printing DNA sequences, patterns, and cost tables."""
 
+    @staticmethod
     def _find_color_boundaries(input_string: str):
         """Find the start and end positions of color codes in a given input string.
 
@@ -27,24 +28,29 @@ class DNASequencePrinter:
         return color_start_positions, color_end_positions
 
     @staticmethod
-    def print_sequence(title: str, S: str):
-        """Print a DNA sequence, broken into groups of three bases.
+    def get_sequence(title: str, S: str):
+        """Return a DNA sequence, broken into groups of three bases.
 
         Args:
             S (str): DNA sequence to be printed.
             title (str): The kind of the seq
         """
-        print(f'\n{title}:\n\t {S}')
+        return f'\n{title}:\n\t {S}'
 
     @staticmethod
-    def print_patterns(unwanted_patterns: Set[str]):
-        """Print a set of unwanted DNA patterns.
+    def get_patterns(unwanted_patterns: set):
+        """Return a set of unwanted DNA patterns.
 
         Args:
-            unwanted_patterns (Set[str]): Set of unwanted DNA patterns to be printed.
+            unwanted_patterns (set): Set of unwanted DNA patterns to be printed.
         """
-        print(f"\nPattern list:\n\t{unwanted_patterns}")
+        if unwanted_patterns:  # Check if the set is not empty
+            formatted_patterns = ', '.join(sorted(unwanted_patterns))  # Convert set to a sorted list and join with commas
+        else:
+            formatted_patterns = "None"  # If the set is empty, indicate that there are no patterns
+        return f"\nPattern list:\n\t{formatted_patterns}\n"
 
+    @staticmethod
     def split_string_every_n_chars(S: str, n: int):
         """Split a string into chunks of given length.
 
@@ -67,7 +73,7 @@ class DNASequencePrinter:
         """
         if len(C) > 0:
             print("\nScoring scheme:")
-            codons = DNASequencePrinter.split_string_every_n_chars(S, 3)
+            codons = SequenceUtils.split_string_every_n_chars(S, 3)
             colored_separator = "\033[91m{:<10}\033[0m".format("||")  # ANSI escape code for red text
             codon_table = "\t{:<13}{}".format(" ", colored_separator)
             for item in codons:
@@ -85,15 +91,15 @@ class DNASequencePrinter:
                 print('-' * ((3 * len(codon_table) // 4) + 6))
 
     @staticmethod
-    def print_highlighted_sequence(S: str):
-        """Print a DNA sequence with highlighted coding regions.
+    def get_highlighted_sequence(S: str):
+        """Return a DNA sequence with highlighted coding regions.
 
         Args:
             S (str): DNA sequence with color-coded regions.
         """
         title = "Identify the coding regions within the given DNA sequence and mark them for emphasis"
 
-        color_starts, color_ends = DNASequencePrinter._find_color_boundaries(S)
+        color_starts, color_ends = SequenceUtils._find_color_boundaries(S)
 
         chunk_size = 3
         colored_chunks = []
@@ -128,8 +134,7 @@ class DNASequencePrinter:
             else:
                 spaced_chunks.append(spaced_chunk)
 
-        print(f'\n{title}:\n\t' + ''.join(spaced_chunks))
-        return ''.join(spaced_chunks)
+        return f'\n{title}:\n\t' + ''.join(spaced_chunks)
 
     @staticmethod
     def mark_non_equal_codons(region_list, target_region_list):
@@ -138,9 +143,6 @@ class DNASequencePrinter:
 
         marked_seq1 = []
         marked_seq2 = []
-
-        prefix = "ATG"  # Define the start codon
-        suffix = ["TAA", "TAG", "TGA"]  # Define the stop codons
 
         for seq_info1, seq_info2 in zip(region_list, target_region_list):
             sequence1 = seq_info1['seq']
@@ -174,3 +176,35 @@ class DNASequencePrinter:
 
         print(f"The elimination results:\n\t{marked_seq1}\n\t{marked_seq2}")
         return marked_seq1, marked_seq2
+
+    @staticmethod
+    def highlight_sequences_to_html(sequences):
+        """
+        Converts DNA sequences to HTML markup with highlighted coding regions.
+
+        Parameters:
+            sequences (list of dict): List of dictionaries containing sequences and flags for coding regions.
+
+        Returns:
+            str: HTML markup with highlighted coding regions.
+        """
+        html_output = ""
+        color_counter = 0
+
+        for seq_info in sequences:
+            if seq_info['is_coding_region']:
+                coding_sequence = seq_info["seq"]
+                coding_sequence_with_spaces = ' '.join(coding_sequence[i:i + 3] for i in range(0, len(coding_sequence), 3))
+                color_counter, color = SequenceUtils.get_color_for_coding_region(color_counter)
+                html_output += f' <span style="color: {color};">{coding_sequence_with_spaces} </span>'
+            else:
+                html_output += seq_info['seq']
+
+        return html_output
+
+    @staticmethod
+    def get_color_for_coding_region(color_counter):
+        colors = ["red", "blue", "green", "orange", "purple"]
+        color = colors[color_counter % len(colors)]
+        color_counter += 1
+        return color_counter, color
