@@ -65,6 +65,6 @@ class GUI:
         app = QApplication(sys.argv)
         ex = DNASequenceApp()
         ex.show()
-        app.setWindowIcon(QIcon('executions/ui/logo.png'))
+        app.setWindowIcon(QIcon('images/logo.png'))
         sys.exit(app.exec_())
 

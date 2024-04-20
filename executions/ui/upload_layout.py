@@ -56,7 +56,7 @@ class UploadWindow(QWidget):
         frame_layout.setContentsMargins(10, 10, 10, 10)  # Set padding: left, top, right, bottom
 
         # Create and set up the SVG logo widget
-        logo = QSvgWidget("report/ru.svg")
+        logo = QSvgWidget("images/ru.svg")
         logo.setFixedSize(120, 60)  # Adjust the size as needed
 
         # Add the logo to the frame's layout

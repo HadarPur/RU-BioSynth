@@ -5,6 +5,19 @@ from utils.display_utils import SequenceUtils
 from utils.dna_utils import DNAHighlighter
 
 
+def is_valid_dna(sequence):
+    valid_bases = set('ATCG')
+    return all(base in valid_bases for base in sequence.upper())
+
+
+def is_valid_patterns(patterns):
+    valid_bases = set('ATCG')
+    for pattern in patterns:
+        if not all(base in valid_bases for base in pattern.upper()):
+            return False
+    return True
+
+
 def eliminate_unwanted_patterns(seq, unwanted_patterns, selected_region_list):
     # Calculate scores for the regions using the CodonScorer
     scorer = CodonScorer()
