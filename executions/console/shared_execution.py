@@ -84,8 +84,7 @@ class Shared:
             # If the response is negative, ask for coding regions to eliminate
             original_coding_regions, selected_regions_to_exclude, coding_regions_to_exclude = UserInputHandler.handle_elimination_coding_regions_input(coding_regions)
             # Update the coding regions based on user input
-            selected_region_list = DNAHighlighter.update_coding_regions(selected_region_list, coding_indexes,
-                                                                         coding_regions_to_exclude)
+            selected_region_list = DNAHighlighter.update_coding_regions(selected_region_list, coding_indexes, coding_regions_to_exclude)
 
         else:
             original_coding_regions = UserInputHandler.get_coding_regions_list(coding_regions)
@@ -94,7 +93,6 @@ class Shared:
         return original_coding_regions, selected_regions_to_exclude, selected_region_list
 
     def eliminate_unwanted_patterns(self, cost_table):
-        # Eliminate unwanted patterns based on the calculated cost table
         target_seq, min_cost = EliminateSequence.eliminate(self.seq,
                                                            self.unwanted_patterns,
                                                            cost_table)

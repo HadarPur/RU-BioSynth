@@ -14,5 +14,3 @@ class TestEliminationUtils(unittest.TestCase):
         self.assertEqual(cost_func(1, 'A'), 1)
         self.assertEqual(cost_func(2, 'G'), 6)
         self.assertEqual(cost_func(3, 'T'), 11)
-
-

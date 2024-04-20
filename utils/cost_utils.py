@@ -4,6 +4,26 @@ from settings.costs_settings import o_non_coding_region, w_non_coding_region, x_
 
 
 # Define a class called CodonScorer
+def get_codon_scores(codon, codon_scores):
+    """
+    Retrieves the scoring information for a given codon.
+
+    Parameters:
+        codon (str): Codon sequence for which scoring information is needed.
+
+    Returns:
+        list or None: List of scoring information for the codon, or None if codon is not found.
+        :param codon:
+        :param codon_scores:
+    """
+    # Iterate through codon scores
+    for amino_acid_dict in codon_scores:
+        for codon_key, scoring_dicts in amino_acid_dict.items():
+            if codon_key == codon:
+                return scoring_dicts
+    return None  # Codon not found
+
+
 class CodonScorer:
     def __init__(self):
         """
@@ -13,25 +33,6 @@ class CodonScorer:
         # Initialize the object with codon scoring schemes for coding and non-coding regions
         self.coding_region_scheme = AminoAcidScheme(w_coding_region, o_coding_region, x_coding_region, s_coding_region).get_cost_table_coding_region()
         self.non_coding_region_scheme = AminoAcidScheme(w_non_coding_region, o_non_coding_region, x_non_coding_region).get_cost_table_none_coding_region()
-
-    def get_codon_scores(self, codon, codon_scores):
-        """
-        Retrieves the scoring information for a given codon.
-
-        Parameters:
-            codon (str): Codon sequence for which scoring information is needed.
-
-        Returns:
-            list or None: List of scoring information for the codon, or None if codon is not found.
-            :param codon:
-            :param codon_scores:
-        """
-        # Iterate through codon scores
-        for amino_acid_dict in codon_scores:
-            for codon_key, scoring_dicts in amino_acid_dict.items():
-                if codon_key == codon:
-                    return scoring_dicts
-        return None  # Codon not found
 
     def calculate_scores(self, sequences):
         """
@@ -54,7 +55,7 @@ class CodonScorer:
                 # Iterate through the sequence in steps of 3 (codons)
                 for i in range(0, len(sequence), 3):
                     codon = sequence[i:i + 3]
-                    score = self.get_codon_scores(codon, self.coding_region_scheme)
+                    score = get_codon_scores(codon, self.coding_region_scheme)
                     if score:
                         scores_array = scores_array + score
                     else:
@@ -63,7 +64,7 @@ class CodonScorer:
                 # Iterate through the sequence in steps of 1
                 for i in range(0, len(sequence)):
                     codon = sequence[i]
-                    score = self.get_codon_scores(codon, self.non_coding_region_scheme)
+                    score = get_codon_scores(codon, self.non_coding_region_scheme)
                     if score:
                         scores_array = scores_array + score
                     else:

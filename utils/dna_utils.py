@@ -133,8 +133,8 @@ class DNAHighlighter:
 
         Args:
             region_list (list of dict): List of dictionaries containing "seq" (Seq object) and " is_coding_region" (bool) keys.
-            coding_indexes (list of dict): List of indexes that contains the indexes of each coding region
-            coding_regions_to_exclude (dict of str): Dictionary of sequences to exclude.
+            coding_indexes (list of int): List of indexes that contains the indexes of each coding region
+            coding_regions_to_exclude (dict of int,str): Dictionary of sequences to exclude.
 
         Returns:
             region_list: Updated list of dictionaries with modified 'is_coding_region' values.
@@ -142,10 +142,10 @@ class DNAHighlighter:
 
         for key, value in coding_regions_to_exclude.items():
             coding_region_index = coding_indexes[key]
-            region = region_list[coding_region_index]
-            if region['seq'] == value:
-                region['is_coding_region'] = False
-                region_list[coding_region_index] = region  # Update the 'is_coding_region' value
+            if isinstance(coding_region_index, int) and coding_region_index < len(region_list):
+                region = region_list[coding_region_index]
+                if region['seq'] == value:
+                    region['is_coding_region'] = False
+                    region_list[coding_region_index] = region  # Update the 'is_coding_region' value
 
-        return region_list  # Return the updated list of dictionaries
-
+        return region_list

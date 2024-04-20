@@ -17,7 +17,7 @@ class Report:
         self.num_of_coding_regions = len(regions)
 
         if self.num_of_coding_regions > 0:
-            self.regions = '''<p>The total number of coding regions, len(regions), identifies as follows:<br>
+            self.regions = '''<p>The total number of coding regions - ''' + ''.join(f'{self.num_of_coding_regions}') + ''', identifies as follows:<br>
                                   ''' + '<br>'.join(f"[{key}] {value}" for key, value in regions.items()) + '''</p>'''
 
             if chosen_regions is not None and len(chosen_regions) > 0:
@@ -79,5 +79,3 @@ class Report:
         output_html_path = os.path.abspath(html_output_path)
 
         print(f"\nOutput HTML file report save in: {output_html_path}")
-
-

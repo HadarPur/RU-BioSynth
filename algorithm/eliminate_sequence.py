@@ -7,7 +7,7 @@ from settings.costs_settings import elimination_process_description, coding_regi
 
 class EliminateSequence:
     @staticmethod
-    def eliminate(S: str, P: Set[str], C: list[dict[str, float]]) -> str:
+    def eliminate(S: str, P: Set[str], C: list[dict[str, float]]):
         print('\n' + '=' * 50 + '\n')
         print(f"Starting Elimination Process")
         print(f"Unwanted Patterns: {P}")
@@ -27,13 +27,13 @@ class EliminateSequence:
 
         for i in range(1, sequence_length + 1):
             for v in fsm.V:
-                for σ in fsm.sigma:
-                    u = fsm.f.get((v, σ))
+                for s in fsm.sigma:
+                    u = fsm.f.get((v, s))
                     if u is not None:
-                        cost = A[(i - 1, v)] + cost_function(i, σ)
+                        cost = A[(i - 1, v)] + cost_function(i, s)
                         if cost < A[(i, u)]:
                             A[(i, u)] = cost
-                            backtrack[(i, u)] = (v, σ)
+                            backtrack[(i, u)] = (v, s)
 
         min_cost = float('inf')
         final_state = None

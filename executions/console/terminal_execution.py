@@ -14,6 +14,7 @@ class Terminal:
         seq = SequenceReader(s_file_path).read_sequence()
         unwanted_patterns = PatternReader(p_file_path).read_patterns()
 
+        # TODO: add check if the seq and unwanted_patterns as expected
         Shared(seq, unwanted_patterns).run()
         return
 

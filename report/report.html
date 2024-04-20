@@ -25,7 +25,7 @@
 
       body {
         font-family: 'Open Sans', sans-serif;
-        letter-spacing: 0.2px;
+        letter-spacing: 0;
         color: #333;
         margin: 0;
       }
@@ -45,8 +45,8 @@
         color: #333;
         margin-block-start: 40px;
         margin-block-end: 30px;
-        margin-inline-start: 0px;
-        margin-inline-end: 0px;
+        margin-inline-start: 0;
+        margin-inline-end: 0;
       }
 
       h3 {
@@ -56,9 +56,9 @@
         text-align: left;
         color: #333;
         margin-block-start: 40px;
-        margin-block-end: 0px;
-        margin-inline-start: 0px;
-        margin-inline-end: 0px;
+        margin-block-end: 0;
+        margin-inline-start: 0;
+        margin-inline-end: 0;
       }
 
       p {
@@ -106,11 +106,6 @@
 
       .container {
         width: 100%;
-      }
-
-      .top {
-        background-color: #183698;
-        height: 650px;
       }
 
       .clear {
@@ -169,7 +164,7 @@
         color: #333;
       }
 
-      .sidepanel a.sub-section {
+      .sidepanel {
         font-family: 'Open Sans', sans-serif;
         font-size: 15px;
         text-align: left;
@@ -183,14 +178,8 @@
 
       .sidepanel a.title:hover,
       .sidepanel a.section:hover,
-      .sidepanel a.sub-section:hover {
+      .sidepanel :hover {
         text-decoration: underline;
-      }
-
-      .main-col {
-        width: 70%;
-        margin: auto;
-        text-align: center;
       }
 
       .main-col p {
@@ -242,51 +231,20 @@
         margin: -10px 30px;
       }
 
-      .col {
-        width: 50%;
-        float: left;
-      }
-
-      .top-info {
-        font-family: 'Open Sans', sans-serif;
-        font-size: 17px;
-        text-align: center;
-
-      }
-
       .divider {
         width: 40px;
         height: 4px;
         background: #183698;
         border-radius: 30px;
-        margin: auto;
-        margin-top: 8px;
-        margin-bottom: 8px;
+        margin: 8px auto;
       }
 
       .left {
         margin: 20px 0;
       }
 
-      .footer {
-        float: left;
-        width: 100%;
-        padding: 90px 0 20px;
-        font-size: 15px;
-        text-align: center;
-        background-color: #fff;
-      }
-
       .footer a {
         color: #333;
-      }
-
-      .resp-break {
-        display: none;
-      }
-
-      .break {
-        display: block;
       }
 
       .space {
@@ -297,11 +255,6 @@
 
       .double {
         height: 60px;
-      }
-
-      .links {
-        float: left;
-        padding-bottom: 8px;
       }
 
       /* Add this CSS for horizontal scroll */
@@ -326,11 +279,6 @@
         h2 {
           font-size: 24px;
         }
-
-        .links {
-          float: none;
-        }
-
       }
 
       ::-webkit-scrollbar {
@@ -355,7 +303,7 @@
 
         .logo {
           width: 115px;
-          margin: -10px 0px;
+          margin: -10px 0;
         }
 
         .navbar a {
@@ -363,16 +311,6 @@
           margin-left: 40px;
           margin-right: 0;
         }
-
-        .resp-break {
-          display: block;
-          margin: 17px;
-        }
-
-        .main-col {
-          width: 100%;
-        }
-
 
         .wrapper {
           display: block;
@@ -387,7 +325,7 @@
 
         .sidepanel a.title,
         .sidepanel a.section,
-        .sidepanel a.sub-section {
+        .sidepanel {
           text-align: center;
         }
 
@@ -417,7 +355,7 @@
       @media only screen and (min-width: 650px) {
 
         .logo {
-          margin: -10px 0px;
+          margin: -10px 0;
         }
 
         .right a {
@@ -429,7 +367,7 @@
       /* Medium devices (landscape tablets, 768px and up) */
       @media only screen and (min-width: 768px) {
         .logo {
-          margin: -10px 0px;
+          margin: -10px 0;
         }
       }
 
@@ -444,7 +382,7 @@
 
     <div class="navbar clear nav-top">
       <div class="row content">
-        <a ><img class="logo" src="https://raw.githubusercontent.com/HadarPur/RU-FinalProject-syntheticDNA/main/report/ru.svg"></a>
+        <a ><img class="logo" src="https://raw.githubusercontent.com/HadarPur/RU-FinalProject-syntheticDNA/main/report/ru.svg" alt=""></a>
         <a class="right" href="https://www.runi.ac.il" target="_blank"><i class="fas fa-book"></i>&nbsp; https://www.runi.ac.il</a>
         <a class="right" href="mailto:hadar.pur@post.runi.ac.il" target="_blank"><i class="fas fa-paper-plane"></i>&nbsp; hadar.pur@post.runi.ac.il</a>
         <a class="right"><i class='fas fa-calendar-alt'></i>&nbsp; {{today_date}}</a>
@@ -540,7 +478,7 @@
             {{target}}
           </p>
 
-          <div class="doublespace"></div>
+          <div class="double-space"></div>
           <div class="divider" style="width:24%; margin:30px 0;"></div>
 
         </div>

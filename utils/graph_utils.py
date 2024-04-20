@@ -60,4 +60,3 @@ class FSMUtils:
         doc.build(elements)
 
         print(f"PDF file '{output_file}' generated successfully.")
-

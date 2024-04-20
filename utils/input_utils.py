@@ -7,10 +7,6 @@ class CommandLineParser:
     def __init__(self):
         """
         Initializes a CommandLineParser object with attributes for storing file paths.
-
-        Attributes:
-            p_file_path (str): Path to patterns file.
-            s_file_path (str): Path to sequence file.
         """
         self.p_file_path = None
         self.s_file_path = None

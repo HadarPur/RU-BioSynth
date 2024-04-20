@@ -4,7 +4,7 @@ class FileDataReader:
         """
         Initializes a FileDataReader object.
 
-        :param file_path: Path to the file to be read.
+        :param: file_path: Path to the file to be read.
         """
         self.file_path = file_path
 

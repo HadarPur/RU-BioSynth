@@ -12,9 +12,9 @@ class TestCodonScorer(unittest.TestCase):
             {"ATG": [1, 2, 3]},
             {"TAA": [4, 5, 6]}
         ]
-        self.assertEqual(self.scorer.get_codon_scores("ATG", codon_scores), [1, 2, 3])
-        self.assertEqual(self.scorer.get_codon_scores("TAA", codon_scores), [4, 5, 6])
-        self.assertIsNone(self.scorer.get_codon_scores("AAA", codon_scores))  # Codon not found
+        self.assertEqual(get_codon_scores("ATG", codon_scores), [1, 2, 3])
+        self.assertEqual(get_codon_scores("TAA", codon_scores), [4, 5, 6])
+        self.assertIsNone(get_codon_scores("AAA", codon_scores))  # Codon not found
 
     def test_calculate_scores(self):
         # Define a sample list of sequences with is_coding_region information

@@ -22,6 +22,3 @@ class EliminationUtils:
             return C[i - 1][alphabet]
 
         return cost
-
-
-

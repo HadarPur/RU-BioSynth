@@ -2,26 +2,43 @@ import sys
 from PyQt5.QtWidgets import QApplication, QMainWindow, QMessageBox, QStackedWidget
 from executions.ui.upload_layout import UploadWindow
 from executions.ui.processing_layout import ProcessWindow
+from executions.ui.elimination_layout import EliminationWindow
 
 
 class DNASequenceApp(QMainWindow):
     def __init__(self):
         super().__init__()
         self.stackedLayout = QStackedWidget()
-        self.initUI()
+        self.dna_file_content = None
+        self.patterns_file_content = None
 
-    def initUI(self):
+        self.dna_sequence = None
+        self.unwanted_patterns = None
+
+        self.original_coding_regions = None
+        self.selected_regions_to_exclude = None
+        self.selected_region_list = None
+
+        self.init_ui()
+
+    def init_ui(self):
         self.setWindowTitle("DNA Sequence Elimination App")
         self.setGeometry(100, 100, 800, 600)
         self.setCentralWidget(self.stackedLayout)
-        self.showUploadWindow()
+        self.show_upload_window()
 
-    def showUploadWindow(self):
-        upload_window = UploadWindow(self.switchToProcessWindow)
+    def show_upload_window(self):
+        upload_window = UploadWindow(self.switch_to_process_window, self.dna_file_content, self.patterns_file_content)
         self.stackedLayout.addWidget(upload_window)
         self.stackedLayout.setCurrentWidget(upload_window)
 
-    def switchToProcessWindow(self, dna_sequence, unwanted_patterns):
+    def show_process_window(self):
+        process_window = ProcessWindow(self.switch_to_elimination_window, self.dna_sequence, self.unwanted_patterns, self.show_upload_window)
+        self.stackedLayout.addWidget(process_window)
+        self.stackedLayout.setCurrentWidget(process_window)
+
+    def switch_to_process_window(self, dna_sequence, unwanted_patterns):
+        # TODO: add check if the seq and unwanted_patterns as expected
         if not dna_sequence:
             QMessageBox.warning(self, "Error", "Please upload valid DNA sequence file.")
             return
@@ -30,7 +47,20 @@ class DNASequenceApp(QMainWindow):
             QMessageBox.warning(self, "Error", "Please upload valid Patterns files.")
             return
 
-        process_window = ProcessWindow(dna_sequence, unwanted_patterns, self.showUploadWindow)
+        self.dna_sequence = dna_sequence
+        self.unwanted_patterns = unwanted_patterns
+
+        self.dna_file_content = dna_sequence
+        self.patterns_file_content = unwanted_patterns
+        process_window = ProcessWindow(self.switch_to_elimination_window, dna_sequence, unwanted_patterns, self.show_upload_window)
+        self.stackedLayout.addWidget(process_window)
+        self.stackedLayout.setCurrentWidget(process_window)
+
+    def switch_to_elimination_window(self, original_coding_regions, selected_regions_to_exclude, selected_region_list):
+        self.original_coding_regions = original_coding_regions
+        self.selected_regions_to_exclude = selected_regions_to_exclude
+        self.selected_region_list = selected_region_list
+        process_window = EliminationWindow(self.original_coding_regions, selected_regions_to_exclude, selected_region_list, self.show_process_window)
         self.stackedLayout.addWidget(process_window)
         self.stackedLayout.setCurrentWidget(process_window)
 
@@ -42,4 +72,3 @@ class GUI:
         ex = DNASequenceApp()
         ex.show()
         sys.exit(app.exec_())
-
