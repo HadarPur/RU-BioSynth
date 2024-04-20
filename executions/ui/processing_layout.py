@@ -23,10 +23,6 @@ class ProcessWindow(QWidget):
         self.region_selector = None
         self.submit_button = None
 
-        self.original_coding_regions = None
-        self.selected_regions_to_exclude = None
-        self.selected_region_list = None
-
         self.init_ui()
 
     def init_ui(self):
@@ -51,19 +47,19 @@ class ProcessWindow(QWidget):
         infoLabel = QLabel()
         self.middle_layout.addWidget(infoLabel, alignment=Qt.AlignTop)
 
-        region_list = DNAHighlighter.get_coding_and_non_coding_regions(self.dna_sequence)
-        coding_regions, coding_indexes = DNAHighlighter.extract_coding_regions_with_indexes(region_list)
-        highlighted_sequence = SequenceUtils.highlight_sequences_to_html(region_list)
+        original_region_list = DNAHighlighter.get_coding_and_non_coding_regions(self.dna_sequence)
+        original_coding_regions, coding_indexes = DNAHighlighter.extract_coding_regions_with_indexes(original_region_list)
+        highlighted_sequence = SequenceUtils.highlight_sequences_to_html(original_region_list)
 
         info = SequenceUtils.get_sequence("DNA sequence", self.dna_sequence)
         info += SequenceUtils.get_patterns(self.unwanted_patterns)
         info += SequenceUtils.get_highlighted_sequence(highlighted_sequence)
-        info += f"\n\nNumber of coding regions is: {len(coding_regions)}\n"
+        info += f"\n\nNumber of coding regions is: {len(original_coding_regions)}\n"
 
         infoLabel.setText(info)
 
-        if len(coding_regions) > 0:
-            self.prompt_coding_regions_decision(self.middle_layout, region_list, coding_regions, coding_indexes, self.unwanted_patterns)
+        if len(original_coding_regions) > 0:
+            self.prompt_coding_regions_decision(self.middle_layout, original_coding_regions, original_region_list, coding_indexes, self.unwanted_patterns)
 
         # Spacer to push other widgets to the top
         layout.addSpacerItem(QSpacerItem(0, 0, QSizePolicy.Minimum, QSizePolicy.Expanding))
@@ -79,11 +75,9 @@ class ProcessWindow(QWidget):
         self.start_elimination_button = QPushButton('Start Elimination')
         self.start_elimination_button.setFixedSize(150, 30)
         self.start_elimination_button.setEnabled(False)
-        self.start_elimination_button.clicked.connect(lambda: self.switch_to_eliminate_callback(self.selected_region_list, self.original_coding_regions, self.selected_regions_to_exclude)
-                                                      )
         self.bottom_layout.addWidget(self.start_elimination_button, alignment=Qt.AlignRight)
 
-    def prompt_coding_regions_decision(self, layout, region_list, coding_regions, coding_indexes, unwanted_patterns):
+    def prompt_coding_regions_decision(self, layout, original_coding_regions, original_region_list, coding_indexes, unwanted_patterns):
         # Create a horizontal layout for the entire prompt
         prompt_layout = QHBoxLayout()
         prompt_layout.setSpacing(10)  # Adjust spacing between elements
@@ -96,13 +90,13 @@ class ProcessWindow(QWidget):
         self.yes_button = QPushButton('Yes')
         self.yes_button.setFixedSize(60, 30)
         self.yes_button.clicked.connect(
-            lambda: self.select_all_regions(coding_regions, region_list))
+            lambda: self.select_all_regions(original_coding_regions, original_region_list))
 
         # Create the 'No' button
         self.no_button = QPushButton('No')
         self.no_button.setFixedSize(60, 30)
         self.no_button.clicked.connect(
-            lambda: self.select_regions_to_exclude(layout, region_list, coding_regions, coding_indexes, unwanted_patterns))
+            lambda: self.select_regions_to_exclude(layout, original_coding_regions, original_region_list, coding_indexes, unwanted_patterns))
 
         # Add the buttons to the horizontal layout
         prompt_layout.addWidget(self.yes_button)
@@ -115,35 +109,30 @@ class ProcessWindow(QWidget):
         # Add the entire horizontal layout to the parent layout
         layout.addLayout(prompt_layout)
 
-    def select_all_regions(self, coding_regions, region_list):
+    def select_all_regions(self, original_coding_regions, original_region_list):
         if not self.no_button.isEnabled():
             return
 
         self.no_button.setEnabled(False)
 
-        self.original_coding_regions = coding_regions
-        self.selected_regions_to_exclude = None
-        self.selected_region_list = region_list
-
+        self.start_elimination_button.clicked.connect(lambda: self.switch_to_eliminate_callback(original_coding_regions, original_region_list, None, None))
         self.start_elimination_button.setEnabled(True)
         self.start_elimination_button.setFocus(True)
 
-    def select_regions_to_exclude(self, layout, region_list, coding_regions, coding_indexes, unwanted_patterns):
+    def select_regions_to_exclude(self, layout, original_coding_regions, original_region_list, coding_indexes, unwanted_patterns):
         if not self.yes_button.isEnabled():
             return
 
         self.yes_button.setEnabled(False)
-        self.region_selector = RegionSelector(layout, region_list, coding_regions, coding_indexes, unwanted_patterns, self.handle_results)
+        self.region_selector = RegionSelector(layout, original_coding_regions, original_region_list, coding_indexes, unwanted_patterns, self.handle_results)
         layout.addWidget(self.region_selector, alignment=Qt.AlignTop)
 
-    def handle_results(self, original_coding_regions, selected_regions_to_exclude, selected_region_list):
-        self.start_elimination_button.setEnabled(True)
-        self.start_elimination_button.setFocus()
+    def handle_results(self, original_coding_regions, original_region_list, selected_regions_to_exclude, selected_region_list):
         self.region_selector.setEnabled(False)
 
-        self.original_coding_regions = original_coding_regions
-        self.selected_regions_to_exclude = selected_regions_to_exclude
-        self.selected_region_list = selected_region_list
+        self.start_elimination_button.clicked.connect(lambda: self.switch_to_eliminate_callback(original_coding_regions, original_region_list, selected_regions_to_exclude, selected_region_list))
+        self.start_elimination_button.setEnabled(True)
+        self.start_elimination_button.setFocus(True)
 
         exclude = ""
         for index, region in selected_regions_to_exclude.items():
@@ -154,10 +143,10 @@ class ProcessWindow(QWidget):
 
 
 class RegionSelector(QWidget):
-    def __init__(self, layout, region_list, coding_regions, coding_indexes, unwanted_patterns, result_callback):
+    def __init__(self, layout, original_coding_regions, original_region_list, coding_indexes, unwanted_patterns, result_callback):
         super().__init__()
-        self.region_list = region_list
-        self.coding_regions = coding_regions
+        self.original_coding_regions = original_coding_regions
+        self.original_region_list = original_region_list
         self.coding_indexes = coding_indexes
         self.unwanted_patterns = unwanted_patterns
         self.result_callback = result_callback
@@ -171,7 +160,7 @@ class RegionSelector(QWidget):
         instructions_label = QLabel("Check the regions you want to exclude:")
         layout.addWidget(instructions_label)
 
-        for index, region in enumerate(self.coding_regions):
+        for index, region in enumerate(self.original_coding_regions):
             checkbox = QCheckBox(f"[{index + 1}]: {region}")
             layout.addWidget(checkbox)
             self.checkboxes.append((checkbox, region))
@@ -180,12 +169,12 @@ class RegionSelector(QWidget):
         self.submit_button = QPushButton('Submit Exclusions')
         self.submit_button.setFixedSize(150, 30)
 
-        self.submit_button.clicked.connect(lambda: self.submit_exclusions(layout))
+        self.submit_button.clicked.connect(lambda: self.submit_exclusions())
 
         control_buttons_layout.addWidget(self.submit_button, alignment=Qt.AlignLeft)
         layout.addLayout(control_buttons_layout)
 
-    def submit_exclusions(self, layout):
+    def submit_exclusions(self):
         # Prompt the user for confirmation
         reply = QMessageBox.question(self, 'Confirm Exclusion', 'Do you want to eliminate selected coding regions?',
                                      QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
@@ -193,12 +182,13 @@ class RegionSelector(QWidget):
         if reply == QMessageBox.Yes:
             self.submit_button.setEnabled(False)
             self.disable_checkboxes()
-            results = self.handle_coding_region_checkboxes()
-            self.result_callback(*results)
+            original_coding_regions, original_region_list, selected_regions_to_exclude, selected_region_list = self.handle_coding_region_checkboxes()
+            self.result_callback(original_coding_regions, original_region_list, selected_regions_to_exclude, selected_region_list)
 
     def handle_coding_region_checkboxes(self):
         # Implementation of the exclusion logic
-        selected_region_list = copy.deepcopy(self.region_list)
+        original_region_list = copy.deepcopy(self.original_region_list)
+        selected_region_list = copy.deepcopy(self.original_region_list)
 
         original_coding_regions = {}
         selected_regions_to_exclude = {}
@@ -213,7 +203,7 @@ class RegionSelector(QWidget):
         # Update the coding regions based on user input
         selected_region_list = DNAHighlighter.update_coding_regions(selected_region_list, self.coding_indexes, coding_regions_to_exclude)
 
-        return original_coding_regions, selected_regions_to_exclude, selected_region_list
+        return original_coding_regions, original_region_list, selected_regions_to_exclude, selected_region_list
 
     def disable_checkboxes(self):
         for checkbox, region in self.checkboxes:

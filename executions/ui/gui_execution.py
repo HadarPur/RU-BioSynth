@@ -1,5 +1,8 @@
 import sys
 from PyQt5.QtWidgets import QApplication, QMainWindow, QMessageBox, QStackedWidget
+from PyQt5.QtGui import QPixmap, QPainter, QIcon
+from PyQt5.QtCore import Qt
+from PyQt5.QtSvg import QSvgRenderer
 from executions.ui.upload_layout import UploadWindow
 from executions.ui.processing_layout import ProcessWindow
 from executions.ui.elimination_layout import EliminationWindow
@@ -15,15 +18,11 @@ class DNASequenceApp(QMainWindow):
         self.dna_sequence = None
         self.unwanted_patterns = None
 
-        self.original_coding_regions = None
-        self.selected_regions_to_exclude = None
-        self.selected_region_list = None
-
         self.init_ui()
 
     def init_ui(self):
         self.setWindowTitle("DNA Sequence Elimination App")
-        self.setGeometry(100, 100, 800, 600)
+        self.setGeometry(100, 100, 1000, 800)
         self.setCentralWidget(self.stackedLayout)
         self.show_upload_window()
 
@@ -56,11 +55,8 @@ class DNASequenceApp(QMainWindow):
         self.stackedLayout.addWidget(process_window)
         self.stackedLayout.setCurrentWidget(process_window)
 
-    def switch_to_elimination_window(self, original_coding_regions, selected_regions_to_exclude, selected_region_list):
-        self.original_coding_regions = original_coding_regions
-        self.selected_regions_to_exclude = selected_regions_to_exclude
-        self.selected_region_list = selected_region_list
-        process_window = EliminationWindow(self.original_coding_regions, selected_regions_to_exclude, selected_region_list, self.show_process_window)
+    def switch_to_elimination_window(self, original_coding_regions, original_region_list, selected_regions_to_exclude, selected_region_list):
+        process_window = EliminationWindow(self.dna_sequence, self.unwanted_patterns, original_coding_regions, original_region_list, selected_regions_to_exclude, selected_region_list, self.show_process_window)
         self.stackedLayout.addWidget(process_window)
         self.stackedLayout.setCurrentWidget(process_window)
 
@@ -71,4 +67,19 @@ class GUI:
         app = QApplication(sys.argv)
         ex = DNASequenceApp()
         ex.show()
+        GUI.set_window_icon(app, 'report/ru.svg')
         sys.exit(app.exec_())
+
+    @staticmethod
+    def set_window_icon(app, path):
+        # Render the SVG to a QPixmap
+        renderer = QSvgRenderer(path)
+        pixmap = QPixmap(100, 100)  # Adjust size as needed
+        pixmap.fill(Qt.transparent)  # Fill pixmap with transparent background
+        painter = QPainter(pixmap)
+        renderer.render(painter)
+        painter.end()
+
+        # Set the QPixmap as the window icon
+        app.setWindowIcon(QIcon(pixmap))
+

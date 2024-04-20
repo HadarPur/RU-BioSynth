@@ -173,8 +173,9 @@ class SequenceUtils:
         marked_seq1 = ' '.join(marked_seq1)
         marked_seq2 = ' '.join(marked_seq2)
 
-        print(f"The elimination results:\n\t{marked_seq1}\n\t{marked_seq2}")
-        return marked_seq1, marked_seq2
+        marked = f"The elimination results:\n\t{marked_seq1}\n\t{marked_seq2}"
+
+        return marked_seq1, marked_seq2, marked
 
     @staticmethod
     def highlight_sequences_to_html(sequences):

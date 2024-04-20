@@ -1,5 +1,5 @@
 import unittest
-from utils.cost_utils import CodonScorer
+from utils.cost_utils import CodonScorer, get_codon_scores
 
 
 class TestCodonScorer(unittest.TestCase):

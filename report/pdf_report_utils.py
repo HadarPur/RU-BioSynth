@@ -7,22 +7,22 @@ from utils.display_utils import SequenceUtils
 
 
 class Report:
-    def __init__(self, input_seq, target_seq, marked_input_seq, marked_target_seq, unwanted_patterns, regions, chosen_regions, region_list, selected_region_list, min_cost):
+    def __init__(self, input_seq, target_seq, marked_input_seq, marked_target_seq, unwanted_patterns, original_coding_regions, original_region_list, selected_regions_to_exclude, selected_region_list, min_cost):
         self.input_seq = input_seq
-        self.highlight_input = SequenceUtils.highlight_sequences_to_html(region_list)
+        self.highlight_input = SequenceUtils.highlight_sequences_to_html(original_region_list)
         self.target_seq = target_seq
         self.marked_input_seq = marked_input_seq
         self.marked_target_seq = marked_target_seq
         self.unwanted_patterns = ', '.join(unwanted_patterns)
-        self.num_of_coding_regions = len(regions)
+        self.num_of_coding_regions = len(original_coding_regions)
 
         if self.num_of_coding_regions > 0:
-            self.regions = '''<p>The total number of coding regions - ''' + ''.join(f'{self.num_of_coding_regions}') + ''', identifies as follows:<br>
-                                  ''' + '<br>'.join(f"[{key}] {value}" for key, value in regions.items()) + '''</p>'''
+            self.regions = '''<p>The total number of coding regions is ''' + ''.join(f'{self.num_of_coding_regions}') + ''', identifies as follows:<br>
+                                  ''' + '<br>'.join(f"[{key}] {value}" for key, value in original_coding_regions.items()) + '''</p>'''
 
-            if chosen_regions is not None and len(chosen_regions) > 0:
+            if selected_regions_to_exclude is not None and len(selected_regions_to_exclude) > 0:
                 self.chosen_regions = '''<p>The specific coding regions that the user wish to exclude from the elimination process are as follows:<br>
-                                      ''' + '<br>'.join(f"[{key}] {value}" for key, value in chosen_regions.items()) + '''
+                                      ''' + '<br>'.join(f"[{key}] {value}" for key, value in selected_regions_to_exclude.items()) + '''
                                       <br><br>These coding regions will be classified as non-coding areas.</p>'''
 
                 self.highlight_selected = '''<p>The full sequence after selection is:<br>
@@ -78,4 +78,4 @@ class Report:
         # Get the absolute path of the output PDF/HTML file
         output_html_path = os.path.abspath(html_output_path)
 
-        print(f"\nOutput HTML file report save in: {output_html_path}")
+        return f"\nOutput HTML file report save in: {output_html_path}"

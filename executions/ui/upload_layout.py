@@ -1,4 +1,6 @@
-from PyQt5.QtWidgets import QTextEdit, QPushButton, QWidget, QMessageBox, QFileDialog, QVBoxLayout
+from PyQt5.QtWidgets import QTextEdit, QPushButton, QWidget, QMessageBox, QFileDialog, QVBoxLayout, QLabel, QHBoxLayout, QFrame
+from PyQt5.QtSvg import QSvgWidget
+from PyQt5.QtCore import Qt
 
 
 class UploadWindow(QWidget):
@@ -16,11 +18,52 @@ class UploadWindow(QWidget):
 
     def init_ui(self):
         self.layout = QVBoxLayout(self)
+
+        # Create top layout for title and logo
+        top_layout = QHBoxLayout()
+        self.create_title(top_layout)
+
+        # Adding a fixed-width empty label for spacing
+        space_label = QLabel(" ")
+        space_label.setFixedWidth(150)  # You can adjust the width as needed
+        top_layout.addWidget(space_label)
+
+        self.add_svg_logo(top_layout)
+        self.layout.addLayout(top_layout)
+
         self.dna_text_edit = self.create_text_edit("Upload DNA Sequence (.txt):", self.dna_file_content)
         self.load_button(self.dna_text_edit, "Load DNA Sequence")
         self.patterns_text_edit = self.create_text_edit("Upload Patterns (.txt):", self.patterns_file_content)
         self.load_button(self.patterns_text_edit, "Load Patterns")
         self.proceed_button()
+
+    def create_title(self, layout):
+        content = "Hi,"
+        content += "\nWelcome to the DNA Sequence Elimination App."
+        content += "\nTo eliminate unwanted patterns from a specific DNA sequence, please upload the DNA sequence file along with the patterns file you wish to remove."
+        content += "\n"
+        content += "\nThe DNA sequence file should contain only one continuous sequence."
+        content += "\nThe patterns file should list each pattern on a new line, containing only standard characters without any special symbols."
+        content += "\n"
+        title = QLabel(content)
+        layout.addWidget(title)
+        return title
+
+    def add_svg_logo(self, layout):
+        # Create a frame to hold the logo
+        frame = QFrame()
+        frame_layout = QHBoxLayout(frame)  # Use a QHBoxLayout within the frame
+        frame_layout.setContentsMargins(10, 10, 10, 10)  # Set padding: left, top, right, bottom
+
+        # Create and set up the SVG logo widget
+        logo = QSvgWidget("report/ru.svg")
+        logo.setFixedSize(120, 60)  # Adjust the size as needed
+
+        # Add the logo to the frame's layout
+        frame_layout.addWidget(logo)
+
+        # Add the frame to the main layout
+        layout.addWidget(frame, alignment=Qt.AlignTop)
 
     def create_text_edit(self, placeholder, content):
         text_edit = QTextEdit()

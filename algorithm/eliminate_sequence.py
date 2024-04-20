@@ -8,13 +8,12 @@ from settings.costs_settings import elimination_process_description, coding_regi
 class EliminateSequence:
     @staticmethod
     def eliminate(S: str, P: Set[str], C: list[dict[str, float]]):
-        print('\n' + '=' * 50 + '\n')
-        print(f"Starting Elimination Process")
-        print(f"Unwanted Patterns: {P}")
-        print(f"Original Sequence: {S}")
-        print(f'\nElimination Process: \n{elimination_process_description}')
-        print(f'\nCoding regions: \n{coding_region_cost_description}')
-        print(f'\nNon-Coding regions: \n{non_coding_region_cost_description}')
+        info = f"Starting Elimination Process..."
+        info += f"\nUnwanted Patterns: {P}"
+        info += f"\nOriginal Sequence: {S}"
+        info += f"\n\nElimination Process: \n{elimination_process_description}"
+        info += f"\n\nCoding regions: \n{coding_region_cost_description}"
+        info += f"\n\nNon-Coding regions: \n{non_coding_region_cost_description}"
         sequence_length = len(S)
         backtrack = {}
 
@@ -43,9 +42,8 @@ class EliminateSequence:
                 final_state = v
 
         if min_cost == float('inf'):
-            print("No valid sequence found that matches the unwanted pattern list.")
-            print('=' * 50 + '\n')
-            return None, min_cost
+            info += "\nNo valid sequence found that matches the unwanted pattern list."
+            return info, None, min_cost
 
         sequence = []
         current_state = final_state
@@ -55,9 +53,8 @@ class EliminateSequence:
             current_state = prev_state
         sequence.reverse()
 
-        print("Elimination Process Completed")
-        print(f"Modified Sequence: {''.join(sequence)}")
-        print(f"Total Cost: {min_cost:.10g}")
-        print('\n' + '=' * 50 + '\n')
+        info += "\nElimination Process Completed!"
+        info += f"\nModified Sequence: {''.join(sequence)}"
+        info += f"\nTotal Cost: {min_cost:.10g}\n"
 
-        return ''.join(sequence), min_cost
+        return info, ''.join(sequence), min_cost
