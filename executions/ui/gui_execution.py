@@ -1,8 +1,6 @@
 import sys
 from PyQt5.QtWidgets import QApplication, QMainWindow, QMessageBox, QStackedWidget
-from PyQt5.QtGui import QPixmap, QPainter, QIcon
-from PyQt5.QtCore import Qt
-from PyQt5.QtSvg import QSvgRenderer
+from PyQt5.QtGui import QIcon
 from executions.ui.upload_layout import UploadWindow
 from executions.ui.processing_layout import ProcessWindow
 from executions.ui.elimination_layout import EliminationWindow
@@ -67,19 +65,6 @@ class GUI:
         app = QApplication(sys.argv)
         ex = DNASequenceApp()
         ex.show()
-        GUI.set_window_icon(app, 'report/ru.svg')
+        app.setWindowIcon(QIcon('executions/ui/logo.png'))
         sys.exit(app.exec_())
-
-    @staticmethod
-    def set_window_icon(app, path):
-        # Render the SVG to a QPixmap
-        renderer = QSvgRenderer(path)
-        pixmap = QPixmap(100, 100)  # Adjust size as needed
-        pixmap.fill(Qt.transparent)  # Fill pixmap with transparent background
-        painter = QPainter(pixmap)
-        renderer.render(painter)
-        painter.end()
-
-        # Set the QPixmap as the window icon
-        app.setWindowIcon(QIcon(pixmap))
 
