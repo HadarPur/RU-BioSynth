@@ -115,7 +115,7 @@ class ProcessWindow(QWidget):
 
         self.no_button.setEnabled(False)
 
-        self.start_elimination_button.clicked.connect(lambda: self.switch_to_eliminate_callback(original_coding_regions, original_region_list, None, None))
+        self.start_elimination_button.clicked.connect(lambda: self.switch_to_eliminate_callback(original_coding_regions, original_region_list, None, original_region_list))
         self.start_elimination_button.setEnabled(True)
         self.start_elimination_button.setFocus(True)
 

@@ -51,6 +51,7 @@ class EliminationWindow(QWidget):
         infoLabel = QLabel()
         self.middle_layout.addWidget(infoLabel, alignment=Qt.AlignTop)
 
+        print(f'self.selected_region_list = {self.selected_region_list}')
         info, target_seq, min_cost = eliminate_unwanted_patterns(self.dna_sequence, self.unwanted_patterns,
                                                                  self.selected_region_list)
 
