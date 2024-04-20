@@ -1,4 +1,4 @@
 main.spec
-build
-executions/**/__pycache__
-.idea
+/build
+/executions/**/__pycache__
+/.idea
