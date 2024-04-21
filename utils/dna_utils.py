@@ -1,5 +1,6 @@
-from Bio.Seq import Seq
 import random
+
+from Bio.Seq import Seq
 
 
 class DNAHighlighter:
@@ -40,9 +41,9 @@ class DNAHighlighter:
 
                 # Highlight the region with the assigned color code
                 highlighted_seq = (
-                    highlighted_seq[:region_start] +
-                    color_code + highlighted_seq[region_start:region_end] + '\033[0m' +  # Reset color code
-                    highlighted_seq[region_end:]
+                        highlighted_seq[:region_start] +
+                        color_code + highlighted_seq[region_start:region_end] + '\033[0m' +  # Reset color code
+                        highlighted_seq[region_end:]
                 )
 
                 region_start = highlighted_seq.find(region_str, region_end)  # Find the next occurrence

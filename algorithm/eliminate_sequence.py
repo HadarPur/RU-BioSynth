@@ -1,7 +1,9 @@
-from utils.elimination_utils import EliminationUtils
-from algorithm.fsm import FSM
 from collections import defaultdict
-from settings.costs_settings import elimination_process_description, coding_region_cost_description, non_coding_region_cost_description
+
+from algorithm.fsm import FSM
+from settings.costs_settings import elimination_process_description, coding_region_cost_description, \
+    non_coding_region_cost_description
+from utils.elimination_utils import EliminationUtils
 
 
 class EliminateSequence:

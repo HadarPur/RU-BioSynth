@@ -1,9 +1,11 @@
 import sys
-from PyQt5.QtWidgets import QApplication, QMainWindow, QMessageBox, QStackedWidget
+
 from PyQt5.QtGui import QIcon
-from executions.ui.upload_layout import UploadWindow
-from executions.ui.processing_layout import ProcessWindow
+from PyQt5.QtWidgets import QApplication, QMainWindow, QMessageBox, QStackedWidget
+
 from executions.ui.elimination_layout import EliminationWindow
+from executions.ui.processing_layout import ProcessWindow
+from executions.ui.upload_layout import UploadWindow
 
 
 class DNASequenceApp(QMainWindow):
@@ -30,7 +32,8 @@ class DNASequenceApp(QMainWindow):
         self.stackedLayout.setCurrentWidget(upload_window)
 
     def show_process_window(self):
-        process_window = ProcessWindow(self.switch_to_elimination_window, self.dna_sequence, self.unwanted_patterns, self.show_upload_window)
+        process_window = ProcessWindow(self.switch_to_elimination_window, self.dna_sequence, self.unwanted_patterns,
+                                       self.show_upload_window)
         self.stackedLayout.addWidget(process_window)
         self.stackedLayout.setCurrentWidget(process_window)
 
@@ -49,12 +52,16 @@ class DNASequenceApp(QMainWindow):
 
         self.dna_file_content = dna_sequence
         self.patterns_file_content = unwanted_patterns
-        process_window = ProcessWindow(self.switch_to_elimination_window, dna_sequence, unwanted_patterns, self.show_upload_window)
+        process_window = ProcessWindow(self.switch_to_elimination_window, dna_sequence, unwanted_patterns,
+                                       self.show_upload_window)
         self.stackedLayout.addWidget(process_window)
         self.stackedLayout.setCurrentWidget(process_window)
 
-    def switch_to_elimination_window(self, original_coding_regions, original_region_list, selected_regions_to_exclude, selected_region_list):
-        process_window = EliminationWindow(self.dna_sequence, self.unwanted_patterns, original_coding_regions, original_region_list, selected_regions_to_exclude, selected_region_list, self.show_process_window)
+    def switch_to_elimination_window(self, original_coding_regions, original_region_list, selected_regions_to_exclude,
+                                     selected_region_list):
+        process_window = EliminationWindow(self.dna_sequence, self.unwanted_patterns, original_coding_regions,
+                                           original_region_list, selected_regions_to_exclude, selected_region_list,
+                                           self.show_process_window)
         self.stackedLayout.addWidget(process_window)
         self.stackedLayout.setCurrentWidget(process_window)
 
@@ -67,4 +74,3 @@ class GUI:
         ex.show()
         app.setWindowIcon(QIcon('images/logo.png'))
         sys.exit(app.exec_())
-

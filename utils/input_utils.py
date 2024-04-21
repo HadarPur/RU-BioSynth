@@ -1,6 +1,6 @@
 import getopt
-import sys
 import re
+import sys
 
 
 class CommandLineParser:

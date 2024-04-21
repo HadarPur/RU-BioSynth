@@ -1,6 +1,6 @@
 from executions.console.shared_execution import Shared
-from settings.sequence_settings import S
 from settings.pattern_settings import P
+from settings.sequence_settings import S
 
 
 class App:

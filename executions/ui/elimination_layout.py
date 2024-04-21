@@ -1,13 +1,14 @@
-from PyQt5.QtWidgets import QLabel, QPushButton, QWidget, QSpacerItem, QSizePolicy, QVBoxLayout, QHBoxLayout
-from executions.execution_utils import eliminate_unwanted_patterns
 from PyQt5.QtCore import Qt
-from utils.display_utils import SequenceUtils
 from PyQt5.QtWidgets import QApplication
+from PyQt5.QtWidgets import QLabel, QPushButton, QWidget, QSpacerItem, QSizePolicy, QVBoxLayout, QHBoxLayout
+
 from executions.execution_utils import eliminate_unwanted_patterns, mark_non_equal_codons, save_report_locally
+from utils.display_utils import SequenceUtils
 
 
 class EliminationWindow(QWidget):
-    def __init__(self, dna_sequence, unwanted_patterns, original_coding_regions, original_region_list, selected_regions_to_exclude,
+    def __init__(self, dna_sequence, unwanted_patterns, original_coding_regions, original_region_list,
+                 selected_regions_to_exclude,
                  selected_region_list, back_to_processing_callback):
         super().__init__()
         self.dna_sequence = dna_sequence
@@ -51,7 +52,6 @@ class EliminationWindow(QWidget):
         infoLabel = QLabel()
         self.middle_layout.addWidget(infoLabel, alignment=Qt.AlignTop)
 
-        print(f'self.selected_region_list = {self.selected_region_list}')
         info, target_seq, min_cost = eliminate_unwanted_patterns(self.dna_sequence, self.unwanted_patterns,
                                                                  self.selected_region_list)
 
@@ -129,7 +129,8 @@ class EliminationWindow(QWidget):
             return
 
         report_path = save_report_locally(seq, target_seq, marked_input_seq, marked_target_seq, unwanted_patterns,
-                                          original_coding_regions, original_region_list, selected_regions_to_exclude, selected_region_list,
+                                          original_coding_regions, original_region_list, selected_regions_to_exclude,
+                                          selected_region_list,
                                           min_cost)
         report_path += "\nReport saved successfully!"
 

@@ -1,6 +1,6 @@
-from utils.cost_utils import CodonScorer
-from report.pdf_report_utils import Report
 from algorithm.eliminate_sequence import EliminateSequence
+from report.pdf_report_utils import Report
+from utils.cost_utils import CodonScorer
 from utils.display_utils import SequenceUtils
 from utils.dna_utils import DNAHighlighter
 
@@ -39,7 +39,8 @@ def mark_non_equal_codons(region_list, target_seq):
 
 
 def save_report_locally(seq, target_seq, marked_input_seq, marked_target_seq, unwanted_patterns,
-                        original_coding_regions, original_region_list, selected_regions_to_exclude, selected_region_list,
+                        original_coding_regions, original_region_list, selected_regions_to_exclude,
+                        selected_region_list,
                         min_cost):
     report_path = Report(seq,
                          target_seq,

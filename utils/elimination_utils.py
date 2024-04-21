@@ -18,6 +18,7 @@ class EliminationUtils:
             function: A cost function that takes an index i and a character from the alphabet as arguments,
                       and returns the cost associated with that character at position i in the cost matrix.
         """
+
         def cost(i, alphabet):
             return C[i - 1][alphabet]
 

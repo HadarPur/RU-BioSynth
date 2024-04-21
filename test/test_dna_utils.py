@@ -1,5 +1,7 @@
 import unittest
+
 from Bio.Seq import Seq
+
 from utils.dna_utils import DNAHighlighter
 
 
@@ -35,7 +37,8 @@ class TestDNAHighlighter(unittest.TestCase):
         ]
         coding_indexes = [0, 1]
         coding_regions_to_exclude = {0: Seq("ATG")}
-        updated_region_list = DNAHighlighter.update_coding_regions(region_list, coding_indexes, coding_regions_to_exclude)
+        updated_region_list = DNAHighlighter.update_coding_regions(region_list, coding_indexes,
+                                                                   coding_regions_to_exclude)
         expected_updated_region_list = [
             {"seq": Seq("ATG"), "is_coding_region": False},
             {"seq": Seq("GGC"), "is_coding_region": True},

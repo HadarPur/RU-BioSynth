@@ -1,13 +1,18 @@
-import jinja2
-from datetime import datetime
 import os
+from datetime import datetime
 from pathlib import Path
-from settings.costs_settings import elimination_process_description, coding_region_cost_description, non_coding_region_cost_description
+
+import jinja2
+
+from settings.costs_settings import elimination_process_description, coding_region_cost_description, \
+    non_coding_region_cost_description
 from utils.display_utils import SequenceUtils
 
 
 class Report:
-    def __init__(self, input_seq, target_seq, marked_input_seq, marked_target_seq, unwanted_patterns, original_coding_regions, original_region_list, selected_regions_to_exclude, selected_region_list, min_cost):
+    def __init__(self, input_seq, target_seq, marked_input_seq, marked_target_seq, unwanted_patterns,
+                 original_coding_regions, original_region_list, selected_regions_to_exclude, selected_region_list,
+                 min_cost):
         self.input_seq = input_seq
         self.highlight_input = SequenceUtils.highlight_sequences_to_html(original_region_list)
         self.target_seq = target_seq
@@ -18,15 +23,18 @@ class Report:
 
         if self.num_of_coding_regions > 0:
             self.regions = '''<p>The total number of coding regions is ''' + ''.join(f'{self.num_of_coding_regions}') + ''', identifies as follows:<br>
-                                  ''' + '<br>'.join(f"[{key}] {value}" for key, value in original_coding_regions.items()) + '''</p>'''
+                                  ''' + '<br>'.join(
+                f"[{key}] {value}" for key, value in original_coding_regions.items()) + '''</p>'''
 
             if selected_regions_to_exclude is not None and len(selected_regions_to_exclude) > 0:
                 self.chosen_regions = '''<p>The specific coding regions that the user wish to exclude from the elimination process are as follows:<br>
-                                      ''' + '<br>'.join(f"[{key}] {value}" for key, value in selected_regions_to_exclude.items()) + '''
+                                      ''' + '<br>'.join(
+                    f"[{key}] {value}" for key, value in selected_regions_to_exclude.items()) + '''
                                       <br><br>These coding regions will be classified as non-coding areas.</p>'''
 
                 self.highlight_selected = '''<p>The full sequence after selection is:<br>
-                                      ''' + ''.join(SequenceUtils.highlight_sequences_to_html(selected_region_list)) + '''</p>'''
+                                      ''' + ''.join(
+                    SequenceUtils.highlight_sequences_to_html(selected_region_list)) + '''</p>'''
 
             else:
                 self.chosen_regions = '''<p>No coding regions were selected for exclusion. Continuing with the current settings.</p>'''

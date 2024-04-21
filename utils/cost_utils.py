@@ -1,6 +1,6 @@
-from utils.amino_acid_utils import AminoAcidScheme
-from settings.costs_settings import s_coding_region, o_coding_region, w_coding_region, x_coding_region
 from settings.costs_settings import o_non_coding_region, w_non_coding_region, x_non_coding_region
+from settings.costs_settings import s_coding_region, o_coding_region, w_coding_region, x_coding_region
+from utils.amino_acid_utils import AminoAcidScheme
 
 
 # Define a class called CodonScorer
@@ -31,8 +31,10 @@ class CodonScorer:
         """
 
         # Initialize the object with codon scoring schemes for coding and non-coding regions
-        self.coding_region_scheme = AminoAcidScheme(w_coding_region, o_coding_region, x_coding_region, s_coding_region).get_cost_table_coding_region()
-        self.non_coding_region_scheme = AminoAcidScheme(w_non_coding_region, o_non_coding_region, x_non_coding_region).get_cost_table_none_coding_region()
+        self.coding_region_scheme = AminoAcidScheme(w_coding_region, o_coding_region, x_coding_region,
+                                                    s_coding_region).get_cost_table_coding_region()
+        self.non_coding_region_scheme = AminoAcidScheme(w_non_coding_region, o_non_coding_region,
+                                                        x_non_coding_region).get_cost_table_none_coding_region()
 
     def calculate_scores(self, sequences):
         """

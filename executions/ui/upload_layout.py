@@ -1,6 +1,7 @@
-from PyQt5.QtWidgets import QTextEdit, QPushButton, QWidget, QMessageBox, QFileDialog, QVBoxLayout, QLabel, QHBoxLayout, QFrame
-from PyQt5.QtSvg import QSvgWidget
 from PyQt5.QtCore import Qt
+from PyQt5.QtSvg import QSvgWidget
+from PyQt5.QtWidgets import QTextEdit, QPushButton, QWidget, QMessageBox, QFileDialog, QVBoxLayout, QLabel, QHBoxLayout, \
+    QFrame
 
 
 class UploadWindow(QWidget):

@@ -1,7 +1,8 @@
-import unittest
-from unittest.mock import patch
-from io import StringIO
 import sys
+import unittest
+from io import StringIO
+from unittest.mock import patch
+
 from utils.input_utils import CommandLineParser
 
 

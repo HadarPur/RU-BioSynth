@@ -1,7 +1,8 @@
-from utils.file_utils import SequenceReader, PatternReader
 from executions.console.shared_execution import Shared
-from utils.input_utils import CommandLineParser
 from executions.execution_utils import is_valid_dna, is_valid_patterns
+from utils.file_utils import SequenceReader, PatternReader
+from utils.input_utils import CommandLineParser
+
 
 class Terminal:
     def __init__(self, argv):
@@ -32,4 +33,3 @@ class Terminal:
 
         Shared(seq, unwanted_patterns).run()
         return
-

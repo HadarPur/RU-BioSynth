@@ -1,8 +1,9 @@
-from utils.dna_utils import DNAHighlighter
-from utils.display_utils import SequenceUtils
-from utils.input_utils import UserInputHandler
-from executions.execution_utils import eliminate_unwanted_patterns, mark_non_equal_codons, save_report_locally
 import copy
+
+from executions.execution_utils import eliminate_unwanted_patterns, mark_non_equal_codons, save_report_locally
+from utils.display_utils import SequenceUtils
+from utils.dna_utils import DNAHighlighter
+from utils.input_utils import UserInputHandler
 
 
 def save_report_if_requested(seq, target_seq, marked_input_seq, marked_target_seq, unwanted_patterns,
@@ -44,7 +45,8 @@ class Shared:
         original_region_list = DNAHighlighter.get_coding_and_non_coding_regions(self.seq)
 
         # Extract coding regions and their indexes from the highlighted sequence
-        original_coding_regions, coding_indexes = DNAHighlighter.extract_coding_regions_with_indexes(original_region_list)
+        original_coding_regions, coding_indexes = DNAHighlighter.extract_coding_regions_with_indexes(
+            original_region_list)
 
         # Highlight coding regions and print the sequence
         highlighted_sequence = DNAHighlighter.highlight_coding_regions(self.seq, original_coding_regions)
