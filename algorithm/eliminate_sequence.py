@@ -1,25 +1,24 @@
 from utils.elimination_utils import EliminationUtils
 from algorithm.fsm import FSM
-from typing import Set
 from collections import defaultdict
 from settings.costs_settings import elimination_process_description, coding_region_cost_description, non_coding_region_cost_description
 
 
 class EliminateSequence:
     @staticmethod
-    def eliminate(S: str, P: Set[str], C: list[dict[str, float]]):
+    def eliminate(seq, unwanted_patterns, cost_table):
         info = f"Starting Elimination Process..."
-        info += f"\nUnwanted Patterns: {P}"
-        info += f"\nOriginal Sequence: {S}"
+        info += f"\nUnwanted Patterns: {unwanted_patterns}"
+        info += f"\nOriginal Sequence: {seq}"
         info += f"\n\nElimination Process: \n{elimination_process_description}"
         info += f"\n\nCoding regions: \n{coding_region_cost_description}"
         info += f"\n\nNon-Coding regions: \n{non_coding_region_cost_description}"
-        sequence_length = len(S)
+        sequence_length = len(seq)
         backtrack = {}
 
         elimination_utils = EliminationUtils()
-        cost_function = elimination_utils.cost_function(C)
-        fsm = FSM(P, elimination_utils.alphabet)
+        cost_function = elimination_utils.cost_function(cost_table)
+        fsm = FSM(unwanted_patterns, elimination_utils.alphabet)
 
         A = defaultdict(lambda: float('inf'))
         A[(0, '')] = 0
