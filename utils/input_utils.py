@@ -29,16 +29,16 @@ class CommandLineParser:
 
         for opt, arg in opts:
             if opt == '-h':
-                print("-p <patterns_file> -s <sequence_file> -c <cost>")
+                print("-p <patterns_file> -s <sequence_file>")
                 sys.exit()
             elif opt in ("-s", "--s_file"):
                 self.s_file_path = arg
             elif opt in ("-p", "--p_file"):
                 self.p_file_path = arg
 
-        if self.s_file_path is None or self.p_file_path is None:
-            print("\033[91mOne or more input files are missing.\033[0m")
-            sys.exit()
+        # if self.s_file_path is None or self.p_file_path is None:
+        #     print("\033[91mOne or more input files are missing.\033[0m")
+        #     sys.exit()
 
         return self.s_file_path, self.p_file_path
 

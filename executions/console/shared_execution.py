@@ -39,7 +39,7 @@ class Shared:
         print(SequenceUtils.get_sequence("DNA sequence", self.seq))
 
         # Print the list of unwanted patterns
-        print(SequenceUtils.get_patterns(self.unwanted_patterns))
+        print(f"\nPattern list:\n\t{SequenceUtils.get_patterns(self.unwanted_patterns)}\n")
 
         # Extract coding regions from the sequence
         original_region_list = DNAHighlighter.get_coding_and_non_coding_regions(self.seq)
@@ -50,7 +50,7 @@ class Shared:
 
         # Highlight coding regions and print the sequence
         highlighted_sequence = DNAHighlighter.highlight_coding_regions(self.seq, original_coding_regions)
-        print(SequenceUtils.get_highlighted_sequence(highlighted_sequence))
+        print(f'\nIdentify the coding regions within the given DNA sequence and mark them for emphasis\n\t {SequenceUtils.get_highlighted_sequence(highlighted_sequence)}')
 
         # Print the number of coding regions found
         print(f"\nNumber of coding regions is: {len(original_coding_regions)}")

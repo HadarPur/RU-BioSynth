@@ -48,7 +48,7 @@ class SequenceUtils:
                 sorted(unwanted_patterns))  # Convert set to a sorted list and join with commas
         else:
             formatted_patterns = "None"  # If the set is empty, indicate that there are no patterns
-        return f"\nPattern list:\n\t{formatted_patterns}\n"
+        return formatted_patterns
 
     @staticmethod
     def split_string_every_n_chars(S: str, n: int):
@@ -99,7 +99,6 @@ class SequenceUtils:
         Args:
             S (str): DNA sequence with color-coded regions.
         """
-        title = "Identify the coding regions within the given DNA sequence and mark them for emphasis"
 
         color_starts, color_ends = SequenceUtils._find_color_boundaries(S)
 
@@ -136,7 +135,7 @@ class SequenceUtils:
             else:
                 spaced_chunks.append(spaced_chunk)
 
-        return f'\n{title}:\n\t' + ''.join(spaced_chunks)
+        return ''.join(spaced_chunks)
 
     @staticmethod
     def mark_non_equal_codons(region_list, target_region_list):
