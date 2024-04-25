@@ -1,5 +1,6 @@
 from PyQt5.QtWidgets import QTextEdit, QPushButton, QWidget, QMessageBox, QFileDialog, QVBoxLayout, QLabel, QHBoxLayout
-from executions.ui.layout_utils import add_svg_logo, add_next_button
+
+from executions.ui.layout_utils import add_svg_logo, add_next_button, add_text_edit
 
 
 class UploadWindow(QWidget):
@@ -33,9 +34,9 @@ class UploadWindow(QWidget):
         middle_layout = QVBoxLayout()
         layout.addLayout(middle_layout)
 
-        self.dna_text_edit = self.create_text_edit(middle_layout, "Upload DNA Sequence (.txt):", self.dna_file_content)
+        self.dna_text_edit = add_text_edit(middle_layout, "Upload DNA Sequence (.txt):", self.dna_file_content)
         self.create_load_button(middle_layout, self.dna_text_edit, "Load DNA Sequence")
-        self.patterns_text_edit = self.create_text_edit(middle_layout, "Upload Patterns (.txt):", self.patterns_file_content)
+        self.patterns_text_edit = add_text_edit(middle_layout, "Upload Patterns (.txt):", self.patterns_file_content)
         self.create_load_button(middle_layout, self.patterns_text_edit, "Load Patterns")
 
         # Correct way: Directly integrate dynamic action in the lambda
@@ -55,15 +56,6 @@ class UploadWindow(QWidget):
         title = QLabel(content)
         layout.addWidget(title)
         return title
-
-    def create_text_edit(self, layout, placeholder, content):
-        text_edit = QTextEdit()
-        text_edit.setPlaceholderText(placeholder)
-        if content:
-            text_edit.setPlainText(content)
-        text_edit.setReadOnly(True)
-        layout.addWidget(text_edit)
-        return text_edit
 
     def create_load_button(self, layout, text_edit, button_text):
         button = QPushButton(button_text)

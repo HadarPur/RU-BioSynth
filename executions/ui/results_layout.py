@@ -2,10 +2,9 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QApplication
 from PyQt5.QtWidgets import QLabel, QPushButton, QWidget, QSpacerItem, QSizePolicy, QVBoxLayout, QHBoxLayout
 
-from executions.execution_utils import eliminate_unwanted_patterns, mark_non_equal_codons, save_report_locally
-from utils.display_utils import SequenceUtils
-
+from executions.execution_utils import mark_non_equal_codons, save_report_locally
 from executions.ui.layout_utils import add_back_button
+from utils.display_utils import SequenceUtils
 
 
 class ResultsWindow(QWidget):

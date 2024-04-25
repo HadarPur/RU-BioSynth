@@ -1,6 +1,6 @@
 from PyQt5.QtCore import Qt
 from PyQt5.QtSvg import QSvgWidget
-from PyQt5.QtWidgets import QFrame, QHBoxLayout, QPushButton
+from PyQt5.QtWidgets import QFrame, QHBoxLayout, QPushButton, QTextEdit
 
 
 def add_svg_logo(layout):
@@ -18,6 +18,16 @@ def add_svg_logo(layout):
 
     # Add the frame to the main layout
     layout.addWidget(frame, alignment=Qt.AlignTop)
+
+
+def add_text_edit(layout, placeholder, content):
+    text_edit = QTextEdit()
+    text_edit.setPlaceholderText(placeholder)
+    if content:
+        text_edit.setPlainText(content)
+    text_edit.setReadOnly(True)
+    layout.addWidget(text_edit)
+    return text_edit
 
 
 def add_back_button(layout, callback, args=()):

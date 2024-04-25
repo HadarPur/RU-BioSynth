@@ -108,6 +108,7 @@ class UserInputHandler:
                         selected_regions_to_exclude[f'{int(segment)}'] = coding_region
                         print(f"[{int(segment)}] {coding_region}")
                         selected_regions[int(segment) - 1] = coding_region
+                    print("\nThese coding regions will be classified as non-coding areas.")
                     return original_coding_regions, selected_regions_to_exclude, selected_regions
             else:
                 print("\033[91mInvalid input. Please provide valid indices separated by commas or spaces.\033[0m")

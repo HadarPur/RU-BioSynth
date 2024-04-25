@@ -50,7 +50,7 @@ class Shared:
 
         # Highlight coding regions and print the sequence
         highlighted_sequence = DNAHighlighter.highlight_coding_regions(self.seq, original_coding_regions)
-        print(f'\nIdentify the coding regions within the given DNA sequence and mark them for emphasis\n\t {SequenceUtils.get_highlighted_sequence(highlighted_sequence)}')
+        print(f'\nIdentify the coding regions within the given DNA sequence and mark them for emphasis:\n\t {SequenceUtils.get_highlighted_sequence(highlighted_sequence)}')
 
         # Print the number of coding regions found
         print(f"\nNumber of coding regions is: {len(original_coding_regions)}")
@@ -95,8 +95,7 @@ class Shared:
                                  selected_region_list,
                                  min_cost)
 
-    @staticmethod
-    def handle_coding_region_elimination(region_list, coding_indexes, coding_regions):
+    def handle_coding_region_elimination(self, region_list, coding_indexes, coding_regions):
         selected_region_list = copy.deepcopy(region_list)
 
         # Ask the user if they want to eliminate coding regions
@@ -108,6 +107,9 @@ class Shared:
             # Update the coding regions based on user input
             selected_region_list = DNAHighlighter.update_coding_regions(selected_region_list, coding_indexes,
                                                                         coding_regions_to_exclude)
+
+            highlighted_sequence = ''.join(SequenceUtils.highlight_sequences_to_terminal(selected_region_list))
+            print(f'\nThe full sequence after selection is:\n\t {highlighted_sequence}')
 
         else:
             original_coding_regions = UserInputHandler.get_coding_regions_list(coding_regions)

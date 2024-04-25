@@ -206,6 +206,39 @@ class SequenceUtils:
         return html_output
 
     @staticmethod
+    def highlight_sequences_to_terminal(sequences):
+        """
+        Converts DNA sequences to terminal output with highlighted coding regions.
+
+        Parameters:
+            sequences (list of dict): List of dictionaries containing sequences and flags for coding regions.
+
+        Returns:
+            str: String with terminal escape codes for colorized coding regions.
+        """
+        output = ""
+        color_counter = 0
+
+        # ANSI color codes
+        colors = ['\033[91m', '\033[92m', '\033[93m', '\033[94m', '\033[95m', '\033[96m']
+
+        for seq_info in sequences:
+            if seq_info['is_coding_region']:
+                coding_sequence = seq_info["seq"]
+                coding_sequence_with_spaces = ' '.join(
+                    coding_sequence[i:i + 3] for i in range(0, len(coding_sequence), 3))
+                # Get the next color from the colors list, and wrap around if needed
+                color = colors[color_counter % len(colors)]
+                color_counter += 1
+                # Append the colorized sequence
+                output += f' {color}{coding_sequence_with_spaces}\033[0m '  # Reset color at the end
+            else:
+                # Non-coding regions will not be colorized
+                output += seq_info['seq']
+
+        return output
+
+    @staticmethod
     def get_color_for_coding_region(color_counter):
         colors = ["red", "blue", "green", "orange", "purple"]
         color = colors[color_counter % len(colors)]

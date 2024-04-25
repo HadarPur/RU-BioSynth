@@ -1,10 +1,8 @@
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QApplication
-from PyQt5.QtWidgets import QLabel, QPushButton, QWidget, QSpacerItem, QSizePolicy, QVBoxLayout, QHBoxLayout
+from PyQt5.QtWidgets import QLabel, QWidget, QSpacerItem, QSizePolicy, QVBoxLayout, QHBoxLayout, QScrollArea
 
-from executions.execution_utils import eliminate_unwanted_patterns, mark_non_equal_codons, save_report_locally
-from utils.display_utils import SequenceUtils
-from executions.ui.layout_utils import add_back_button
+from executions.execution_utils import eliminate_unwanted_patterns
+from executions.ui.layout_utils import add_back_button, add_next_button
 
 
 class EliminationWindow(QWidget):
@@ -37,33 +35,40 @@ class EliminationWindow(QWidget):
         self.display_info(layout)
 
     def display_info(self, layout):
-        self.middle_layout = QVBoxLayout()
-        layout.addLayout(self.middle_layout)
+        middle_layout = QVBoxLayout()
+        layout.addLayout(middle_layout)
 
-        infoLabel = QLabel()
-        self.middle_layout.addWidget(infoLabel, alignment=Qt.AlignTop)
+        scroll = QScrollArea()
+        middle_layout.addWidget(scroll, alignment=Qt.AlignTop)
+
+        content_widget = QWidget()
+        scroll.setWidget(content_widget)
+        scroll.setStyleSheet("QScrollArea { border: none; }")
+        scroll.setAlignment(Qt.AlignTop)
+        scroll.setWidgetResizable(True)
+        scroll.setFixedHeight(650)
+
+        content_layout = QVBoxLayout(content_widget)
 
         info, target_seq, min_cost = eliminate_unwanted_patterns(self.dna_sequence, self.unwanted_patterns,
                                                                  self.selected_region_list)
+        info = info.replace("\n", "<br>")
+        # Adding formatted text to QLabel
+        label_html = f"""
+            <h3>Elimination Process:</h3>
+            <p>{info}</p>
+        """
 
-        infoLabel.setText(info)
+        label = QLabel(label_html)
+        label.setWordWrap(True)
+        content_layout.addWidget(label)
 
         # Spacer to push other widgets to the top
-        layout.addSpacerItem(QSpacerItem(0, 0, QSizePolicy.Minimum, QSizePolicy.Expanding))
-
-        # Create a horizontal layout for the bottom section
-        self.bottom_layout = QHBoxLayout()
-        layout.addLayout(self.bottom_layout)
-
-        # Add a stretch to push the next button to the right
-        self.bottom_layout.addStretch(1)
+        content_layout.addSpacerItem(QSpacerItem(0, 0, QSizePolicy.Minimum, QSizePolicy.Expanding))
 
         # Add next button to the bottom layout
-        self.next_button = QPushButton('Next')
-        self.next_button.setFixedSize(60, 30)
-        self.next_button.clicked.connect(
-            lambda: self.switch_to_results_callback(self.original_coding_regions, self.original_region_list,
-                                                    self.selected_regions_to_exclude,
-                                                    self.selected_region_list, target_seq, min_cost))
-
-        self.bottom_layout.addWidget(self.next_button, alignment=Qt.AlignRight)
+        add_next_button(layout, self.switch_to_results_callback, lambda: (self.original_coding_regions,
+                                                                          self.original_region_list,
+                                                                          self.selected_regions_to_exclude,
+                                                                          self.selected_region_list, target_seq,
+                                                                          min_cost))

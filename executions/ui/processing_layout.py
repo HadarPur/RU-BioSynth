@@ -165,8 +165,20 @@ class ProcessWindow(QWidget):
         for index, region in selected_regions_to_exclude.items():
             exclude += f"[{index}]: {region}\n"
 
-        exclude_label = QLabel(f"Selected regions to exclude:\n{exclude}")
+        exclude_label = QLabel(f"Selected regions to exclude:\n{exclude}"
+                               f"\nThese coding regions will be classified as non-coding areas.\n")
         layout.addWidget(exclude_label)
+
+        # Adding formatted text to QLabel
+        label_html = '''
+        <p>The full sequence after selection is:
+        <br>
+        <br>
+        ''' + ''.join(SequenceUtils.highlight_sequences_to_html(selected_region_list)) + '''</p>'''
+
+        label = QLabel(label_html)
+        label.setWordWrap(True)
+        layout.addWidget(label)
 
         # Scroll to the bottom after a short delay to ensure the layout updates
         QTimer.singleShot(50, self.scroll_to_bottom)
