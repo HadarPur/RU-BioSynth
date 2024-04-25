@@ -1,4 +1,5 @@
 main.spec
 /build
-/executions/**/__pycache__
+/executions/console/__pycache__
+/executions/ui/__pycache__
 /.idea
