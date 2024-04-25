@@ -61,6 +61,7 @@ class ProcessWindow(QWidget):
             <h3>Coding Regions:</h3>
             <p>Identify the coding regions within the given DNA sequence and mark them for emphasis:
             <br>
+            <br>
             {SequenceUtils.get_highlighted_sequence(highlighted_sequence)}</p>
             <br>
             <p>Number of coding regions is {len(original_coding_regions)}</p>
@@ -74,8 +75,8 @@ class ProcessWindow(QWidget):
             self.prompt_coding_regions_decision(content_layout, original_coding_regions, original_region_list,
                                                 coding_indexes, self.unwanted_patterns)
 
-        self.spacer = QSpacerItem(0, 0, QSizePolicy.Minimum, QSizePolicy.Expanding)
-        content_layout.addSpacerItem(self.spacer)
+        spacer = QSpacerItem(0, 0, QSizePolicy.Minimum, QSizePolicy.Expanding)
+        content_layout.addSpacerItem(spacer)
 
         bottom_layout = QHBoxLayout()
         layout.addLayout(bottom_layout)
@@ -147,7 +148,8 @@ class ProcessWindow(QWidget):
         self.region_selector = RegionSelector(container_widget, original_coding_regions, original_region_list, coding_indexes,
                                               unwanted_patterns, self.handle_results)
 
-        layout.addSpacerItem(self.spacer)
+        spacer = QSpacerItem(0, 0, QSizePolicy.Minimum, QSizePolicy.Expanding)
+        layout.addSpacerItem(spacer)
 
     def handle_results(self, layout, original_coding_regions, original_region_list, selected_regions_to_exclude,
                        selected_region_list):
