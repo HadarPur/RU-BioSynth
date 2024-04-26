@@ -1,6 +1,6 @@
-from PyQt5.QtWidgets import QPushButton, QWidget, QMessageBox, QFileDialog, QVBoxLayout, QLabel, QHBoxLayout
+from PyQt5.QtWidgets import QWidget, QMessageBox, QFileDialog, QVBoxLayout, QHBoxLayout, QSpacerItem, QSizePolicy
 from PyQt5.QtCore import Qt
-from executions.ui.layout_utils import add_svg_logo, add_button, add_text_edit
+from executions.ui.layout_utils import add_intro, add_svg_logo, add_button, add_text_edit
 
 
 class UploadWindow(QWidget):
@@ -18,16 +18,13 @@ class UploadWindow(QWidget):
     def init_ui(self, next_callback):
         layout = QVBoxLayout(self)
 
-        # Create top layout for title and logo
         top_layout = QHBoxLayout()
         layout.addLayout(top_layout)
 
-        self.create_title(top_layout)
+        add_intro(top_layout)
 
-        # Adding a fixed-width empty label for spacing
-        space_label = QLabel(" ")
-        space_label.setFixedWidth(50)  # You can adjust the width as needed
-        top_layout.addWidget(space_label)
+        fixed_width_spacer = QSpacerItem(50, 0, QSizePolicy.Fixed, QSizePolicy.Minimum)
+        top_layout.addSpacerItem(fixed_width_spacer)
 
         add_svg_logo(top_layout)
 
@@ -35,32 +32,14 @@ class UploadWindow(QWidget):
         layout.addLayout(middle_layout)
 
         self.dna_text_edit = add_text_edit(middle_layout, "Upload DNA Sequence (.txt):", self.dna_file_content)
-        self.create_load_button(middle_layout, self.dna_text_edit, "Load DNA Sequence")
-        self.patterns_text_edit = add_text_edit(middle_layout, "Upload Patterns (.txt):", self.patterns_file_content)
-        self.create_load_button(middle_layout, self.patterns_text_edit, "Load Patterns")
+        add_button(middle_layout, 'Load DNA Sequence', Qt.AlignCenter, self.load_file, (self.dna_text_edit,),
+                   size=(200, 30))
 
-        # Correct way: Directly integrate dynamic action in the lambda
+        self.patterns_text_edit = add_text_edit(middle_layout, "Upload Patterns (.txt):", self.patterns_file_content)
+        add_button(middle_layout, 'Load Patterns', Qt.AlignCenter, self.load_file, (self.patterns_text_edit,), size=(200, 30))
+
         add_button(layout, 'Next', Qt.AlignRight, next_callback, lambda: (self.dna_text_edit.toPlainText().strip(),
                                                                           self.patterns_text_edit.toPlainText().strip()))
-
-    def create_title(self, layout):
-        content = "Hi,"
-        content += "\nWelcome to the DNA Sequence Elimination App."
-        content += "\nTo eliminate unwanted patterns from a specific DNA sequence, please upload the DNA sequence file " \
-                   "along with the patterns file you wish to remove."
-        content += "\n"
-        content += "\nThe DNA sequence file should contain only one continuous sequence."
-        content += "\nThe patterns file should list each pattern on a new line, containing only standard characters" \
-                   " without any special symbols."
-        content += "\n"
-        title = QLabel(content)
-        layout.addWidget(title)
-        return title
-
-    def create_load_button(self, layout, text_edit, button_text):
-        button = QPushButton(button_text)
-        button.clicked.connect(lambda: self.load_file(text_edit))
-        layout.addWidget(button)
 
     def load_file(self, text_edit):
         fileName, _ = QFileDialog.getOpenFileName(self, "Open File", "", "Text Files (*.txt)")

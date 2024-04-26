@@ -78,14 +78,8 @@ class ProcessWindow(QWidget):
         spacer = QSpacerItem(0, 0, QSizePolicy.Minimum, QSizePolicy.Expanding)
         content_layout.addSpacerItem(spacer)
 
-        bottom_layout = QHBoxLayout()
-        layout.addLayout(bottom_layout)
-        bottom_layout.addStretch(1)
-
-        self.start_elimination_button = QPushButton('Start Elimination')
-        self.start_elimination_button.setFixedSize(150, 30)
+        self.start_elimination_button = add_button(layout, 'Start Elimination', Qt.AlignRight, None, None, size=(150, 30))
         self.start_elimination_button.setEnabled(False)
-        bottom_layout.addWidget(self.start_elimination_button, alignment=Qt.AlignRight)
 
     def prompt_coding_regions_decision(self, layout, original_coding_regions, original_region_list, coding_indexes,
                                        unwanted_patterns):
@@ -101,21 +95,13 @@ class ProcessWindow(QWidget):
         prompt_layout.addWidget(question_label)
 
         # Create the 'Yes' button
-        self.yes_button = QPushButton('Yes')
-        self.yes_button.setFixedSize(60, 30)
-        self.yes_button.clicked.connect(
-            lambda: self.select_all_regions(original_coding_regions, original_region_list))
+        callback_args = (original_coding_regions, original_region_list)
+        self.yes_button = add_button(prompt_layout, 'Yes', Qt.AlignLeft, self.select_all_regions, callback_args)
 
         # Create the 'No' button
-        self.no_button = QPushButton('No')
-        self.no_button.setFixedSize(60, 30)
-        self.no_button.clicked.connect(
-            lambda: self.select_regions_to_exclude(layout, original_coding_regions, original_region_list,
-                                                   coding_indexes, unwanted_patterns))
-
-        # Add the buttons to the horizontal layout
-        prompt_layout.addWidget(self.yes_button)
-        prompt_layout.addWidget(self.no_button)
+        callback_args = (layout, original_coding_regions, original_region_list,
+                         coding_indexes, unwanted_patterns)
+        self.no_button = add_button(prompt_layout, 'No', Qt.AlignLeft, self.select_regions_to_exclude, callback_args)
 
         # Add a spacer to push the buttons to the left
         spacer = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
@@ -145,7 +131,8 @@ class ProcessWindow(QWidget):
             return
 
         self.yes_button.setEnabled(False)
-        self.region_selector = RegionSelector(container_widget, original_coding_regions, original_region_list, coding_indexes,
+        self.region_selector = RegionSelector(container_widget, original_coding_regions, original_region_list,
+                                              coding_indexes,
                                               unwanted_patterns, self.handle_results)
 
         spacer = QSpacerItem(0, 0, QSizePolicy.Minimum, QSizePolicy.Expanding)
@@ -216,19 +203,14 @@ class RegionSelector(QWidget):
             layout.addWidget(checkbox, alignment=Qt.AlignTop)
             self.checkboxes.append((checkbox, region))
 
-        control_buttons_layout = QHBoxLayout()
-        self.submit_button = QPushButton('Submit Exclusions')
-        self.submit_button.setFixedSize(150, 30)
-        self.submit_button.clicked.connect(lambda: self.submit_exclusions(layout))
-        control_buttons_layout.addWidget(self.submit_button, alignment=Qt.AlignLeft)
-
-        # Add the control buttons layout to the QVBoxLayout for this section
-        layout.addLayout(control_buttons_layout)
+        self.submit_button = add_button(layout, 'Submit Exclusions', Qt.AlignLeft, self.submit_exclusions,
+                                        (layout,), size=(200, 30))
 
     def submit_exclusions(self, layout):
         checked_indices = [index for index, (checkbox, region) in enumerate(self.checkboxes) if checkbox.isChecked()]
         if len(checked_indices) <= 0:
-            QMessageBox.question(self, 'Error', 'You need to choose one coding region at least to continue', QMessageBox.Ok)
+            QMessageBox.question(self, 'Error', 'You need to choose one coding region at least to continue',
+                                 QMessageBox.Ok)
             return
 
         # Prompt the user for confirmation

@@ -1,6 +1,21 @@
 from PyQt5.QtCore import Qt
 from PyQt5.QtSvg import QSvgWidget
-from PyQt5.QtWidgets import QFrame, QHBoxLayout, QPushButton, QTextEdit, QVBoxLayout, QPlainTextEdit, QApplication
+from PyQt5.QtWidgets import QFrame, QHBoxLayout, QPushButton, QTextEdit, QVBoxLayout, QPlainTextEdit, QApplication, QLabel
+
+
+def add_intro(layout):
+    content = "Hi,"
+    content += "\nWelcome to the DNA Sequence Elimination App."
+    content += "\nTo eliminate unwanted patterns from a specific DNA sequence, please upload the DNA sequence file " \
+               "along with the patterns file you wish to remove."
+    content += "\n"
+    content += "\nThe DNA sequence file should contain only one continuous sequence."
+    content += "\nThe patterns file should list each pattern on a new line, containing only standard characters" \
+               " without any special symbols."
+    content += "\n"
+    title = QLabel(content)
+    layout.addWidget(title)
+    return title
 
 
 def add_svg_logo(layout):
@@ -53,21 +68,24 @@ def add_code_block(parent_layout, text):
     layout.addLayout(button_layout)
 
 
-def add_button(layout, text, alignment, callback, args=()):
+def add_button(layout, text, alignment, callback, args=(), size=(60, 30)):
     bottom_layout = QHBoxLayout()
     layout.addLayout(bottom_layout)
 
     button = QPushButton(text)
-    button.setFixedSize(60, 30)
+    button.setFixedSize(size[0], size[1])
     button.setFocusPolicy(Qt.NoFocus)
 
     # Check if 'args' is callable or not and connect accordingly
-    if callable(args):
-        button.clicked.connect(lambda: callback(*args()))
-    else:
-        button.clicked.connect(lambda: callback(*args))
+    if callback is not None:
+        if callable(args):
+            button.clicked.connect(lambda: callback(*args()))
+        else:
+            button.clicked.connect(lambda: callback(*args))
 
     bottom_layout.addWidget(button, alignment=alignment)
+
+    return button
 
 
 def remove_item_at(layout, index):
