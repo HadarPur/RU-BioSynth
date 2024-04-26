@@ -3,8 +3,7 @@ from PyQt5.QtWidgets import QApplication
 from PyQt5.QtWidgets import QLabel, QPushButton, QWidget, QSpacerItem, QSizePolicy, QVBoxLayout, QHBoxLayout
 
 from executions.execution_utils import mark_non_equal_codons, save_report_locally
-from executions.ui.layout_utils import add_back_button
-from utils.display_utils import SequenceUtils
+from executions.ui.layout_utils import add_button, add_code_block
 
 
 class ResultsWindow(QWidget):
@@ -36,7 +35,7 @@ class ResultsWindow(QWidget):
 
         callback_args = (self.original_coding_regions, self.original_region_list,
                          self.selected_regions_to_exclude, self.selected_region_list)
-        add_back_button(layout, callback, callback_args)
+        add_button(layout, 'Back', Qt.AlignLeft, callback, callback_args)
 
         self.display_info(layout)
 
@@ -52,9 +51,11 @@ class ResultsWindow(QWidget):
             self.selected_region_list, self.target_seq)
 
         info = marked_seq
-        info += SequenceUtils.get_sequence("Target DNA sequence", self.target_seq)
+        # info += SequenceUtils.get_sequence("Target DNA sequence", self.target_seq)
 
         infoLabel.setText(info)
+
+        add_code_block(self.middle_layout, self.target_seq)
 
         # Spacer to push other widgets to the top
         layout.addSpacerItem(QSpacerItem(0, 0, QSizePolicy.Minimum, QSizePolicy.Expanding))

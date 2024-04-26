@@ -4,7 +4,7 @@ from PyQt5.QtCore import Qt, QTimer
 from PyQt5.QtWidgets import QPushButton, QWidget, QVBoxLayout, QLabel, QCheckBox, QHBoxLayout, QMessageBox
 from PyQt5.QtWidgets import QSpacerItem, QSizePolicy, QScrollArea
 
-from executions.ui.layout_utils import add_back_button, remove_item_at
+from executions.ui.layout_utils import add_button, remove_item_at
 from utils.display_utils import SequenceUtils
 from utils.dna_utils import DNAHighlighter
 
@@ -27,7 +27,7 @@ class ProcessWindow(QWidget):
 
     def init_ui(self, callback):
         layout = QVBoxLayout(self)
-        add_back_button(layout, callback)
+        add_button(layout, 'Back', Qt.AlignLeft, callback)
         self.display_info(layout)
 
     def display_info(self, layout):

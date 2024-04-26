@@ -1,6 +1,6 @@
-from PyQt5.QtWidgets import QTextEdit, QPushButton, QWidget, QMessageBox, QFileDialog, QVBoxLayout, QLabel, QHBoxLayout
-
-from executions.ui.layout_utils import add_svg_logo, add_next_button, add_text_edit
+from PyQt5.QtWidgets import QPushButton, QWidget, QMessageBox, QFileDialog, QVBoxLayout, QLabel, QHBoxLayout
+from PyQt5.QtCore import Qt
+from executions.ui.layout_utils import add_svg_logo, add_button, add_text_edit
 
 
 class UploadWindow(QWidget):
@@ -40,8 +40,8 @@ class UploadWindow(QWidget):
         self.create_load_button(middle_layout, self.patterns_text_edit, "Load Patterns")
 
         # Correct way: Directly integrate dynamic action in the lambda
-        add_next_button(layout, next_callback, lambda: (self.dna_text_edit.toPlainText().strip(),
-                                                        self.patterns_text_edit.toPlainText().strip()))
+        add_button(layout, 'Next', Qt.AlignRight, next_callback, lambda: (self.dna_text_edit.toPlainText().strip(),
+                                                                          self.patterns_text_edit.toPlainText().strip()))
 
     def create_title(self, layout):
         content = "Hi,"

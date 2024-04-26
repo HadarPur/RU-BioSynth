@@ -1,8 +1,8 @@
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QLabel, QWidget, QSpacerItem, QSizePolicy, QVBoxLayout, QHBoxLayout, QScrollArea
+from PyQt5.QtWidgets import QLabel, QWidget, QSpacerItem, QSizePolicy, QVBoxLayout, QScrollArea
 
 from executions.execution_utils import eliminate_unwanted_patterns
-from executions.ui.layout_utils import add_back_button, add_next_button
+from executions.ui.layout_utils import add_button
 
 
 class EliminationWindow(QWidget):
@@ -31,7 +31,7 @@ class EliminationWindow(QWidget):
 
     def init_ui(self, callback):
         layout = QVBoxLayout(self)
-        add_back_button(layout, callback)
+        add_button(layout, 'Back', Qt.AlignLeft, callback)
         self.display_info(layout)
 
     def display_info(self, layout):
@@ -67,8 +67,9 @@ class EliminationWindow(QWidget):
         content_layout.addSpacerItem(QSpacerItem(0, 0, QSizePolicy.Minimum, QSizePolicy.Expanding))
 
         # Add next button to the bottom layout
-        add_next_button(layout, self.switch_to_results_callback, lambda: (self.original_coding_regions,
-                                                                          self.original_region_list,
-                                                                          self.selected_regions_to_exclude,
-                                                                          self.selected_region_list, target_seq,
-                                                                          min_cost))
+        add_button(layout, 'Next', Qt.AlignRight, self.switch_to_results_callback,
+                   lambda: (self.original_coding_regions,
+                            self.original_region_list,
+                            self.selected_regions_to_exclude,
+                            self.selected_region_list, target_seq,
+                            min_cost))

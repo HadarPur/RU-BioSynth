@@ -1,6 +1,6 @@
 from PyQt5.QtCore import Qt
 from PyQt5.QtSvg import QSvgWidget
-from PyQt5.QtWidgets import QFrame, QHBoxLayout, QPushButton, QTextEdit
+from PyQt5.QtWidgets import QFrame, QHBoxLayout, QPushButton, QTextEdit, QVBoxLayout, QPlainTextEdit, QApplication
 
 
 def add_svg_logo(layout):
@@ -30,27 +30,44 @@ def add_text_edit(layout, placeholder, content):
     return text_edit
 
 
-def add_back_button(layout, callback, args=()):
-    top_layout = QHBoxLayout()
-    layout.addLayout(top_layout)
+def add_code_block(parent_layout, text):
+    layout = QVBoxLayout()
+    parent_layout.addLayout(layout)
 
-    # Add button to the top layout
-    button = QPushButton('Back')
-    button.setFixedSize(60, 30)
-    button.setFocusPolicy(Qt.NoFocus)  # Disable focus outline
-    button.clicked.connect(lambda: callback(*args))
-    top_layout.addWidget(button, alignment=Qt.AlignLeft)
+    # Create a QPlainTextEdit to display the code
+    code_display = QPlainTextEdit(text)
+    code_display.setReadOnly(True)
+    code_display.setLineWrapMode(QPlainTextEdit.NoWrap)
+    layout.addWidget(code_display)
+
+    # Button layout
+    button_layout = QHBoxLayout()
+    button_layout.addStretch(1)  # Push the button to the right
+
+    # Copy button
+    copy_button = QPushButton("Copy")
+    copy_button.clicked.connect(lambda: copy_to_clipboard(code_display))
+    button_layout.addWidget(copy_button)
+
+    # Adding the button layout to the main layout
+    layout.addLayout(button_layout)
 
 
-def add_next_button(layout, callback, args=()):
+def add_button(layout, text, alignment, callback, args=()):
     bottom_layout = QHBoxLayout()
     layout.addLayout(bottom_layout)
 
-    button = QPushButton('Next')
+    button = QPushButton(text)
     button.setFixedSize(60, 30)
     button.setFocusPolicy(Qt.NoFocus)
-    button.clicked.connect(lambda: callback(*args()))
-    bottom_layout.addWidget(button, alignment=Qt.AlignRight)
+
+    # Check if 'args' is callable or not and connect accordingly
+    if callable(args):
+        button.clicked.connect(lambda: callback(*args()))
+    else:
+        button.clicked.connect(lambda: callback(*args))
+
+    bottom_layout.addWidget(button, alignment=alignment)
 
 
 def remove_item_at(layout, index):
@@ -69,3 +86,8 @@ def remove_item_at(layout, index):
             # Recursively clear out layout items
             remove_item_at(item.layout(), 0)  # Example: start with the first item
             item.layout().deleteLater()
+
+
+def copy_to_clipboard(code_display):
+    text = code_display.toPlainText()
+    QApplication.clipboard().setText(text)
