@@ -157,20 +157,20 @@ class SequenceUtils:
                     codon2 = sequence2[i:i + 3]
 
                     if codon1 != codon2:
-                        marked_seq1.append(f"[{codon1}]")
-                        marked_seq2.append(f"[{codon2}]")
+                        marked_seq1.append(f"[{codon1}]\t")
+                        marked_seq2.append(f"[{codon2}]\t")
                     else:
-                        marked_seq1.append(codon1)
-                        marked_seq2.append(codon2)
+                        marked_seq1.append(codon1+'\t')
+                        marked_seq2.append(codon2+'\t')
 
             else:
                 for i, (letter1, letter2) in enumerate(zip(sequence1, sequence2)):
                     if letter1 != letter2:
-                        marked_seq1.append(f"[{letter1}]")
-                        marked_seq2.append(f"[{letter2}]")
+                        marked_seq1.append(f"[{letter1}]\t")
+                        marked_seq2.append(f"[{letter2}]\t")
                     else:
-                        marked_seq1.append(letter1)
-                        marked_seq2.append(letter2)
+                        marked_seq1.append(letter1+'\t')
+                        marked_seq2.append(letter2+'\t')
 
         marked_seq1 = ' '.join(marked_seq1)
         marked_seq2 = ' '.join(marked_seq2)

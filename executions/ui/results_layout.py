@@ -1,9 +1,9 @@
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QApplication
-from PyQt5.QtWidgets import QLabel, QPushButton, QWidget, QSpacerItem, QSizePolicy, QVBoxLayout, QHBoxLayout
-
+from PyQt5.QtWidgets import QLabel, QPushButton, QWidget, QSpacerItem, QSizePolicy, QVBoxLayout, QHBoxLayout, QTextEdit
+from PyQt5.QtGui import QPalette
 from executions.execution_utils import mark_non_equal_codons, save_report_locally
-from executions.ui.layout_utils import add_button, add_code_block
+from executions.ui.layout_utils import add_button, add_code_block, add_text_edit
 
 
 class ResultsWindow(QWidget):
@@ -43,17 +43,44 @@ class ResultsWindow(QWidget):
         self.middle_layout = QVBoxLayout()
         layout.addLayout(self.middle_layout)
 
-        infoLabel = QLabel()
-        self.middle_layout.addWidget(infoLabel, alignment=Qt.AlignTop)
+        # Adding formatted text to QLabel
+        label_html = f"""
+            <h2>Results:</h2>
+        """
+
+        label = QLabel(label_html)
+        self.middle_layout.addWidget(label)
+
+        # Adding formatted text to QLabel
+        label_html = f"""
+            <h3>DNA Sequences Difference:</h3>
+        """
+
+        label = QLabel(label_html)
+        self.middle_layout.addWidget(label)
 
         # Mark non-equal codons and print the target sequence
         marked_input_seq, marked_target_seq, marked_seq, region_list_target = mark_non_equal_codons(
             self.selected_region_list, self.target_seq)
 
-        info = marked_seq
-        # info += SequenceUtils.get_sequence("Target DNA sequence", self.target_seq)
+        content = f'\n {marked_input_seq}\n\n {marked_target_seq}\n'
+        text_edit = add_text_edit(self.middle_layout, "", content, wrap=QTextEdit.NoWrap)
+        text_edit.setStyleSheet("""
+            QTextEdit {
+                background-color: transparent;
+            }
+        """)
+        text_edit.setFixedHeight(100)  # Set fixed height
 
-        infoLabel.setText(info)
+        # Adding formatted text to QLabel
+        label_html = f"""
+            <br>
+            <br>
+            <h3>Target DNA Sequences:</h3>
+        """
+
+        label = QLabel(label_html)
+        self.middle_layout.addWidget(label)
 
         add_code_block(self.middle_layout, self.target_seq)
 
