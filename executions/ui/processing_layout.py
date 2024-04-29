@@ -249,14 +249,17 @@ class RegionSelector(QWidget):
         self.submit_button = None
         self.init_ui(layout)
 
-    def init_ui(self, parent_layout):
+    def init_ui(self, parent_widget):
         # Create a new QVBoxLayout for the content of this section
-        layout = QVBoxLayout()
+        scroll_area = QScrollArea()  # Create a scroll area
+        scroll_area.setFixedHeight(200)  # Set the maximum height for scrolling to begin.
+        scroll_area.setAlignment(Qt.AlignTop)
 
-        # Add this layout to the parent layout
-        parent_layout.setLayout(layout)
+        scroll_content = QWidget()  # Create a widget to hold the content
 
-        instructions_label = QLabel("Check the regions you want to exclude:")
+        layout = QVBoxLayout(scroll_content)  # Layout for the content widget
+
+        instructions_label = QLabel("Please check the regions you want to exclude:")
         layout.addWidget(instructions_label, alignment=Qt.AlignTop)
 
         for index, region in enumerate(self.original_coding_regions):
@@ -264,8 +267,16 @@ class RegionSelector(QWidget):
             layout.addWidget(checkbox, alignment=Qt.AlignTop)
             self.checkboxes.append((checkbox, region))
 
-        self.submit_button = add_button(layout, 'Submit Exclusions', Qt.AlignLeft, self.submit_exclusions,
-                                        (layout,), size=(200, 30))
+        # Set the content widget for the scroll area
+        scroll_area.setWidget(scroll_content)
+        scroll_area.setWidgetResizable(True)  # Allow the widget to resize with the scroll area
+
+        # Add the scroll area to the parent widget
+        parent_layout = QVBoxLayout(parent_widget)  # Assuming parent_widget already has a QVBoxLayout
+        parent_layout.addWidget(scroll_area)
+
+        self.submit_button = add_button(parent_layout, 'Submit Exclusions', Qt.AlignLeft, self.submit_exclusions,
+                                        (parent_layout,), size=(200, 30))
 
     def submit_exclusions(self, layout):
         checked_indices = [index for index, (checkbox, region) in enumerate(self.checkboxes) if checkbox.isChecked()]
