@@ -7,7 +7,6 @@ from PyQt5.QtWidgets import QHBoxLayout, QSizePolicy, QSpacerItem
 
 from executions.execution_utils import mark_non_equal_codons, initialize_report
 from executions.ui.layout_utils import add_button, add_code_block, add_text_edit
-from utils.file_utils import delete_file
 
 
 class CustomWebEngineView(QWebEngineView):
@@ -201,6 +200,6 @@ class ResultsWindow(QWidget):
         preview_dialog.exec_()  # Show the dialog window modally
 
     def quit(self):
-        delete_file(self.report_local_file_path)
+        self.report.delete_report()
         QApplication.instance().quit()
 

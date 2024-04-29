@@ -1,4 +1,5 @@
 import os
+import shutil
 
 
 # Define a base class for reading data from a file.
@@ -62,12 +63,9 @@ def create_dir(directory):
         print(f"Creation of the directory '{directory}' failed because of {error}")
 
 
-def delete_file(file_path):
+def delete_dir(directory):
     try:
-        os.remove(file_path)
-    except FileNotFoundError:
-        print(f"The file {file_path} does not exist.")
-    except PermissionError:
-        print(f"Permission denied: unable to delete {file_path}.")
-    except Exception as e:
-        print(f"An error occurred: {e}.")
+        shutil.rmtree(directory)
+        print(f"Directory '{directory}' successfully deleted")
+    except OSError as error:
+        print(f"Deleting of the directory '{directory}' failed because of {error}")

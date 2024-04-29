@@ -7,7 +7,7 @@ import jinja2
 from settings.costs_settings import elimination_process_description, coding_region_cost_description, \
     non_coding_region_cost_description
 from utils.display_utils import SequenceUtils
-from utils.file_utils import create_dir
+from utils.file_utils import create_dir, delete_dir
 
 
 class Report:
@@ -78,7 +78,7 @@ class Report:
         self.output_text = template.render(context)
 
         # Save to a file
-        create_dir("output")
+        create_dir('output')
         file_name = "Elimination Output Report - "
         today_date = datetime.today().strftime("%d %b %y, %H_%M_%S")
         self.report_filename = f'{file_name} {today_date}.html'
@@ -101,3 +101,5 @@ class Report:
 
         return f"\nOutput HTML file report save in: {output_html_path}"
 
+    def delete_report(self):
+        delete_dir('output')
