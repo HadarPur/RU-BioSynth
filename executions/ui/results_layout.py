@@ -1,12 +1,14 @@
+import os
+
+from PyQt5.QtCore import Qt, QUrl
+from PyQt5.QtWebEngineWidgets import QWebEngineView, QWebEngineSettings
 from PyQt5.QtWidgets import QApplication, QLabel, QPushButton, QWidget, QVBoxLayout, QDialog, QTextEdit
 from PyQt5.QtWidgets import QHBoxLayout, QSizePolicy, QSpacerItem
-from PyQt5.QtWebEngineWidgets import QWebEngineView, QWebEngineSettings
-from PyQt5.QtCore import Qt, QUrl
 
 from executions.execution_utils import mark_non_equal_codons, initialize_report
 from executions.ui.layout_utils import add_button, add_code_block, add_text_edit
 from utils.file_utils import delete_file
-import os
+
 
 class CustomWebEngineView(QWebEngineView):
     def __init__(self, parent=None):
