@@ -9,9 +9,9 @@ from utils.elimination_utils import EliminationUtils
 class EliminateSequence:
     @staticmethod
     def eliminate(seq, unwanted_patterns, cost_table):
-        info = f"Starting Elimination Process..."
-        info += f"\nUnwanted Patterns: {unwanted_patterns}"
-        info += f"\nOriginal Sequence: {seq}"
+        info = f"Starting Elimination Process...\n"
+        info += f"\nUnwanted Patterns: \n{unwanted_patterns}\n"
+        info += f"\nOriginal Sequence: \n{seq}"
         info += f"\n\nElimination Process: \n{elimination_process_description}"
         info += f"\n\nCoding regions: \n{coding_region_cost_description}"
         info += f"\n\nNon-Coding regions: \n{non_coding_region_cost_description}"
@@ -54,8 +54,8 @@ class EliminateSequence:
             current_state = prev_state
         sequence.reverse()
 
-        info += "\nElimination Process Completed!"
-        info += f"\nModified Sequence: {''.join(sequence)}"
+        info += "\nElimination Process Completed!\n"
+        info += f"\nModified Sequence: \n{''.join(sequence)}\n"
         info += f"\nTotal Cost: {min_cost:.10g}\n"
 
         return info, ''.join(sequence), min_cost

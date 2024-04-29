@@ -87,8 +87,52 @@ class DNASequenceApp(QMainWindow):
 class GUI:
     @staticmethod
     def execute():
+        stylesheet = """
+        QScrollArea {
+            border: none;
+            background: white; /* This will be the color of the 'margin' */
+        }
+
+        QScrollBar:vertical {
+            border: none;
+            background: lightgray; /* This should match the QScrollArea background */
+            width: 6px;
+            margin: 0 0 0 4px; /* Vertical margin space */
+        }
+
+        QScrollBar::handle:vertical {
+            background: gray;
+            min-height: 20px;
+        }
+
+        QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical {
+            height: 0px;
+        }
+
+        QScrollBar:horizontal {
+            border: none;
+            background: lightgray; /* This should match the QScrollArea background */
+            height: 6px;
+            margin: 4px 0 0 0; /* Vertical margin space */
+
+        }
+    
+        QScrollBar::handle:horizontal {
+            background: gray;
+            min-width: 20px;
+        }
+        
+        QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical {
+            width: 0px;
+        }
+
+        
+        """
+
         app = QApplication(sys.argv)
         ex = DNASequenceApp()
         ex.show()
         app.setWindowIcon(QIcon('images/logo.png'))
+        app.setStyleSheet(stylesheet)
+
         sys.exit(app.exec_())

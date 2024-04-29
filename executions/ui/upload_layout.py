@@ -1,5 +1,6 @@
-from PyQt5.QtWidgets import QWidget, QMessageBox, QFileDialog, QVBoxLayout, QHBoxLayout, QSpacerItem, QSizePolicy
 from PyQt5.QtCore import Qt
+from PyQt5.QtWidgets import QWidget, QMessageBox, QFileDialog, QVBoxLayout, QHBoxLayout, QSpacerItem, QSizePolicy
+
 from executions.ui.layout_utils import add_intro, add_svg_logo, add_button, add_text_edit
 
 
@@ -19,6 +20,7 @@ class UploadWindow(QWidget):
         layout = QVBoxLayout(self)
 
         top_layout = QHBoxLayout()
+        top_layout.setContentsMargins(20, 20, 20, 20)
         layout.addLayout(top_layout)
 
         add_intro(top_layout)
@@ -29,6 +31,7 @@ class UploadWindow(QWidget):
         add_svg_logo(top_layout)
 
         middle_layout = QVBoxLayout()
+        middle_layout.setContentsMargins(20, 20, 20, 20)
         layout.addLayout(middle_layout)
 
         self.dna_text_edit = add_text_edit(middle_layout, "Upload DNA Sequence (.txt):", self.dna_file_content)

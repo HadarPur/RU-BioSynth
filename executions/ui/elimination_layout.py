@@ -1,8 +1,8 @@
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QLabel, QWidget, QSpacerItem, QSizePolicy, QVBoxLayout, QScrollArea
+from PyQt5.QtWidgets import QWidget, QSizePolicy, QVBoxLayout
 
 from executions.execution_utils import eliminate_unwanted_patterns
-from executions.ui.layout_utils import add_button
+from executions.ui.layout_utils import add_button, add_text_edit_html
 
 
 class EliminationWindow(QWidget):
@@ -36,35 +36,30 @@ class EliminationWindow(QWidget):
 
     def display_info(self, layout):
         middle_layout = QVBoxLayout()
+        middle_layout.setContentsMargins(20, 20, 20, 20)
+
         layout.addLayout(middle_layout)
 
-        scroll = QScrollArea()
-        middle_layout.addWidget(scroll, alignment=Qt.AlignTop)
-
-        content_widget = QWidget()
-        scroll.setWidget(content_widget)
-        scroll.setStyleSheet("QScrollArea { border: none; }")
-        scroll.setAlignment(Qt.AlignTop)
-        scroll.setWidgetResizable(True)
-        scroll.setFixedHeight(650)
-
-        content_layout = QVBoxLayout(content_widget)
+        content_layout = QVBoxLayout()
+        middle_layout.addLayout(content_layout)
 
         info, target_seq, min_cost = eliminate_unwanted_patterns(self.dna_sequence, self.unwanted_patterns,
                                                                  self.selected_region_list)
+
         info = info.replace("\n", "<br>")
-        # Adding formatted text to QLabel
         label_html = f"""
-            <h3>Elimination Process:</h3>
+            <h2>Elimination Process:</h2>
             <p>{info}</p>
         """
+        info_text_edit = add_text_edit_html(content_layout, "", label_html)
+        info_text_edit.setMinimumHeight(650)
 
-        label = QLabel(label_html)
-        label.setWordWrap(True)
-        content_layout.addWidget(label)
+        # Adjust size policy to expand with content
+        info_text_edit.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        document = info_text_edit.document()
+        document.contentsChanged.connect(lambda: info_text_edit.setMaximumHeight(document.size().height()))
 
-        # Spacer to push other widgets to the top
-        content_layout.addSpacerItem(QSpacerItem(0, 0, QSizePolicy.Minimum, QSizePolicy.Expanding))
+        content_layout.addStretch(1)  # This ensures that the layout can expand and push content
 
         # Add next button to the bottom layout
         add_button(layout, 'Next', Qt.AlignRight, self.switch_to_results_callback,

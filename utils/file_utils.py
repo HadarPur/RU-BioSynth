@@ -1,3 +1,6 @@
+import os
+
+
 # Define a base class for reading data from a file.
 class FileDataReader:
     def __init__(self, file_path):
@@ -50,3 +53,21 @@ class PatternReader(FileDataReader):
             patterns = line.strip().split(',')
             res.update(patterns)
         return res
+
+
+def create_dir(directory):
+    try:
+        os.makedirs(directory, exist_ok=True)
+    except OSError as error:
+        print(f"Creation of the directory '{directory}' failed because of {error}")
+
+
+def delete_file(file_path):
+    try:
+        os.remove(file_path)
+    except FileNotFoundError:
+        print(f"The file {file_path} does not exist.")
+    except PermissionError:
+        print(f"Permission denied: unable to delete {file_path}.")
+    except Exception as e:
+        print(f"An error occurred: {e}.")

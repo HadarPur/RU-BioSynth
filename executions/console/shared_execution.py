@@ -1,6 +1,6 @@
 import copy
 
-from executions.execution_utils import eliminate_unwanted_patterns, mark_non_equal_codons, save_report_locally
+from executions.execution_utils import eliminate_unwanted_patterns, mark_non_equal_codons, initialize_report
 from utils.display_utils import SequenceUtils
 from utils.dna_utils import DNAHighlighter
 from utils.input_utils import UserInputHandler
@@ -9,13 +9,17 @@ from utils.input_utils import UserInputHandler
 def save_report_if_requested(seq, target_seq, marked_input_seq, marked_target_seq, unwanted_patterns,
                              original_coding_regions, selected_regions_to_exclude, region_list, selected_region_list,
                              min_cost):
-    save_report = input("\n\nDo you want to save the report? (yes/no): ").lower()
+    report = initialize_report(seq, target_seq, marked_input_seq, marked_target_seq, unwanted_patterns,
+                               original_coding_regions, selected_regions_to_exclude, region_list,
+                               selected_region_list,
+                               min_cost)
+    report.create_report()
+
+    save_report = input(
+        "\n\nElimination report is now available, do you want to download the report? (yes/no): ").lower()
 
     if save_report == 'yes' or save_report == 'y':
-        report_path = save_report_locally(seq, target_seq, marked_input_seq, marked_target_seq, unwanted_patterns,
-                                          original_coding_regions, selected_regions_to_exclude, region_list,
-                                          selected_region_list,
-                                          min_cost)
+        report_path = report.save_report()
         print(report_path)
         print("Report saved successfully!")
     elif save_report == 'no' or save_report == 'n':
@@ -50,7 +54,8 @@ class Shared:
 
         # Highlight coding regions and print the sequence
         highlighted_sequence = DNAHighlighter.highlight_coding_regions(self.seq, original_coding_regions)
-        print(f'\nIdentify the coding regions within the given DNA sequence and mark them for emphasis:\n\t {SequenceUtils.get_highlighted_sequence(highlighted_sequence)}')
+        print(
+            f'\nIdentify the coding regions within the given DNA sequence and mark them for emphasis:\n\t {SequenceUtils.get_highlighted_sequence(highlighted_sequence)}')
 
         # Print the number of coding regions found
         print(f"\nNumber of coding regions is: {len(original_coding_regions)}")

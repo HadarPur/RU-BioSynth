@@ -121,7 +121,7 @@ class SequenceUtils:
         for idx, chunk in enumerate(colored_chunks):
             if idx % 2 == 0:
                 if chunk.startswith(prefix) and any(chunk.endswith(suf) for suf in suffix):
-                    spaced_chunk = " ".join(chunk[i:i + chunk_size] for i in range(0, len(chunk), chunk_size))
+                    spaced_chunk = "".join(chunk[i:i + chunk_size] for i in range(0, len(chunk), chunk_size))
                 else:
                     spaced_chunk = chunk
             else:
@@ -196,10 +196,10 @@ class SequenceUtils:
         for seq_info in sequences:
             if seq_info['is_coding_region']:
                 coding_sequence = seq_info["seq"]
-                coding_sequence_with_spaces = ' '.join(
+                coding_sequence_with_spaces = ''.join(
                     coding_sequence[i:i + 3] for i in range(0, len(coding_sequence), 3))
                 color_counter, color = SequenceUtils.get_color_for_coding_region(color_counter)
-                html_output += f' <span style="color: {color};">{coding_sequence_with_spaces} </span>'
+                html_output += f'<span style="color: {color};">&nbsp;&nbsp;&nbsp;&nbsp;{coding_sequence_with_spaces}&nbsp;&nbsp;&nbsp;&nbsp;</span>'
             else:
                 html_output += seq_info['seq']
 

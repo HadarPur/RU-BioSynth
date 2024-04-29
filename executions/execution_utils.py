@@ -38,19 +38,35 @@ def mark_non_equal_codons(region_list, target_seq):
     return marked_input_seq, marked_target_seq, marked_seq, region_list_target
 
 
-def save_report_locally(seq, target_seq, marked_input_seq, marked_target_seq, unwanted_patterns,
-                        original_coding_regions, original_region_list, selected_regions_to_exclude,
-                        selected_region_list,
-                        min_cost):
-    report_path = Report(seq,
-                         target_seq,
-                         marked_input_seq,
-                         marked_target_seq,
-                         unwanted_patterns,
-                         original_coding_regions,
-                         original_region_list,
-                         selected_regions_to_exclude,
-                         selected_region_list,
-                         min_cost).create_report()
+def initialize_report(seq, target_seq, marked_input_seq, marked_target_seq, unwanted_patterns,
+                      original_coding_regions, original_region_list, selected_regions_to_exclude, selected_region_list,
+                      min_cost):
+    report = Report(seq,
+                    target_seq,
+                    marked_input_seq,
+                    marked_target_seq,
+                    unwanted_patterns,
+                    original_coding_regions,
+                    original_region_list,
+                    selected_regions_to_exclude,
+                    selected_region_list,
+                    min_cost)
+    return report
 
-    return report_path
+#
+# def save_report_locally(seq, target_seq, marked_input_seq, marked_target_seq, unwanted_patterns,
+#                         original_coding_regions, original_region_list, selected_regions_to_exclude,
+#                         selected_region_list,
+#                         min_cost):
+#     report_path = Report(seq,
+#                          target_seq,
+#                          marked_input_seq,
+#                          marked_target_seq,
+#                          unwanted_patterns,
+#                          original_coding_regions,
+#                          original_region_list,
+#                          selected_regions_to_exclude,
+#                          selected_region_list,
+#                          min_cost).create_report()
+#
+#     return report_path

@@ -1,12 +1,13 @@
 import copy
 
-from PyQt5.QtCore import Qt, QTimer
-from PyQt5.QtWidgets import QWidget, QVBoxLayout, QLabel, QCheckBox, QHBoxLayout, QMessageBox
+from PyQt5.QtCore import Qt, QEvent, QTimer, QPropertyAnimation, QEasingCurve
 from PyQt5.QtWidgets import QSpacerItem, QSizePolicy, QScrollArea
+from PyQt5.QtWidgets import QWidget, QVBoxLayout, QLabel, QCheckBox, QHBoxLayout, QMessageBox
 
 from executions.ui.layout_utils import add_button, add_text_edit_html, add_text_edit
 from utils.display_utils import SequenceUtils
 from utils.dna_utils import DNAHighlighter
+from utils.input_utils import UserInputHandler
 
 
 class ProcessWindow(QWidget):
@@ -22,6 +23,9 @@ class ProcessWindow(QWidget):
         self.no_button = None
         self.region_selector = None
         self.submit_button = None
+        self.animation = None
+
+        self.content_widget = None
 
         self.init_ui(back_to_upload_callback)
 
@@ -32,6 +36,7 @@ class ProcessWindow(QWidget):
 
     def display_info(self, layout):
         middle_layout = QVBoxLayout()
+        middle_layout.setContentsMargins(20, 20, 20, 20)
         layout.addLayout(middle_layout)
 
         self.scroll = QScrollArea()
@@ -42,11 +47,10 @@ class ProcessWindow(QWidget):
 
         middle_layout.addWidget(self.scroll, alignment=Qt.AlignTop)
 
-        content_widget = QWidget()
-        content_widget.setFixedWidth(1050)
-        self.scroll.setWidget(content_widget)
+        self.content_widget = QWidget()
+        self.scroll.setWidget(self.content_widget)
 
-        content_layout = QVBoxLayout(content_widget)
+        content_layout = QVBoxLayout(self.content_widget)
         content_layout.setAlignment(Qt.AlignTop)  # Align the content_layout to the top
 
         # Adding formatted text to QLabel
@@ -60,6 +64,11 @@ class ProcessWindow(QWidget):
         content = f'{self.dna_sequence}'
         text_edit = add_text_edit(content_layout, "", content)
         text_edit.setFixedHeight(150)
+        text_edit.setStyleSheet("""
+            QTextEdit {
+                background-color: transparent;
+            }
+        """)
 
         label_html = f"""
             <h3>Unwanted Patterns:</h3>
@@ -69,7 +78,13 @@ class ProcessWindow(QWidget):
 
         content = f'{SequenceUtils.get_patterns(self.unwanted_patterns)}'
         text_edit = add_text_edit(content_layout, "", content)
-        text_edit.setFixedHeight(150)
+        text_edit.setFixedHeight(100)
+        text_edit.setFixedWidth(1000)
+        text_edit.setStyleSheet("""
+            QTextEdit {
+                background-color: transparent;
+            }
+        """)
 
         original_region_list = DNAHighlighter.get_coding_and_non_coding_regions(self.dna_sequence)
         original_coding_regions, coding_indexes = DNAHighlighter.extract_coding_regions_with_indexes(
@@ -87,7 +102,7 @@ class ProcessWindow(QWidget):
         content_layout.addWidget(label)
 
         label_html = f'''
-        <p>{SequenceUtils.get_highlighted_sequence(highlighted_sequence)}</p>
+        <p style="word-wrap: break-word;">{highlighted_sequence}</p>
         '''
 
         text_edit = add_text_edit_html(content_layout, "", label_html)
@@ -109,6 +124,8 @@ class ProcessWindow(QWidget):
 
         self.next_button = add_button(layout, 'Next', Qt.AlignRight)
         self.next_button.setEnabled(False)
+
+        QTimer.singleShot(50, self.scroll_to_bottom)  # Add this line
 
     def prompt_coding_regions_decision(self, layout, original_coding_regions, original_region_list, coding_indexes,
                                        unwanted_patterns):
@@ -141,14 +158,12 @@ class ProcessWindow(QWidget):
             return
 
         self.no_button.setEnabled(False)
+        original_coding_regions = UserInputHandler.get_coding_regions_list(original_coding_regions)
 
         self.next_button.clicked.connect(
             lambda: self.switch_to_eliminate_callback(original_coding_regions, original_region_list, None,
                                                       original_region_list))
         self.next_button.setEnabled(True)
-
-        # Scroll to the bottom after a short delay to ensure the layout updates
-        self.scroll_to_bottom()
 
     def select_regions_to_exclude(self, layout, original_coding_regions, original_region_list, coding_indexes,
                                   unwanted_patterns):
@@ -164,8 +179,7 @@ class ProcessWindow(QWidget):
                                               coding_indexes,
                                               unwanted_patterns, self.handle_results)
 
-        # Scroll to the bottom after a short delay to ensure the layout updates
-        self.scroll_to_bottom()
+        QTimer.singleShot(50, self.scroll_to_bottom)  # Add this line
 
     def handle_results(self, layout, original_coding_regions, original_region_list, selected_regions_to_exclude,
                        selected_region_list):
@@ -194,49 +208,31 @@ class ProcessWindow(QWidget):
         layout.addWidget(label)
 
         # Adding formatted text to QLabel
-        label_html = '''
-        <p>
-        ''' + ''.join(SequenceUtils.highlight_sequences_to_html(selected_region_list)) + '''</p>'''
+        label_html = f'''
+        <p>{SequenceUtils.highlight_sequences_to_html(selected_region_list)}</p>'''
         text_edit = add_text_edit_html(layout, "", label_html)
         text_edit.setFixedHeight(150)
 
-        # Scroll to the bottom after a short delay to ensure the layout updates
-        self.scroll_to_bottom()
-
-    def scroll_to_bottom_with_animation(self):
-        # Get the vertical scrollbar of the QTextEdit
-        scrollbar = self.scroll.verticalScrollBar()
-
-        # Get the maximum scrollbar value (bottom)
-        end_value = scrollbar.maximum()
-
-        # Create a QTimer for the animation steps
-        self.animation_timer = QTimer()
-        # Set the interval for each step of the animation (in milliseconds)
-        self.animation_timer.setInterval(20)  # Adjust the interval as needed
-        # Connect the timer timeout signal to the animation step function
-        self.animation_timer.timeout.connect(lambda: self.scroll_step(scrollbar, end_value))
-        # Start the timer
-        self.animation_timer.start()
-
-    def scroll_step(self, scrollbar, end_value):
-        # Calculate the current position of the scrollbar
-        current_value = scrollbar.value()
-
-        # Calculate the step size for smooth scrolling
-        step_size = (end_value - current_value) / 10.0  # Adjust the division factor for smoother/faster animation
-
-        # If we're within one step size of the target, set the scrollbar directly to the target value
-        if abs(end_value - current_value) <= abs(step_size):
-            scrollbar.setValue(end_value)
-            self.animation_timer.stop()  # Stop the animation timer
-        else:
-            # Otherwise, move the scrollbar by one step size towards the target
-            scrollbar.setValue(int(current_value + step_size))
+        QTimer.singleShot(50, self.scroll_to_bottom)  # Add this line
 
     def scroll_to_bottom(self):
-        # Scroll to the bottom after a short delay to ensure the layout updates
-        QTimer.singleShot(50, self.scroll_to_bottom_with_animation)
+        vertical_scroll_bar = self.scroll.verticalScrollBar()
+        self.animation = QPropertyAnimation(vertical_scroll_bar, b'value')
+        self.animation.setDuration(1000)
+        self.animation.setStartValue(vertical_scroll_bar.value())
+        self.animation.setEndValue(vertical_scroll_bar.maximum())
+        self.animation.setEasingCurve(QEasingCurve.OutCubic)
+        self.animation.start()
+
+        # Install an event filter for the scroll area's viewport.
+        self.scroll.viewport().installEventFilter(self)
+
+    def eventFilter(self, source, event):
+        # If the user scrolls, stop the animation.
+        if event.type() == QEvent.Wheel and source == self.scroll.viewport():
+            self.animation.stop()
+            self.scroll.viewport().removeEventFilter(self)  # Remove event filter.
+        return super(ProcessWindow, self).eventFilter(source, event)  # Allow other eventHandlers to respond.
 
 
 class RegionSelector(QWidget):

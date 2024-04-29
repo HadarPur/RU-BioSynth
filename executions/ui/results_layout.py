@@ -1,9 +1,36 @@
-from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QApplication
-from PyQt5.QtWidgets import QLabel, QPushButton, QWidget, QSpacerItem, QSizePolicy, QVBoxLayout, QHBoxLayout, QTextEdit
-from PyQt5.QtGui import QPalette
-from executions.execution_utils import mark_non_equal_codons, save_report_locally
+from PyQt5.QtWidgets import QApplication, QLabel, QPushButton, QWidget, QVBoxLayout, QDialog, QTextEdit
+from PyQt5.QtWidgets import QHBoxLayout, QSizePolicy, QSpacerItem
+from PyQt5.QtWebEngineWidgets import QWebEngineView, QWebEngineSettings
+from PyQt5.QtCore import Qt, QUrl
+
+from executions.execution_utils import mark_non_equal_codons, initialize_report
 from executions.ui.layout_utils import add_button, add_code_block, add_text_edit
+from utils.file_utils import delete_file
+import os
+
+class CustomWebEngineView(QWebEngineView):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.loadFinished.connect(self.on_load_finished)
+
+    def on_load_finished(self, success):
+        if success:
+            # Run JavaScript to finely control scroll behavior
+            self.page().runJavaScript("""
+                // Prevent horizontal wheel events
+                document.addEventListener('wheel', function(event) {
+                    if (event.deltaX != 0) {
+                        event.preventDefault();
+                    }
+                }, { passive: false });
+
+                // Prevent default action on middle mouse button to avoid horizontal scrolling
+                document.addEventListener('mousedown', function(event) {
+                    if (event.button === 1) {
+                        event.preventDefault();
+                    }
+                }, { passive: false });
+            """)
 
 
 class ResultsWindow(QWidget):
@@ -23,10 +50,8 @@ class ResultsWindow(QWidget):
         self.top_layout = None
         self.middle_layout = None
         self.bottom_layout = None
-
-        self.yes_button = None
-        self.no_button = None
-        self.done_button = None
+        self.report = None
+        self.report_local_file_path = None
 
         self.init_ui(back_to_elimination_callback)
 
@@ -41,6 +66,7 @@ class ResultsWindow(QWidget):
 
     def display_info(self, layout):
         self.middle_layout = QVBoxLayout()
+        self.middle_layout.setContentsMargins(20, 20, 20, 20)
         layout.addLayout(self.middle_layout)
 
         # Adding formatted text to QLabel
@@ -99,41 +125,43 @@ class ResultsWindow(QWidget):
         self.bottom_layout.addStretch(1)
 
         # Add next button to the bottom layout
-        self.done_button = QPushButton('Done')
-        self.done_button.setFixedSize(60, 30)
-        self.done_button.setEnabled(False)
-        self.done_button.clicked.connect(QApplication.instance().quit)  # Connect to quit the application
-        self.bottom_layout.addWidget(self.done_button, alignment=Qt.AlignRight)
+        done_button = QPushButton('Done')
+        done_button.setFixedSize(60, 30)
+        done_button.clicked.connect(lambda: self.quit())  # Connect to quit the application
+        self.bottom_layout.addWidget(done_button, alignment=Qt.AlignRight)
 
     def prompt_report(self, layout, target_seq, marked_input_seq, marked_target_seq, original_coding_regions,
                       original_region_list, selected_regions_to_exclude, selected_region_list, min_cost):
+        self.report = initialize_report(self.dna_sequence, target_seq, marked_input_seq, marked_target_seq,
+                                        self.unwanted_patterns, original_coding_regions, original_region_list,
+                                        selected_regions_to_exclude, selected_region_list,
+                                        min_cost)
+
+        self.report_local_file_path = self.report.create_report()
+
         # Create a horizontal layout for the entire prompt
         prompt_layout = QHBoxLayout()
         prompt_layout.setSpacing(10)  # Adjust spacing between elements
 
         # Create and add the question label to the horizontal layout
-        question_label = QLabel("Do you want to save the report? (yes/no): ")
+        question_label = QLabel("Elimination report is now available")
         prompt_layout.addWidget(question_label)
 
         # Create the 'Yes' button
-        self.yes_button = QPushButton('Yes')
-        self.yes_button.setFixedSize(60, 30)
-        self.yes_button.clicked.connect(
-            lambda: self.save_report(layout, self.dna_sequence, target_seq, marked_input_seq, marked_target_seq,
-                                     self.unwanted_patterns,
-                                     original_coding_regions, original_region_list,
-                                     selected_regions_to_exclude, selected_region_list,
-                                     min_cost))
+        download_button = QPushButton('Download')
+        download_button.setFixedSize(100, 30)
+        download_button.clicked.connect(
+            lambda: self.download_report(layout))
 
         # Create the 'No' button
-        self.no_button = QPushButton('No')
-        self.no_button.setFixedSize(60, 30)
-        self.no_button.clicked.connect(
-            lambda: self.do_not_save_report(layout))
+        show_preview_button = QPushButton("Show Preview")
+        show_preview_button.setFixedSize(120, 30)
+        show_preview_button.clicked.connect(
+            lambda: self.show_preview_report())
 
         # Add the buttons to the horizontal layout
-        prompt_layout.addWidget(self.yes_button)
-        prompt_layout.addWidget(self.no_button)
+        prompt_layout.addWidget(download_button)
+        prompt_layout.addWidget(show_preview_button)
 
         # Add a spacer to push the buttons to the left
         spacer = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
@@ -142,31 +170,35 @@ class ResultsWindow(QWidget):
         # Add the entire horizontal layout to the parent layout
         layout.addLayout(prompt_layout)
 
-    def save_report(self, layout, seq, target_seq, marked_input_seq, marked_target_seq, unwanted_patterns,
-                    original_coding_regions, original_region_list, selected_regions_to_exclude, selected_region_list,
-                    min_cost):
-        if not self.no_button.isEnabled():
-            return
-
-        report_path = save_report_locally(seq, target_seq, marked_input_seq, marked_target_seq, unwanted_patterns,
-                                          original_coding_regions, original_region_list, selected_regions_to_exclude,
-                                          selected_region_list,
-                                          min_cost)
+    def download_report(self, layout):
+        report_path = self.report.save_report()
         report_path += "\nReport saved successfully!"
 
         message_label = QLabel(report_path)
         layout.addWidget(message_label)
 
-        self.no_button.setEnabled(False)
-        self.done_button.setEnabled(True)
+    def show_preview_report(self):
+        # Create the dialog as a floating window
+        preview_dialog = QDialog(self)
+        preview_dialog.setWindowTitle('Elimination Report Preview')
+        preview_dialog.setFixedSize(1200, 800)
 
-    def do_not_save_report(self, layout):
-        if not self.yes_button.isEnabled():
-            return
+        # Create a QWebEngineView as the HTML container
+        web_view = CustomWebEngineView(preview_dialog)
+        settings = web_view.settings()
+        settings.setAttribute(QWebEngineSettings.LocalContentCanAccessFileUrls, True)
+        settings.setAttribute(QWebEngineSettings.LocalContentCanAccessRemoteUrls, True)
+        web_view.load(QUrl.fromLocalFile(os.path.abspath(self.report_local_file_path)))
 
-        message = "Report not saved."
-        message_label = QLabel(message)
-        layout.addWidget(message_label)
+        # Layout for the dialog
+        layout = QVBoxLayout(preview_dialog)
+        layout.addWidget(web_view)
 
-        self.yes_button.setEnabled(False)
-        self.done_button.setEnabled(True)
+        # Set layout and show the dialog
+        preview_dialog.setLayout(layout)
+        preview_dialog.exec_()  # Show the dialog window modally
+
+    def quit(self):
+        delete_file(self.report_local_file_path)
+        QApplication.instance().quit()
+
