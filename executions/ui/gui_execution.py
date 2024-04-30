@@ -88,6 +88,9 @@ class GUI:
     @staticmethod
     def execute():
         stylesheet = """
+        QTextEdit {
+            padding: 5px; /* Top, Right, Bottom, Left */
+        }
         QScrollArea {
             border: none;
             background: white; /* This will be the color of the 'margin' */
@@ -96,8 +99,7 @@ class GUI:
         QScrollBar:vertical {
             border: none;
             background: lightgray; /* This should match the QScrollArea background */
-            width: 6px;
-            margin: 0 0 0 4px; /* Vertical margin space */
+            width: 2px;
         }
 
         QScrollBar::handle:vertical {

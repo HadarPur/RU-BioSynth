@@ -41,6 +41,7 @@ def add_svg_logo(layout):
 def add_text_edit(layout, placeholder, content, wrap=None):
     text_edit = QTextEdit()
     text_edit.setPlaceholderText(placeholder)
+
     if content:
         text_edit.setPlainText(content)
 

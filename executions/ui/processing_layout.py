@@ -67,10 +67,12 @@ class ProcessWindow(QWidget):
         text_edit.setStyleSheet("""
             QTextEdit {
                 background-color: transparent;
+                border: 1px solid gray;
             }
         """)
 
         label_html = f"""
+            <br>
             <h3>Unwanted Patterns:</h3>
         """
         label = QLabel(label_html)
@@ -79,10 +81,10 @@ class ProcessWindow(QWidget):
         content = f'{SequenceUtils.get_patterns(self.unwanted_patterns)}'
         text_edit = add_text_edit(content_layout, "", content)
         text_edit.setFixedHeight(100)
-        text_edit.setFixedWidth(1000)
         text_edit.setStyleSheet("""
             QTextEdit {
                 background-color: transparent;
+                border: 1px solid gray;
             }
         """)
 
@@ -93,6 +95,7 @@ class ProcessWindow(QWidget):
 
         # Adding formatted text to QLabel
         label_html = f"""
+            <br>
             <h2>DNA Elimination</h2>
             <h3>Coding Regions:</h3>
             <p>Identify the coding regions within the given DNA sequence and mark them for emphasis:
@@ -107,6 +110,12 @@ class ProcessWindow(QWidget):
 
         text_edit = add_text_edit_html(content_layout, "", label_html)
         text_edit.setFixedHeight(150)
+        text_edit.setStyleSheet("""
+            QTextEdit {
+                background-color: transparent;
+                border: 1px solid gray;
+            }
+        """)
 
         label_html = f"""
             <p>Number of coding regions is {len(original_coding_regions)}</p>
@@ -212,6 +221,12 @@ class ProcessWindow(QWidget):
         <p>{SequenceUtils.highlight_sequences_to_html(selected_region_list)}</p>'''
         text_edit = add_text_edit_html(layout, "", label_html)
         text_edit.setFixedHeight(150)
+        text_edit.setStyleSheet("""
+            QTextEdit {
+                background-color: transparent;
+                border: 1px solid gray;
+            }
+        """)
 
         QTimer.singleShot(50, self.scroll_to_bottom)  # Add this line
 

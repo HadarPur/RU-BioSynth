@@ -95,6 +95,7 @@ class ResultsWindow(QWidget):
         text_edit.setStyleSheet("""
             QTextEdit {
                 background-color: transparent;
+                border: 1px solid gray;
             }
         """)
         text_edit.setFixedHeight(100)  # Set fixed height
