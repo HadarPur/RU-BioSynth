@@ -13,7 +13,7 @@ class EliminationWindow(QWidget):
         super().__init__()
         self.switch_to_results_callback = switch_to_results_callback
         self.dna_sequence = dna_sequence
-        self.unwanted_patterns = set(unwanted_patterns.split())
+        self.unwanted_patterns = unwanted_patterns
         self.original_coding_regions = original_coding_regions
         self.original_region_list = original_region_list
         self.selected_regions_to_exclude = selected_regions_to_exclude

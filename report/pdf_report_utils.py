@@ -7,7 +7,7 @@ import jinja2
 from settings.costs_settings import elimination_process_description, coding_region_cost_description, \
     non_coding_region_cost_description
 from utils.display_utils import SequenceUtils
-from utils.file_utils import create_dir, delete_dir
+from utils.file_utils import create_dir
 
 
 class Report:
@@ -25,25 +25,25 @@ class Report:
         self.report_filename = None
 
         if self.num_of_coding_regions > 0:
-            self.regions = '''<p>The total number of coding regions is ''' + ''.join(f'{self.num_of_coding_regions}') + ''', identifies as follows:<br>
-                                  ''' + '<br>'.join(
+            self.regions = '''<p><br>The total number of coding regions is ''' + ''.join(f'{self.num_of_coding_regions}') + ''', identifies as follows:</p>
+                                  <p class="scrollable-paragraph">''' + '<br>'.join(
                 f"[{key}] {value}" for key, value in original_coding_regions.items()) + '''</p>'''
 
             if selected_regions_to_exclude is not None and len(selected_regions_to_exclude) > 0:
-                self.chosen_regions = '''<p>The specific coding regions that the user wish to exclude from the elimination process are as follows:<br>
-                                      ''' + '<br>'.join(
-                    f"[{key}] {value}" for key, value in selected_regions_to_exclude.items()) + '''
-                                      <br><br>These coding regions will be classified as non-coding areas.</p>'''
+                self.chosen_regions = '''<p><br>The specific coding regions that the user wish to exclude from the elimination process are as follows:</p>
+                                            <p class="scrollable-paragraph">''' + '<br>'.join(
+                    f"[{key}] {value}" for key, value in selected_regions_to_exclude.items()) + '''</p>
+                                      <p>These coding regions will be classified as non-coding areas.</p>'''
 
-                self.highlight_selected = '''<p>The full sequence after selection is:<br>
-                                      ''' + ''.join(
+                self.highlight_selected = '''<p><br>The full sequence after selection is:</p>
+                                      <p class="scrollable-paragraph">''' + ''.join(
                     SequenceUtils.highlight_sequences_to_html(selected_region_list)) + '''</p>'''
 
             else:
-                self.chosen_regions = '''<p>No coding regions were selected for exclusion. Continuing with the current settings.</p>'''
+                self.chosen_regions = '''<p><br>No coding regions were selected for exclusion. Continuing with the current settings.</p>'''
                 self.highlight_selected = ""
         else:
-            self.regions = '''<p>No coding region was identified in the provided DNA sequence</p>'''
+            self.regions = '''<p><br>No coding region was identified in the provided DNA sequence</p>'''
             self.chosen_regions = ""
             self.highlight_selected = ""
 
@@ -101,5 +101,3 @@ class Report:
 
         return f"\nOutput HTML file report save in: {output_html_path}"
 
-    def delete_report(self):
-        delete_dir('output')

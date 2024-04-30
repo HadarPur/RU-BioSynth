@@ -15,7 +15,7 @@ class ProcessWindow(QWidget):
         super().__init__()
         self.switch_to_eliminate_callback = switch_to_eliminate_callback
         self.dna_sequence = dna_sequence
-        self.unwanted_patterns = set(unwanted_patterns.split())
+        self.unwanted_patterns = unwanted_patterns
 
         self.scroll = None
         self.next_button = None
@@ -265,6 +265,13 @@ class RegionSelector(QWidget):
         self.init_ui(layout)
 
     def init_ui(self, parent_widget):
+        # Create a new QVBoxLayout for the parent widget
+        parent_layout = QVBoxLayout(parent_widget)  # Assuming parent_widget already has a QVBoxLayout
+
+        # Create the instructions label and add it to the parent layout
+        instructions_label = QLabel("Please check the regions you want to exclude:")
+        parent_layout.addWidget(instructions_label, alignment=Qt.AlignTop)
+
         # Create a new QVBoxLayout for the content of this section
         scroll_area = QScrollArea()  # Create a scroll area
         scroll_area.setFixedHeight(200)  # Set the maximum height for scrolling to begin.
@@ -273,9 +280,6 @@ class RegionSelector(QWidget):
         scroll_content = QWidget()  # Create a widget to hold the content
 
         layout = QVBoxLayout(scroll_content)  # Layout for the content widget
-
-        instructions_label = QLabel("Please check the regions you want to exclude:")
-        layout.addWidget(instructions_label, alignment=Qt.AlignTop)
 
         for index, region in enumerate(self.original_coding_regions):
             checkbox = QCheckBox(f"[{index + 1}]: {region}")
@@ -287,7 +291,6 @@ class RegionSelector(QWidget):
         scroll_area.setWidgetResizable(True)  # Allow the widget to resize with the scroll area
 
         # Add the scroll area to the parent widget
-        parent_layout = QVBoxLayout(parent_widget)  # Assuming parent_widget already has a QVBoxLayout
         parent_layout.addWidget(scroll_area)
 
         self.submit_button = add_button(parent_layout, 'Submit Exclusions', Qt.AlignLeft, self.submit_exclusions,

@@ -8,6 +8,8 @@ from executions.ui.processing_layout import ProcessWindow
 from executions.ui.results_layout import ResultsWindow
 from executions.ui.upload_layout import UploadWindow
 
+from executions.execution_utils import is_valid_dna, is_valid_patterns
+
 
 class DNASequenceApp(QMainWindow):
     def __init__(self):
@@ -47,13 +49,21 @@ class DNASequenceApp(QMainWindow):
         self.stackedLayout.setCurrentWidget(elimination_window)
 
     def switch_to_process_window(self, dna_sequence, unwanted_patterns):
-        # TODO: add check if the seq and unwanted_patterns as expected
-        if not dna_sequence:
-            QMessageBox.warning(self, "Error", "Please upload valid DNA sequence file.")
+        if dna_sequence is None:
+            QMessageBox.warning(self, "Error", "There is an issue with the sequence file, please check and try again later.")
             return
 
-        if not unwanted_patterns:
-            QMessageBox.warning(self, "Error", "Please upload valid Patterns files.")
+        if not is_valid_dna(dna_sequence):
+            QMessageBox.warning(self, "Error", f"The sequence:\n{dna_sequence}\n\nis not valid, please check and try again later.")
+            return
+
+        unwanted_patterns = set(unwanted_patterns.split())
+        if unwanted_patterns is None or len(unwanted_patterns) == 0:
+            QMessageBox.warning(self, "Error", "There is an issue with the patterns file, please check and try again later.")
+            return
+
+        if not is_valid_patterns(unwanted_patterns):
+            QMessageBox.warning(self, "Error", f"The patterns:\n{unwanted_patterns}\n\nare not valid, please check and try again later.")
             return
 
         self.dna_sequence = dna_sequence

@@ -9,29 +9,8 @@ from executions.execution_utils import mark_non_equal_codons, initialize_report
 from executions.ui.layout_utils import add_button, add_code_block, add_text_edit
 
 
-class CustomWebEngineView(QWebEngineView):
-    def __init__(self, parent=None):
-        super().__init__(parent)
-        self.loadFinished.connect(self.on_load_finished)
-
-    def on_load_finished(self, success):
-        if success:
-            # Run JavaScript to finely control scroll behavior
-            self.page().runJavaScript("""
-                // Prevent horizontal wheel events
-                document.addEventListener('wheel', function(event) {
-                    if (event.deltaX != 0) {
-                        event.preventDefault();
-                    }
-                }, { passive: false });
-
-                // Prevent default action on middle mouse button to avoid horizontal scrolling
-                document.addEventListener('mousedown', function(event) {
-                    if (event.button === 1) {
-                        event.preventDefault();
-                    }
-                }, { passive: false });
-            """)
+def quit_app():
+    QApplication.instance().quit()
 
 
 class ResultsWindow(QWidget):
@@ -40,7 +19,7 @@ class ResultsWindow(QWidget):
                  back_to_elimination_callback):
         super().__init__()
         self.dna_sequence = dna_sequence
-        self.unwanted_patterns = set(unwanted_patterns.split())
+        self.unwanted_patterns = unwanted_patterns
         self.original_coding_regions = original_coding_regions
         self.original_region_list = original_region_list
         self.selected_regions_to_exclude = selected_regions_to_exclude
@@ -129,7 +108,7 @@ class ResultsWindow(QWidget):
         # Add next button to the bottom layout
         done_button = QPushButton('Done')
         done_button.setFixedSize(60, 30)
-        done_button.clicked.connect(lambda: self.quit())  # Connect to quit the application
+        done_button.clicked.connect(lambda: quit_app())  # Connect to quit the application
         self.bottom_layout.addWidget(done_button, alignment=Qt.AlignRight)
 
     def prompt_report(self, layout, target_seq, marked_input_seq, marked_target_seq, original_coding_regions,
@@ -186,7 +165,7 @@ class ResultsWindow(QWidget):
         preview_dialog.setFixedSize(1200, 800)
 
         # Create a QWebEngineView as the HTML container
-        web_view = CustomWebEngineView(preview_dialog)
+        web_view = QWebEngineView(preview_dialog)
         settings = web_view.settings()
         settings.setAttribute(QWebEngineSettings.LocalContentCanAccessFileUrls, True)
         settings.setAttribute(QWebEngineSettings.LocalContentCanAccessRemoteUrls, True)
@@ -200,7 +179,4 @@ class ResultsWindow(QWidget):
         preview_dialog.setLayout(layout)
         preview_dialog.exec_()  # Show the dialog window modally
 
-    def quit(self):
-        self.report.delete_report()
-        QApplication.instance().quit()
 

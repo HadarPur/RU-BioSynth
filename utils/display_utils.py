@@ -225,7 +225,7 @@ class SequenceUtils:
         for seq_info in sequences:
             if seq_info['is_coding_region']:
                 coding_sequence = seq_info["seq"]
-                coding_sequence_with_spaces = ' '.join(
+                coding_sequence_with_spaces = ''.join(
                     coding_sequence[i:i + 3] for i in range(0, len(coding_sequence), 3))
                 # Get the next color from the colors list, and wrap around if needed
                 color = colors[color_counter % len(colors)]

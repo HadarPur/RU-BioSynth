@@ -214,7 +214,7 @@
       .right-col p {
         font-size: 16px;
         line-height: 22px;
-        margin-bottom: 36px;
+        margin-bottom: 20px;
       }
 
       .right-col a {
@@ -260,10 +260,18 @@
 
       /* Add this CSS for horizontal scroll */
       .horizontal-scroll {
+        padding: 10px;
         white-space: nowrap;
         overflow-x: auto;
         height: fit-content;
-        max-width: 80%;
+        max-width: 90%; /* Adjust this value as needed */
+      }
+
+      .scrollable-paragraph {
+        height: 150px; /* Adjust the height as needed */
+        overflow-y: auto; /* Enables vertical scrolling */
+        padding: 10px; /* Optional: adds some padding inside the scrollable area */
+        border: 1px solid rgba(204, 204, 204, 0.5); /* Optional: adds a border around the paragraph */
       }
 
       /* Extra small-small devices (phones, 420px and down) */
@@ -419,23 +427,23 @@
 
           <h1 id="dna-sequence">Input</h1>
           <h2>DNA Sequence:</h2>
-          <p>
+          <p class="scrollable-paragraph">
             {{input}}
           </p>
 
           <h2 id="unwanted-patterns">Unwanted Patterns:</h2>
-          <p>
+          <p class="scrollable-paragraph">
             {{patterns}}
           </p>
 
           <div class="divider" style="width:24%; margin:30px 0;"></div>
 
           <h1 id="elimination">DNA Elimination</h1>
-          <p>
-            Identifies in the target sequence the following coding regions:
-            <br>
+          <p>Identifies in the target sequence the following coding regions:</p>
+          <p class="scrollable-paragraph">
             {{highlight_input}}
           </p>
+
           {{ regions | safe }}
           {{chosen_regions}}
           {{highlight_selected}}
@@ -466,16 +474,12 @@
 
           <h2 id="dna-sequences-difference">DNA Sequences Difference:</h2>
           <div class="horizontal-scroll">
-            <p class="monospace">
-              {{marked_input_seq}}
-            </p>
-            <p class="monospace">
-              {{marked_target_seq}}
-            </p>
+            <pre>{{marked_input_seq}}<br><br>{{marked_target_seq}}</pre>
           </div>
 
+
           <h2 id="target-dna-sequence">Target DNA Sequences:</h2>
-          <p>
+          <p class="scrollable-paragraph">
             {{target}}
           </p>
 

@@ -53,9 +53,9 @@ class Shared:
             original_region_list)
 
         # Highlight coding regions and print the sequence
-        highlighted_sequence = DNAHighlighter.highlight_coding_regions(self.seq, original_coding_regions)
+        highlighted_sequence = ''.join(SequenceUtils.highlight_sequences_to_terminal(original_region_list))
         print(
-            f'\nIdentify the coding regions within the given DNA sequence and mark them for emphasis:\n\t {SequenceUtils.get_highlighted_sequence(highlighted_sequence)}')
+            f'\nIdentify the coding regions within the given DNA sequence and mark them for emphasis:\n\t {highlighted_sequence}')
 
         # Print the number of coding regions found
         print(f"\nNumber of coding regions is: {len(original_coding_regions)}")

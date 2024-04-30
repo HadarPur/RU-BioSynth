@@ -60,12 +60,11 @@ def create_dir(directory):
     try:
         os.makedirs(directory, exist_ok=True)
     except OSError as error:
-        print(f"Creation of the directory '{directory}' failed because of {error}")
+        return f"Creation of the directory '{directory}' failed because of {error}"
 
 
 def delete_dir(directory):
     try:
         shutil.rmtree(directory)
-        print(f"Directory '{directory}' successfully deleted")
     except OSError as error:
-        print(f"Deleting of the directory '{directory}' failed because of {error}")
+        return f"Deleting of the directory '{directory}' failed because of {error}"

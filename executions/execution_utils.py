@@ -52,21 +52,3 @@ def initialize_report(seq, target_seq, marked_input_seq, marked_target_seq, unwa
                     selected_region_list,
                     min_cost)
     return report
-
-#
-# def save_report_locally(seq, target_seq, marked_input_seq, marked_target_seq, unwanted_patterns,
-#                         original_coding_regions, original_region_list, selected_regions_to_exclude,
-#                         selected_region_list,
-#                         min_cost):
-#     report_path = Report(seq,
-#                          target_seq,
-#                          marked_input_seq,
-#                          marked_target_seq,
-#                          unwanted_patterns,
-#                          original_coding_regions,
-#                          original_region_list,
-#                          selected_regions_to_exclude,
-#                          selected_region_list,
-#                          min_cost).create_report()
-#
-#     return report_path
