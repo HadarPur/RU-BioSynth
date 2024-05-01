@@ -1,8 +1,8 @@
 import os
+import webview
 
-from PyQt5.QtCore import Qt, QUrl
-from PyQt5.QtWebEngineWidgets import QWebEngineView, QWebEngineSettings
-from PyQt5.QtWidgets import QApplication, QLabel, QPushButton, QWidget, QVBoxLayout, QDialog, QTextEdit
+from PyQt5.QtCore import Qt
+from PyQt5.QtWidgets import QApplication, QLabel, QPushButton, QWidget, QVBoxLayout, QTextEdit
 from PyQt5.QtWidgets import QHBoxLayout, QSizePolicy, QSpacerItem
 
 from executions.execution_utils import mark_non_equal_codons, initialize_report
@@ -159,24 +159,7 @@ class ResultsWindow(QWidget):
         layout.addWidget(message_label)
 
     def show_preview_report(self):
-        # Create the dialog as a floating window
-        preview_dialog = QDialog(self)
-        preview_dialog.setWindowTitle('Elimination Report Preview')
-        preview_dialog.setFixedSize(1200, 800)
+        file_path = os.path.abspath(self.report_local_file_path)
+        webview.create_window('Preview Report', url=f'file://{file_path}', width=1200, height=800, resizable=False)
 
-        # Create a QWebEngineView as the HTML container
-        web_view = QWebEngineView(preview_dialog)
-        settings = web_view.settings()
-        settings.setAttribute(QWebEngineSettings.LocalContentCanAccessFileUrls, True)
-        settings.setAttribute(QWebEngineSettings.LocalContentCanAccessRemoteUrls, True)
-        web_view.load(QUrl.fromLocalFile(os.path.abspath(self.report_local_file_path)))
-
-        # Layout for the dialog
-        layout = QVBoxLayout(preview_dialog)
-        layout.addWidget(web_view)
-
-        # Set layout and show the dialog
-        preview_dialog.setLayout(layout)
-        preview_dialog.exec_()  # Show the dialog window modally
-
-
+        webview.start()
