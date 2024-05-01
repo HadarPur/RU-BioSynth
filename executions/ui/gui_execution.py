@@ -49,16 +49,20 @@ class DNASequenceApp(QMainWindow):
         self.stackedLayout.setCurrentWidget(elimination_window)
 
     def switch_to_process_window(self, dna_sequence, unwanted_patterns):
-        if dna_sequence is None:
-            QMessageBox.warning(self, "Error", "There is an issue with the sequence file, please check and try again later.")
+        if not dna_sequence:
+            QMessageBox.warning(self, "Error", "DNA sequence file is missing")
             return
 
         if not is_valid_dna(dna_sequence):
             QMessageBox.warning(self, "Error", f"The sequence:\n{dna_sequence}\n\nis not valid, please check and try again later.")
             return
 
+        if not unwanted_patterns:
+            QMessageBox.warning(self, "Error", "Patterns file is missing")
+            return
+
         unwanted_patterns = set(unwanted_patterns.split())
-        if unwanted_patterns is None or len(unwanted_patterns) == 0:
+        if len(unwanted_patterns) == 0:
             QMessageBox.warning(self, "Error", "There is an issue with the patterns file, please check and try again later.")
             return
 
