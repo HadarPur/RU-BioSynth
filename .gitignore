@@ -3,3 +3,4 @@ main.spec
 /executions/console/__pycache__/*
 /executions/ui/__pycache__/*
 /.idea
+output
