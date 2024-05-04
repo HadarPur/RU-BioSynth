@@ -161,5 +161,4 @@ class ResultsWindow(QWidget):
     def show_preview_report(self):
         file_path = os.path.abspath(self.report_local_file_path)
         webview.create_window('Preview Report', url=f'file://{file_path}', width=1200, height=800, resizable=False)
-
         webview.start()

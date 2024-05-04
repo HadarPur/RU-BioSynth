@@ -70,15 +70,13 @@ class DNAHighlighter:
         while i < len(seq):
             found_stop_codons = any(seq[j:j + 3] in stop_codons for j in range(i + 3, len(seq), 3))
             if seq[i:i + 3] == start_codon and found_stop_codons:  # Check for the start codon
-                if in_coding_region is False:
+                if non_coding_region:  # Only append non-coding regions if they exist.
                     coding_regions.append({
                         "seq": non_coding_region,
                         "is_coding_region": False
                     })
-                    non_coding_region = ""
-
+                    non_coding_region = ""  # Reset the non-coding region.
                 start_idx = i
-                in_coding_region = True
                 for j in range(i + 3, len(seq), 3):
                     if seq[j:j + 3] in stop_codons:  # Check for stop codons
                         coding_regions.append({
@@ -86,16 +84,15 @@ class DNAHighlighter:
                             "is_coding_region": True
                         })
                         i = j + 3
-                        in_coding_region = False
                         break
-                if in_coding_region:
+                else:
                     i += 3
             else:
-                in_coding_region = False
                 non_coding_region += seq[i]
                 i += 1
 
-        if non_coding_region == seq and len(coding_regions) == 0:
+        # Append any remaining non-coding region after the loop.
+        if non_coding_region:
             coding_regions.append({
                 "seq": non_coding_region,
                 "is_coding_region": False
