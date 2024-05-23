@@ -19,7 +19,7 @@ def save_report_if_requested(seq, target_seq, marked_input_seq, marked_target_se
         "\n\nElimination report is now available, do you want to download the report? (yes/no): ").lower()
 
     if save_report == 'yes' or save_report == 'y':
-        report_path = report.save_report()
+        report_path = report.download_report()
         print(report_path)
         print("Report saved successfully!")
     elif save_report == 'no' or save_report == 'n':
@@ -80,9 +80,9 @@ class Shared:
         print('\n' + '=' * 50 + '\n' + '=' * 50 + '\n')
 
         # Mark non-equal codons and print the target sequence
-        marked_input_seq, marked_target_seq, marked_seq, region_list_target = mark_non_equal_codons(
-            selected_region_list,
-            target_seq)
+        marked_input_seq, marked_target_seq, marked_seq = mark_non_equal_codons(self.seq,
+                                                                                target_seq,
+                                                                                selected_region_list)
 
         print(marked_seq)
         target_result = SequenceUtils.get_sequence("Target DNA sequence", target_seq)

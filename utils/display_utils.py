@@ -138,42 +138,50 @@ class SequenceUtils:
         return ''.join(spaced_chunks)
 
     @staticmethod
-    def mark_non_equal_codons(region_list, target_region_list):
-        if len(region_list) != len(target_region_list):
-            raise ValueError("Input sequences must have the same length")
+    def mark_non_equal_characters(input_seq, target_seq, region_list):
+        if len(input_seq) != len(target_seq):
+            raise ValueError("Input sequence and Target sequence must be in the same length")
 
         marked_seq1 = []
         marked_seq2 = []
 
-        for seq_info1, seq_info2 in zip(region_list, target_region_list):
-            sequence1 = seq_info1['seq']
-            is_coding_region1 = seq_info1['is_coding_region']
-            sequence2 = seq_info2['seq']
-            is_coding_region2 = seq_info2['is_coding_region']
+        region_index = 0
+        i = 0  # Initialize i outside the loop
 
-            if is_coding_region1 and is_coding_region2:
-                for i in range(0, len(sequence1), 3):
-                    codon1 = sequence1[i:i + 3]
-                    codon2 = sequence2[i:i + 3]
+        while i < len(input_seq):  # Use a while loop to allow flexible increment of i
+            if region_index < len(region_list):
+                seq = region_list[region_index]['seq']
+                is_coding_region = region_list[region_index]['is_coding_region']
 
-                    if codon1 != codon2:
-                        marked_seq1.append(f"[{codon1}]\t")
-                        marked_seq2.append(f"[{codon2}]\t")
+                j = 0  # Initialize j inside the loop
+                while j < len(seq) and i + j < len(input_seq):  # Ensure j doesn't exceed seq length or input_seq length
+                    if is_coding_region:
+                        # Compare 3 characters at a time
+                        if input_seq[i + j:i + j + 3] != target_seq[i + j:i + j + 3]:
+                            marked_seq1.append(f" [{input_seq[i + j:i + j + 3]}] ")
+                            marked_seq2.append(f" [{target_seq[i + j:i + j + 3]}] ")
+                        else:
+                            marked_seq1.append(f" {input_seq[i + j:i + j + 3]} ")
+                            marked_seq2.append(f" {target_seq[i + j:i + j + 3]} ")
+                        j += 3
                     else:
-                        marked_seq1.append(codon1+'\t')
-                        marked_seq2.append(codon2+'\t')
+                        # Compare 1 character at a time
+                        if input_seq[i + j] != target_seq[i + j]:
+                            marked_seq1.append(f" [{input_seq[i + j]}] ")
+                            marked_seq2.append(f" [{target_seq[i + j]}] ")
+                        else:
+                            marked_seq1.append(f" {input_seq[i + j]} ")
+                            marked_seq2.append(f" {target_seq[i + j]} ")
+                        j += 1
 
-            else:
-                for i, (letter1, letter2) in enumerate(zip(sequence1, sequence2)):
-                    if letter1 != letter2:
-                        marked_seq1.append(f"[{letter1}]\t")
-                        marked_seq2.append(f"[{letter2}]\t")
-                    else:
-                        marked_seq1.append(letter1+'\t')
-                        marked_seq2.append(letter2+'\t')
+                # Move to the next region if applicable
+                i += j
 
-        marked_seq1 = ' '.join(marked_seq1)
-        marked_seq2 = ' '.join(marked_seq2)
+                # Increment region_index
+                region_index += 1
+
+        marked_seq1 = ''.join(marked_seq1)
+        marked_seq2 = ''.join(marked_seq2)
 
         marked = f"The elimination results:\n\t{marked_seq1}\n\t{marked_seq2}"
 

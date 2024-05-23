@@ -2,6 +2,7 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QWidget, QMessageBox, QFileDialog, QVBoxLayout, QHBoxLayout, QSpacerItem, QSizePolicy
 
 from executions.ui.layout_utils import add_intro, add_svg_logo, add_button, add_text_edit
+from utils.display_utils import SequenceUtils
 
 
 class UploadWindow(QWidget):
@@ -9,7 +10,7 @@ class UploadWindow(QWidget):
         super().__init__()
         self.switch_to_process_callback = switch_to_process_callback
         self.dna_file_content = dna_file_content
-        self.patterns_file_content = patterns_file_content
+        self.patterns_file_content = ', '.join(sorted(patterns_file_content)) if patterns_file_content else ''
 
         self.dna_text_edit = None
         self.patterns_text_edit = None

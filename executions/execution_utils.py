@@ -29,13 +29,10 @@ def eliminate_unwanted_patterns(seq, unwanted_patterns, selected_region_list):
     return info, target_seq, min_cost
 
 
-def mark_non_equal_codons(region_list, target_seq):
-    region_list_target = DNAHighlighter.get_coding_and_non_coding_regions(target_seq)
-
+def mark_non_equal_codons(input_seq, target_seq, region_list):
     # Mark non-equal codons between the original and target sequences
-    marked_input_seq, marked_target_seq, marked_seq = SequenceUtils.mark_non_equal_codons(region_list,
-                                                                                          region_list_target)
-    return marked_input_seq, marked_target_seq, marked_seq, region_list_target
+    marked_input_seq, marked_target_seq, marked_seq = SequenceUtils.mark_non_equal_characters(input_seq, target_seq, region_list)
+    return marked_input_seq, marked_target_seq, marked_seq
 
 
 def initialize_report(seq, target_seq, marked_input_seq, marked_target_seq, unwanted_patterns,
