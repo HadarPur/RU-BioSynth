@@ -29,7 +29,7 @@ def add_svg_logo(layout):
 
     # Create and set up the SVG logo widget
     logo = QSvgWidget("images/ru.svg")
-    logo.setFixedSize(100, 50)  # Adjust the size as needed
+    logo.setFixedSize(110, 60)  # Adjust the size as needed
 
     # Add the logo to the frame's layout
     frame_layout.addWidget(logo)
@@ -59,6 +59,37 @@ def add_text_edit(layout, placeholder, content, wrap=None):
     layout.addWidget(text_edit)
 
     return text_edit
+
+
+def adjust_text_edit_height(text_edit):
+    # Ensure the document size is recalculated
+    text_edit.document().adjustSize()
+
+    # Get the new height of the document
+    doc_height = text_edit.document().size().height()
+
+    # Calculate the new height with a maximum limit and padding
+    new_height = min(150, int(doc_height) + 10)  # 10 pixels of padding
+
+    # Set the fixed height of the text edit
+    text_edit.setFixedHeight(new_height + 10)  # Additional 10 pixels padding
+
+
+def adjust_scroll_area_height(scroll_area):
+    # Get the widget inside the scroll area
+    widget = scroll_area.widget()
+
+    # Ensure the widget's size is recalculated
+    widget.adjustSize()
+
+    # Get the new height of the widget
+    widget_height = widget.sizeHint().height()
+
+    # Calculate the new height with a maximum limit and padding
+    new_height = min(150, widget_height + 10)  # 10 pixels of padding
+
+    # Set the fixed height of the scroll area
+    scroll_area.setFixedHeight(new_height + 10)  # Additional 10 pixels padding
 
 
 def add_text_edit_html(layout, placeholder, content):

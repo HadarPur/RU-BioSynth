@@ -52,6 +52,7 @@ class ResultsWindow(QWidget):
     def display_info(self, layout):
         self.middle_layout = QVBoxLayout()
         self.middle_layout.setContentsMargins(20, 20, 20, 20)
+
         layout.addLayout(self.middle_layout)
 
         # Adding formatted text to QLabel
@@ -83,7 +84,7 @@ class ResultsWindow(QWidget):
                 border: 1px solid gray;
             }
         """)
-        text_edit.setFixedHeight(100)  # Set fixed height
+        text_edit.setFixedHeight(110)  # Set fixed height
 
         # Adding formatted text to QLabel
         label_html = f"""

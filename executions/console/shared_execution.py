@@ -4,6 +4,7 @@ from executions.execution_utils import eliminate_unwanted_patterns, mark_non_equ
 from utils.display_utils import SequenceUtils
 from utils.dna_utils import DNAHighlighter
 from utils.input_utils import UserInputHandler
+from utils.text_utils import format_text_bold_for_output
 
 
 def save_report_if_requested(seq, target_seq, marked_input_seq, marked_target_seq, unwanted_patterns,
@@ -40,10 +41,10 @@ class Shared:
             return
 
         # Print the original DNA sequence
-        print(SequenceUtils.get_sequence("DNA sequence", self.seq))
+        print(SequenceUtils.get_sequence(format_text_bold_for_output("DNA sequence"), self.seq))
 
         # Print the list of unwanted patterns
-        print(f"\nPattern list:\n\t{SequenceUtils.get_patterns(self.unwanted_patterns)}\n")
+        print(f"\n{format_text_bold_for_output('Pattern list:')}\n\t{SequenceUtils.get_patterns(self.unwanted_patterns)}\n")
 
         # Extract coding regions from the sequence
         original_region_list = DNAHighlighter.get_coding_and_non_coding_regions(self.seq)
@@ -75,9 +76,8 @@ class Shared:
         # Eliminate unwanted patterns and generate the resulting sequence
         info, target_seq, min_cost = eliminate_unwanted_patterns(self.seq, self.unwanted_patterns, selected_region_list)
 
-        print('\n' + '=' * 50 + '\n' + '=' * 50 + '\n')
+        print(format_text_bold_for_output('\n' + '_' * 100 + '\n' + '_' * 100 + '\n'))
         print(info)
-        print('\n' + '=' * 50 + '\n' + '=' * 50 + '\n')
 
         # Mark non-equal codons and print the target sequence
         marked_input_seq, marked_target_seq, marked_seq = mark_non_equal_codons(self.seq,
@@ -85,7 +85,7 @@ class Shared:
                                                                                 selected_region_list)
 
         print(marked_seq)
-        target_result = SequenceUtils.get_sequence("Target DNA sequence", target_seq)
+        target_result = SequenceUtils.get_sequence(format_text_bold_for_output('Target DNA sequence'), target_seq)
         print(target_result)
 
         # Create a report summarizing the processing and save if the user chooses to

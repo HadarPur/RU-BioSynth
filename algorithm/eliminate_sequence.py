@@ -4,17 +4,19 @@ from algorithm.fsm import FSM
 from settings.costs_settings import elimination_process_description, coding_region_cost_description, \
     non_coding_region_cost_description
 from utils.elimination_utils import EliminationUtils
+from utils.text_utils import format_text_bold_for_output
+from utils.date_utils import format_current_date
 
 
 class EliminateSequence:
     @staticmethod
     def eliminate(seq, unwanted_patterns, cost_table):
-        info = f"Starting Elimination Process...\n"
-        info += f"\nUnwanted Patterns: \n{unwanted_patterns}\n"
-        info += f"\nOriginal Sequence: \n{seq}"
-        info += f"\n\nElimination Process: \n{elimination_process_description}"
-        info += f"\n\nCoding regions: \n{coding_region_cost_description}"
-        info += f"\n\nNon-Coding regions: \n{non_coding_region_cost_description}"
+        info = f"{format_text_bold_for_output('Starting Elimination Process...')}\n"
+        info += f"\n{format_text_bold_for_output('Original Sequence:')}\n{seq}\n"
+        info += f"\n{format_text_bold_for_output('Unwanted Patterns:')}\n{', '.join(sorted(unwanted_patterns))}\n"
+        info += f"\n{format_text_bold_for_output('Elimination Process:')}\n{elimination_process_description}\n"
+        info += f"\n{format_text_bold_for_output('Coding regions:')}\n{coding_region_cost_description}\n"
+        info += f"\n{format_text_bold_for_output('Non-Coding regions:')}\n{non_coding_region_cost_description}\n"
         sequence_length = len(seq)
         backtrack = {}
 
@@ -54,8 +56,12 @@ class EliminateSequence:
             current_state = prev_state
         sequence.reverse()
 
-        info += "\nElimination Process Completed!\n"
-        info += f"\nModified Sequence: \n{''.join(sequence)}\n"
-        info += f"\nTotal Cost: {min_cost:.10g}\n"
+        info += f"\n{format_text_bold_for_output('_' * 50)}\n"
+        info += f"\n🎉 {format_text_bold_for_output('Congrats!')}\n\n"
+        info += "🚀 Elimination Process Completed!\n"
+        info += f"📆 {format_current_date()}\n"
+        info += f"\n{format_text_bold_for_output('Modified Sequence:')}\n{''.join(sequence)}\n"
+        info += f"\n{format_text_bold_for_output('Total Cost:')}\n{min_cost:.10g}\n"
+        info += f"\n{format_text_bold_for_output('_' * 50)}\n\n"
 
         return info, ''.join(sequence), min_cost

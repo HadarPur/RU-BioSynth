@@ -4,7 +4,7 @@ from PyQt5.QtCore import Qt, QEvent, QTimer, QPropertyAnimation, QEasingCurve
 from PyQt5.QtWidgets import QSpacerItem, QSizePolicy, QScrollArea
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QLabel, QCheckBox, QHBoxLayout, QMessageBox
 
-from executions.ui.layout_utils import add_button, add_text_edit_html, add_text_edit
+from executions.ui.layout_utils import add_button, add_text_edit_html, add_text_edit, adjust_text_edit_height, adjust_scroll_area_height
 from utils.display_utils import SequenceUtils
 from utils.dna_utils import DNAHighlighter
 from utils.input_utils import UserInputHandler
@@ -36,7 +36,7 @@ class ProcessWindow(QWidget):
 
     def display_info(self, layout):
         middle_layout = QVBoxLayout()
-        middle_layout.setContentsMargins(20, 20, 20, 20)
+        middle_layout.setContentsMargins(20, 10, 20, 10)
         layout.addLayout(middle_layout)
 
         self.scroll = QScrollArea()
@@ -63,16 +63,15 @@ class ProcessWindow(QWidget):
 
         content = f'{self.dna_sequence}'
         text_edit = add_text_edit(content_layout, "", content)
-        text_edit.setFixedHeight(150)
+        adjust_text_edit_height(text_edit)
         text_edit.setStyleSheet("""
             QTextEdit {
                 background-color: transparent;
-                border: 1px solid gray;
+                border: 1px solid lightgray;
             }
         """)
 
         label_html = f"""
-            <br>
             <h3>Unwanted Patterns:</h3>
         """
         label = QLabel(label_html)
@@ -80,11 +79,11 @@ class ProcessWindow(QWidget):
 
         content = f'{SequenceUtils.get_patterns(self.unwanted_patterns)}'
         text_edit = add_text_edit(content_layout, "", content)
-        text_edit.setFixedHeight(100)
+        adjust_text_edit_height(text_edit)
         text_edit.setStyleSheet("""
             QTextEdit {
                 background-color: transparent;
-                border: 1px solid gray;
+                border: 1px solid lightgray;
             }
         """)
 
@@ -109,11 +108,11 @@ class ProcessWindow(QWidget):
         '''
 
         text_edit = add_text_edit_html(content_layout, "", label_html)
-        text_edit.setFixedHeight(150)
+        adjust_text_edit_height(text_edit)
         text_edit.setStyleSheet("""
             QTextEdit {
                 background-color: transparent;
-                border: 1px solid gray;
+                border: 1px solid lightgray;
             }
         """)
 
@@ -200,13 +199,35 @@ class ProcessWindow(QWidget):
                                                       selected_regions_to_exclude, selected_region_list))
         self.next_button.setEnabled(True)
 
-        exclude = ""
-        for index, region in selected_regions_to_exclude.items():
-            exclude += f"[{index}]: {region}\n"
+        label = QLabel(f"\nSelected regions to exclude:")
+        layout.addWidget(label, alignment=Qt.AlignTop)
 
-        exclude_label = QLabel(f"Selected regions to exclude:\n{exclude}"
-                               f"\nThese coding regions will be classified as non-coding areas.\n")
-        layout.addWidget(exclude_label)
+        # Create a new QVBoxLayout for the content of this section
+        scroll_area = QScrollArea()  # Create a scroll area
+        scroll_area.setAlignment(Qt.AlignTop)
+        scroll_area.setStyleSheet("""
+            QWidget {
+                background-color: transparent;
+            }
+        """)
+
+        scroll_content = QWidget()  # Create a widget to hold the content
+
+        exclude_layout = QVBoxLayout(scroll_content)  # Layout for the content widget
+
+        for index, region in selected_regions_to_exclude.items():
+            exclude = QLabel(f"[{index}]: {region}")
+            exclude_layout.addWidget(exclude, alignment=Qt.AlignTop)
+
+        # Set the content widget for the scroll area
+        scroll_area.setWidget(scroll_content)
+        adjust_scroll_area_height(scroll_area)
+
+        # Add the scroll area to the parent widget
+        layout.addWidget(scroll_area)
+
+        label = QLabel(f"\nThese coding regions will be classified as non-coding areas.\n")
+        layout.addWidget(label, alignment=Qt.AlignTop)
 
         # Adding formatted text to QLabel
         label_html = '''
@@ -220,11 +241,11 @@ class ProcessWindow(QWidget):
         label_html = f'''
         <p>{SequenceUtils.highlight_sequences_to_html(selected_region_list)}</p>'''
         text_edit = add_text_edit_html(layout, "", label_html)
-        text_edit.setFixedHeight(150)
+        adjust_text_edit_height(text_edit)
         text_edit.setStyleSheet("""
             QTextEdit {
                 background-color: transparent;
-                border: 1px solid gray;
+                border: 1px solid lightgray;
             }
         """)
 
@@ -274,8 +295,12 @@ class RegionSelector(QWidget):
 
         # Create a new QVBoxLayout for the content of this section
         scroll_area = QScrollArea()  # Create a scroll area
-        scroll_area.setFixedHeight(200)  # Set the maximum height for scrolling to begin.
         scroll_area.setAlignment(Qt.AlignTop)
+        scroll_area.setStyleSheet("""
+            QWidget {
+                background-color: transparent;
+            }
+        """)
 
         scroll_content = QWidget()  # Create a widget to hold the content
 
@@ -288,7 +313,7 @@ class RegionSelector(QWidget):
 
         # Set the content widget for the scroll area
         scroll_area.setWidget(scroll_content)
-        scroll_area.setWidgetResizable(True)  # Allow the widget to resize with the scroll area
+        adjust_scroll_area_height(scroll_area)
 
         # Add the scroll area to the parent widget
         parent_layout.addWidget(scroll_area)

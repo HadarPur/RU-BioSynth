@@ -10,7 +10,7 @@ class UploadWindow(QWidget):
         super().__init__()
         self.switch_to_process_callback = switch_to_process_callback
         self.dna_file_content = dna_file_content
-        self.patterns_file_content = ', '.join(sorted(patterns_file_content)) if patterns_file_content else ''
+        self.patterns_file_content = '\n'.join(sorted(patterns_file_content)) if patterns_file_content else ''
 
         self.dna_text_edit = None
         self.patterns_text_edit = None
@@ -21,7 +21,7 @@ class UploadWindow(QWidget):
         layout = QVBoxLayout(self)
 
         top_layout = QHBoxLayout()
-        top_layout.setContentsMargins(20, 20, 20, 20)
+        top_layout.setContentsMargins(20, 20, 20, 5)
         layout.addLayout(top_layout)
 
         add_intro(top_layout)
@@ -32,7 +32,7 @@ class UploadWindow(QWidget):
         add_svg_logo(top_layout)
 
         middle_layout = QVBoxLayout()
-        middle_layout.setContentsMargins(20, 20, 20, 20)
+        middle_layout.setContentsMargins(20, 5, 20, 20)
         layout.addLayout(middle_layout)
 
         self.dna_text_edit = add_text_edit(middle_layout, "Upload DNA Sequence (.txt):", self.dna_file_content)

@@ -26,12 +26,12 @@ class Report:
 
         if self.num_of_coding_regions > 0:
             self.regions = '''<p><br>The total number of coding regions is ''' + ''.join(f'{self.num_of_coding_regions}') + ''', identifies as follows:</p>
-                                  <p class="scrollable-paragraph">''' + '<br>'.join(
+                                  <p class="scrollable-paragraph horizontal-scroll">''' + '<br>'.join(
                 f"[{key}] {value}" for key, value in original_coding_regions.items()) + '''</p>'''
 
             if selected_regions_to_exclude is not None and len(selected_regions_to_exclude) > 0:
                 self.chosen_regions = '''<p><br>The specific coding regions that the user wish to exclude from the elimination process are as follows:</p>
-                                            <p class="scrollable-paragraph">''' + '<br>'.join(
+                                            <p class="scrollable-paragraph horizontal-scroll">''' + '<br>'.join(
                     f"[{key}] {value}" for key, value in selected_regions_to_exclude.items()) + '''</p>
                                       <p>These coding regions will be classified as non-coding areas.</p>'''
 

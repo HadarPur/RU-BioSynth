@@ -102,9 +102,31 @@ class GUI:
     @staticmethod
     def execute():
         stylesheet = """
-        QTextEdit {
-            padding: 5px; /* Top, Right, Bottom, Left */
+
+        p {
+            font-size: 15px;
+            line-height: 5px;
+            padding: 2px; /* Top, Right, Bottom, Left */
         }
+        
+        QCheckBox {
+            font-size: 15px;
+            line-height: 5px;
+            padding: 2px; /* Top, Right, Bottom, Left */
+        }
+        
+        QLabel {
+            font-size: 15px;
+            line-height: 5px;
+            padding: 2px; /* Top, Right, Bottom, Left */
+        }
+        
+        QTextEdit {
+            font-size: 15px;
+            line-height: 5px;
+            padding: 2px; /* Top, Right, Bottom, Left */
+        }
+        
         QScrollArea {
             border: none;
             background: white; /* This will be the color of the 'margin' */

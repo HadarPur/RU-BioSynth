@@ -1,5 +1,5 @@
 import re
-
+from utils.text_utils import format_text_bold_for_output
 
 class SequenceUtils:
     """Utility class for printing DNA sequences, patterns, and cost tables."""
@@ -183,7 +183,7 @@ class SequenceUtils:
         marked_seq1 = ''.join(marked_seq1)
         marked_seq2 = ''.join(marked_seq2)
 
-        marked = f"The elimination results:\n\t{marked_seq1}\n\t{marked_seq2}"
+        marked = f"{format_text_bold_for_output('The elimination results:')}\n\t{marked_seq1}\n\t{marked_seq2}"
 
         return marked_seq1, marked_seq2, marked
 
@@ -209,7 +209,7 @@ class SequenceUtils:
                 color_counter, color = SequenceUtils.get_color_for_coding_region(color_counter)
                 html_output += f'<span style="color: {color};">{coding_sequence_with_spaces}&nbsp;&nbsp;&nbsp;&nbsp;</span>'
             else:
-                html_output += seq_info['seq']
+                html_output += f"{seq_info['seq']}&nbsp;&nbsp;&nbsp;&nbsp;"
 
         return html_output
 
