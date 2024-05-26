@@ -1,4 +1,4 @@
-app.spec
+app-gui.spec
 /build
 /dist
 /executions/console/__pycache__/*

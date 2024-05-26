@@ -84,7 +84,7 @@ class Shared:
                                                                                 target_seq,
                                                                                 selected_region_list)
 
-        print(marked_seq)
+        # print(marked_seq)
         target_result = SequenceUtils.get_sequence(format_text_bold_for_output('Target DNA sequence'), target_seq)
         print(target_result)
 
