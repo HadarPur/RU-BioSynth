@@ -127,43 +127,44 @@ class ResultsWindow(QWidget):
 
         report_local_file_path = self.report.create_report()
 
-        # Create a horizontal layout for the entire prompt
-        prompt_layout = QHBoxLayout()
-        prompt_layout.setSpacing(10)  # Adjust spacing between elements
+        if report_local_file_path:
+            # Create a horizontal layout for the entire prompt
+            prompt_layout = QHBoxLayout()
+            prompt_layout.setSpacing(10)  # Adjust spacing between elements
 
-        # Create and add the question label to the horizontal layout
-        question_label = QLabel("Elimination report is now available")
-        prompt_layout.addWidget(question_label)
+            # Create and add the question label to the horizontal layout
+            question_label = QLabel("Elimination report is now available")
+            prompt_layout.addWidget(question_label)
 
-        # Create the 'Save' button
-        download_button = QPushButton('Save to downloads')
-        download_button.setFixedSize(150, 30)
-        download_button.clicked.connect(
-            lambda: self.download_report(layout))
+            # Create the 'Save' button
+            download_button = QPushButton('Save to downloads')
+            download_button.setFixedSize(150, 30)
+            download_button.clicked.connect(
+                lambda: self.download_report(layout))
 
-        # Create the 'Save' button
-        save_as_button = QPushButton('Save as')
-        save_as_button.setFixedSize(120, 30)
-        save_as_button.clicked.connect(
-            lambda: self.save_as_report(layout, report_local_file_path))
+            # Create the 'Save' button
+            save_as_button = QPushButton('Save as')
+            save_as_button.setFixedSize(120, 30)
+            save_as_button.clicked.connect(
+                lambda: self.save_as_report(layout, report_local_file_path))
 
-        # Create the 'Preview' button
-        show_preview_button = QPushButton("Show Preview")
-        show_preview_button.setFixedSize(120, 30)
-        show_preview_button.clicked.connect(
-            lambda: show_preview_report(report_local_file_path))
+            # Create the 'Preview' button
+            show_preview_button = QPushButton("Show Preview")
+            show_preview_button.setFixedSize(120, 30)
+            show_preview_button.clicked.connect(
+                lambda: show_preview_report(report_local_file_path))
 
-        # Add the buttons to the horizontal layout
-        prompt_layout.addWidget(download_button)
-        prompt_layout.addWidget(save_as_button)
-        prompt_layout.addWidget(show_preview_button)
+            # Add the buttons to the horizontal layout
+            prompt_layout.addWidget(download_button)
+            prompt_layout.addWidget(save_as_button)
+            prompt_layout.addWidget(show_preview_button)
 
-        # Add a spacer to push the buttons to the left
-        spacer = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
-        prompt_layout.addItem(spacer)
+            # Add a spacer to push the buttons to the left
+            spacer = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+            prompt_layout.addItem(spacer)
 
-        # Add the entire horizontal layout to the parent layout
-        layout.addLayout(prompt_layout)
+            # Add the entire horizontal layout to the parent layout
+            layout.addLayout(prompt_layout)
 
     def download_report(self, layout):
         report_path = self.report.download_report()

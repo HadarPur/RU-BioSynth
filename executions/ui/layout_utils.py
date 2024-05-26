@@ -4,6 +4,7 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtSvg import QSvgWidget
 from PyQt5.QtWidgets import QFrame, QHBoxLayout, QPushButton, QTextEdit, QVBoxLayout, QPlainTextEdit, QApplication, \
     QLabel, QFileDialog
+from utils.file_utils import resource_path
 
 
 def add_intro(layout):
@@ -28,7 +29,8 @@ def add_svg_logo(layout):
     frame_layout.setContentsMargins(5, 5, 5, 5)  # Set padding: left, top, right, bottom
 
     # Create and set up the SVG logo widget
-    logo = QSvgWidget("images/ru.svg")
+    image_path = resource_path("images/ru.svg")
+    logo = QSvgWidget(image_path)
     logo.setFixedSize(110, 60)  # Adjust the size as needed
 
     # Add the logo to the frame's layout

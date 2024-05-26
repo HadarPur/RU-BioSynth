@@ -9,6 +9,7 @@ from executions.ui.results_layout import ResultsWindow
 from executions.ui.upload_layout import UploadWindow
 
 from executions.execution_utils import is_valid_dna, is_valid_patterns
+from utils.file_utils import resource_path
 
 
 class DNASequenceApp(QMainWindow):
@@ -170,7 +171,9 @@ class GUI:
         app = QApplication(sys.argv)
         ex = DNASequenceApp()
         ex.show()
-        app.setWindowIcon(QIcon('images/logo.png'))
+        icon_path = resource_path('images/logo.png')
+        icon = QIcon(icon_path)
+        app.setWindowIcon(icon)
         app.setStyleSheet(stylesheet)
 
         sys.exit(app.exec_())

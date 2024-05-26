@@ -1,5 +1,6 @@
 import os
 import shutil
+import sys
 
 
 # Define a base class for reading data from a file.
@@ -68,3 +69,14 @@ def delete_dir(directory):
         shutil.rmtree(directory)
     except OSError as error:
         return f"Deleting of the directory '{directory}' failed because of {error}"
+
+
+def resource_path(relative_path):
+    """ Get absolute path to resource, works for dev and for PyInstaller """
+    try:
+        # PyInstaller creates a temp folder and stores path in _MEIPASS
+        base_path = sys._MEIPASS
+    except Exception:
+        base_path = os.path.abspath(".")
+
+    return os.path.join(base_path, relative_path)

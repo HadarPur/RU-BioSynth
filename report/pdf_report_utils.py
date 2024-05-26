@@ -7,7 +7,7 @@ import jinja2
 from settings.costs_settings import elimination_process_description, coding_region_cost_description, \
     non_coding_region_cost_description
 from utils.display_utils import SequenceUtils
-from utils.file_utils import create_dir
+from utils.file_utils import create_dir, resource_path
 
 
 class Report:
@@ -70,24 +70,36 @@ class Report:
 
                    }
 
-        template_loader = jinja2.FileSystemLoader('./')
-        template_env = jinja2.Environment(loader=template_loader)
+        try:
+            # Get the absolute path to the report.html file
+            template_path = resource_path('report_template/report.html')
 
-        html_template = 'report/report.html'
-        template = template_env.get_template(html_template)
-        self.output_text = template.render(context)
+            # Create a Jinja2 environment
+            template_loader = jinja2.FileSystemLoader(searchpath=os.path.dirname(template_path))
+            template_env = jinja2.Environment(loader=template_loader)
 
-        # Save to a file
-        create_dir('output')
-        file_name = "Elimination Output Report - "
-        today_date = datetime.today().strftime("%d %b %y, %H_%M_%S")
-        self.report_filename = f'{file_name} {today_date}.html'
+            # Load the template using the absolute path
+            template = template_env.get_template(os.path.basename(template_path))
 
-        report_local_path = f'output/{self.report_filename}'
-        with open(report_local_path, 'w') as file:
-            file.write(self.output_text)
+            self.output_text = template.render(context)
 
-        return report_local_path
+            # Save to a file
+            create_dir('report_output')
+            file_name = "Elimination Output Report - "
+            today_date = datetime.today().strftime("%d %b %y, %H_%M_%S")
+            self.report_filename = f'{file_name} {today_date}.html'
+
+            report_local_path = f'report_output/{self.report_filename}'
+            with open(report_local_path, 'w') as file:
+                file.write(self.output_text)
+
+            return report_local_path
+        except jinja2.exceptions.TemplateNotFound as e:
+            print(f"Template not found: {e}")
+        except Exception as e:
+            print(f"An error occurred: {e}")
+
+            return None
 
     def download_report(self):
         # Save the HTML content to a file
