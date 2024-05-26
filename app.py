@@ -19,11 +19,14 @@ if __name__ == "__main__":
     try:
         delete_dir('report_output')
 
-        if len(sys.argv[1:]) > 0:
-            set_output_format(OutputFormat.TERMINAL)
-            Terminal(sys.argv[1:]).execute()
-        else:
-            exit("Please enter the sequence file path and unwanted file path and try again later.")
+        set_output_format(OutputFormat.TERMINAL)
+        Terminal(sys.argv[1:]).execute()
+
+        # if len(sys.argv[1:]) > 0:
+        #     set_output_format(OutputFormat.TERMINAL)
+        #     Terminal(sys.argv[1:]).execute()
+        # else:
+        #     exit("Please enter the sequence file path and unwanted file path and try again later.")
 
     except KeyboardInterrupt:
         print("\nProgram stopped by the user.")

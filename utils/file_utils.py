@@ -31,6 +31,10 @@ class SequenceReader(FileDataReader):
 
         :return: A string representing a sequence, or None if no valid sequence is found.
         """
+
+        if self.file_path is None:
+            return None
+
         raw_seq = self.read_lines()
         for line in raw_seq:
             if line.isspace():
@@ -47,6 +51,10 @@ class PatternReader(FileDataReader):
 
         :return: A set containing the extracted patterns.
         """
+
+        if self.file_path is None:
+            return None
+
         res = set()
         raw_patterns = self.read_lines()
         for line in raw_patterns:
