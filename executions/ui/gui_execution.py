@@ -175,5 +175,4 @@ class GUI:
         icon = QIcon(icon_path)
         app.setWindowIcon(icon)
         app.setStyleSheet(stylesheet)
-
         sys.exit(app.exec_())
