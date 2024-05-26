@@ -4,7 +4,8 @@ from PyQt5.QtCore import Qt, QEvent, QTimer, QPropertyAnimation, QEasingCurve
 from PyQt5.QtWidgets import QSpacerItem, QSizePolicy, QScrollArea
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QLabel, QCheckBox, QHBoxLayout, QMessageBox
 
-from executions.ui.layout_utils import add_button, add_text_edit_html, add_text_edit, adjust_text_edit_height, adjust_scroll_area_height
+from executions.ui.layout_utils import add_button, add_text_edit_html, add_text_edit, adjust_text_edit_height, \
+    adjust_scroll_area_height
 from utils.display_utils import SequenceUtils
 from utils.dna_utils import DNAHighlighter
 from utils.input_utils import UserInputHandler

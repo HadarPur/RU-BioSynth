@@ -4,6 +4,7 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtSvg import QSvgWidget
 from PyQt5.QtWidgets import QFrame, QHBoxLayout, QPushButton, QTextEdit, QVBoxLayout, QPlainTextEdit, QApplication, \
     QLabel, QFileDialog
+
 from utils.file_utils import resource_path
 
 

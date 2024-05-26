@@ -2,7 +2,6 @@ from algorithm.eliminate_sequence import EliminateSequence
 from report.pdf_report_utils import Report
 from utils.cost_utils import CodonScorer
 from utils.display_utils import SequenceUtils
-from utils.dna_utils import DNAHighlighter
 
 
 def is_valid_dna(sequence):

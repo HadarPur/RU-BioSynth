@@ -1,7 +1,7 @@
 import time
 import unittest
-from executions.console.ide_execution import App
 
+from executions.console.ide_execution import App
 from utils.file_utils import delete_dir
 from utils.text_utils import OutputFormat, set_output_format
 

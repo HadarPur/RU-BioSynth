@@ -2,7 +2,6 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QWidget, QMessageBox, QFileDialog, QVBoxLayout, QHBoxLayout, QSpacerItem, QSizePolicy
 
 from executions.ui.layout_utils import add_intro, add_svg_logo, add_button, add_text_edit
-from utils.display_utils import SequenceUtils
 
 
 class UploadWindow(QWidget):

@@ -1,5 +1,7 @@
 import re
+
 from utils.text_utils import format_text_bold_for_output
+
 
 class SequenceUtils:
     """Utility class for printing DNA sequences, patterns, and cost tables."""

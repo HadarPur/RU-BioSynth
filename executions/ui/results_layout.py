@@ -1,6 +1,6 @@
 import os
-import webview
 
+import webview
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QApplication, QFileDialog, QLabel, QPushButton, QWidget, QVBoxLayout, QTextEdit
 from PyQt5.QtWidgets import QHBoxLayout, QSizePolicy, QSpacerItem

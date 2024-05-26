@@ -1,7 +1,7 @@
 from executions.console.shared_execution import Shared
+from executions.execution_utils import is_valid_dna, is_valid_patterns
 from settings.pattern_settings import P
 from settings.sequence_settings import S
-from executions.execution_utils import is_valid_dna, is_valid_patterns
 
 
 class App:

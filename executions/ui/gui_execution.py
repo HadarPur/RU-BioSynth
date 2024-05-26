@@ -3,12 +3,11 @@ import sys
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QApplication, QMainWindow, QMessageBox, QStackedWidget
 
+from executions.execution_utils import is_valid_dna, is_valid_patterns
 from executions.ui.elimination_layout import EliminationWindow
 from executions.ui.processing_layout import ProcessWindow
 from executions.ui.results_layout import ResultsWindow
 from executions.ui.upload_layout import UploadWindow
-
-from executions.execution_utils import is_valid_dna, is_valid_patterns
 from utils.file_utils import resource_path
 
 
