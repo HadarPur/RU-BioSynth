@@ -1,11 +1,29 @@
 import os
 
-from PyQt5.QtCore import Qt
 from PyQt5.QtSvg import QSvgWidget
-from PyQt5.QtWidgets import QFrame, QHBoxLayout, QPushButton, QTextEdit, QVBoxLayout, QPlainTextEdit, QApplication, \
-    QLabel, QFileDialog
+from PyQt5.QtWidgets import QFrame, QHBoxLayout, QPushButton, QVBoxLayout, QApplication
+from PyQt5.QtWidgets import QLabel, QFileDialog, QTextEdit, QPlainTextEdit
+from PyQt5.QtCore import Qt
 
 from utils.file_utils import resource_path
+
+
+class DropTextEdit(QTextEdit):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.setAcceptDrops(True)
+
+    def dragEnterEvent(self, event):
+        if event.mimeData().hasUrls():
+            event.acceptProposedAction()
+
+    def dropEvent(self, event):
+        if event.mimeData().hasUrls():
+            file_path = event.mimeData().urls()[0].toLocalFile()
+            if file_path.endswith('.txt'):
+                with open(file_path, 'r') as file:
+                    self.setPlainText(file.read())
+                event.acceptProposedAction()
 
 
 def add_intro(layout):
@@ -39,6 +57,26 @@ def add_svg_logo(layout):
 
     # Add the frame to the main layout
     layout.addWidget(frame, alignment=Qt.AlignTop)
+
+
+def add_drop_text_edit(layout, placeholder, content, wrap=None):
+    text_edit = DropTextEdit()
+    text_edit.setPlaceholderText(placeholder)
+
+    if content:
+        text_edit.setPlainText(content)
+
+    if wrap is not None:
+        text_edit.setLineWrapMode(wrap)
+    else:
+        text_edit.setLineWrapMode(QTextEdit.WidgetWidth)  # Default wrap mode
+
+    # Set the cursor shape to the default pointer cursor for the viewport
+    text_edit.viewport().setCursor(Qt.ArrowCursor)
+
+    layout.addWidget(text_edit)
+
+    return text_edit
 
 
 def add_text_edit(layout, placeholder, content, wrap=None):
@@ -172,3 +210,4 @@ def add_button(layout, text, alignment=None, callback=None, args=(), size=(60, 3
 def copy_to_clipboard(code_display):
     text = code_display.toPlainText()
     QApplication.clipboard().setText(text)
+
