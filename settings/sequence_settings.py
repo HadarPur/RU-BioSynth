@@ -8,7 +8,7 @@
 # S = "TACATACAGATG"     # Y, I, Q
 # S = "ATG"     # start codon
 # S = "TAA"     # stop codon
-# S = "ATGTAA"     # start and stop codon - need to check with Ilan
+# S = "ATGTAA"     # no coding region
 # S = ''     # empty string
 # S = "TACATACAGATACAGATGATGTACATACAGTAA"     # one coding
 # S = "TTACATACAGATGTACATACAGTAATACATACAGTAATACATACAGATGTACATACAGTAA"  # two coding
