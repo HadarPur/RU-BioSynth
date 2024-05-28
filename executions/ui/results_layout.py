@@ -6,7 +6,7 @@ from PyQt5.QtWidgets import QApplication, QFileDialog, QLabel, QPushButton, QWid
 from PyQt5.QtWidgets import QHBoxLayout, QSizePolicy, QSpacerItem
 
 from executions.execution_utils import mark_non_equal_codons, initialize_report
-from executions.ui.layout_utils import add_button, add_code_block, add_text_edit
+from executions.ui.layout_utils import add_button, add_code_block, add_text_edit_html
 
 
 def quit_app():
@@ -76,15 +76,16 @@ class ResultsWindow(QWidget):
                                                                                 self.target_seq,
                                                                                 self.selected_region_list)
 
-        content = f'\n {marked_input_seq}\n\n {marked_target_seq}\n'
-        text_edit = add_text_edit(self.middle_layout, "", content, wrap=QTextEdit.NoWrap)
+        content = '''<pre>''' + marked_input_seq + '''<br><br>''' + marked_target_seq + '''</pre>'''
+        text_edit = add_text_edit_html(self.middle_layout, "", content)
         text_edit.setStyleSheet("""
             QTextEdit {
                 background-color: transparent;
                 border: 1px solid gray;
+                padding: 10px; /* Top, Right, Bottom, Left */
             }
         """)
-        text_edit.setFixedHeight(110)  # Set fixed height
+        text_edit.setFixedHeight(90)  # Set fixed height
 
         # Adding formatted text to QLabel
         label_html = f"""
@@ -192,4 +193,3 @@ class ResultsWindow(QWidget):
                 message_label.setText(f"Report saved to: {save_path}")
             except Exception as e:
                 message_label.setText(f"Failed to save file: {e}")
-
