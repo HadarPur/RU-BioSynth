@@ -64,7 +64,7 @@ class DNAHighlighter:
 
         i = 0
         non_coding_region = ""  # Initialize a variable to store non-coding sequences
-        in_coding_region = True
+        min_coding_region_length = 7 * 3  # start_codon_length + stop_codon_length + 5 codons length in the coding area
 
         # Traverse the DNA sequence to identify coding regions
         while i < len(seq):
@@ -79,10 +79,17 @@ class DNAHighlighter:
                 start_idx = i
                 for j in range(i + 3, len(seq), 3):
                     if seq[j:j + 3] in stop_codons:  # Check for stop codons
-                        coding_regions.append({
-                            "seq": seq[start_idx:j + 3],
-                            "is_coding_region": True
-                        })
+                        if len(seq[start_idx:j + 3]) < min_coding_region_length:
+                            print(seq[start_idx:j + 3])
+                            coding_regions.append({
+                                "seq": seq[start_idx:j + 3],
+                                "is_coding_region": False
+                            })
+                        else:
+                            coding_regions.append({
+                                "seq": seq[start_idx:j + 3],
+                                "is_coding_region": True
+                            })
                         i = j + 3
                         break
                 else:
