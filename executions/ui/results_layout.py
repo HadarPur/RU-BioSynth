@@ -136,17 +136,19 @@ class ResultsWindow(QWidget):
             question_label = QLabel("Elimination report is now available")
             prompt_layout.addWidget(question_label)
 
+            message_label = QLabel()
+
             # Create the 'Save' button
             download_button = QPushButton('Save to downloads')
             download_button.setFixedSize(150, 30)
             download_button.clicked.connect(
-                lambda: self.download_report(layout))
+                lambda: self.download_report(message_label))
 
             # Create the 'Save' button
             save_as_button = QPushButton('Save as')
             save_as_button.setFixedSize(120, 30)
             save_as_button.clicked.connect(
-                lambda: self.save_as_report(layout, report_local_file_path))
+                lambda: self.save_as_report(message_label, report_local_file_path))
 
             # Create the 'Preview' button
             show_preview_button = QPushButton("Show Preview")
@@ -165,14 +167,13 @@ class ResultsWindow(QWidget):
 
             # Add the entire horizontal layout to the parent layout
             layout.addLayout(prompt_layout)
+            layout.addWidget(message_label)
 
-    def download_report(self, layout):
+    def download_report(self, message_label):
         report_path = self.report.download_report()
+        message_label.setText(report_path)
 
-        message_label = QLabel(report_path)
-        layout.addWidget(message_label)
-
-    def save_as_report(self, layout, local_pdf_path):
+    def save_as_report(self, message_label, local_pdf_path):
         # Get the path to the desktop directory
         desktop_dir = os.path.join(os.path.expanduser("~"), "Desktop")
 
@@ -180,8 +181,6 @@ class ResultsWindow(QWidget):
         options = QFileDialog.Options()
         save_path, _ = QFileDialog.getSaveFileName(self, "Save As", desktop_dir, "HTML Files (*.html);;All Files (*)",
                                                    options=options)
-        message_label = None
-
         if save_path:
             try:
                 with open(local_pdf_path, 'rb') as file:
@@ -190,9 +189,7 @@ class ResultsWindow(QWidget):
                 with open(save_path, 'wb') as file:
                     file.write(content)
 
-                message_label = QLabel(f"File saved to: {save_path}")
+                message_label.setText(f"Report saved to: {save_path}")
             except Exception as e:
-                message_label = QLabel(f"Failed to save file: {e}")
-
-        layout.addWidget(message_label)
+                message_label.setText(f"Failed to save file: {e}")
 

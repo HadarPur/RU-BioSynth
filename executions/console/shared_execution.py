@@ -8,11 +8,11 @@ from utils.text_utils import format_text_bold_for_output
 
 
 def save_report_if_requested(seq, target_seq, marked_input_seq, marked_target_seq, unwanted_patterns,
-                             original_coding_regions, selected_regions_to_exclude, region_list, selected_region_list,
+                             original_coding_regions, region_list,
                              min_cost):
     report = initialize_report(seq, target_seq, marked_input_seq, marked_target_seq, unwanted_patterns,
-                               original_coding_regions, selected_regions_to_exclude, region_list,
-                               selected_region_list,
+                               original_coding_regions, region_list, None,
+                               None,
                                min_cost)
     report.create_report()
 
@@ -62,19 +62,10 @@ class Shared:
         print(f"\nNumber of coding regions is: {len(original_coding_regions)}")
 
         # Handle elimination of coding regions if the user chooses to
-        if len(original_coding_regions) > 0:
-            original_coding_regions, selected_regions_to_exclude, selected_region_list = self.handle_coding_region_elimination(
-                original_region_list,
-                coding_indexes,
-                original_coding_regions)
-        else:
-            print("Continue without coding regions...")
-            selected_region_list = original_region_list
-            original_coding_regions = UserInputHandler.get_coding_regions_list(original_coding_regions)
-            selected_regions_to_exclude = None
+        original_coding_regions = UserInputHandler.get_coding_regions_list(original_coding_regions)
 
         # Eliminate unwanted patterns and generate the resulting sequence
-        info, target_seq, min_cost = eliminate_unwanted_patterns(self.seq, self.unwanted_patterns, selected_region_list)
+        info, target_seq, min_cost = eliminate_unwanted_patterns(self.seq, self.unwanted_patterns, original_region_list)
 
         print(format_text_bold_for_output('\n' + '_' * 100 + '\n' + '_' * 100 + '\n'))
         print(info)
@@ -82,7 +73,7 @@ class Shared:
         # Mark non-equal codons and print the target sequence
         marked_input_seq, marked_target_seq, marked_seq = mark_non_equal_codons(self.seq,
                                                                                 target_seq,
-                                                                                selected_region_list)
+                                                                                original_region_list)
 
         # print(marked_seq)
         target_result = SequenceUtils.get_sequence(format_text_bold_for_output('Target DNA sequence'), target_seq)
@@ -96,28 +87,4 @@ class Shared:
                                  self.unwanted_patterns,
                                  original_coding_regions,
                                  original_region_list,
-                                 selected_regions_to_exclude,
-                                 selected_region_list,
                                  min_cost)
-
-    def handle_coding_region_elimination(self, region_list, coding_indexes, coding_regions):
-        selected_region_list = copy.deepcopy(region_list)
-
-        # Ask the user if they want to eliminate coding regions
-        elimination_response = UserInputHandler.handle_elimination_input()
-        if elimination_response is False:
-            # If the response is negative, ask for coding regions to eliminate
-            original_coding_regions, selected_regions_to_exclude, coding_regions_to_exclude = UserInputHandler.handle_elimination_coding_regions_input(
-                coding_regions)
-            # Update the coding regions based on user input
-            selected_region_list = DNAHighlighter.update_coding_regions(selected_region_list, coding_indexes,
-                                                                        coding_regions_to_exclude)
-
-            highlighted_sequence = ''.join(SequenceUtils.highlight_sequences_to_terminal(selected_region_list))
-            print(f'\nThe full sequence after selection is:\n\t {highlighted_sequence}')
-
-        else:
-            original_coding_regions = UserInputHandler.get_coding_regions_list(coding_regions)
-            selected_regions_to_exclude = None
-
-        return original_coding_regions, selected_regions_to_exclude, selected_region_list

@@ -111,5 +111,5 @@ class Report:
         # Get the absolute path of the output PDF/HTML file
         output_html_path = os.path.abspath(html_output_path)
 
-        return f"\nFile saved to: {output_html_path}"
+        return f"\nReport saved to: {output_html_path}"
 
