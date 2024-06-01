@@ -57,7 +57,7 @@ class Shared:
                                                                                 original_region_list)
 
         # print(marked_seq)
-        target_result = SequenceUtils.get_sequence(format_text_bold_for_output('Target DNA sequence'), target_seq)
+        target_result = SequenceUtils.get_sequence(format_text_bold_for_output('Target DNA Sequence'), target_seq)
         print(f'{target_result}\n')
 
         # Create a report summarizing the processing and save if the user chooses to
@@ -84,7 +84,7 @@ class Shared:
         print(path)
 
     def save_target_sequence(self, target_seq, file_date):
-        filename = f'Target DNA sequence - {file_date}.txt'
+        filename = f'Target DNA Sequence - {file_date}.txt'
         path = save_file(target_seq, self.output_path, filename)
         print(path)
 

@@ -27,6 +27,24 @@ class TestDNAHighlighter(unittest.TestCase):
 
         self.assertEqual(regions, expected_regions)
 
+    def test_get_coding_and_non_coding_regions_contained(self):
+        seq = Seq(
+                  "TATAATGTACATACAGTAA"
+                  "ATGATGTACATACAGATGATGTACATACAGATGTAA"
+                  "TACATACAG"
+                  "ATGATGTACATACAGATGTAA"
+                  "TAA")
+
+        regions = DNAHighlighter.get_coding_and_non_coding_regions(seq)
+        expected_regions = [{'seq': Seq('TATA'), 'is_coding_region': False},
+                            {'seq': Seq('ATGTACATACAGTAA'), 'is_coding_region': False},
+                            {'seq': Seq('ATGATGTACATACAGATGATGTACATACAGATGTAA'), 'is_coding_region': True},
+                            {'seq': Seq('TACATACAG'), 'is_coding_region': False},
+                            {'seq': Seq('ATGATGTACATACAGATGTAA'), 'is_coding_region': True},
+                            {'seq': Seq('TAA'), 'is_coding_region': False}]
+
+        self.assertEqual(regions, expected_regions)
+
     def test_extract_coding_regions_with_indexes(self):
         region_list = [
             {"seq": Seq("ATG"), "is_coding_region": True},

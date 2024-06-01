@@ -48,12 +48,17 @@ class CommandLineParser:
         print(
             f"{format_text_bold_for_output('Usage:')}\n"
             "\t$ python ./app.py -s <seq_file_path> -p <pattern_file_path> -o <output_path_dir>\n\n"
-            "\tThe elimination program, which allow design synthetic DNA sequences without unwanted patterns.\n\n"
+            "\tThis application is designed for the elimination of unwanted patterns from synthetic DNA sequences.\n\n"
             f"{format_text_bold_for_output('Options:')}\n"
-            "\t-s --s_path\tSequence file path (mandatory)\n"
-            "\t-p --p_path\tPatterns file path (mandatory)\n"
-            "\t-o --o_path\tOutput directory path (optional-default is downloads directory)\n\n"
+            "\t-s --s_path\tSpecifies the sequence file path (mandatory)\n"
+            "\t-p --p_path\tSpecifies the patterns file path (mandatory)\n"
+            "\t-o --o_path\tSpecifies the output directory path (optional-default is the downloads directory)\n\n"
             f"{format_text_bold_for_output('Info:')}\n"
+            "\tThe elimination program via terminal is designed to run automatically without any user intervention.\n"
+            "\tPlease be advised that the program makes the following decisions:\n"
+            "\t - The minimum length of a coding region is 5 codons (excluding start and stop codons).\n"
+            "\t - If a coding region contains another coding region, the longer region will be selected.\n"
+            "\t - If a coding region overlaps another coding region, the program will raise an error message and stop.\n"
         )
 
 
