@@ -1,7 +1,6 @@
 import unittest
 
 from Bio.Seq import Seq
-
 from utils.dna_utils import DNAHighlighter
 
 
@@ -9,35 +8,23 @@ class TestDNAHighlighter(unittest.TestCase):
 
     def test_get_coding_and_non_coding_regions(self):
         seq = Seq(
-                  "CGCGGTTTTGTAGAAGGTTAGGGGAATAGGTTAGATTGAGTGGCTTAAGA"
-                  "ATGTAA"
-                  "ATGCTTCTTGTGGAACTCGACAACGCAACAACGCGACGGATCTACGTCACAGCGTGCATAGTGAAAACGGAGTTGCTGACGACGAAAGCGACATTGGGATCTGTCAGTTGTCATTCGCGAAAAACATCCGTCCCCGAGGCGGACACTGATTGA"
-                  "GCGTACA"
-                  "ATGGTTTAG"
-                  "ATGCCCTGA")
+                  "CGCGGTTTTGTAGAAGGTTAGGGGAATAGGTTAGATTGAGTGGCTTAAGAATGTAAATGCTTCTTGTGGAACTCGACAACGCAACAACGCGACGGATCTA"
+                  "CGTCACAGCGTGCATAGTGAAAACGGAGTTGCTGACGACGAAAGCGACATTGGGATCTGTCAGTTGTCATTCGCGAAAAACATCCGTCCCCGAGGCGGAC"
+                  "ACTGATTGAGCGTACAATGGTTTAGATGCCCTGA")
 
         regions = DNAHighlighter.get_coding_and_non_coding_regions(seq)
         expected_regions = [
-            {'seq': Seq('CGCGGTTTTGTAGAAGGTTAGGGGAATAGGTTAGATTGAGTGGCTTAAGA'), 'is_coding_region': False},
-            {'seq': Seq('ATGTAA'), 'is_coding_region': False},
+            {'seq': Seq('CGCGGTTTTGTAGAAGGTTAGGGGAATAGGTTAGATTGAGTGGCTTAAGAATGTAA'), 'is_coding_region': False},
             {'seq': Seq('ATGCTTCTTGTGGAACTCGACAACGCAACAACGCGACGGATCTACGTCACAGCGTGCATAGTGAAAACGGAGTTGCTGACGACGAAAGCGACATTGGGATCTGTCAGTTGTCATTCGCGAAAAACATCCGTCCCCGAGGCGGACACTGATTGA'), 'is_coding_region': True},
-            {'seq': Seq('GCGTACA'), 'is_coding_region': False},
-            {'seq': Seq('ATGGTTTAG'), 'is_coding_region': False},
-            {'seq': Seq('ATGCCCTGA'), 'is_coding_region': False}]
+            {'seq': Seq('GCGTACAATGGTTTAGATGCCCTGA'), 'is_coding_region': False},
+        ]
 
         self.assertEqual(regions, expected_regions)
 
     def test_get_coding_and_non_coding_regions_contained(self):
-        seq = Seq(
-                  "TATAATGTACATACAGTAA"
-                  "ATGATGTACATACAGATGATGTACATACAGATGTAA"
-                  "TACATACAG"
-                  "ATGATGTACATACAGATGTAA"
-                  "TAA")
-
+        seq = Seq("TATAATGTACATACAGTAAATGATGTACATACAGATGATGTACATACAGATGTAATACATACAGATGATGTACATACAGATGTAATAA")
         regions = DNAHighlighter.get_coding_and_non_coding_regions(seq)
-        expected_regions = [{'seq': Seq('TATA'), 'is_coding_region': False},
-                            {'seq': Seq('ATGTACATACAGTAA'), 'is_coding_region': False},
+        expected_regions = [{'seq': Seq('TATAATGTACATACAGTAA'), 'is_coding_region': False},
                             {'seq': Seq('ATGATGTACATACAGATGATGTACATACAGATGTAA'), 'is_coding_region': True},
                             {'seq': Seq('TACATACAG'), 'is_coding_region': False},
                             {'seq': Seq('ATGATGTACATACAGATGTAA'), 'is_coding_region': True},

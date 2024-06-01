@@ -104,7 +104,22 @@ class DNAHighlighter:
                 "is_coding_region": False
             })
 
-        return coding_regions  # Return a list of dictionaries containing coding and non-coding regions
+        # Merge consecutive non-coding regions
+        merged_regions = []
+        current_region = {'seq': '', 'is_coding_region': False}
+        for region in coding_regions[0:]:
+            if region["is_coding_region"]:
+                if len(current_region["seq"]) > 0:
+                    merged_regions.append(current_region)
+                merged_regions.append(region)
+                current_region = {'seq': '', 'is_coding_region': False}
+            else:
+                current_region["is_coding_region"] = False
+                current_region["seq"] += region["seq"]
+
+        merged_regions.append(current_region)
+
+        return merged_regions  # Return a list of dictionaries containing coding and non-coding regions
 
     @staticmethod
     def extract_coding_regions_with_indexes(region_list):

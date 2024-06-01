@@ -44,6 +44,8 @@ class Shared:
 
         # Handle elimination of coding regions if the user chooses to
         original_coding_regions = UserInputHandler.get_coding_regions_list(original_coding_regions)
+        print(f"\nThe total number of coding regions is 58, identifies as follows:")
+        print('\n'.join(f"[{key}] {value}" for key, value in original_coding_regions.items()))
 
         # Eliminate unwanted patterns and generate the resulting sequence
         info, target_seq, min_cost = eliminate_unwanted_patterns(self.seq, self.unwanted_patterns, original_region_list)
