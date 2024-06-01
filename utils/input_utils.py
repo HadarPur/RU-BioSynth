@@ -25,7 +25,7 @@ class CommandLineParser:
             tuple: A tuple containing the paths to the patterns file and sequence file.
         """
         try:
-            opts, args = getopt.getopt(argv, "hp:s:r:c:t", ["help", "p_file=", "s_file="])
+            opts, args = getopt.getopt(argv, "hs:p:o:r:c:t", ["help", "s_path", "p_path=", "o_path"])
         except getopt.GetoptError as err:
             print("\033[91mError:", err, "\033[0m")
             self.print_usage()
