@@ -5,7 +5,7 @@ from utils.text_utils import OutputFormat, set_output_format
 
 if __name__ == "__main__":
     try:
-        delete_dir('report_output')
+        delete_dir('output')
 
         set_output_format(OutputFormat.GUI)
         GUI().execute()

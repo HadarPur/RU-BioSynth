@@ -80,7 +80,6 @@ class DNAHighlighter:
                 for j in range(i + 3, len(seq), 3):
                     if seq[j:j + 3] in stop_codons:  # Check for stop codons
                         if len(seq[start_idx:j + 3]) < min_coding_region_length:
-                            print(seq[start_idx:j + 3])
                             coding_regions.append({
                                 "seq": seq[start_idx:j + 3],
                                 "is_coding_region": False

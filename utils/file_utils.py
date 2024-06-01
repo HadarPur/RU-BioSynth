@@ -1,6 +1,8 @@
 import os
+import re
 import shutil
 import sys
+from pathlib import Path
 
 
 # Define a base class for reading data from a file.
@@ -77,6 +79,35 @@ def delete_dir(directory):
         shutil.rmtree(directory)
     except OSError as error:
         return f"Deleting of the directory '{directory}' failed because of {error}"
+
+
+def save_file(output, path, filename):
+    try:
+        if path:
+            output_path = Path(path)
+            output_path = output_path / 'Elimination Outputs'
+        else:
+            downloads_path = Path.home() / 'Downloads'
+            output_path = downloads_path / 'Elimination Outputs'
+
+            # Replace colons with underscores in the filename
+            filename = re.sub(':', '_', filename)
+
+        create_dir(output_path)
+
+        # Save the file
+        output_path = output_path / filename
+        with open(output_path, 'w', encoding='utf-8') as file:
+            file.write(output)
+
+        return f"File saved successfully at: {output_path}"
+
+    except FileNotFoundError:
+        return "Error: File not found."
+    except PermissionError:
+        return "Error: Permission denied."
+    except Exception as e:
+        return f"An error occurred: {e}"
 
 
 def resource_path(relative_path):

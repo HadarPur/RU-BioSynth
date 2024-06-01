@@ -1,9 +1,9 @@
 import os
 
+from PyQt5.QtCore import Qt
 from PyQt5.QtSvg import QSvgWidget
 from PyQt5.QtWidgets import QFrame, QHBoxLayout, QPushButton, QVBoxLayout, QApplication
 from PyQt5.QtWidgets import QLabel, QFileDialog, QTextEdit, QPlainTextEdit
-from PyQt5.QtCore import Qt
 
 from utils.file_utils import resource_path
 

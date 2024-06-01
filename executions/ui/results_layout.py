@@ -1,8 +1,9 @@
 import os
+from datetime import datetime
 
 import webview
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QApplication, QFileDialog, QLabel, QPushButton, QWidget, QVBoxLayout, QTextEdit
+from PyQt5.QtWidgets import QApplication, QFileDialog, QLabel, QPushButton, QWidget, QVBoxLayout
 from PyQt5.QtWidgets import QHBoxLayout, QSizePolicy, QSpacerItem
 
 from executions.execution_utils import mark_non_equal_codons, initialize_report
@@ -126,7 +127,8 @@ class ResultsWindow(QWidget):
                                         selected_regions_to_exclude, selected_region_list,
                                         min_cost)
 
-        report_local_file_path = self.report.create_report()
+        file_date = datetime.today().strftime("%d %b %Y, %H:%M:%S")
+        report_local_file_path = self.report.create_report(file_date)
 
         if report_local_file_path:
             # Create a horizontal layout for the entire prompt
@@ -174,7 +176,7 @@ class ResultsWindow(QWidget):
         report_path = self.report.download_report()
         message_label.setText(report_path)
 
-    def save_as_report(self, message_label, local_pdf_path):
+    def save_as_report(self, message_label):
         # Get the path to the desktop directory
         desktop_dir = os.path.join(os.path.expanduser("~"), "Desktop")
 
@@ -184,12 +186,7 @@ class ResultsWindow(QWidget):
                                                    options=options)
         if save_path:
             try:
-                with open(local_pdf_path, 'rb') as file:
-                    content = file.read()
-
-                with open(save_path, 'wb') as file:
-                    file.write(content)
-
-                message_label.setText(f"Report saved to: {save_path}")
+                report_path = self.report.download_report(save_path)
+                message_label.setText(report_path)
             except Exception as e:
                 message_label.setText(f"Failed to save file: {e}")

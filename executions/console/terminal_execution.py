@@ -11,9 +11,9 @@ class Terminal:
     def execute(self):
         parser = CommandLineParser()
 
-        s_file_path, p_file_path = parser.parse_args(self.argv)
-        seq = SequenceReader(s_file_path).read_sequence()
-        unwanted_patterns = PatternReader(p_file_path).read_patterns()
+        s_path, p_path, o_path = parser.parse_args(self.argv)
+        seq = SequenceReader(s_path).read_sequence()
+        unwanted_patterns = PatternReader(p_path).read_patterns()
 
         if seq is None:
             print("\033[91mUnfortunately, we couldn't find any sequence file. Please insert one and try again.\033[0m")
@@ -39,5 +39,5 @@ class Terminal:
             print(f"\033[91mThe patterns:\n{unwanted_patterns}\n\nare not valid, please check and try again later.\033[0m")
             return
 
-        Shared(seq, unwanted_patterns).run()
+        Shared(seq, unwanted_patterns, o_path).run()
         return

@@ -2,14 +2,17 @@ import getopt
 import re
 import sys
 
+from utils.text_utils import format_text_bold_for_output
+
 
 class CommandLineParser:
     def __init__(self):
         """
         Initializes a CommandLineParser object with attributes for storing file paths.
         """
-        self.p_file_path = None
-        self.s_file_path = None
+        self.p_path = None
+        self.s_path = None
+        self.o_path = None
 
     def parse_args(self, argv):
         """
@@ -22,25 +25,36 @@ class CommandLineParser:
             tuple: A tuple containing the paths to the patterns file and sequence file.
         """
         try:
-            opts, args = getopt.getopt(argv, "hp:s:r:c:t", ["p_file=", "s_file="])
-        except getopt.GetoptError:
-            print("\033[91mError while getting elimination arguments.\033[0m")
+            opts, args = getopt.getopt(argv, "hp:s:r:c:t", ["help", "p_file=", "s_file="])
+        except getopt.GetoptError as err:
+            print("\033[91mError:", err, "\033[0m")
+            self.print_usage()
             sys.exit(2)
 
         for opt, arg in opts:
-            if opt == '-h':
-                print("-p <patterns_file> -s <sequence_file>")
+            if opt in ("-h", "--help"):
+                self.print_usage()
                 sys.exit()
-            elif opt in ("-s", "--s_file"):
-                self.s_file_path = arg
-            elif opt in ("-p", "--p_file"):
-                self.p_file_path = arg
+            elif opt in ("-s", "--s_path"):
+                self.s_path = arg
+            elif opt in ("-p", "--p_path"):
+                self.p_path = arg
+            elif opt in ("-o", "--o_path"):
+                self.o_path = arg
 
-        # if self.s_file_path is None or self.p_file_path is None:
-        #     print("\033[91mOne or more input files are missing.\033[0m")
-        #     sys.exit()
+        return self.s_path, self.p_path, self.o_path
 
-        return self.s_file_path, self.p_file_path
+    def print_usage(self):
+        print(
+            f"{format_text_bold_for_output('Usage:')}\n"
+            "\t$ python ./app.py -s <seq_file_path> -p <pattern_file_path> -o <output_path_dir>\n\n"
+            "\tThe elimination program, which allow design synthetic DNA sequences without unwanted patterns.\n\n"
+            f"{format_text_bold_for_output('Options:')}\n"
+            "\t-s --s_path\tSequence file path (mandatory)\n"
+            "\t-p --p_path\tPatterns file path (mandatory)\n"
+            "\t-o --o_path\tOutput directory path (optional-default is downloads directory)\n\n"
+            f"{format_text_bold_for_output('Info:')}\n"
+        )
 
 
 class UserInputHandler:

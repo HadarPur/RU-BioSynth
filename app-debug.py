@@ -17,7 +17,7 @@ def execute_unittests():
 
 if __name__ == "__main__":
     try:
-        delete_dir('report_output')
+        delete_dir('output')
 
         # DEBUG
         execute_unittests()

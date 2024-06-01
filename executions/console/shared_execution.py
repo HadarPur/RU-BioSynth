@@ -1,39 +1,19 @@
-import copy
+from datetime import datetime
 
 from executions.execution_utils import eliminate_unwanted_patterns, mark_non_equal_codons, initialize_report
 from utils.display_utils import SequenceUtils
 from utils.dna_utils import DNAHighlighter
+from utils.file_utils import save_file
 from utils.input_utils import UserInputHandler
 from utils.text_utils import format_text_bold_for_output
 
 
-def save_report_if_requested(seq, target_seq, marked_input_seq, marked_target_seq, unwanted_patterns,
-                             original_coding_regions, region_list,
-                             min_cost):
-    report = initialize_report(seq, target_seq, marked_input_seq, marked_target_seq, unwanted_patterns,
-                               original_coding_regions, region_list, None,
-                               None,
-                               min_cost)
-    report.create_report()
-
-    save_report = input(
-        "\n\nElimination report is now available, do you want to download the report? (yes/no): ").lower()
-
-    if save_report == 'yes' or save_report == 'y':
-        report_path = report.download_report()
-        print(report_path)
-        print("Report saved successfully!")
-    elif save_report == 'no' or save_report == 'n':
-        print("Report not saved.")
-    else:
-        print("Invalid input. Please enter 'yes' or 'no'.")
-
-
 class Shared:
 
-    def __init__(self, seq, unwanted_patterns):
+    def __init__(self, seq, unwanted_patterns, output_path=None):
         self.seq = seq
         self.unwanted_patterns = unwanted_patterns
+        self.output_path = output_path
 
     def run(self):
         if self.seq is None or len(self.seq) == 0:
@@ -44,7 +24,8 @@ class Shared:
         print(SequenceUtils.get_sequence(format_text_bold_for_output("DNA sequence"), self.seq))
 
         # Print the list of unwanted patterns
-        print(f"\n{format_text_bold_for_output('Pattern list:')}\n\t{SequenceUtils.get_patterns(self.unwanted_patterns)}\n")
+        print(
+            f"\n{format_text_bold_for_output('Pattern list:')}\n\t{SequenceUtils.get_patterns(self.unwanted_patterns)}\n")
 
         # Extract coding regions from the sequence
         original_region_list = DNAHighlighter.get_coding_and_non_coding_regions(self.seq)
@@ -77,14 +58,35 @@ class Shared:
 
         # print(marked_seq)
         target_result = SequenceUtils.get_sequence(format_text_bold_for_output('Target DNA sequence'), target_seq)
-        print(target_result)
+        print(f'{target_result}\n')
 
         # Create a report summarizing the processing and save if the user chooses to
-        save_report_if_requested(self.seq,
-                                 target_seq,
-                                 marked_input_seq,
-                                 marked_target_seq,
-                                 self.unwanted_patterns,
-                                 original_coding_regions,
-                                 original_region_list,
-                                 min_cost)
+        file_date = datetime.today().strftime("%d %b %Y, %H:%M:%S")
+        self.save_report(target_seq,
+                         marked_input_seq,
+                         marked_target_seq,
+                         original_coding_regions,
+                         original_region_list,
+                         min_cost, file_date)
+
+        self.save_target_sequence(target_seq, file_date)
+
+    def save_report(self, target_seq, marked_input_seq, marked_target_seq,
+                    original_coding_regions, region_list, min_cost, file_date):
+
+        report = initialize_report(self.seq, target_seq, marked_input_seq, marked_target_seq,
+                                   self.unwanted_patterns, original_coding_regions, region_list,
+                                   None, None, min_cost)
+
+        report.create_report(file_date)
+
+        path = report.download_report(self.output_path)
+        print(path)
+
+    def save_target_sequence(self, target_seq, file_date):
+        filename = f'Target DNA sequence - {file_date}.txt'
+        path = save_file(target_seq, self.output_path, filename)
+        print(path)
+
+
+

@@ -8,12 +8,22 @@ from utils.dna_utils import DNAHighlighter
 class TestDNAHighlighter(unittest.TestCase):
 
     def test_get_coding_and_non_coding_regions(self):
-        seq = Seq("TTACATACAGATGTACATACAGTAATACATACAGTAATACATACAGATGTACATACAGTAA")
+        seq = Seq(
+                  "CGCGGTTTTGTAGAAGGTTAGGGGAATAGGTTAGATTGAGTGGCTTAAGA"
+                  "ATGTAA"
+                  "ATGCTTCTTGTGGAACTCGACAACGCAACAACGCGACGGATCTACGTCACAGCGTGCATAGTGAAAACGGAGTTGCTGACGACGAAAGCGACATTGGGATCTGTCAGTTGTCATTCGCGAAAAACATCCGTCCCCGAGGCGGACACTGATTGA"
+                  "GCGTACA"
+                  "ATGGTTTAG"
+                  "ATGCCCTGA")
+
         regions = DNAHighlighter.get_coding_and_non_coding_regions(seq)
-        expected_regions = [{'seq': 'TTACATACAG', 'is_coding_region': False},
-                            {'seq': 'ATGTACATACAGTAA', 'is_coding_region': True},
-                            {'seq': 'TACATACAGTAATACATACAG', 'is_coding_region': False},
-                            {'seq': 'ATGTACATACAGTAA', 'is_coding_region': True}]
+        expected_regions = [
+            {'seq': Seq('CGCGGTTTTGTAGAAGGTTAGGGGAATAGGTTAGATTGAGTGGCTTAAGA'), 'is_coding_region': False},
+            {'seq': Seq('ATGTAA'), 'is_coding_region': False},
+            {'seq': Seq('ATGCTTCTTGTGGAACTCGACAACGCAACAACGCGACGGATCTACGTCACAGCGTGCATAGTGAAAACGGAGTTGCTGACGACGAAAGCGACATTGGGATCTGTCAGTTGTCATTCGCGAAAAACATCCGTCCCCGAGGCGGACACTGATTGA'), 'is_coding_region': True},
+            {'seq': Seq('GCGTACA'), 'is_coding_region': False},
+            {'seq': Seq('ATGGTTTAG'), 'is_coding_region': False},
+            {'seq': Seq('ATGCCCTGA'), 'is_coding_region': False}]
 
         self.assertEqual(regions, expected_regions)
 
