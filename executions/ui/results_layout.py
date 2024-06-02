@@ -92,20 +92,23 @@ class ResultsWindow(QWidget):
         label_html = f"""
             <br>
             <br>
-            <h3>Target DNA Sequences:</h3>
+            <h3>Target DNA Sequence:</h3>
         """
 
         label = QLabel(label_html)
         self.middle_layout.addWidget(label)
 
-        add_code_block(self.middle_layout, self.target_seq)
+        # Create a report summarizing the processing and save if the user chooses to
+        file_date = datetime.today().strftime("%d %b %Y, %H:%M:%S")
+
+        add_code_block(self.middle_layout, self.target_seq, file_date)
 
         # Spacer to push other widgets to the top
         layout.addSpacerItem(QSpacerItem(0, 0, QSizePolicy.Minimum, QSizePolicy.Expanding))
 
         self.prompt_report(self.middle_layout, self.target_seq, marked_input_seq, marked_target_seq,
                            self.original_coding_regions, self.original_region_list, self.selected_regions_to_exclude,
-                           self.selected_region_list, self.min_cost)
+                           self.selected_region_list, self.min_cost, file_date)
 
         # Create a horizontal layout for the bottom section
         self.bottom_layout = QHBoxLayout()
@@ -121,13 +124,12 @@ class ResultsWindow(QWidget):
         self.bottom_layout.addWidget(done_button, alignment=Qt.AlignRight)
 
     def prompt_report(self, layout, target_seq, marked_input_seq, marked_target_seq, original_coding_regions,
-                      original_region_list, selected_regions_to_exclude, selected_region_list, min_cost):
+                      original_region_list, selected_regions_to_exclude, selected_region_list, min_cost, file_date):
         self.report = initialize_report(self.dna_sequence, target_seq, marked_input_seq, marked_target_seq,
                                         self.unwanted_patterns, original_coding_regions, original_region_list,
                                         selected_regions_to_exclude, selected_region_list,
                                         min_cost)
 
-        file_date = datetime.today().strftime("%d %b %Y, %H:%M:%S")
         report_local_file_path = self.report.create_report(file_date)
 
         if report_local_file_path:
@@ -142,8 +144,8 @@ class ResultsWindow(QWidget):
             message_label = QLabel()
 
             # Create the 'Save' button
-            download_button = QPushButton('Save to downloads')
-            download_button.setFixedSize(150, 30)
+            download_button = QPushButton('Download')
+            download_button.setFixedSize(120, 30)
             download_button.clicked.connect(
                 lambda: self.download_report(message_label))
 
@@ -151,7 +153,7 @@ class ResultsWindow(QWidget):
             save_as_button = QPushButton('Save as')
             save_as_button.setFixedSize(120, 30)
             save_as_button.clicked.connect(
-                lambda: self.save_as_report(message_label, report_local_file_path))
+                lambda: self.save_as_report(message_label))
 
             # Create the 'Preview' button
             show_preview_button = QPushButton("Show Preview")
@@ -182,7 +184,7 @@ class ResultsWindow(QWidget):
 
         # Show the "Save As" dialog with the desktop directory as the default location
         options = QFileDialog.Options()
-        save_path, _ = QFileDialog.getSaveFileName(self, "Save As", desktop_dir, "HTML Files (*.html);;All Files (*)",
+        save_path, _ = QFileDialog.getSaveFileName(self, "Save As", desktop_dir, "HTML Files (*.html);",
                                                    options=options)
         if save_path:
             try:

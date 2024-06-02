@@ -81,7 +81,7 @@ def delete_dir(directory):
         return f"Deleting of the directory '{directory}' failed because of {error}"
 
 
-def save_file(output, path, filename):
+def save_file(output, filename, path=None):
     try:
         if path:
             output_path = Path(path)

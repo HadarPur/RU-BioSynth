@@ -97,5 +97,5 @@ class Report:
             return None
 
     def download_report(self, path=None):
-        path = save_file(self.output_text, path, self.report_filename)
+        path = save_file(self.output_text, self.report_filename, path)
         return path

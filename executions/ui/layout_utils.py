@@ -5,7 +5,7 @@ from PyQt5.QtSvg import QSvgWidget
 from PyQt5.QtWidgets import QFrame, QHBoxLayout, QPushButton, QVBoxLayout, QApplication
 from PyQt5.QtWidgets import QLabel, QFileDialog, QTextEdit, QPlainTextEdit
 
-from utils.file_utils import resource_path
+from utils.file_utils import resource_path, save_file
 
 
 class DropTextEdit(QTextEdit):
@@ -156,7 +156,7 @@ def add_text_edit_html(layout, placeholder, content):
     return text_edit
 
 
-def add_code_block(parent_layout, text):
+def add_code_block(parent_layout, text, file_date):
     layout = QVBoxLayout()
     parent_layout.addLayout(layout)
 
@@ -169,22 +169,42 @@ def add_code_block(parent_layout, text):
     button_layout = QHBoxLayout()
     layout.addLayout(button_layout)
 
+    message_label = QLabel()
     button_layout.addStretch(1)  # Push the button to the right
 
+    # Download button
+    add_button(button_layout, 'Download', Qt.AlignRight, download_file, (code_display, file_date, message_label, ), size=(100, 30))
+
     # Save button
-    add_button(button_layout, 'Save to file', Qt.AlignRight, save_to_file, (code_display, ), size=(100, 30))
+    add_button(button_layout, 'Save as', Qt.AlignRight, save_to_file, (code_display, message_label, ), size=(100, 30))
 
     # Copy button
     add_button(button_layout, 'Copy', Qt.AlignRight, copy_to_clipboard, (code_display, ))
 
+    layout.addWidget(message_label)
 
-def save_to_file(code_display):
+
+def download_file(code_display, file_date, message_label):
+    filename = f'Target DNA Sequence - {file_date}.txt'
+    text = code_display.toPlainText()
+    path = save_file(text, filename)
+    message_label.setText(path)
+
+
+def save_to_file(code_display, message_label):
     text = code_display.toPlainText()
     download_path = os.path.join(os.path.expanduser('~'), 'Downloads')
-    filename, _ = QFileDialog.getSaveFileName(None, "Save File", download_path, "Text Files (*.txt);")
+
+    options = QFileDialog.Options()
+    filename, _ = QFileDialog.getSaveFileName(None, "Save File", download_path, "Text Files (*.txt);", options=options)
+
     if filename:
-        with open(filename, 'w') as file:
-            file.write(text)
+        try:
+            with open(filename, 'w') as file:
+                file.write(text)
+                message_label.setText(filename)
+        except Exception as e:
+            message_label.setText(f"Failed to save file: {e}")
 
 
 def add_button(layout, text, alignment=None, callback=None, args=(), size=(60, 30)):
