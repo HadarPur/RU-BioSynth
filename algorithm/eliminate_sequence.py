@@ -11,22 +11,28 @@ from utils.text_utils import format_text_bold_for_output
 class EliminateSequence:
     @staticmethod
     def eliminate(seq, unwanted_patterns, cost_table):
+        # Initialize information string for the elimination process
         info = f"{format_text_bold_for_output('Starting Elimination Process...')}\n"
         info += f"\n{format_text_bold_for_output('Original Sequence:')}\n{seq}\n"
         info += f"\n{format_text_bold_for_output('Unwanted Patterns:')}\n{', '.join(sorted(unwanted_patterns))}\n"
+        # Additional descriptions (placeholders for actual descriptions)
         info += f"\n{format_text_bold_for_output('Elimination Process:')}\n{elimination_process_description}\n"
         info += f"\n{format_text_bold_for_output('Coding regions:')}\n{coding_region_cost_description}\n"
         info += f"\n{format_text_bold_for_output('Non-Coding regions:')}\n{non_coding_region_cost_description}\n"
+
         sequence_length = len(seq)
         backtrack = {}
 
+        # Initialize utility and FSM classes
         elimination_utils = EliminationUtils()
         cost_function = elimination_utils.cost_function(cost_table)
         fsm = FSM(unwanted_patterns, elimination_utils.alphabet)
 
+        # Dynamic programming table A, initialized with infinity
         A = defaultdict(lambda: float('inf'))
         A[(0, '')] = 0
 
+        # Fill the dynamic programming table
         for i in range(1, sequence_length + 1):
             for v in fsm.V:
                 for s in fsm.sigma:
@@ -37,6 +43,7 @@ class EliminateSequence:
                             A[(i, u)] = cost
                             backtrack[(i, u)] = (v, s)
 
+        # Find the minimum cost and final state
         min_cost = float('inf')
         final_state = None
         for v in fsm.V:
@@ -48,6 +55,7 @@ class EliminateSequence:
             info += "\nNo valid sequence found that matches the unwanted pattern list."
             return info, None, min_cost
 
+        # Reconstruct the sequence with the minimum cost
         sequence = []
         current_state = final_state
         for i in range(sequence_length, 0, -1):
@@ -56,6 +64,7 @@ class EliminateSequence:
             current_state = prev_state
         sequence.reverse()
 
+        # Append final information to the info string
         info += f"\n{format_text_bold_for_output('_' * 50)}\n"
         info += f"\n🎉 {format_text_bold_for_output('Congrats!')}\n\n"
         info += "🚀 Elimination Process Completed!\n"
