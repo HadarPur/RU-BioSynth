@@ -156,7 +156,7 @@ def add_text_edit_html(layout, placeholder, content):
     return text_edit
 
 
-def add_code_block(parent_layout, text, file_date):
+def add_code_block(parent_layout, text, file_date, update_status):
     layout = QVBoxLayout()
     parent_layout.addLayout(layout)
 
@@ -169,29 +169,26 @@ def add_code_block(parent_layout, text, file_date):
     button_layout = QHBoxLayout()
     layout.addLayout(button_layout)
 
-    message_label = QLabel()
     button_layout.addStretch(1)  # Push the button to the right
 
     # Download button
-    add_button(button_layout, 'Download', Qt.AlignRight, download_file, (code_display, file_date, message_label, ), size=(100, 30))
+    add_button(button_layout, 'Download', Qt.AlignRight, download_file, (code_display, file_date, update_status, ), size=(100, 30))
 
     # Save button
-    add_button(button_layout, 'Save as', Qt.AlignRight, save_to_file, (code_display, message_label, ), size=(100, 30))
+    add_button(button_layout, 'Save as', Qt.AlignRight, save_to_file, (code_display, update_status, ), size=(100, 30))
 
     # Copy button
-    add_button(button_layout, 'Copy', Qt.AlignRight, copy_to_clipboard, (code_display, ))
-
-    layout.addWidget(message_label)
+    add_button(button_layout, 'Copy', Qt.AlignRight, copy_to_clipboard, (code_display, update_status, ))
 
 
-def download_file(code_display, file_date, message_label):
+def download_file(code_display, file_date, update_status):
     filename = f'Target DNA Sequence - {file_date}.txt'
     text = code_display.toPlainText()
     path = save_file(text, filename)
-    message_label.setText(path)
+    update_status(path)
 
 
-def save_to_file(code_display, message_label):
+def save_to_file(code_display, update_status):
     text = code_display.toPlainText()
     download_path = os.path.join(os.path.expanduser('~'), 'Downloads')
 
@@ -202,9 +199,9 @@ def save_to_file(code_display, message_label):
         try:
             with open(filename, 'w') as file:
                 file.write(text)
-                message_label.setText(filename)
+                update_status(filename)
         except Exception as e:
-            message_label.setText(f"Failed to save file: {e}")
+            update_status(f"Failed to save file: {e}")
 
 
 def add_button(layout, text, alignment=None, callback=None, args=(), size=(60, 30)):
@@ -227,7 +224,9 @@ def add_button(layout, text, alignment=None, callback=None, args=(), size=(60, 3
     return button
 
 
-def copy_to_clipboard(code_display):
+def copy_to_clipboard(code_display, update_status):
     text = code_display.toPlainText()
     QApplication.clipboard().setText(text)
+    update_status(f"Sequence copied to clipboard")
+
 

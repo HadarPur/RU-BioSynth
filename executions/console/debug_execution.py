@@ -4,7 +4,7 @@ from settings.pattern_settings import P
 from settings.sequence_settings import S
 
 
-class App:
+class Debug:
     def __init__(self):
         self.seq = S
         self.unwanted_patterns = P
@@ -26,5 +26,5 @@ class App:
             print(f"The patterns:\n{self.unwanted_patterns }\n\nare not valid, please check and try again later.")
             return
 
-        Shared(self.seq, self.unwanted_patterns).run()
+        Shared(self.seq, self.unwanted_patterns, '/Users/hadar.pur/Downloads').run()
         return

@@ -48,7 +48,7 @@ class Shared:
         print('\n'.join(f"[{key}] {value}" for key, value in original_coding_regions.items()))
 
         # Eliminate unwanted patterns and generate the resulting sequence
-        info, target_seq, min_cost = eliminate_unwanted_patterns(self.seq, self.unwanted_patterns, original_region_list)
+        info, detailed_changes, target_seq, min_cost = eliminate_unwanted_patterns(self.seq, self.unwanted_patterns, original_region_list)
 
         print(format_text_bold_for_output('\n' + '_' * 100 + '\n' + '_' * 100 + '\n'))
         print(info)
@@ -61,6 +61,7 @@ class Shared:
         # print(marked_seq)
         target_result = SequenceUtils.get_sequence(format_text_bold_for_output('Target DNA Sequence'), target_seq)
         print(f'{target_result}\n')
+        print(f"\n{format_text_bold_for_output('Detailed Changes:')}\n{detailed_changes}\n")
 
         # Create a report summarizing the processing and save if the user chooses to
         file_date = datetime.today().strftime("%d %b %Y, %H:%M:%S")
@@ -69,16 +70,33 @@ class Shared:
                          marked_target_seq,
                          original_coding_regions,
                          original_region_list,
-                         min_cost, file_date)
+                         min_cost,
+                         detailed_changes,
+                         file_date)
 
         self.save_target_sequence(target_seq, file_date)
 
-    def save_report(self, target_seq, marked_input_seq, marked_target_seq,
-                    original_coding_regions, region_list, min_cost, file_date):
+    def save_report(self,
+                    target_seq,
+                    marked_input_seq,
+                    marked_target_seq,
+                    original_coding_regions,
+                    region_list,
+                    min_cost,
+                    detailed_changes,
+                    file_date):
 
-        report = initialize_report(self.seq, target_seq, marked_input_seq, marked_target_seq,
-                                   self.unwanted_patterns, original_coding_regions, region_list,
-                                   None, None, min_cost)
+        report = initialize_report(self.seq,
+                                   target_seq,
+                                   marked_input_seq,
+                                   marked_target_seq,
+                                   self.unwanted_patterns,
+                                   original_coding_regions,
+                                   region_list,
+                                   None,
+                                   None,
+                                   min_cost,
+                                   detailed_changes)
 
         report.create_report(file_date)
 
@@ -87,7 +105,7 @@ class Shared:
 
     def save_target_sequence(self, target_seq, file_date):
         filename = f'Target DNA Sequence - {file_date}.txt'
-        path = save_file(target_seq, self.output_path, filename)
+        path = save_file(target_seq, filename, self.output_path)
         print(path)
 
 

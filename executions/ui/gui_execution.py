@@ -90,10 +90,10 @@ class DNASequenceApp(QMainWindow):
         self.stackedLayout.setCurrentWidget(elimination_window)
 
     def switch_to_results_window(self, original_coding_regions, original_region_list, selected_regions_to_exclude,
-                                 selected_region_list, target_seq, min_cost):
+                                 selected_region_list, target_seq, min_cost, detailed_changes):
         results_window = ResultsWindow(self.dna_sequence, self.unwanted_patterns,
                                        original_coding_regions, original_region_list, selected_regions_to_exclude,
-                                       selected_region_list, target_seq, min_cost, self.show_elimination_window)
+                                       selected_region_list, target_seq, min_cost, detailed_changes, self.show_elimination_window)
         self.stackedLayout.addWidget(results_window)
         self.stackedLayout.setCurrentWidget(results_window)
 

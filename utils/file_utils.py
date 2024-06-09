@@ -83,29 +83,32 @@ def delete_dir(directory):
 
 def save_file(output, filename, path=None):
     try:
+        # Convert path to Path object if it's not None
         if path:
-            output_path = Path(path)
-            output_path = output_path / 'Elimination Outputs'
+            output_path = Path(path) / 'Elimination Outputs'
         else:
             downloads_path = Path.home() / 'Downloads'
             output_path = downloads_path / 'Elimination Outputs'
 
-            # Replace colons with underscores in the filename
-            filename = re.sub(':', '_', filename)
+        # Replace colons with underscores in the filename
+        filename = re.sub(':', '_', filename)
 
+        # Create the directory if it doesn't exist
         create_dir(output_path)
 
         # Save the file
-        output_path = output_path / filename
-        with open(output_path, 'w', encoding='utf-8') as file:
+        output_file_path = output_path / filename
+        with open(output_file_path, 'w', encoding='utf-8') as file:
             file.write(output)
 
-        return f"File saved successfully at: {output_path}"
+        return f"File saved successfully at: {output_file_path}"
 
     except FileNotFoundError:
         return "Error: File not found."
     except PermissionError:
         return "Error: Permission denied."
+    except IsADirectoryError:
+        return "Error: The specified path is a directory, not a file."
     except Exception as e:
         return f"An error occurred: {e}"
 

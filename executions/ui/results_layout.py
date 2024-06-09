@@ -2,9 +2,9 @@ import os
 from datetime import datetime
 
 import webview
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, QTimer
 from PyQt5.QtWidgets import QApplication, QFileDialog, QLabel, QPushButton, QWidget, QVBoxLayout
-from PyQt5.QtWidgets import QHBoxLayout, QSizePolicy, QSpacerItem
+from PyQt5.QtWidgets import QHBoxLayout, QSizePolicy, QSpacerItem, QDialog, QTextEdit, QDialogButtonBox
 
 from executions.execution_utils import mark_non_equal_codons, initialize_report
 from executions.ui.layout_utils import add_button, add_code_block, add_text_edit_html
@@ -22,7 +22,7 @@ def show_preview_report(report_local_file_path):
 
 class ResultsWindow(QWidget):
     def __init__(self, dna_sequence, unwanted_patterns, original_coding_regions, original_region_list,
-                 selected_regions_to_exclude, selected_region_list, target_seq, min_cost,
+                 selected_regions_to_exclude, selected_region_list, target_seq, min_cost, detailed_changes,
                  back_to_elimination_callback):
         super().__init__()
         self.dna_sequence = dna_sequence
@@ -33,6 +33,7 @@ class ResultsWindow(QWidget):
         self.selected_region_list = selected_region_list
         self.target_seq = target_seq
         self.min_cost = min_cost
+        self.detailed_changes = detailed_changes
 
         self.top_layout = None
         self.middle_layout = None
@@ -40,6 +41,10 @@ class ResultsWindow(QWidget):
         self.report = None
 
         self.init_ui(back_to_elimination_callback)
+
+        # Timer for status label
+        self.status_timer = QTimer(self)
+        self.status_timer.timeout.connect(self.clear_status)
 
     def init_ui(self, callback):
         layout = QVBoxLayout(self)
@@ -64,13 +69,21 @@ class ResultsWindow(QWidget):
         label = QLabel(label_html)
         self.middle_layout.addWidget(label)
 
+        info_layout = QHBoxLayout()
+        self.middle_layout.addLayout(info_layout)
+
         # Adding formatted text to QLabel
         label_html = f"""
             <h3>DNA Sequences Difference:</h3>
         """
 
         label = QLabel(label_html)
-        self.middle_layout.addWidget(label)
+        info_layout.addWidget(label)
+
+        # Create the info button
+        info_button = QPushButton('ℹ️', self)
+        info_button.clicked.connect(self.show_info)
+        info_layout.addWidget(info_button, alignment=Qt.AlignRight)
 
         # Mark non-equal codons and print the target sequence
         marked_input_seq, marked_target_seq, marked_seq = mark_non_equal_codons(self.dna_sequence,
@@ -101,21 +114,22 @@ class ResultsWindow(QWidget):
         # Create a report summarizing the processing and save if the user chooses to
         file_date = datetime.today().strftime("%d %b %Y, %H:%M:%S")
 
-        add_code_block(self.middle_layout, self.target_seq, file_date)
+        add_code_block(self.middle_layout, self.target_seq, file_date, self.update_status)
 
         # Spacer to push other widgets to the top
         layout.addSpacerItem(QSpacerItem(0, 0, QSizePolicy.Minimum, QSizePolicy.Expanding))
 
         self.prompt_report(self.middle_layout, self.target_seq, marked_input_seq, marked_target_seq,
                            self.original_coding_regions, self.original_region_list, self.selected_regions_to_exclude,
-                           self.selected_region_list, self.min_cost, file_date)
+                           self.selected_region_list, self.min_cost, file_date, self.detailed_changes)
 
         # Create a horizontal layout for the bottom section
         self.bottom_layout = QHBoxLayout()
         layout.addLayout(self.bottom_layout)
 
-        # Add a stretch to push the next button to the right
-        self.bottom_layout.addStretch(1)
+        # Create the status bar-like label
+        self.status_label = QLabel()
+        self.bottom_layout.addWidget(self.status_label)
 
         # Add next button to the bottom layout
         done_button = QPushButton('Done')
@@ -124,11 +138,11 @@ class ResultsWindow(QWidget):
         self.bottom_layout.addWidget(done_button, alignment=Qt.AlignRight)
 
     def prompt_report(self, layout, target_seq, marked_input_seq, marked_target_seq, original_coding_regions,
-                      original_region_list, selected_regions_to_exclude, selected_region_list, min_cost, file_date):
+                      original_region_list, selected_regions_to_exclude, selected_region_list, min_cost, file_date, detailed_changes):
         self.report = initialize_report(self.dna_sequence, target_seq, marked_input_seq, marked_target_seq,
                                         self.unwanted_patterns, original_coding_regions, original_region_list,
                                         selected_regions_to_exclude, selected_region_list,
-                                        min_cost)
+                                        min_cost, detailed_changes)
 
         report_local_file_path = self.report.create_report(file_date)
 
@@ -141,19 +155,17 @@ class ResultsWindow(QWidget):
             question_label = QLabel("Elimination report is now available")
             prompt_layout.addWidget(question_label)
 
-            message_label = QLabel()
-
             # Create the 'Save' button
             download_button = QPushButton('Download')
             download_button.setFixedSize(120, 30)
             download_button.clicked.connect(
-                lambda: self.download_report(message_label))
+                lambda: self.download_report())
 
             # Create the 'Save' button
             save_as_button = QPushButton('Save as')
             save_as_button.setFixedSize(120, 30)
             save_as_button.clicked.connect(
-                lambda: self.save_as_report(message_label))
+                lambda: self.save_as_report())
 
             # Create the 'Preview' button
             show_preview_button = QPushButton("Show Preview")
@@ -172,23 +184,57 @@ class ResultsWindow(QWidget):
 
             # Add the entire horizontal layout to the parent layout
             layout.addLayout(prompt_layout)
-            layout.addWidget(message_label)
 
-    def download_report(self, message_label):
+    def show_info(self):
+        info_text = self.detailed_changes if isinstance(self.detailed_changes, str) else str(self.detailed_changes)
+
+        # Create a dialog to show detailed information
+        dialog = QDialog(self)
+        dialog.setWindowTitle('Info')
+        dialog.setFixedSize(1000, 400)
+
+        # Set the window flags to make the dialog non-modal and always on top
+        dialog.setWindowFlags(Qt.Window | Qt.WindowStaysOnTopHint | Qt.WindowCloseButtonHint)
+        dialog.setWindowModality(Qt.NonModal)  # Allow interaction with the parent
+
+        layout = QVBoxLayout()
+
+        text_edit = QTextEdit()
+        text_edit.setReadOnly(True)
+        text_edit.setPlainText(info_text)
+        layout.addWidget(text_edit)
+
+        button_box = QDialogButtonBox(QDialogButtonBox.Ok)
+        button_box.accepted.connect(dialog.accept)
+        layout.addWidget(button_box)
+
+        dialog.setLayout(layout)
+        dialog.show()
+
+    def download_report(self):
         report_path = self.report.download_report()
-        message_label.setText(report_path)
+        # Update status label when the report is downloaded
+        self.update_status(report_path)
 
-    def save_as_report(self, message_label):
+    def update_status(self, message):
+        self.status_label.setText(message)
+        # Start the timer to clear the status after 30 seconds
+        self.status_timer.start(3000)  # 30 seconds in milliseconds
+
+    def clear_status(self):
+        self.status_label.setText("")
+        self.status_timer.stop()
+
+    def save_as_report(self):
         # Get the path to the desktop directory
         desktop_dir = os.path.join(os.path.expanduser("~"), "Desktop")
 
         # Show the "Save As" dialog with the desktop directory as the default location
         options = QFileDialog.Options()
-        save_path, _ = QFileDialog.getSaveFileName(self, "Save As", desktop_dir, "HTML Files (*.html);",
-                                                   options=options)
+        save_path, _ = QFileDialog.getSaveFileName(self, "Save As", desktop_dir, "HTML Files (*.html);", options=options)
         if save_path:
             try:
                 report_path = self.report.download_report(save_path)
-                message_label.setText(report_path)
+                self.update_status(f"Report saved as: {report_path}")
             except Exception as e:
-                message_label.setText(f"Failed to save file: {e}")
+                self.update_status("Failed to save report")

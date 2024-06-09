@@ -9,9 +9,19 @@ from utils.file_utils import create_dir, resource_path, save_file
 
 
 class Report:
-    def __init__(self, input_seq, target_seq, marked_input_seq, marked_target_seq, unwanted_patterns,
-                 original_coding_regions, original_region_list, selected_regions_to_exclude, selected_region_list,
-                 min_cost):
+    def __init__(self,
+                 input_seq,
+                 target_seq,
+                 marked_input_seq,
+                 marked_target_seq,
+                 unwanted_patterns,
+                 original_coding_regions,
+                 original_region_list,
+                 selected_regions_to_exclude,
+                 selected_region_list,
+                 min_cost,
+                 detailed_changes):
+
         self.input_seq = input_seq
         self.highlight_input = SequenceUtils.highlight_sequences_to_html(original_region_list)
         self.target_seq = target_seq
@@ -19,6 +29,7 @@ class Report:
         self.marked_target_seq = marked_target_seq
         self.unwanted_patterns = ', '.join(unwanted_patterns)
         self.num_of_coding_regions = len(original_coding_regions)
+        self.detailed_changes = detailed_changes.replace("\n", "<br>")
         self.output_text = None
         self.report_filename = None
 
@@ -63,6 +74,7 @@ class Report:
                    'elimination_process_description': elimination_process_description,
                    'coding_region_cost_description': coding_region_cost_description,
                    'non_coding_region_cost_description': non_coding_region_cost_description,
+                   'detailed_changes': self.detailed_changes
                    }
 
         try:

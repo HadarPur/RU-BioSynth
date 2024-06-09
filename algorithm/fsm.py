@@ -22,7 +22,7 @@ def kmp_based_fsm(unwanted_patterns, sigma):
 
     # Prefix elongation and invalid transitions
     for p in unwanted_patterns:
-        for j in range(1, len(p)):
+        for j in range(1, len(p) + 1):
             f[(p[:j - 1], p[j - 1])] = p[:j]
         f[(p[:- 1], p[- 1])] = None  # Invalid transition into complete pattern
 
