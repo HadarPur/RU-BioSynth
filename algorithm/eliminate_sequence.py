@@ -53,7 +53,7 @@ class EliminateSequence:
 
         if min_cost == float('inf'):
             info += "\nNo valid sequence found that matches the unwanted pattern list."
-            return info, None, min_cost
+            return info, '', None, min_cost
 
         # Reconstruct the sequence with the minimum cost
         sequence = []
@@ -73,4 +73,4 @@ class EliminateSequence:
         info += f"\n{format_text_bold_for_output('Total Cost:')}\n{min_cost:.10g}\n"
         info += f"\n{format_text_bold_for_output('_' * 50)}\n"
 
-        return info, ''.join(sequence), min_cost
+        return info, '', ''.join(sequence), min_cost
