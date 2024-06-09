@@ -58,10 +58,11 @@ class Shared:
                                                                                 target_seq,
                                                                                 original_region_list)
 
-        # print(marked_seq)
         target_result = SequenceUtils.get_sequence(format_text_bold_for_output('Target DNA Sequence'), target_seq)
         print(f'{target_result}\n')
-        print(f"\n{format_text_bold_for_output('Detailed Changes:')}\n{detailed_changes}\n")
+
+        detailed_changes = '\n'.join(detailed_changes) if detailed_changes else None
+        print(f"{format_text_bold_for_output('Detailed Changes:')}\n{detailed_changes}\n")
 
         # Create a report summarizing the processing and save if the user chooses to
         file_date = datetime.today().strftime("%d %b %Y, %H:%M:%S")

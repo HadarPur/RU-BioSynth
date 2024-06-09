@@ -29,7 +29,7 @@ class Report:
         self.marked_target_seq = marked_target_seq
         self.unwanted_patterns = ', '.join(unwanted_patterns)
         self.num_of_coding_regions = len(original_coding_regions)
-        self.detailed_changes = detailed_changes.replace("\n", "<br>")
+        self.detailed_changes = '<br>'.join(detailed_changes) if detailed_changes else None
         self.output_text = None
         self.report_filename = None
 
