@@ -36,7 +36,8 @@ class Terminal:
             return
 
         if not is_valid_patterns(unwanted_patterns):
-            print(f"\033[91mThe patterns:\n{unwanted_patterns}\n\nare not valid, please check and try again later.\033[0m")
+            print(
+                f"\033[91mThe patterns:\n{unwanted_patterns}\n\nare not valid, please check and try again later.\033[0m")
             return
 
         Shared(seq, unwanted_patterns, o_path).run()

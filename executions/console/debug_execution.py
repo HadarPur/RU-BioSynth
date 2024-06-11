@@ -18,12 +18,12 @@ class Debug:
             print(f"The sequence:\n{self.seq}\n\nis not valid, please check and try again later.")
             return
 
-        if self.unwanted_patterns  is None or len(self.unwanted_patterns ) == 0:
+        if self.unwanted_patterns is None or len(self.unwanted_patterns) == 0:
             print("There is an issue with the patterns file, please check and try again later.")
             return
 
-        if not is_valid_patterns(self.unwanted_patterns ):
-            print(f"The patterns:\n{self.unwanted_patterns }\n\nare not valid, please check and try again later.")
+        if not is_valid_patterns(self.unwanted_patterns):
+            print(f"The patterns:\n{self.unwanted_patterns}\n\nare not valid, please check and try again later.")
             return
 
         Shared(self.seq, self.unwanted_patterns, '/Users/hadar.pur/Downloads').run()

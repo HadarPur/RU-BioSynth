@@ -2,506 +2,515 @@
 
 <html lang="en">
 
-  <head>
+<head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>Elimination results</title>
-    <meta name="description" content="A flexible and comprehensive software app for design of synthetic DNA sequences without unwanted patterns">
+    <meta name="description"
+          content="A flexible and comprehensive software app for design of synthetic DNA sequences without unwanted patterns">
     <meta name="author" content="Hadar Pur">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;700&family=Open+Sans:ital,wght@0,400;0,700;1,600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;700&family=Open+Sans:ital,wght@0,400;0,700;1,600&display=swap"
+          rel="stylesheet">
 
-    <script defer src="https://use.fontawesome.com/releases/v5.7.2/js/all.js" integrity="sha384-0pzryjIRos8mFBWMzSSZApWtPl/5++eIfzYmTgBBmXYdhvxPc+XcFEk+zJwDgWbP" crossorigin="anonymous"></script>
+    <script defer src="https://use.fontawesome.com/releases/v5.7.2/js/all.js"
+            integrity="sha384-0pzryjIRos8mFBWMzSSZApWtPl/5++eIfzYmTgBBmXYdhvxPc+XcFEk+zJwDgWbP"
+            crossorigin="anonymous"></script>
 
     <style>
-      html {
-        scroll-behavior: smooth;
-        scroll-padding-top: 150px;
-        scroll-padding-left: 260px;
-        scroll-margin-left: 260px;
-        overflow-x: hidden;
-      }
-
-      body {
-        font-family: 'Open Sans', sans-serif;
-        letter-spacing: 0;
-        color: #333;
-        margin: 0;
-      }
-
-      h1 {
-        font-family: 'Noto Serif', serif;
-        font-size: 39px;
-        line-height: 42px;
-        margin-bottom: 50px;
-      }
-
-      h2 {
-        font-family: 'Noto Serif', serif;
-        font-size: 28px;
-        line-height: 30px;
-        text-align: left;
-        color: #333;
-        margin-block-start: 40px;
-        margin-block-end: 30px;
-        margin-inline-start: 0;
-        margin-inline-end: 0;
-      }
-
-      h3 {
-        font-family: 'Noto Serif', serif;
-        font-size: 18px;
-        line-height: 30px;
-        text-align: left;
-        color: #333;
-        margin-block-start: 40px;
-        margin-block-end: 0;
-        margin-inline-start: 0;
-        margin-inline-end: 0;
-      }
-
-      p {
-        font-size: 20px;
-        line-height: 26px;
-        max-width: 90%; /* Adjust this value as needed */
-        margin-right: auto;
-        overflow-wrap: break-word;
-      }
-
-      pre {
-        font-size: 15px;
-        line-height: 20px;
-        max-width: 90%; /* Adjust this value as needed */
-        margin-right: auto;
-        overflow-wrap: break-word;
-      }
-
-      a {
-        text-decoration: none;
-      }
-
-      a:hover {
-        text-decoration: underline;
-      }
-
-      .navbar {
-        overflow: hidden;
-        background-color: #183698;
-        color: #333;
-        top: 0;
-        width: 100%;
-        font-size: 15px;
-        text-align: right;
-        padding: 12px 0 0 0;
-        position: fixed;
-        z-index: 1;
-
-      }
-
-      .navbar a {
-        margin-right: 40px;
-        color: #333;
-      }
-
-      .navbar a:active {
-        text-decoration: underline;
-      }
-
-      .right a {
-        float: right;
-      }
-
-      .container {
-        width: 100%;
-      }
-
-      .clear {
-        background-color: #fff;
-        height: auto;
-      }
-
-      .nav-top {
-        border-top: 8px solid #183698;
-      }
-
-      .row {
-        max-width: 70rem;
-        margin: auto;
-        display: block;
-      }
-
-      .content {
-        padding: 32px;
-        height: 70px;
-      }
-
-      .wrapper {
-        display: flex;
-        padding: 22px;
-      }
-
-      .sidepanel {
-        width: 200px;
-        margin-top: 150px;
-        background-color: #fff;
-        overflow-x: hidden;
-        position: fixed;
-        height: 80%;
-
-      }
-
-      .sidepanel a.title {
-        font-family: 'Noto Serif', serif;
-        font-size: 18px;
-        font-weight: 600;
-        text-align: left;
-        text-decoration: none;
-        color: #333;
-        display: block;
-        padding-bottom: 12px;
-      }
-
-      .sidepanel a.section {
-        font-family: 'Open Sans', sans-serif;
-        font-size: 15px;
-        text-align: left;
-        line-height: 30px;
-        display: block;
-        text-decoration: none;
-        color: #333;
-      }
-
-      .sidepanel {
-        font-family: 'Open Sans', sans-serif;
-        font-size: 15px;
-        text-align: left;
-        line-height: 25px;
-        display: block;
-        text-decoration: none;
-        color: #333;
-        padding-left: 20px;
-
-      }
-
-      .sidepanel a.title:hover,
-      .sidepanel a.section:hover,
-      .sidepanel :hover {
-        text-decoration: underline;
-      }
-
-      .main-col p {
-        font-size: 15px;
-        line-height: 24px;
-        margin-bottom: 36px;
-      }
-
-      .right-col {
-        margin-top: 130px;
-        text-align: left;
-        width: 80%;
-        margin-left: 240px;
-      }
-
-      .right-col h1 {
-        font-size: 24px;
-        line-height: 28px;
-        margin-bottom: 24px;
-      }
-
-      .right-col h2 {
-        font-size: 21px;
-        line-height: 24px;
-        margin-bottom: 30px;
-        text-align: left;
-        margin-block-start: 20px;
-        margin-block-end: 10px;
-      }
-
-      .right-col p {
-        font-size: 16px;
-        line-height: 22px;
-        margin-bottom: 20px;
-      }
-
-      .right-col a {
-        color: #183698;
-        text-decoration: underline;
-      }
-
-      .right-col ol {
-        margin-block-start: 10px;
-      }
-
-      .logo {
-        height:70px;
-        float: left;
-        margin: -10px 30px;
-      }
-
-      .divider {
-        width: 40px;
-        height: 4px;
-        background: #183698;
-        border-radius: 30px;
-        margin: 8px auto;
-      }
-
-      .left {
-        margin: 20px 0;
-      }
-
-      .footer a {
-        color: #333;
-      }
-
-      .space {
-        height: 30px;
-        width: 100%;
-        float: left;
-      }
-
-      .double {
-        height: 60px;
-      }
-
-      /* Add this CSS for horizontal scroll */
-      .horizontal-scroll {
-        padding: 10px;
-        white-space: nowrap;
-        overflow-x: auto;
-        height: fit-content;
-        max-width: 90%; /* Adjust this value as needed */
-      }
-
-      .scrollable-paragraph {
-        max-height: 150px; /* Adjust the height as needed */
-        overflow-y: auto; /* Enables vertical scrolling */
-        padding: 10px; /* Optional: adds some padding inside the scrollable area */
-      }
-
-      /* Extra small-small devices (phones, 420px and down) */
-      @media only screen and (max-width: 420px) {
-
-        .logo {
-          width: 100px;
+        html {
+            scroll-behavior: smooth;
+            scroll-padding-top: 150px;
+            scroll-padding-left: 260px;
+            scroll-margin-left: 260px;
+            overflow-x: hidden;
         }
 
-        .navbar {
-          height: auto;
+        body {
+            font-family: 'Open Sans', sans-serif;
+            letter-spacing: 0;
+            color: #333;
+            margin: 0;
+        }
+
+        h1 {
+            font-family: 'Noto Serif', serif;
+            font-size: 39px;
+            line-height: 42px;
+            margin-bottom: 50px;
         }
 
         h2 {
-          font-size: 24px;
+            font-family: 'Noto Serif', serif;
+            font-size: 28px;
+            line-height: 30px;
+            text-align: left;
+            color: #333;
+            margin-block-start: 40px;
+            margin-block-end: 30px;
+            margin-inline-start: 0;
+            margin-inline-end: 0;
         }
-      }
 
-      ::-webkit-scrollbar {
-        width: 5px;
-        height: 5px;
-      }
+        h3 {
+            font-family: 'Noto Serif', serif;
+            font-size: 18px;
+            line-height: 30px;
+            text-align: left;
+            color: #333;
+            margin-block-start: 40px;
+            margin-block-end: 0;
+            margin-inline-start: 0;
+            margin-inline-end: 0;
+        }
 
-      /* Track */
-      ::-webkit-scrollbar-track {
-        box-shadow: inset 0 0 5px grey;
-        border-radius: 10px;
-      }
+        p {
+            font-size: 20px;
+            line-height: 26px;
+            max-width: 90%; /* Adjust this value as needed */
+            margin-right: auto;
+            overflow-wrap: break-word;
+        }
 
-      /* Handle */
-      ::-webkit-scrollbar-thumb {
-        background: #183698;
-        border-radius: 10px;
-      }
+        pre {
+            font-size: 15px;
+            line-height: 20px;
+            max-width: 90%; /* Adjust this value as needed */
+            margin-right: auto;
+            overflow-wrap: break-word;
+        }
 
-      /* Extra small devices (phones, 650px and down) */
-      @media only screen and (max-width: 650px) {
+        a {
+            text-decoration: none;
+        }
 
-        .logo {
-          width: 115px;
-          margin: -10px 0;
+        a:hover {
+            text-decoration: underline;
+        }
+
+        .navbar {
+            overflow: hidden;
+            background-color: #183698;
+            color: #333;
+            top: 0;
+            width: 100%;
+            font-size: 15px;
+            text-align: right;
+            padding: 12px 0 0 0;
+            position: fixed;
+            z-index: 1;
+
         }
 
         .navbar a {
-          padding-bottom: 5px;
-          margin-left: 40px;
-          margin-right: 0;
+            margin-right: 40px;
+            color: #333;
         }
 
-        .wrapper {
-          display: block;
-        }
-
-        .sidepanel {
-          width: 100%;
-          text-align: center;
-          position: relative;
-          height: auto;
-        }
-
-        .sidepanel a.title,
-        .sidepanel a.section,
-        .sidepanel {
-          text-align: center;
-        }
-
-        .left {
-          margin: 20px auto;
-        }
-
-        .right-col {
-          position: relative;
-          margin-top: 20px;
-        }
-
-        .monospace {
-          font-family: 'Courier New', monospace; /* Use a monospace font */
-        }
-
-        /* Adjust the width of each character container */
-        .monospace::before {
-          content: '\2003'; /* Add a fixed-width space character */
-          letter-spacing: 0.6em; /* Adjust the spacing between characters */
-          display: inline-block;
-          width: 1ch; /* Set the width of each character container */
-        }
-      }
-
-      /* Small devices (portrait tablets and large phones, 650px and up) */
-      @media only screen and (min-width: 650px) {
-
-        .logo {
-          margin: -10px 0;
+        .navbar a:active {
+            text-decoration: underline;
         }
 
         .right a {
-          float: right;
-          padding-bottom: 5px;
+            float: right;
         }
-      }
 
-      /* Medium devices (landscape tablets, 768px and up) */
-      @media only screen and (min-width: 768px) {
+        .container {
+            width: 100%;
+        }
+
+        .clear {
+            background-color: #fff;
+            height: auto;
+        }
+
+        .nav-top {
+            border-top: 8px solid #183698;
+        }
+
+        .row {
+            max-width: 70rem;
+            margin: auto;
+            display: block;
+        }
+
+        .content {
+            padding: 32px;
+            height: 70px;
+        }
+
+        .wrapper {
+            display: flex;
+            padding: 22px;
+        }
+
+        .sidepanel {
+            width: 200px;
+            margin-top: 150px;
+            background-color: #fff;
+            overflow-x: hidden;
+            position: fixed;
+            height: 80%;
+
+        }
+
+        .sidepanel a.title {
+            font-family: 'Noto Serif', serif;
+            font-size: 18px;
+            font-weight: 600;
+            text-align: left;
+            text-decoration: none;
+            color: #333;
+            display: block;
+            padding-bottom: 12px;
+        }
+
+        .sidepanel a.section {
+            font-family: 'Open Sans', sans-serif;
+            font-size: 15px;
+            text-align: left;
+            line-height: 30px;
+            display: block;
+            text-decoration: none;
+            color: #333;
+        }
+
+        .sidepanel {
+            font-family: 'Open Sans', sans-serif;
+            font-size: 15px;
+            text-align: left;
+            line-height: 25px;
+            display: block;
+            text-decoration: none;
+            color: #333;
+            padding-left: 20px;
+
+        }
+
+        .sidepanel a.title:hover,
+        .sidepanel a.section:hover,
+        .sidepanel :hover {
+            text-decoration: underline;
+        }
+
+        .main-col p {
+            font-size: 15px;
+            line-height: 24px;
+            margin-bottom: 36px;
+        }
+
+        .right-col {
+            margin-top: 130px;
+            text-align: left;
+            width: 80%;
+            margin-left: 240px;
+        }
+
+        .right-col h1 {
+            font-size: 24px;
+            line-height: 28px;
+            margin-bottom: 24px;
+        }
+
+        .right-col h2 {
+            font-size: 21px;
+            line-height: 24px;
+            margin-bottom: 30px;
+            text-align: left;
+            margin-block-start: 20px;
+            margin-block-end: 10px;
+        }
+
+        .right-col p {
+            font-size: 16px;
+            line-height: 22px;
+            margin-bottom: 20px;
+        }
+
+        .right-col a {
+            color: #183698;
+            text-decoration: underline;
+        }
+
+        .right-col ol {
+            margin-block-start: 10px;
+        }
+
         .logo {
-          margin: -10px 0;
+            height: 70px;
+            float: left;
+            margin: -10px 30px;
         }
-      }
 
-      /* Large devices (laptops/desktops, 992px and up) */
-      @media only screen and (min-width: 992px) {}
+        .divider {
+            width: 40px;
+            height: 4px;
+            background: #183698;
+            border-radius: 30px;
+            margin: 8px auto;
+        }
 
-      /* End Break Points */
+        .left {
+            margin: 20px 0;
+        }
+
+        .footer a {
+            color: #333;
+        }
+
+        .space {
+            height: 30px;
+            width: 100%;
+            float: left;
+        }
+
+        .double {
+            height: 60px;
+        }
+
+        /* Add this CSS for horizontal scroll */
+        .horizontal-scroll {
+            padding: 10px;
+            white-space: nowrap;
+            overflow-x: auto;
+            height: fit-content;
+            max-width: 90%; /* Adjust this value as needed */
+        }
+
+        .scrollable-paragraph {
+            max-height: 150px; /* Adjust the height as needed */
+            overflow-y: auto; /* Enables vertical scrolling */
+            padding: 10px; /* Optional: adds some padding inside the scrollable area */
+        }
+
+        /* Extra small-small devices (phones, 420px and down) */
+        @media only screen and (max-width: 420px) {
+
+            .logo {
+                width: 100px;
+            }
+
+            .navbar {
+                height: auto;
+            }
+
+            h2 {
+                font-size: 24px;
+            }
+        }
+
+        ::-webkit-scrollbar {
+            width: 5px;
+            height: 5px;
+        }
+
+        /* Track */
+        ::-webkit-scrollbar-track {
+            box-shadow: inset 0 0 5px grey;
+            border-radius: 10px;
+        }
+
+        /* Handle */
+        ::-webkit-scrollbar-thumb {
+            background: #183698;
+            border-radius: 10px;
+        }
+
+        /* Extra small devices (phones, 650px and down) */
+        @media only screen and (max-width: 650px) {
+
+            .logo {
+                width: 115px;
+                margin: -10px 0;
+            }
+
+            .navbar a {
+                padding-bottom: 5px;
+                margin-left: 40px;
+                margin-right: 0;
+            }
+
+            .wrapper {
+                display: block;
+            }
+
+            .sidepanel {
+                width: 100%;
+                text-align: center;
+                position: relative;
+                height: auto;
+            }
+
+            .sidepanel a.title,
+            .sidepanel a.section,
+            .sidepanel {
+                text-align: center;
+            }
+
+            .left {
+                margin: 20px auto;
+            }
+
+            .right-col {
+                position: relative;
+                margin-top: 20px;
+            }
+
+            .monospace {
+                font-family: 'Courier New', monospace; /* Use a monospace font */
+            }
+
+            /* Adjust the width of each character container */
+            .monospace::before {
+                content: '\2003'; /* Add a fixed-width space character */
+                letter-spacing: 0.6em; /* Adjust the spacing between characters */
+                display: inline-block;
+                width: 1ch; /* Set the width of each character container */
+            }
+        }
+
+        /* Small devices (portrait tablets and large phones, 650px and up) */
+        @media only screen and (min-width: 650px) {
+
+            .logo {
+                margin: -10px 0;
+            }
+
+            .right a {
+                float: right;
+                padding-bottom: 5px;
+            }
+        }
+
+        /* Medium devices (landscape tablets, 768px and up) */
+        @media only screen and (min-width: 768px) {
+            .logo {
+                margin: -10px 0;
+            }
+        }
+
+        /* Large devices (laptops/desktops, 992px and up) */
+        @media only screen and (min-width: 992px) {
+        }
+
+        /* End Break Points */
     </style>
-  </head>
+</head>
 
-  <body>
+<body>
 
-    <div class="navbar clear nav-top">
-      <div class="row content">
-        <a ><img class="logo" src="https://raw.githubusercontent.com/HadarPur/RU-FinalProject-syntheticDNA/main/images/ru.svg" alt=""></a>
-        <a class="right" href="https://www.runi.ac.il" target="_blank"><i class="fas fa-book"></i>&nbsp; https://www.runi.ac.il</a>
-        <a class="right" href="mailto:hadar.pur@post.runi.ac.il" target="_blank"><i class="fas fa-paper-plane"></i>&nbsp; hadar.pur@post.runi.ac.il</a>
+<div class="navbar clear nav-top">
+    <div class="row content">
+        <a><img class="logo"
+                src="https://raw.githubusercontent.com/HadarPur/RU-FinalProject-syntheticDNA/main/images/ru.svg" alt=""></a>
+        <a class="right" href="https://www.runi.ac.il" target="_blank"><i class="fas fa-book"></i>&nbsp;
+            https://www.runi.ac.il</a>
+        <a class="right" href="mailto:hadar.pur@post.runi.ac.il" target="_blank"><i class="fas fa-paper-plane"></i>&nbsp;
+            hadar.pur@post.runi.ac.il</a>
         <a class="right"><i class='fas fa-calendar-alt'></i>&nbsp; {{today_date}}</a>
-      </div>
     </div>
+</div>
 
-    <div class="container clear">
-      <div class="row wrapper">
+<div class="container clear">
+    <div class="row wrapper">
 
         <div class="sidepanel">
 
-          <a class="title" href="#">Input</a>
-          <a class="section" href="#dna-sequence">DNA Sequence</a>
-          <a class="section" href="#unwanted-patterns">Unwanted Patterns</a>
+            <a class="title" href="#">Input</a>
+            <a class="section" href="#dna-sequence">DNA Sequence</a>
+            <a class="section" href="#unwanted-patterns">Unwanted Patterns</a>
 
-          <div class="divider left"></div>
+            <div class="divider left"></div>
 
-          <a class="title" href="#elimination">DNA Elimination</a>
-          <a class="section" href="#elimination-process">Elimination Process</a>
-          <a class="section" href="#elimination-cost">Elimination Cost</a>
+            <a class="title" href="#elimination">DNA Elimination</a>
+            <a class="section" href="#elimination-process">Elimination Process</a>
+            <a class="section" href="#elimination-cost">Elimination Cost</a>
 
-          <div class="divider left"></div>
+            <div class="divider left"></div>
 
-          <a class="title" href="#results">Results</a>
-          <a class="section" href="#dna-sequences-difference">DNA Sequences Difference</a>
-          <a class="section" href="#dna-detailed_changes">Detailed Changes</a>
-          <a class="section" href="#target-dna-sequence">Target DNA Sequence</a>
+            <a class="title" href="#results">Results</a>
+            <a class="section" href="#dna-sequences-difference">DNA Sequences Difference</a>
+            <a class="section" href="#dna-detailed_changes">Detailed Changes</a>
+            <a class="section" href="#target-dna-sequence">Target DNA Sequence</a>
 
-          <div class="space double"></div>
+            <div class="space double"></div>
 
         </div>
 
         <div class="right-col">
 
-          <h1 id="dna-sequence">Input</h1>
-          <h2>DNA Sequence:</h2>
-          <p class="scrollable-paragraph">
-            {{input}}
-          </p>
+            <h1 id="dna-sequence">Input</h1>
+            <h2>DNA Sequence:</h2>
+            <p class="scrollable-paragraph">
+                {{input}}
+            </p>
 
-          <h2 id="unwanted-patterns">Unwanted Patterns:</h2>
-          <p class="scrollable-paragraph">
-            {{patterns}}
-          </p>
+            <h2 id="unwanted-patterns">Unwanted Patterns:</h2>
+            <p class="scrollable-paragraph">
+                {{patterns}}
+            </p>
 
-          <div class="divider" style="width:24%; margin:30px 0;"></div>
+            <div class="divider" style="width:24%; margin:30px 0;"></div>
 
-          <h1 id="elimination">DNA Elimination</h1>
-          <p>Identifies in the target sequence the following coding regions:</p>
-          <p class="scrollable-paragraph">
-            {{highlight_input}}
-          </p>
+            <h1 id="elimination">DNA Elimination</h1>
+            <p>Identifies in the target sequence the following coding regions:</p>
+            <p class="scrollable-paragraph">
+                {{highlight_input}}
+            </p>
 
-          {{ regions | safe }}
-          {{chosen_regions}}
-          {{highlight_selected}}
+            {{ regions | safe }}
+            {{chosen_regions}}
+            {{highlight_selected}}
 
-          <h2 id="elimination-process">Elimination Process</h2>
-          <p>
-            {{elimination_process_description}}
-          </p>
+            <h2 id="elimination-process">Elimination Process</h2>
+            <p>
+                {{elimination_process_description}}
+            </p>
 
-          <h3>Coding regions:</h3>
-          <p>
-            {{coding_region_cost_description}}
-          </p>
+            <h3>Coding regions:</h3>
+            <p>
+                {{coding_region_cost_description}}
+            </p>
 
-          <h3>Non-Coding regions:</h3>
-          <p>
-            {{non_coding_region_cost_description}}
-          </p>
+            <h3>Non-Coding regions:</h3>
+            <p>
+                {{non_coding_region_cost_description}}
+            </p>
 
-          <h2 id="elimination-cost">Elimination Cost</h2>
-          <p>
-            We've successfully achieved the minimum elimination cost of {{cost}}
-          </p>
+            <h2 id="elimination-cost">Elimination Cost</h2>
+            <p>
+                We've successfully achieved the minimum elimination cost of {{cost}}
+            </p>
 
-          <div class="divider" style="width:24%; margin:30px 0;"></div>
+            <div class="divider" style="width:24%; margin:30px 0;"></div>
 
-          <h1 id="results">Results</h1>
+            <h1 id="results">Results</h1>
 
-          <h2 id="dna-sequences-difference">DNA Sequences Difference:</h2>
-          <div class="horizontal-scroll">
-            <pre>{{marked_input_seq}}<br><br>{{marked_target_seq}}</pre>
-          </div>
+            <h2 id="dna-sequences-difference">DNA Sequences Difference:</h2>
+            <div class="horizontal-scroll">
+                <pre style="color: lightgray;">{{index_seq_str}}<br><br></pre>
+                <pre>{{marked_input_seq}}<br><br>{{marked_target_seq}}</pre>
+            </div>
 
-          <h2 id="dna-detailed_changes">Detailed Changes:</h2>
-          <div class="horizontal-scroll scrollable-paragraph">
-            <pre>{{detailed_changes}}</pre>
-          </div>
+            <h2 id="dna-detailed_changes">Detailed Changes:</h2>
+            <div class="horizontal-scroll scrollable-paragraph">
+                <pre>{{detailed_changes}}</pre>
+            </div>
 
-          <h2 id="target-dna-sequence">Target DNA Sequence:</h2>
-          <p class="scrollable-paragraph">
-            {{target}}
-          </p>
+            <h2 id="target-dna-sequence">Target DNA Sequence:</h2>
+            <p class="scrollable-paragraph">
+                {{target}}
+            </p>
 
-          <div class="double-space"></div>
-          <div class="divider" style="width:24%; margin:30px 0;"></div>
+            <div class="double-space"></div>
+            <div class="divider" style="width:24%; margin:30px 0;"></div>
 
         </div>
-      </div>
     </div>
-  </body>
+</div>
+</body>
 
 </html>
 

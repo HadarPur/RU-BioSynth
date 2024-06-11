@@ -15,7 +15,8 @@ class TestCommandLineParser(unittest.TestCase):
         sys.argv = ["test.py", "-p", "files/mult_coding/p_file.txt", "-s", "files/mult_coding/s_file.txt"]
 
         # Check if parsing arguments works correctly
-        self.assertEqual(self.parser.parse_args(sys.argv[1:]), ("files/mult_coding/s_file.txt", "files/mult_coding/p_file.txt", None))
+        self.assertEqual(self.parser.parse_args(sys.argv[1:]),
+                         ("files/mult_coding/s_file.txt", "files/mult_coding/p_file.txt", None))
 
     @patch('sys.stderr', new_callable=StringIO)
     def assert_stderr(self, expected_output, mock_stderr):

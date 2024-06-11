@@ -172,13 +172,14 @@ def add_code_block(parent_layout, text, file_date, update_status):
     button_layout.addStretch(1)  # Push the button to the right
 
     # Download button
-    add_button(button_layout, 'Download', Qt.AlignRight, download_file, (code_display, file_date, update_status, ), size=(100, 30))
+    add_button(button_layout, 'Download', Qt.AlignRight, download_file, (code_display, file_date, update_status,),
+               size=(100, 30))
 
     # Save button
-    add_button(button_layout, 'Save as', Qt.AlignRight, save_to_file, (code_display, update_status, ), size=(100, 30))
+    add_button(button_layout, 'Save as', Qt.AlignRight, save_to_file, (code_display, update_status,), size=(100, 30))
 
     # Copy button
-    add_button(button_layout, 'Copy', Qt.AlignRight, copy_to_clipboard, (code_display, update_status, ))
+    add_button(button_layout, 'Copy', Qt.AlignRight, copy_to_clipboard, (code_display, update_status,))
 
 
 def download_file(code_display, file_date, update_status):
@@ -228,5 +229,3 @@ def copy_to_clipboard(code_display, update_status):
     text = code_display.toPlainText()
     QApplication.clipboard().setText(text)
     update_status(f"Sequence copied to clipboard")
-
-

@@ -44,7 +44,8 @@ class DNASequenceApp(QMainWindow):
                                 selected_region_list):
         elimination_window = EliminationWindow(self.switch_to_results_window, self.dna_sequence, self.unwanted_patterns,
                                                original_coding_regions, original_region_list,
-                                               selected_regions_to_exclude, selected_region_list, self.show_process_window)
+                                               selected_regions_to_exclude, selected_region_list,
+                                               self.show_process_window)
         self.stackedLayout.addWidget(elimination_window)
         self.stackedLayout.setCurrentWidget(elimination_window)
 
@@ -54,7 +55,8 @@ class DNASequenceApp(QMainWindow):
             return
 
         if not is_valid_dna(dna_sequence):
-            QMessageBox.warning(self, "Error", f"The sequence:\n{dna_sequence}\n\nis not valid, please check and try again later.")
+            QMessageBox.warning(self, "Error",
+                                f"The sequence:\n{dna_sequence}\n\nis not valid, please check and try again later.")
             return
 
         if not unwanted_patterns:
@@ -63,11 +65,13 @@ class DNASequenceApp(QMainWindow):
 
         unwanted_patterns = set(unwanted_patterns.split())
         if len(unwanted_patterns) == 0:
-            QMessageBox.warning(self, "Error", "There is an issue with the patterns file, please check and try again later.")
+            QMessageBox.warning(self, "Error",
+                                "There is an issue with the patterns file, please check and try again later.")
             return
 
         if not is_valid_patterns(unwanted_patterns):
-            QMessageBox.warning(self, "Error", f"The patterns:\n{unwanted_patterns}\n\nare not valid, please check and try again later.")
+            QMessageBox.warning(self, "Error",
+                                f"The patterns:\n{unwanted_patterns}\n\nare not valid, please check and try again later.")
             return
 
         self.dna_sequence = dna_sequence
@@ -93,7 +97,8 @@ class DNASequenceApp(QMainWindow):
                                  selected_region_list, target_seq, min_cost, detailed_changes):
         results_window = ResultsWindow(self.dna_sequence, self.unwanted_patterns,
                                        original_coding_regions, original_region_list, selected_regions_to_exclude,
-                                       selected_region_list, target_seq, min_cost, detailed_changes, self.show_elimination_window)
+                                       selected_region_list, target_seq, min_cost, detailed_changes,
+                                       self.show_elimination_window)
         self.stackedLayout.addWidget(results_window)
         self.stackedLayout.setCurrentWidget(results_window)
 

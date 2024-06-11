@@ -39,6 +39,7 @@ class ResultsWindow(QWidget):
         self.middle_layout = None
         self.bottom_layout = None
         self.report = None
+        self.status_label = None
 
         self.init_ui(back_to_elimination_callback)
 
@@ -86,11 +87,12 @@ class ResultsWindow(QWidget):
         info_layout.addWidget(info_button, alignment=Qt.AlignRight)
 
         # Mark non-equal codons and print the target sequence
-        marked_input_seq, marked_target_seq, marked_seq = mark_non_equal_codons(self.dna_sequence,
-                                                                                self.target_seq,
-                                                                                self.selected_region_list)
+        index_seq_str, marked_input_seq, marked_target_seq = mark_non_equal_codons(self.dna_sequence,
+                                                                                   self.target_seq,
+                                                                                   self.selected_region_list)
 
-        content = '''<pre>''' + marked_input_seq + '''<br><br>''' + marked_target_seq + '''</pre>'''
+        content = '''<pre style = "color: lightgray;" >''' + index_seq_str + '''<br></pre>'''
+        content += '''<pre>''' + marked_input_seq + '''<br><br>''' + marked_target_seq + '''</pre>'''
         text_edit = add_text_edit_html(self.middle_layout, "", content)
         text_edit.setStyleSheet("""
             QTextEdit {
@@ -99,7 +101,7 @@ class ResultsWindow(QWidget):
                 padding: 10px; /* Top, Right, Bottom, Left */
             }
         """)
-        text_edit.setFixedHeight(90)  # Set fixed height
+        text_edit.setFixedHeight(150)  # Set fixed height
 
         # Adding formatted text to QLabel
         label_html = f"""
@@ -119,7 +121,7 @@ class ResultsWindow(QWidget):
         # Spacer to push other widgets to the top
         layout.addSpacerItem(QSpacerItem(0, 0, QSizePolicy.Minimum, QSizePolicy.Expanding))
 
-        self.prompt_report(self.middle_layout, self.target_seq, marked_input_seq, marked_target_seq,
+        self.prompt_report(self.middle_layout, self.target_seq, index_seq_str, marked_input_seq, marked_target_seq,
                            self.original_coding_regions, self.original_region_list, self.selected_regions_to_exclude,
                            self.selected_region_list, self.min_cost, file_date, self.detailed_changes)
 
@@ -137,9 +139,12 @@ class ResultsWindow(QWidget):
         done_button.clicked.connect(lambda: quit_app())  # Connect to quit the application
         self.bottom_layout.addWidget(done_button, alignment=Qt.AlignRight)
 
-    def prompt_report(self, layout, target_seq, marked_input_seq, marked_target_seq, original_coding_regions,
-                      original_region_list, selected_regions_to_exclude, selected_region_list, min_cost, file_date, detailed_changes):
-        self.report = initialize_report(self.dna_sequence, target_seq, marked_input_seq, marked_target_seq,
+    def prompt_report(self, layout, target_seq, index_seq_str, marked_input_seq, marked_target_seq,
+                      original_coding_regions,
+                      original_region_list, selected_regions_to_exclude, selected_region_list, min_cost, file_date,
+                      detailed_changes):
+        self.report = initialize_report(self.dna_sequence, target_seq, index_seq_str, marked_input_seq,
+                                        marked_target_seq,
                                         self.unwanted_patterns, original_coding_regions, original_region_list,
                                         selected_regions_to_exclude, selected_region_list,
                                         min_cost, detailed_changes)
@@ -186,7 +191,7 @@ class ResultsWindow(QWidget):
             layout.addLayout(prompt_layout)
 
     def show_info(self):
-        info_text = self.detailed_changes if isinstance(self.detailed_changes, str) else str(self.detailed_changes)
+        info_text = '\n'.join(self.detailed_changes) if self.detailed_changes else None
 
         # Create a dialog to show detailed information
         dialog = QDialog(self)
@@ -231,7 +236,8 @@ class ResultsWindow(QWidget):
 
         # Show the "Save As" dialog with the desktop directory as the default location
         options = QFileDialog.Options()
-        save_path, _ = QFileDialog.getSaveFileName(self, "Save As", desktop_dir, "HTML Files (*.html);", options=options)
+        save_path, _ = QFileDialog.getSaveFileName(self, "Save As", desktop_dir, "HTML Files (*.html);",
+                                                   options=options)
         if save_path:
             try:
                 report_path = self.report.download_report(save_path)

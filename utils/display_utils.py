@@ -1,7 +1,5 @@
 import re
 
-from utils.text_utils import format_text_bold_for_output
-
 
 class SequenceUtils:
     """Utility class for printing DNA sequences, patterns, and cost tables."""
@@ -142,10 +140,11 @@ class SequenceUtils:
     @staticmethod
     def mark_non_equal_characters(input_seq, target_seq, region_list):
         if len(input_seq) != len(target_seq):
-            raise ValueError("Input sequence and Target sequence must be in the same length")
+            raise ValueError("Input sequence and Target sequence must be of the same length")
 
         marked_seq1 = []
         marked_seq2 = []
+        index_seq = []
 
         region_index = 0
         i = 0  # Initialize i outside the loop
@@ -156,24 +155,27 @@ class SequenceUtils:
                 is_coding_region = region_list[region_index]['is_coding_region']
 
                 j = 0  # Initialize j inside the loop
-                while j < len(seq) and i + j < len(input_seq):  # Ensure j doesn't exceed seq length or input_seq length
+                while j < len(seq) and i + j < len(
+                        input_seq):  # Ensure j doesn't exceed seq length or input_seq length
                     if is_coding_region:
+                        index_seq.append(f"{i + j}-{i + j + 3}")
                         # Compare 3 characters at a time
                         if input_seq[i + j:i + j + 3] != target_seq[i + j:i + j + 3]:
-                            marked_seq1.append(f" [{input_seq[i + j:i + j + 3]}] ")
-                            marked_seq2.append(f" [{target_seq[i + j:i + j + 3]}] ")
+                            marked_seq1.append(f"[{input_seq[i + j:i + j + 3]}]")
+                            marked_seq2.append(f"[{target_seq[i + j:i + j + 3]}]")
                         else:
-                            marked_seq1.append(f" {input_seq[i + j:i + j + 3]} ")
-                            marked_seq2.append(f" {target_seq[i + j:i + j + 3]} ")
+                            marked_seq1.append(f"{input_seq[i + j:i + j + 3]}")
+                            marked_seq2.append(f"{target_seq[i + j:i + j + 3]}")
                         j += 3
                     else:
+                        index_seq.append(f"{i + j}")
                         # Compare 1 character at a time
                         if input_seq[i + j] != target_seq[i + j]:
-                            marked_seq1.append(f" [{input_seq[i + j]}] ")
-                            marked_seq2.append(f" [{target_seq[i + j]}] ")
+                            marked_seq1.append(f"[{input_seq[i + j]}]")
+                            marked_seq2.append(f"[{target_seq[i + j]}]")
                         else:
-                            marked_seq1.append(f" {input_seq[i + j]} ")
-                            marked_seq2.append(f" {target_seq[i + j]} ")
+                            marked_seq1.append(f"{input_seq[i + j]}")
+                            marked_seq2.append(f"{target_seq[i + j]}")
                         j += 1
 
                 # Move to the next region if applicable
@@ -182,12 +184,12 @@ class SequenceUtils:
                 # Increment region_index
                 region_index += 1
 
-        marked_seq1 = ''.join(marked_seq1)
-        marked_seq2 = ''.join(marked_seq2)
+        # Create the index sequence string
+        index_seq = ''.join([f'{i:12}' for i in index_seq])
+        marked_seq1 = ''.join([f'{i:12}' for i in marked_seq1])
+        marked_seq2 = ''.join([f'{i:12}' for i in marked_seq2])
 
-        marked = f"{format_text_bold_for_output('The elimination results:')}\n\t{marked_seq1}\n\t{marked_seq2}"
-
-        return marked_seq1, marked_seq2, marked
+        return index_seq, marked_seq1, marked_seq2
 
     @staticmethod
     def highlight_sequences_to_html(sequences):

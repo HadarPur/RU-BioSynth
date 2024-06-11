@@ -12,6 +12,7 @@ class Report:
     def __init__(self,
                  input_seq,
                  target_seq,
+                 index_seq_str,
                  marked_input_seq,
                  marked_target_seq,
                  unwanted_patterns,
@@ -25,6 +26,7 @@ class Report:
         self.input_seq = input_seq
         self.highlight_input = SequenceUtils.highlight_sequences_to_html(original_region_list)
         self.target_seq = target_seq
+        self.index_seq_str = index_seq_str
         self.marked_input_seq = marked_input_seq
         self.marked_target_seq = marked_target_seq
         self.unwanted_patterns = ', '.join(unwanted_patterns)
@@ -34,7 +36,8 @@ class Report:
         self.report_filename = None
 
         if self.num_of_coding_regions > 0:
-            self.regions = '''<p><br>The total number of coding regions is ''' + ''.join(f'{self.num_of_coding_regions}') + ''', identifies as follows:</p>
+            self.regions = '''<p><br>The total number of coding regions is ''' + ''.join(
+                f'{self.num_of_coding_regions}') + ''', identifies as follows:</p>
                                   <p class="scrollable-paragraph horizontal-scroll">''' + '<br>'.join(
                 f"[{key}] {value}" for key, value in original_coding_regions.items()) + '''</p>'''
 
@@ -64,6 +67,7 @@ class Report:
                    'highlight_input': self.highlight_input,
                    'highlight_selected': self.highlight_selected,
                    'target': self.target_seq,
+                   'index_seq_str': self.index_seq_str,
                    'marked_input_seq': self.marked_input_seq,
                    'marked_target_seq': self.marked_target_seq,
                    'patterns': self.unwanted_patterns,
