@@ -66,8 +66,8 @@ class EliminateSequence:
             cost = changes_backtrack[(i, current_state)]
 
             if seq[i - 1] != char:
-                change = f"Position {f'{i}:':<8}" \
-                         f"{f'{seq[i - 1]}':<4}->{f'{char}':>4}" \
+                change = f"Position {f'{i}:':<10}" \
+                         f"\t{f'{seq[i - 1]}':<5}->{f'{char}':>5}" \
                          f"\t\tCost: {f'{cost:.2f}':<7}"
                 changes_info.append(change)
 

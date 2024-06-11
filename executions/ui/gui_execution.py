@@ -108,6 +108,14 @@ class GUI:
     def execute():
         stylesheet = """
 
+        pre {
+            font-size: 15px;
+            line-height: 20px;
+            max-width: 90%; /* Adjust this value as needed */
+            margin-right: auto;
+            overflow-wrap: break-word;
+        }
+        
         p {
             font-size: 15px;
             line-height: 5px;

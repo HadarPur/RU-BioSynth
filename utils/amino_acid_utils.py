@@ -133,11 +133,11 @@ class AminoAcidScheme:
             "ATT": [
                 dict(A=self.o, T=self.w, C=self.w, G=self.w),
                 dict(A=self.w, T=self.o, C=self.w, G=self.w),
-                dict(A=self.o, T=self.x, C=self.x, G=self.w)],
+                dict(A=self.x, T=self.o, C=self.x, G=self.w)],
             "ATC": [
                 dict(A=self.o, T=self.w, C=self.w, G=self.w),
                 dict(A=self.w, T=self.o, C=self.w, G=self.w),
-                dict(A=self.o, T=self.x, C=self.x, G=self.w)],
+                dict(A=self.x, T=self.x, C=self.o, G=self.w)],
             "ATA": [
                 dict(A=self.o, T=self.w, C=self.w, G=self.w),
                 dict(A=self.w, T=self.o, C=self.w, G=self.w),

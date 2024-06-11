@@ -158,7 +158,7 @@ class SequenceUtils:
                 while j < len(seq) and i + j < len(
                         input_seq):  # Ensure j doesn't exceed seq length or input_seq length
                     if is_coding_region:
-                        index_seq.append(f"{i + j}-{i + j + 3}")
+                        index_seq.append(f"{i + j + 1}-{i + j + 3}")
                         # Compare 3 characters at a time
                         if input_seq[i + j:i + j + 3] != target_seq[i + j:i + j + 3]:
                             marked_seq1.append(f"[{input_seq[i + j:i + j + 3]}]")
@@ -168,7 +168,7 @@ class SequenceUtils:
                             marked_seq2.append(f"{target_seq[i + j:i + j + 3]}")
                         j += 3
                     else:
-                        index_seq.append(f"{i + j}")
+                        index_seq.append(f"{i + j + 1}")
                         # Compare 1 character at a time
                         if input_seq[i + j] != target_seq[i + j]:
                             marked_seq1.append(f"[{input_seq[i + j]}]")
