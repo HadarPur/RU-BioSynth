@@ -32,6 +32,7 @@ class EliminateSequence:
         A = defaultdict(lambda: float('inf'))
         A[(0, '')] = 0
 
+        changes_backtrack = {}
         # Fill the dynamic programming table
         for i in range(1, sequence_length + 1):
             for v in fsm.V:
@@ -42,6 +43,7 @@ class EliminateSequence:
                         if cost < A[(i, u)]:
                             A[(i, u)] = cost
                             backtrack[(i, u)] = (v, s)
+                            changes_backtrack[(i, u)] = cost_function(i, s)
 
         # Find the minimum cost and final state
         min_cost = float('inf')
@@ -57,12 +59,23 @@ class EliminateSequence:
 
         # Reconstruct the sequence with the minimum cost
         sequence = []
+        changes_info = []
         current_state = final_state
         for i in range(sequence_length, 0, -1):
             prev_state, char = backtrack[(i, current_state)]
+            cost = changes_backtrack[(i, current_state)]
+
+            if seq[i-1] != char:
+                change = f"Position {f'{i}:':<8}" \
+                         f"{f'{seq[i-1]}':<4}->{f'{char}':>4}" \
+                         f"\t\tCost: {f'{cost:.2f}':<7}"
+                changes_info.append(change)
+                
             sequence.append(char)
             current_state = prev_state
+
         sequence.reverse()
+        changes_info.reverse()
 
         # Append final information to the info string
         info += f"{format_text_bold_for_output('_' * 50)}\n"
@@ -73,4 +86,4 @@ class EliminateSequence:
         info += f"\n{format_text_bold_for_output('Total Cost:')}\n{min_cost:.10g}\n"
         info += f"\n{format_text_bold_for_output('_' * 50)}"
 
-        return info, None, ''.join(sequence), min_cost
+        return info, changes_info, ''.join(sequence), min_cost
