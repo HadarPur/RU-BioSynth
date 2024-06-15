@@ -7,7 +7,7 @@ from PyQt5.QtWidgets import QWidget, QVBoxLayout, QLabel, QCheckBox, QHBoxLayout
 from executions.ui.layout_utils import add_button, add_text_edit_html, add_text_edit, adjust_text_edit_height, \
     adjust_scroll_area_height
 from utils.display_utils import SequenceUtils
-from utils.dna_utils import DNAHighlighter
+from utils.dna_utils import DNAUtils
 from utils.input_utils import UserInputHandler
 
 
@@ -88,8 +88,8 @@ class ProcessWindow(QWidget):
             }
         """)
 
-        original_region_list = DNAHighlighter.get_coding_and_non_coding_regions(self.dna_sequence)
-        original_coding_regions, coding_indexes = DNAHighlighter.extract_coding_regions_with_indexes(
+        original_region_list = DNAUtils.get_coding_and_non_coding_regions(self.dna_sequence)
+        original_coding_regions, coding_indexes = DNAUtils.extract_coding_regions_with_indexes(
             original_region_list)
         highlighted_sequence = SequenceUtils.highlight_sequences_to_html(original_region_list)
 
@@ -358,8 +358,8 @@ class RegionSelector(QWidget):
                 coding_regions_to_exclude[index] = region
 
         # Update the coding regions based on user input
-        selected_region_list = DNAHighlighter.update_coding_regions(selected_region_list, self.coding_indexes,
-                                                                    coding_regions_to_exclude)
+        selected_region_list = DNAUtils.update_coding_regions(selected_region_list, self.coding_indexes,
+                                                              coding_regions_to_exclude)
 
         return original_coding_regions, original_region_list, selected_regions_to_exclude, selected_region_list
 

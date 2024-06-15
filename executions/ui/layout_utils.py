@@ -2,8 +2,8 @@ import os
 
 from PyQt5.QtCore import Qt
 from PyQt5.QtSvg import QSvgWidget
-from PyQt5.QtWidgets import QFrame, QHBoxLayout, QPushButton, QVBoxLayout, QApplication
-from PyQt5.QtWidgets import QLabel, QFileDialog, QTextEdit, QPlainTextEdit
+from PyQt5.QtWidgets import QFrame, QHBoxLayout, QPushButton, QVBoxLayout, QApplication, QMessageBox
+from PyQt5.QtWidgets import QLabel, QFileDialog, QTextEdit, QPlainTextEdit, QWidget, QSpacerItem, QSizePolicy
 
 from utils.file_utils import resource_path, save_file
 
@@ -134,6 +134,9 @@ def adjust_scroll_area_height(scroll_area):
 
 
 def add_text_edit_html(layout, placeholder, content):
+    content = content.replace("\n", "<br>")
+    content = content.replace(" ", "&nbsp;")
+
     text_edit = QTextEdit()
     text_edit.setPlaceholderText(placeholder)
 

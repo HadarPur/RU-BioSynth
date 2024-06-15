@@ -2,7 +2,7 @@ from datetime import datetime
 
 from executions.execution_utils import eliminate_unwanted_patterns, mark_non_equal_codons, initialize_report
 from utils.display_utils import SequenceUtils
-from utils.dna_utils import DNAHighlighter
+from utils.dna_utils import DNAUtils
 from utils.file_utils import save_file
 from utils.input_utils import UserInputHandler
 from utils.text_utils import format_text_bold_for_output
@@ -27,11 +27,19 @@ class Shared:
         print(
             f"\n{format_text_bold_for_output('Pattern list:')}\n\t{SequenceUtils.get_patterns(self.unwanted_patterns)}\n")
 
+        has_overlaps, overlaps = DNAUtils.find_overlapping_regions(self.seq)
+
+        if has_overlaps:
+            print(f"The input sequence contains overlapping coding regions:")
+            print(DNAUtils.get_overlapping_regions(self.seq, overlaps))
+            print(f"Please make sure that the input seq will not contains any overlapping regions.")
+            return
+
         # Extract coding regions from the sequence
-        original_region_list = DNAHighlighter.get_coding_and_non_coding_regions(self.seq)
+        original_region_list = DNAUtils.get_coding_and_non_coding_regions(self.seq)
 
         # Extract coding regions and their indexes from the highlighted sequence
-        original_coding_regions, coding_indexes = DNAHighlighter.extract_coding_regions_with_indexes(
+        original_coding_regions, coding_indexes = DNAUtils.extract_coding_regions_with_indexes(
             original_region_list)
 
         # Highlight coding regions and print the sequence

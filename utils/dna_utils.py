@@ -3,7 +3,55 @@ import random
 from Bio.Seq import Seq
 
 
-class DNAHighlighter:
+class DNAUtils:
+    @staticmethod
+    def find_overlapping_regions(dna_sequence):
+        start_codon = 'ATG'
+        stop_codons = {'TAA', 'TAG', 'TGA'}
+        coding_regions = []
+        sequence_length = len(dna_sequence)
+
+        # Check all three reading frames
+        for frame in range(3):
+            i = frame
+            while i < sequence_length - 2:
+                if dna_sequence[i:i + 3] == start_codon:
+                    # Found a start codon, now look for a stop codon
+                    for j in range(i + 3, sequence_length - 2, 3):
+                        if dna_sequence[j:j + 3] in stop_codons:
+                            coding_regions.append((i, j + 2))
+                            i = j + 3  # Move to the next possible start codon
+                            break
+                i += 3  # Move to the next codon in this reading frame
+
+        overlaps = []
+
+        # Compare each pair of coding regions for overlap
+        for i, (start1, end1) in enumerate(coding_regions):
+            for j, (start2, end2) in enumerate(coding_regions):
+                if i < j:  # Ensure we only check each pair once
+                    # Check if the regions overlap
+                    if (start1 <= start2 <= end1) or (start2 <= start1 <= end2):
+                        overlaps.append(((start1, end1), (start2, end2)))
+
+        return len(overlaps) > 0, overlaps
+
+    @staticmethod
+    def get_overlapping_regions(dna_sequence, overlaps):
+        info = f"DNA Sequence: {dna_sequence}"
+        for (start1, end1), (start2, end2) in overlaps:
+            # Print the overlapping part of the sequences
+            overlap_start = max(start1, start2)
+            overlap_end = min(end1, end2)
+            overlap_region = dna_sequence[overlap_start:overlap_end + 1]
+
+            info += f"\nOverlap between regions ({start1}, {end1}) and ({start2}, {end2}):\n\n"
+            info += " " * start1 + dna_sequence[start1:end1 + 1] + "\n"
+            info += " " * overlap_start + '|' * len(overlap_region) + "\n"
+            info += " " * start2 + dna_sequence[start2:end2 + 1] + "\n"
+            info += f"\nOverlapping region: {overlap_region}\n\n"
+
+        return info
 
     @staticmethod
     def highlight_coding_regions(seq, coding_regions):

@@ -1,14 +1,19 @@
 import sys
 
 from PyQt5.QtGui import QIcon
-from PyQt5.QtWidgets import QApplication, QMainWindow, QMessageBox, QStackedWidget
+from PyQt5.QtCore import Qt
+from PyQt5.QtWidgets import QApplication, QMainWindow, QMessageBox, QStackedWidget, QVBoxLayout
+from PyQt5.QtWidgets import QDialog, QTextEdit, QDialogButtonBox
 
 from executions.execution_utils import is_valid_dna, is_valid_patterns
 from executions.ui.elimination_layout import EliminationWindow
 from executions.ui.processing_layout import ProcessWindow
 from executions.ui.results_layout import ResultsWindow
 from executions.ui.upload_layout import UploadWindow
+from executions.ui.layout_utils import add_text_edit_html, add_text_edit
+
 from utils.file_utils import resource_path
+from utils.dna_utils import DNAUtils
 
 
 class DNASequenceApp(QMainWindow):
@@ -20,7 +25,6 @@ class DNASequenceApp(QMainWindow):
 
         self.dna_sequence = None
         self.unwanted_patterns = None
-
         self.init_ui()
 
     def init_ui(self):
@@ -74,6 +78,11 @@ class DNASequenceApp(QMainWindow):
                                 f"The patterns:\n{unwanted_patterns}\n\nare not valid, please check and try again later.")
             return
 
+        has_overlaps, overlaps = DNAUtils.find_overlapping_regions(dna_sequence)
+        if has_overlaps:
+            self.show_overlapping_msg(dna_sequence, overlaps)
+            return
+
         self.dna_sequence = dna_sequence
         self.unwanted_patterns = unwanted_patterns
 
@@ -101,6 +110,53 @@ class DNASequenceApp(QMainWindow):
                                        self.show_elimination_window)
         self.stackedLayout.addWidget(results_window)
         self.stackedLayout.setCurrentWidget(results_window)
+
+    def show_overlapping_msg(self, dna_sequence, overlaps):
+        # Create a dialog to show detailed information
+        dialog = QDialog(self)
+        dialog.setWindowTitle('❌ Error')
+        dialog.setFixedSize(1000, 400)
+
+        # Set the window flags to make the dialog non-modal and always on top
+        dialog.setWindowFlags(Qt.Window | Qt.WindowStaysOnTopHint | Qt.WindowCloseButtonHint)
+        dialog.setWindowModality(Qt.NonModal)  # Allow interaction with the parent
+
+        layout = QVBoxLayout()
+
+        content = "The input sequence contains overlapping coding regions:"
+        text_edit = add_text_edit(layout, "", content)
+        text_edit.setStyleSheet("""
+            QTextEdit {
+                background-color: transparent;
+            }
+        """)
+
+        label_html = '''<pre>''' + DNAUtils.get_overlapping_regions(dna_sequence, overlaps) + '''</pre>'''
+        text_edit = add_text_edit_html(layout, "", label_html)
+        text_edit.setStyleSheet("""
+            QTextEdit {
+                background-color: transparent;
+            }
+        """)
+        text_edit.setFixedHeight(200)  # Set fixed height
+
+        content = "Please make sure that the input seq will not contains any overlapping regions."
+        text_edit = add_text_edit(layout, "", content)
+        text_edit.setStyleSheet("""
+            QTextEdit {
+                background-color: transparent;
+            }
+        """)
+
+        button_box = QDialogButtonBox(QDialogButtonBox.Ok)
+        button_box.accepted.connect(dialog.accept)
+        layout.addWidget(button_box)
+
+        # Add a stretch to push all elements to the top
+        layout.addStretch()
+
+        dialog.setLayout(layout)
+        dialog.exec_()
 
 
 class GUI:
