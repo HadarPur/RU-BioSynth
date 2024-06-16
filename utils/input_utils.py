@@ -5,6 +5,22 @@ import sys
 from utils.text_utils import format_text_bold_for_output
 
 
+def get_terminal_usage():
+    return f"{format_text_bold_for_output('Usage:')}\n"\
+           "\t$ python ./app.py -s <seq_file_path> -p <pattern_file_path> -o <output_path_dir>\n\n"\
+           "\tThis application is designed for the elimination of unwanted patterns from synthetic DNA sequences.\n\n"\
+           f"{format_text_bold_for_output('Options:')}\n"\
+           "\t-s --s_path\tSpecifies the sequence file path (mandatory)\n"\
+           "\t-p --p_path\tSpecifies the patterns file path (mandatory)\n"\
+           "\t-o --o_path\tSpecifies the output directory path (optional-default is the downloads directory)\n\n"\
+           f"{format_text_bold_for_output('Info:')}\n"\
+           "\tThe elimination program via terminal is designed to run automatically without any user intervention.\n"\
+           "\tPlease be advised that the program makes the following decisions:\n"\
+           "\t - The minimum length of a coding region is 5 codons (excluding start and stop codons).\n"\
+           "\t - If a coding region contains another coding region, the longer region will be selected.\n"\
+           "\t - If a coding region overlaps another coding region, the program will raise an error message and stop.\n"
+
+
 class CommandLineParser:
     def __init__(self):
         """
@@ -33,7 +49,7 @@ class CommandLineParser:
 
         for opt, arg in opts:
             if opt in ("-h", "--help"):
-                self.print_usage()
+                print(get_terminal_usage)
                 sys.exit()
             elif opt in ("-s", "--s_path"):
                 self.s_path = arg
@@ -43,23 +59,6 @@ class CommandLineParser:
                 self.o_path = arg
 
         return self.s_path, self.p_path, self.o_path
-
-    def print_usage(self):
-        print(
-            f"{format_text_bold_for_output('Usage:')}\n"
-            "\t$ python ./app.py -s <seq_file_path> -p <pattern_file_path> -o <output_path_dir>\n\n"
-            "\tThis application is designed for the elimination of unwanted patterns from synthetic DNA sequences.\n\n"
-            f"{format_text_bold_for_output('Options:')}\n"
-            "\t-s --s_path\tSpecifies the sequence file path (mandatory)\n"
-            "\t-p --p_path\tSpecifies the patterns file path (mandatory)\n"
-            "\t-o --o_path\tSpecifies the output directory path (optional-default is the downloads directory)\n\n"
-            f"{format_text_bold_for_output('Info:')}\n"
-            "\tThe elimination program via terminal is designed to run automatically without any user intervention.\n"
-            "\tPlease be advised that the program makes the following decisions:\n"
-            "\t - The minimum length of a coding region is 5 codons (excluding start and stop codons).\n"
-            "\t - If a coding region contains another coding region, the longer region will be selected.\n"
-            "\t - If a coding region overlaps another coding region, the program will raise an error message and stop.\n"
-        )
 
 
 class UserInputHandler:

@@ -1,7 +1,19 @@
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QWidget, QMessageBox, QFileDialog, QVBoxLayout, QHBoxLayout, QSpacerItem, QSizePolicy
+from PyQt5.QtWidgets import QWidget, QMessageBox, QFileDialog, QVBoxLayout
+from PyQt5.QtWidgets import QHBoxLayout, QSizePolicy, QSpacerItem, QDialog, QDialogButtonBox
 
-from executions.ui.layout_utils import add_intro, add_svg_logo, add_button, add_drop_text_edit
+from executions.ui.layout_utils import add_intro, add_svg_logo, add_drop_text_edit, add_text_edit_html
+from executions.ui.layout_utils import add_button, CircularButton
+from utils.text_utils import format_text_bold_for_output
+
+
+def get_info_usage():
+    return f"{format_text_bold_for_output('Information:')}\n" \
+           "The elimination program via terminal is designed to run automatically without any user intervention.\n" \
+           "Please be advised that the program makes the following decisions:\n" \
+           "\t - The minimum length of a coding region is 5 codons (excluding start and stop codons).\n" \
+           "\t - If a coding region contains another coding region, the longer region will be selected.\n" \
+           "\t - If a coding region overlaps another coding region, the program will raise an error message and stop.\n"
 
 
 class UploadWindow(QWidget):
@@ -45,8 +57,18 @@ class UploadWindow(QWidget):
         add_button(middle_layout, 'Load Patterns', Qt.AlignCenter, self.load_file, (self.patterns_text_edit,),
                    size=(200, 30))
 
-        add_button(layout, 'Next', Qt.AlignRight, next_callback, lambda: (self.dna_text_edit.toPlainText().strip(),
-                                                                          self.patterns_text_edit.toPlainText().strip()))
+        bottom_layout = QHBoxLayout()
+        bottom_layout.setContentsMargins(20, 5, 20, 20)
+        layout.addLayout(bottom_layout)
+
+        # Create the info button
+        info_button = CircularButton('ⓘ', self)
+        info_button.clicked.connect(self.show_info)
+        bottom_layout.addWidget(info_button, alignment=Qt.AlignLeft)
+
+        add_button(bottom_layout, 'Next', Qt.AlignRight, next_callback,
+                   lambda: (self.dna_text_edit.toPlainText().strip(),
+                            self.patterns_text_edit.toPlainText().strip()))
 
     def load_file(self, text_edit):
         fileName, _ = QFileDialog.getOpenFileName(self, "Open File", "", "Text Files (*.txt)")
@@ -58,3 +80,35 @@ class UploadWindow(QWidget):
                 QMessageBox.critical(self, "Error", f"Failed to read the file: {e}")
         else:
             QMessageBox.information(self, "No File Selected", "No file was selected.")
+
+    def show_info(self):
+        info_text = get_info_usage()
+        info_text = info_text.replace("\n", "<br><br>")
+        info_text = info_text.replace("\t", "&nbsp;&nbsp;&nbsp;")
+
+        # Create a dialog to show detailed information
+        dialog = QDialog(self)
+        dialog.setWindowTitle('Info')
+        dialog.setFixedSize(1000, 400)
+
+        # Set the window flags to make the dialog non-modal and always on top
+        dialog.setWindowFlags(Qt.Window | Qt.WindowStaysOnTopHint | Qt.WindowCloseButtonHint)
+        dialog.setWindowModality(Qt.NonModal)  # Allow interaction with the parent
+
+        layout = QVBoxLayout()
+        text_edit = add_text_edit_html(layout, "", info_text)
+        text_edit.setStyleSheet("""
+            QTextEdit {
+                background-color: transparent;
+                font-size: 15px;
+                line-height: 5px;
+                padding: 2px; /* Top, Right, Bottom, Left */
+            }
+        """)
+
+        button_box = QDialogButtonBox(QDialogButtonBox.Ok)
+        button_box.accepted.connect(dialog.accept)
+        layout.addWidget(button_box)
+
+        dialog.setLayout(layout)
+        dialog.show()
