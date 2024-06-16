@@ -40,6 +40,11 @@ class DNAUtils:
     def get_overlapping_regions(dna_sequence, overlaps):
         info = f"DNA Sequence: {dna_sequence}\n"
         for (start1, end1), (start2, end2) in overlaps:
+            start1 -= 1
+            end1 -= 1
+            start2 -= 1
+            end2 -= 1
+
             overlap_start = max(start1, start2)
             overlap_end = min(end1, end2)
             overlap_region = dna_sequence[overlap_start:overlap_end + 1]
