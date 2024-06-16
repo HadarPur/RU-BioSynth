@@ -2,6 +2,8 @@ import random
 
 from Bio.Seq import Seq
 
+min_coding_region_length = 7 * 3  # start_codon_length + stop_codon_length + 5 codons length in the coding area
+
 
 class DNAUtils:
     @staticmethod
@@ -19,9 +21,10 @@ class DNAUtils:
                     # Found a start codon, now look for a stop codon
                     for j in range(i + 3, sequence_length - 2, 3):
                         if dna_sequence[j:j + 3] in stop_codons:
-                            coding_regions.append((i, j + 2))
-                            i = j + 3  # Move to the next possible start codon
-                            break
+                            if len(dna_sequence[i:j + 3]) > min_coding_region_length:
+                                coding_regions.append((i, j + 2))
+                                i = j + 3  # Move to the next possible start codon
+                                break
                 i += 3  # Move to the next codon in this reading frame
 
         overlaps = []
@@ -116,7 +119,6 @@ class DNAUtils:
 
         i = 0
         non_coding_region = ""  # Initialize a variable to store non-coding sequences
-        min_coding_region_length = 7 * 3  # start_codon_length + stop_codon_length + 5 codons length in the coding area
 
         # Traverse the DNA sequence to identify coding regions
         while i < len(seq):
