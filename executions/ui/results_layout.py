@@ -7,7 +7,7 @@ from PyQt5.QtWidgets import QApplication, QFileDialog, QLabel, QPushButton, QWid
 from PyQt5.QtWidgets import QHBoxLayout, QSizePolicy, QSpacerItem, QDialog, QTextEdit, QDialogButtonBox
 
 from executions.execution_utils import mark_non_equal_codons, initialize_report
-from executions.ui.layout_utils import add_button, add_code_block, add_text_edit_html
+from executions.ui.layout_utils import add_button, add_code_block, add_text_edit_html, CircularButton
 
 
 def quit_app():
@@ -82,7 +82,7 @@ class ResultsWindow(QWidget):
         info_layout.addWidget(label)
 
         # Create the info button
-        info_button = QPushButton('ℹ️', self)
+        info_button = CircularButton('ⓘ', self)
         info_button.clicked.connect(self.show_info)
         info_layout.addWidget(info_button, alignment=Qt.AlignRight)
 
@@ -91,8 +91,9 @@ class ResultsWindow(QWidget):
                                                                                    self.target_seq,
                                                                                    self.selected_region_list)
 
-        content = '''<pre style = "color: lightgray;" >''' + index_seq_str + '''<br></pre>'''
+        content = '''<pre>''' + index_seq_str + '''<br></pre>'''
         content += '''<pre>''' + marked_input_seq + '''<br><br>''' + marked_target_seq + '''</pre>'''
+
         text_edit = add_text_edit_html(self.middle_layout, "", content)
         text_edit.setStyleSheet("""
             QTextEdit {

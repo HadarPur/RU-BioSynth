@@ -2,10 +2,43 @@ import os
 
 from PyQt5.QtCore import Qt
 from PyQt5.QtSvg import QSvgWidget
-from PyQt5.QtWidgets import QFrame, QHBoxLayout, QPushButton, QVBoxLayout, QApplication, QMessageBox
-from PyQt5.QtWidgets import QLabel, QFileDialog, QTextEdit, QPlainTextEdit, QWidget, QSpacerItem, QSizePolicy
+from PyQt5.QtWidgets import QFrame, QHBoxLayout, QPushButton, QVBoxLayout, QApplication
+from PyQt5.QtWidgets import QLabel, QFileDialog, QTextEdit, QPlainTextEdit
+from PyQt5.QtGui import QPainterPath, QRegion
 
 from utils.file_utils import resource_path, save_file
+
+
+class CircularButton(QPushButton):
+    def __init__(self, *args, **kwargs):
+        super(CircularButton, self).__init__(*args, **kwargs)
+        self.setFixedSize(20, 20)  # Set the fixed size for the button
+
+        # Apply the stylesheet to make the button circular
+        self.setStyleSheet("""
+            QPushButton {
+                border: 2px solid transparent;
+                border-radius: 10;  /* Half of the button's size */
+                background-color: #888;
+                color: white;
+                font-size: 15px;
+                outline: none;
+            }
+            QPushButton:hover {
+                background-color: #aaa;
+            }
+            QPushButton:pressed {
+                background-color: #555;
+            }
+        """)
+
+    def paintEvent(self, event):
+        # Create a circular clipping region
+        path = QPainterPath()
+        path.addEllipse(0, 0, self.width(), self.height())
+        region = QRegion(path.toFillPolygon().toPolygon())
+        self.setMask(region)
+        super(CircularButton, self).paintEvent(event)
 
 
 class DropTextEdit(QTextEdit):

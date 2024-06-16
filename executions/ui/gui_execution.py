@@ -78,10 +78,10 @@ class DNASequenceApp(QMainWindow):
                                 f"The patterns:\n{unwanted_patterns}\n\nare not valid, please check and try again later.")
             return
 
-        has_overlaps, overlaps = DNAUtils.find_overlapping_regions(dna_sequence)
-        if has_overlaps:
-            self.show_overlapping_msg(dna_sequence, overlaps)
-            return
+        # has_overlaps, overlaps = DNAUtils.find_overlapping_regions(dna_sequence)
+        # if has_overlaps:
+        #     self.show_overlapping_msg(dna_sequence, overlaps)
+        #     return
 
         self.dna_sequence = dna_sequence
         self.unwanted_patterns = unwanted_patterns
