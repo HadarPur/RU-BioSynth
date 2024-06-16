@@ -94,6 +94,9 @@ class ResultsWindow(QWidget):
         content = '''<pre>''' + index_seq_str + '''<br></pre>'''
         content += '''<pre>''' + marked_input_seq + '''<br><br>''' + marked_target_seq + '''</pre>'''
 
+        content = content.replace("\n", "<br>")
+        content = content.replace(" ", "&nbsp;")
+
         text_edit = add_text_edit_html(self.middle_layout, "", content)
         text_edit.setStyleSheet("""
             QTextEdit {

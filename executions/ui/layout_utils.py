@@ -167,9 +167,6 @@ def adjust_scroll_area_height(scroll_area):
 
 
 def add_text_edit_html(layout, placeholder, content):
-    content = content.replace("\n", "<br>")
-    content = content.replace(" ", "&nbsp;")
-
     text_edit = QTextEdit()
     text_edit.setPlaceholderText(placeholder)
 

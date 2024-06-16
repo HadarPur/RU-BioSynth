@@ -32,7 +32,7 @@ class DNAUtils:
                 if i < j:  # Ensure we only check each pair once
                     # Check if the regions overlap
                     if (start1 <= start2 <= end1) or (start2 <= start1 <= end2):
-                        overlaps.append(((start1, end1), (start2, end2)))
+                        overlaps.append(((start1+1, end1+1), (start2+1, end2+1)))
 
         return len(overlaps) > 0, overlaps
 
