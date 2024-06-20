@@ -3,8 +3,8 @@ import unittest
 
 from executions.console.terminal_execution import Terminal
 from utils.file_utils import delete_dir
-from utils.text_utils import OutputFormat, set_output_format
 from utils.output_utils import Logger
+from utils.text_utils import OutputFormat, set_output_format
 
 
 def execute_unittests():

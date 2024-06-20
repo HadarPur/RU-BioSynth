@@ -1,11 +1,11 @@
 import unittest
 
-from utils.elimination_utils import EliminationUtils
+from utils.cost_utils import EliminationScorer
 
 
 class TestEliminationUtils(unittest.TestCase):
     def setUp(self):
-        self.elimination_utils = EliminationUtils()
+        self.elimination_utils = EliminationScorer()
 
     def test_cost_function(self):
         C = [{'A': 1, 'G': 2, 'T': 3, 'C': 4},

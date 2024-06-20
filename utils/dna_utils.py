@@ -1,5 +1,3 @@
-import random
-
 from Bio.Seq import Seq
 
 min_coding_region_length = 7 * 3  # start_codon_length + stop_codon_length + 5 codons length in the coding area
@@ -61,49 +59,11 @@ class DNAUtils:
         return info
 
     @staticmethod
-    def highlight_coding_regions(seq, coding_regions):
-        """
-        Highlights coding regions within the DNA sequence using colored escape codes.
-
-        Parameters:
-            seq (string): DNA sequence string
-            coding_regions (list of Seq): List of coding regions (Seq objects) to be highlighted.
-
-        Returns:
-            str: DNA sequence with highlighted coding regions using escape codes.
-        """
-        available_color_codes = [code for code in range(91, 98) if code not in [93, 97]]  # Define available color codes
-        region_color_mapping = {}  # Create a dictionary to map coding regions to color codes
-
-        # Assign colors to coding regions
-        for region_seq in coding_regions:
-            if not available_color_codes:
-                break
-            color_code = random.choice(available_color_codes)  # Randomly select a color code
-            available_color_codes.remove(color_code)  # Remove the used color code from the available list
-            region_color_mapping[str(region_seq)] = f'\033[{color_code}m'  # Map the region sequence to the color code
-
-        highlighted_seq = str(seq)  # Convert the DNA sequence to a string for highlighting
-
-        # Highlight coding regions in the DNA sequence
-        for region_seq in coding_regions:
-            region_str = str(region_seq)
-            region_start = highlighted_seq.find(region_str)  # Find the start position of the region
-
-            while region_start >= 0:
-                region_end = region_start + len(region_str)
-                color_code = region_color_mapping[region_str]
-
-                # Highlight the region with the assigned color code
-                highlighted_seq = (
-                        highlighted_seq[:region_start] +
-                        color_code + highlighted_seq[region_start:region_end] + '\033[0m' +  # Reset color code
-                        highlighted_seq[region_end:]
-                )
-
-                region_start = highlighted_seq.find(region_str, region_end)  # Find the next occurrence
-
-        return highlighted_seq  # Return the DNA sequence with highlighted coding regions
+    def get_coding_regions_list(coding_regions):
+        original_coding_regions = {}
+        for i, region in enumerate(coding_regions):
+            original_coding_regions[f'{i + 1}'] = region
+        return original_coding_regions
 
     @staticmethod
     def get_coding_and_non_coding_regions(seq):

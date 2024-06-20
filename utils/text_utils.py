@@ -1,5 +1,7 @@
 from enum import Enum
 
+from utils.output_utils import Logger
+
 
 class OutputFormat(Enum):
     NONE = 0
@@ -15,7 +17,7 @@ def set_output_format(o_format):
     try:
         output_format = o_format
     except KeyError:
-        print("Invalid output format. Supported formats: 'none', 'terminal', and 'html'.")
+        Logger.error("Invalid output format. Supported formats: 'NONE', 'TERMINAL', and 'GUI'.")
 
 
 def format_text_bold_for_output(text):
@@ -24,4 +26,4 @@ def format_text_bold_for_output(text):
     elif output_format == OutputFormat.GUI:
         return f"<b>{text}</b>"
     else:
-        raise ValueError("Invalid output format. Supported formats: 'terminal' and 'html'.")
+        Logger.error("Invalid output format. Supported formats: 'TERMINAL' and 'GUI'.")

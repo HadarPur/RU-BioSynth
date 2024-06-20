@@ -1,7 +1,7 @@
 from executions.ui.gui_execution import GUI
 from utils.file_utils import delete_dir
-from utils.text_utils import OutputFormat, set_output_format
 from utils.output_utils import Logger
+from utils.text_utils import OutputFormat, set_output_format
 
 if __name__ == "__main__":
     try:

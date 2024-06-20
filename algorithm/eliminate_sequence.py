@@ -3,8 +3,8 @@ from collections import defaultdict
 from algorithm.fsm import FSM
 from settings.costs_settings import elimination_process_description, coding_region_cost_description, \
     non_coding_region_cost_description
+from utils.cost_utils import EliminationScorer
 from utils.date_utils import format_current_date
-from utils.elimination_utils import EliminationUtils
 from utils.text_utils import format_text_bold_for_output
 
 
@@ -24,7 +24,7 @@ class EliminateSequence:
         backtrack = {}
 
         # Initialize utility and FSM classes
-        elimination_utils = EliminationUtils()
+        elimination_utils = EliminationScorer()
         cost_function = elimination_utils.cost_function(cost_table)
         fsm = FSM(unwanted_patterns, elimination_utils.alphabet)
 

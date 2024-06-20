@@ -1,19 +1,18 @@
 import sys
 
-from PyQt5.QtGui import QIcon
 from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QApplication, QMainWindow, QMessageBox, QStackedWidget, QVBoxLayout
-from PyQt5.QtWidgets import QDialog, QTextEdit, QDialogButtonBox
+from PyQt5.QtWidgets import QDialog, QDialogButtonBox
 
 from executions.execution_utils import is_valid_dna, is_valid_patterns
 from executions.ui.elimination_layout import EliminationWindow
+from executions.ui.layout_utils import add_text_edit_html, add_text_edit
 from executions.ui.processing_layout import ProcessWindow
 from executions.ui.results_layout import ResultsWindow
 from executions.ui.upload_layout import UploadWindow
-from executions.ui.layout_utils import add_text_edit_html, add_text_edit
-
-from utils.file_utils import resource_path
 from utils.dna_utils import DNAUtils
+from utils.file_utils import resource_path
 
 
 class DNASequenceApp(QMainWindow):

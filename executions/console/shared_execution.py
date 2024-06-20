@@ -4,11 +4,10 @@ from executions.execution_utils import eliminate_unwanted_patterns, mark_non_equ
 from utils.display_utils import SequenceUtils
 from utils.dna_utils import DNAUtils
 from utils.file_utils import save_file
-from utils.input_utils import UserInputHandler
-from utils.text_utils import format_text_bold_for_output
 from utils.output_utils import Logger
+from utils.text_utils import format_text_bold_for_output
 
-app_icon_text ="""\
+app_icon_text = """\
 ================================================================
 ================================================================
 
@@ -68,7 +67,7 @@ class Shared:
         Logger.space()
 
         # Handle elimination of coding regions if the user chooses to
-        original_coding_regions = UserInputHandler.get_coding_regions_list(original_coding_regions)
+        original_coding_regions = DNAUtils.get_coding_regions_list(original_coding_regions)
         Logger.debug(f"The total number of coding regions is {len(original_coding_regions)}, identifies as follows:")
         Logger.info('\n'.join(f"[{key}] {value}" for key, value in original_coding_regions.items()))
 

@@ -2,6 +2,7 @@ from executions.console.shared_execution import Shared
 from executions.execution_utils import is_valid_dna, is_valid_patterns
 from utils.file_utils import SequenceReader, PatternReader
 from utils.input_utils import CommandLineParser
+from utils.output_utils import Logger
 
 
 class Terminal:
@@ -16,28 +17,27 @@ class Terminal:
         unwanted_patterns = PatternReader(p_path).read_patterns()
 
         if seq is None:
-            print("\033[91mUnfortunately, we couldn't find any sequence file. Please insert one and try again.\033[0m")
+            Logger.error("Unfortunately, we couldn't find any sequence file. Please insert one and try again.")
             return
 
         if len(seq) == 0:
-            print("\033[91mUnfortunately, the sequence file is empty. Please insert fully one and try again.\033[0m")
+            Logger.error("Unfortunately, the sequence file is empty. Please insert fully one and try again.")
             return
 
         if not is_valid_dna(seq):
-            print(f"\033[91mThe sequence:\n{seq}\n\nis not valid, please check and try again later.\033[0m")
+            Logger.error(f"The sequence:\n{seq}\n\nis not valid, please check and try again later.")
             return
 
         if unwanted_patterns is None:
-            print("\033[91mUnfortunately, we couldn't find any patterns file. Please insert one and try again.\033[0m")
+            Logger.error("Unfortunately, we couldn't find any patterns file. Please insert one and try again.")
             return
 
         if len(seq) == 0:
-            print("\033[91mUnfortunately, the patterns file is empty. Please insert fully one and try again.\033[0m")
+            Logger.error("Unfortunately, the patterns file is empty. Please insert fully one and try again.")
             return
 
         if not is_valid_patterns(unwanted_patterns):
-            print(
-                f"\033[91mThe patterns:\n{unwanted_patterns}\n\nare not valid, please check and try again later.\033[0m")
+            Logger.error(f"The patterns:\n{unwanted_patterns}\n\nare not valid, please check and try again later.")
             return
 
         Shared(seq, unwanted_patterns, o_path).run()

@@ -1,3 +1,5 @@
+from pathlib import Path
+
 from executions.console.shared_execution import Shared
 from executions.execution_utils import is_valid_dna, is_valid_patterns
 from settings.pattern_settings import P
@@ -27,5 +29,5 @@ class Debug:
             Logger.error(f"The patterns:\n{self.unwanted_patterns}\n\nare not valid, please check and try again later.")
             return
 
-        Shared(self.seq, self.unwanted_patterns, '/Users/hadar.pur/Downloads').run()
+        Shared(self.seq, self.unwanted_patterns, Path.home() / 'Downloads').run()
         return

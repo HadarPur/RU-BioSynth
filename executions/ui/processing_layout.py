@@ -8,7 +8,6 @@ from executions.ui.layout_utils import add_button, add_text_edit_html, add_text_
     adjust_scroll_area_height
 from utils.display_utils import SequenceUtils
 from utils.dna_utils import DNAUtils
-from utils.input_utils import UserInputHandler
 
 
 class ProcessWindow(QWidget):
@@ -167,7 +166,7 @@ class ProcessWindow(QWidget):
             return
 
         self.no_button.setEnabled(False)
-        original_coding_regions = UserInputHandler.get_coding_regions_list(original_coding_regions)
+        original_coding_regions = DNAUtils.get_coding_regions_list(original_coding_regions)
 
         self.next_button.clicked.connect(
             lambda: self.switch_to_eliminate_callback(original_coding_regions, original_region_list, None,

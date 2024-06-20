@@ -1,6 +1,13 @@
 import re
 
 
+def get_color_for_coding_region(color_counter):
+    colors = ["red", "blue", "green", "orange", "purple"]
+    color = colors[color_counter % len(colors)]
+    color_counter += 1
+    return color_counter, color
+
+
 class SequenceUtils:
     """Utility class for printing DNA sequences, patterns, and cost tables."""
 
@@ -62,80 +69,6 @@ class SequenceUtils:
             List[str]: List of chunks.
         """
         return [S[i:i + n] for i in range(0, len(S), n)]
-
-    @staticmethod
-    def print_cost_table(S: str, C: list[dict[str, float]]):
-        """Print a cost table for DNA sequences.
-
-        Args:
-            S (str): DNA sequence for which the cost table is generated.
-            C (list[dict[str, float]]): List of dictionaries containing cost values.
-        """
-        if len(C) > 0:
-            print("\nScoring scheme:")
-            codons = SequenceUtils.split_string_every_n_chars(S, 3)
-            colored_separator = "\033[91m{:<10}\033[0m".format("||")  # ANSI escape code for red text
-            codon_table = "\t{:<13}{}".format(" ", colored_separator)
-            for item in codons:
-                codon_table += "{:<8} {:<8} {:<8}{} ".format(*item, colored_separator)
-
-            print(codon_table)
-            print('-' * ((3 * len(codon_table) // 4) + 6))
-
-            for sigma in C[0].keys():
-                for i in range(0, len(C), len(C)):
-                    line = f"\tcost(i, {sigma}) = {colored_separator}"
-                    line += ' '.join(["{:<8}".format("{:.6g}".format(c[sigma])) + (
-                        f'{colored_separator}' if (index + 1) % 3 == 0 and index < len(C) - 1 else '') for index, c in
-                                      enumerate(C[i: i + len(C)])])
-                    line += "{}".format(colored_separator)
-                    print(line)
-                print('-' * ((3 * len(codon_table) // 4) + 6))
-
-    @staticmethod
-    def get_highlighted_sequence(S: str):
-        """Return a DNA sequence with highlighted coding regions.
-
-        Args:
-            S (str): DNA sequence with color-coded regions.
-        """
-
-        color_starts, color_ends = SequenceUtils._find_color_boundaries(S)
-
-        chunk_size = 3
-        colored_chunks = []
-        prev_end = 0
-
-        prefix = "ATG"  # Define the start codon
-        suffix = ["TAA", "TAG", "TGA"]  # Define the stop codons
-
-        for start, end in zip(color_starts, color_ends):
-            colored_chunks.append(S[prev_end:start])
-            colored_chunks.append(S[start:end])
-            prev_end = end
-
-        colored_chunks.append(S[prev_end:])
-
-        # Insert a space after each entry in colored_chunks
-        spaced_chunks = []
-        for idx, chunk in enumerate(colored_chunks):
-            if idx % 2 == 0:
-                if chunk.startswith(prefix) and any(chunk.endswith(suf) for suf in suffix):
-                    spaced_chunk = "".join(chunk[i:i + chunk_size] for i in range(0, len(chunk), chunk_size))
-                else:
-                    spaced_chunk = chunk
-            else:
-                spaced_chunk = chunk
-
-            # Modify spacing logic
-            if idx % 2 == 1 and idx != len(colored_chunks) - 1:  # Check for coding region and not the last item
-                next_chunk = colored_chunks[idx + 1]
-                space_count = min(3, len(next_chunk))  # Maximum of 3 spaces or length of next chunk
-                spaced_chunks.append(spaced_chunk + " " * space_count)
-            else:
-                spaced_chunks.append(spaced_chunk)
-
-        return ''.join(spaced_chunks)
 
     @staticmethod
     def mark_non_equal_characters(input_seq, target_seq, region_list):
@@ -210,7 +143,7 @@ class SequenceUtils:
                 coding_sequence = seq_info["seq"]
                 coding_sequence_with_spaces = ''.join(
                     coding_sequence[i:i + 3] for i in range(0, len(coding_sequence), 3))
-                color_counter, color = SequenceUtils.get_color_for_coding_region(color_counter)
+                color_counter, color = get_color_for_coding_region(color_counter)
                 html_output += f'<span style="color: {color};">{coding_sequence_with_spaces}&nbsp;&nbsp;&nbsp;&nbsp;</span>'
             else:
                 html_output += f"{seq_info['seq']}&nbsp;&nbsp;&nbsp;&nbsp;"
@@ -250,9 +183,3 @@ class SequenceUtils:
 
         return output
 
-    @staticmethod
-    def get_color_for_coding_region(color_counter):
-        colors = ["red", "blue", "green", "orange", "purple"]
-        color = colors[color_counter % len(colors)]
-        color_counter += 1
-        return color_counter, color
