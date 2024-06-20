@@ -41,7 +41,7 @@ class DNAUtils:
 
     @staticmethod
     def get_overlapping_regions(dna_sequence, overlaps):
-        info = f"DNA Sequence: {dna_sequence}\n"
+        info = f"DNA Sequence:\n{dna_sequence}\n"
         for (start1, end1), (start2, end2) in overlaps:
             start1 -= 1
             end1 -= 1

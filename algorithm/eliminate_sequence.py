@@ -83,7 +83,6 @@ class EliminateSequence:
         info += "🚀 Elimination Process Completed!\n"
         info += f"📆 {format_current_date()}\n"
         info += f"\n{format_text_bold_for_output('Modified Sequence:')}\n\t{''.join(sequence)}\n"
-        info += f"\n{format_text_bold_for_output('Total Cost:')}\n{min_cost:.10g}\n"
-        info += f"\n{format_text_bold_for_output('_' * 50)}"
+        info += f"\n{format_text_bold_for_output('Total Cost:')}\n{min_cost:.10g}"
 
         return info, changes_info, ''.join(sequence), min_cost

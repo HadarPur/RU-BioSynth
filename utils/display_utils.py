@@ -34,7 +34,7 @@ class SequenceUtils:
             S (str): DNA sequence to be printed.
             title (str): The kind of the seq
         """
-        return f'\n{title}:\n\t {S}'
+        return f'\n{title}:\n\t{S}'
 
     @staticmethod
     def get_patterns(unwanted_patterns: set):

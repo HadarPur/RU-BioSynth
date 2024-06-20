@@ -6,6 +6,20 @@ from utils.dna_utils import DNAUtils
 from utils.file_utils import save_file
 from utils.input_utils import UserInputHandler
 from utils.text_utils import format_text_bold_for_output
+from utils.output_utils import Logger
+
+app_icon_text ="""\
+================================================================
+================================================================
+
+ ____   _  _       ___   _  _     _          _    ____   ____  
+/  _ \ ) () (     \   \ ) \/ (   )_\        )_\  )  _)\ )  _)\ 
+)  ' / | \/ |     | ) ( |  \ |  /( )\      /( )\ | '__/ | '__/ 
+|_()_\ )____(     /___/ )_()_( )_/ \_(    )_/ \_()_(    )_(    
+
+================================================================
+================================================================                                                          
+"""
 
 
 class Shared:
@@ -17,23 +31,28 @@ class Shared:
 
     def run(self):
         if self.seq is None or len(self.seq) == 0:
-            print("The input sequence is empty, please try again")
+            Logger.error("The input sequence is empty, please try again")
             return
-
-        # Print the original DNA sequence
-        print(SequenceUtils.get_sequence(format_text_bold_for_output("DNA sequence"), self.seq))
-
-        # Print the list of unwanted patterns
-        print(
-            f"\n{format_text_bold_for_output('Pattern list:')}\n\t{SequenceUtils.get_patterns(self.unwanted_patterns)}\n")
 
         has_overlaps, overlaps = DNAUtils.find_overlapping_regions(self.seq)
 
         if has_overlaps:
-            print(f"The input sequence contains overlapping coding regions:")
-            print(DNAUtils.get_overlapping_regions(self.seq, overlaps))
-            print(f"Please make sure that the input seq will not contains any overlapping regions.")
+            Logger.error(f"Error:\nThe input sequence contains overlapping coding regions:")
+            Logger.debug(DNAUtils.get_overlapping_regions(self.seq, overlaps))
+            Logger.error(f"Please make sure that the input seq will not contains any overlapping regions.")
             return
+
+        Logger.notice(app_icon_text)
+
+        # Print the original DNA sequence
+        Logger.debug(f"{format_text_bold_for_output('DNA sequence:')}")
+        Logger.info(f"\t{self.seq}")
+        Logger.space()
+
+        # Print the list of unwanted patterns
+        Logger.debug(f"{format_text_bold_for_output('Pattern list:')}")
+        Logger.info(f"\t{SequenceUtils.get_patterns(self.unwanted_patterns)}")
+        Logger.space()
 
         # Extract coding regions from the sequence
         original_region_list = DNAUtils.get_coding_and_non_coding_regions(self.seq)
@@ -44,35 +63,37 @@ class Shared:
 
         # Highlight coding regions and print the sequence
         highlighted_sequence = ''.join(SequenceUtils.highlight_sequences_to_terminal(original_region_list))
-        print(
-            f'\nIdentify the coding regions within the given DNA sequence and mark them for emphasis:\n\t {highlighted_sequence}')
-
-        # Print the number of coding regions found
-        print(f"\nNumber of coding regions is: {len(original_coding_regions)}")
+        Logger.debug(f'Identify the coding regions within the given DNA sequence and mark them for emphasis:')
+        Logger.info(f"\t{highlighted_sequence}")
+        Logger.space()
 
         # Handle elimination of coding regions if the user chooses to
         original_coding_regions = UserInputHandler.get_coding_regions_list(original_coding_regions)
-        print(f"\nThe total number of coding regions is 58, identifies as follows:")
-        print('\n'.join(f"[{key}] {value}" for key, value in original_coding_regions.items()))
+        Logger.debug(f"The total number of coding regions is {len(original_coding_regions)}, identifies as follows:")
+        Logger.info('\n'.join(f"[{key}] {value}" for key, value in original_coding_regions.items()))
 
         # Eliminate unwanted patterns and generate the resulting sequence
         info, detailed_changes, target_seq, min_cost = eliminate_unwanted_patterns(self.seq,
                                                                                    self.unwanted_patterns,
                                                                                    original_region_list)
 
-        print(format_text_bold_for_output('\n' + '_' * 100 + '\n' + '_' * 100 + '\n'))
-        print(info)
+        Logger.notice(format_text_bold_for_output('\n' + '_' * 100 + '\n' + '_' * 100 + '\n'))
+        Logger.info(info)
+        Logger.notice(format_text_bold_for_output('\n' + '_' * 100 + '\n' + '_' * 100 + '\n'))
 
         # Mark non-equal codons and print the target sequence
         index_seq_str, marked_input_seq, marked_target_seq = mark_non_equal_codons(self.seq,
                                                                                    target_seq,
                                                                                    original_region_list)
 
-        target_result = SequenceUtils.get_sequence(format_text_bold_for_output('Target DNA Sequence'), target_seq)
-        print(f'{target_result}\n')
+        Logger.debug(format_text_bold_for_output('Target DNA Sequence'))
+        Logger.info(f"\t{target_seq}")
+        Logger.space()
 
         changes = '\n'.join(detailed_changes) if detailed_changes else None
-        print(f"{format_text_bold_for_output('Detailed Changes:')}\n{changes}\n")
+        Logger.debug(format_text_bold_for_output('Detailed Changes:'))
+        Logger.info(f"{changes}")
+        Logger.space()
 
         # Create a report summarizing the processing and save if the user chooses to
         file_date = datetime.today().strftime("%d %b %Y, %H:%M:%S")
@@ -114,9 +135,9 @@ class Shared:
         report.create_report(file_date)
 
         path = report.download_report(self.output_path)
-        print(path)
+        Logger.notice(path)
 
     def save_target_sequence(self, target_seq, file_date):
         filename = f'Target DNA Sequence - {file_date}.txt'
         path = save_file(target_seq, filename, self.output_path)
-        print(path)
+        Logger.notice(path)

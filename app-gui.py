@@ -1,6 +1,7 @@
 from executions.ui.gui_execution import GUI
 from utils.file_utils import delete_dir
 from utils.text_utils import OutputFormat, set_output_format
+from utils.output_utils import Logger
 
 if __name__ == "__main__":
     try:
@@ -9,4 +10,4 @@ if __name__ == "__main__":
         set_output_format(OutputFormat.GUI)
         GUI().execute()
     except KeyboardInterrupt:
-        print("\nProgram stopped by the user.")
+        Logger.error("\nProgram stopped by the user.")

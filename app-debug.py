@@ -4,6 +4,7 @@ import unittest
 from executions.console.debug_execution import Debug
 from utils.file_utils import delete_dir
 from utils.text_utils import OutputFormat, set_output_format
+from utils.output_utils import Logger
 
 
 def execute_unittests():
@@ -26,4 +27,4 @@ if __name__ == "__main__":
         Debug().execute()
 
     except KeyboardInterrupt:
-        print("\nProgram stopped by the user.")
+        Logger.error("\nProgram stopped by the user.")
