@@ -36,21 +36,23 @@ class Shared:
         has_overlaps, overlaps = DNAUtils.find_overlapping_regions(self.seq)
 
         if has_overlaps:
-            Logger.error(f"Error:\nThe input sequence contains overlapping coding regions:")
-            Logger.debug(DNAUtils.get_overlapping_regions(self.seq, overlaps))
-            Logger.error(f"Please make sure that the input seq will not contains any overlapping regions.")
+            Logger.error(f"{format_text_bold_for_output('Error Occurred:')}")
+            Logger.error("The input sequence contains overlapping coding regions.")
+            Logger.space()
+            Logger.info(DNAUtils.get_overlapping_regions(self.seq, overlaps))
+            Logger.error("Please make sure that the input seq will not contains any overlapping regions.")
             return
 
         Logger.notice(app_icon_text)
 
         # Print the original DNA sequence
         Logger.debug(f"{format_text_bold_for_output('DNA sequence:')}")
-        Logger.info(f"\t{self.seq}")
+        Logger.info(f"{self.seq}")
         Logger.space()
 
         # Print the list of unwanted patterns
         Logger.debug(f"{format_text_bold_for_output('Pattern list:')}")
-        Logger.info(f"\t{SequenceUtils.get_patterns(self.unwanted_patterns)}")
+        Logger.info(f"{SequenceUtils.get_patterns(self.unwanted_patterns)}")
         Logger.space()
 
         # Extract coding regions from the sequence
@@ -63,7 +65,7 @@ class Shared:
         # Highlight coding regions and print the sequence
         highlighted_sequence = ''.join(SequenceUtils.highlight_sequences_to_terminal(original_region_list))
         Logger.debug(f'Identify the coding regions within the given DNA sequence and mark them for emphasis:')
-        Logger.info(f"\t{highlighted_sequence}")
+        Logger.info(f"{highlighted_sequence}")
         Logger.space()
 
         # Handle elimination of coding regions if the user chooses to
@@ -86,7 +88,7 @@ class Shared:
                                                                                    original_region_list)
 
         Logger.debug(format_text_bold_for_output('Target DNA Sequence'))
-        Logger.info(f"\t{target_seq}")
+        Logger.info(f"{target_seq}")
         Logger.space()
 
         changes = '\n'.join(detailed_changes) if detailed_changes else None

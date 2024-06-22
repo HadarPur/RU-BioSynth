@@ -6,6 +6,7 @@ from settings.costs_settings import elimination_process_description, coding_regi
     non_coding_region_cost_description
 from utils.display_utils import SequenceUtils
 from utils.file_utils import create_dir, resource_path, save_file
+from utils.output_utils import Logger
 
 
 class Report:
@@ -106,10 +107,10 @@ class Report:
 
             return report_local_path
         except jinja2.exceptions.TemplateNotFound as e:
-            print(f"Template not found: {e}")
+            Logger.error(f"Template not found: {e}")
             return None
         except Exception as e:
-            print(f"An error occurred: {e}")
+            Logger.error(f"An error occurred: {e}")
             return None
 
     def download_report(self, path=None):

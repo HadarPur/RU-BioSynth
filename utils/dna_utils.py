@@ -54,7 +54,7 @@ class DNAUtils:
             info += " " * start1 + dna_sequence[start1:end1 + 1] + "\n"
             info += " " * overlap_start + '|' * len(overlap_region) + "\n"
             info += " " * start2 + dna_sequence[start2:end2 + 1] + "\n"
-            info += f"\nOverlapping region: {overlap_region}\n\n"
+            info += f"\nOverlapping region: {overlap_region}\n"
 
         return info
 
