@@ -11,7 +11,7 @@ def get_terminal_usage():
            "\tThis application is designed for the elimination of unwanted patterns from synthetic DNA sequences.\n\n"\
            f"{format_text_bold_for_output('Options:')}\n"\
            "\t-s --s_path\tSpecifies the sequence file path (mandatory)\n"\
-           "\t-p --p_path\tSpecifies the patterns file path (mandatory)\n"\
+           "\t-p --p_path\tSpecifies the unwanted patterns file path (mandatory)\n"\
            "\t-o --o_path\tSpecifies the output directory path (optional-default is the downloads directory)\n\n"\
            f"{format_text_bold_for_output('Info:')}\n"\
            "\tThe elimination program via terminal is designed to run automatically without any user intervention.\n"\

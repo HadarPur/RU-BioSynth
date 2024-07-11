@@ -144,9 +144,9 @@ class SequenceUtils:
                 coding_sequence_with_spaces = ''.join(
                     coding_sequence[i:i + 3] for i in range(0, len(coding_sequence), 3))
                 color_counter, color = get_color_for_coding_region(color_counter)
-                html_output += f'<span style="color: {color};">{coding_sequence_with_spaces}&nbsp;&nbsp;&nbsp;&nbsp;</span>'
+                html_output += f'<span style="color: {color};">&nbsp;&nbsp;&nbsp;&nbsp;{coding_sequence_with_spaces}&nbsp;&nbsp;&nbsp;&nbsp;</span>'
             else:
-                html_output += f"{seq_info['seq']}&nbsp;&nbsp;&nbsp;&nbsp;"
+                html_output += f"{seq_info['seq']}"
 
         return html_output
 
