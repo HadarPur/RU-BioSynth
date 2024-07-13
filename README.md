@@ -19,7 +19,7 @@ python3 ./app.py -s <seq_file_path> -p <pattern_file_path>
 For example:
 
 ```
-python3 ./app.py -s ./files/mult_coding/s_file.txt -p ./files/mult_coding/p_file.txt
+python3 ./app.py -s ./files/one_coding/s_file.txt -p ./files/one_coding/p_file.txt
 ```
 
 ## Execute GUI Program
