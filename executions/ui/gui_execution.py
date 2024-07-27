@@ -27,7 +27,7 @@ class DNASequenceApp(QMainWindow):
         self.init_ui()
 
     def init_ui(self):
-        self.setWindowTitle("DNA Sequence Elimination App")
+        self.setWindowTitle("BioBliss App")
         self.setGeometry(100, 100, 800, 800)
         self.setCentralWidget(self.stackedLayout)
         self.show_upload_window()
@@ -238,7 +238,7 @@ class GUI:
         app = QApplication(sys.argv)
         ex = DNASequenceApp()
         ex.show()
-        icon_path = resource_path('images/logo.png')
+        icon_path = resource_path('images/BioBliss.png')
         icon = QIcon(icon_path)
         app.setWindowIcon(icon)
         app.setStyleSheet(stylesheet)

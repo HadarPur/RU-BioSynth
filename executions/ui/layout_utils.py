@@ -61,7 +61,7 @@ class DropTextEdit(QTextEdit):
 
 def add_intro(layout):
     content = "Hi,"
-    content += "\nWelcome to the DNA Sequence Elimination App."
+    content += "\nWelcome to the BioBliss App."
     content += "\nTo eliminate unwanted patterns from a specific DNA sequence, please upload the DNA sequence file " \
                "along with the patterns file you wish to remove."
     content += "\n"
