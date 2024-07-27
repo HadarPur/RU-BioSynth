@@ -13,13 +13,13 @@ pip3 install -r requirements.txt
 To execute the elimination tool from the Terminal, please use the following command:
 
 ```
-python3 ./app.py -s <seq_file_path> -p <pattern_file_path>
+python3 ./BioBliss.py -s <seq_file_path> -p <pattern_file_path>
 ```
 
 For example:
 
 ```
-python3 ./app.py -s ./files/one_coding/s_file.txt -p ./files/one_coding/p_file.txt
+python3 ./BioBliss.py -s ./files/one_coding/s_file.txt -p ./files/one_coding/p_file.txt
 ```
 
 ## Execute GUI Program
@@ -27,5 +27,5 @@ python3 ./app.py -s ./files/one_coding/s_file.txt -p ./files/one_coding/p_file.t
 To execute the elimination tool GUI, please use the following command:
 
 ```
-python3 ./app-gui.py
+python3 ./BioBliss.py -g
 ```
