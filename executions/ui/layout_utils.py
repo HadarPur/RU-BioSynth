@@ -81,7 +81,7 @@ def add_svg_logo(layout):
     frame_layout.setContentsMargins(5, 5, 5, 5)  # Set padding: left, top, right, bottom
 
     # Create and set up the SVG logo widget
-    image_path = resource_path("images/ru.svg")
+    image_path = resource_path("images/BioBliss.png")
     logo = QSvgWidget(image_path)
     logo.setFixedSize(110, 60)  # Adjust the size as needed
 

@@ -97,7 +97,7 @@ class Report:
 
             # Save to a file
             create_dir('output')
-            file_name = "Elimination Output Report"
+            file_name = "BioBliss Output Report"
             self.report_filename = f'{file_name} - {file_date}.html'
 
             # for ui usage
