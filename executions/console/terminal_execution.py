@@ -1,7 +1,7 @@
 from executions.console.shared_execution import Shared
 from executions.execution_utils import is_valid_dna, is_valid_patterns
 from utils.file_utils import SequenceReader, PatternReader
-from utils.input_utils import CommandLineParser
+from utils.input_utils import ArgumentParser
 from utils.output_utils import Logger
 
 
@@ -10,9 +10,9 @@ class Terminal:
         self.argv = argv
 
     def execute(self):
-        parser = CommandLineParser()
+        parser = ArgumentParser()
 
-        s_path, p_path, o_path = parser.parse_args(self.argv)
+        _, s_path, p_path, o_path = parser.parse_args(self.argv)
         seq = SequenceReader(s_path).read_sequence()
         unwanted_patterns = PatternReader(p_path).read_patterns()
 

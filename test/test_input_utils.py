@@ -3,20 +3,22 @@ import unittest
 from io import StringIO
 from unittest.mock import patch
 
-from utils.input_utils import CommandLineParser
+from utils.input_utils import ArgumentParser
 
 
 class TestCommandLineParser(unittest.TestCase):
     def setUp(self):
-        self.parser = CommandLineParser()
+        self.parser = ArgumentParser()
 
     def test_parse_args(self):
         # Simulate command-line arguments
         sys.argv = ["test.py", "-p", "files/mult_coding/p_file.txt", "-s", "files/mult_coding/s_file.txt"]
 
+        gui, s_file, p_file, o_file = self.parser.parse_args(sys.argv[1:])
+
         # Check if parsing arguments works correctly
-        self.assertEqual(self.parser.parse_args(sys.argv[1:]),
-                         ("files/mult_coding/s_file.txt", "files/mult_coding/p_file.txt", None))
+        self.assertEqual((gui, s_file, p_file, o_file),
+                         (False, "files/mult_coding/s_file.txt", "files/mult_coding/p_file.txt", None))
 
     @patch('sys.stderr', new_callable=StringIO)
     def assert_stderr(self, expected_output, mock_stderr):
