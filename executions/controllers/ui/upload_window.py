@@ -2,8 +2,8 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QHBoxLayout, QSizePolicy, QSpacerItem, QDialog, QDialogButtonBox
 from PyQt5.QtWidgets import QWidget, QMessageBox, QFileDialog, QVBoxLayout
 
-from executions.ui.layout_utils import add_button, CircularButton
-from executions.ui.layout_utils import add_intro, add_svg_logo, add_drop_text_edit, add_text_edit_html
+from executions.controllers.ui.window_utils import add_button, CircularButton
+from executions.controllers.ui.window_utils import add_intro, add_svg_logo, add_drop_text_edit, add_text_edit_html
 from utils.text_utils import format_text_bold_for_output
 
 

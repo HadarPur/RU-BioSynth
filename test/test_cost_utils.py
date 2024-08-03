@@ -1,11 +1,11 @@
 import unittest
 
-from utils.cost_utils import CodonScorer, get_codon_scores
+from utils.cost_utils import CodonScorerFactory, get_codon_scores
 
 
 class TestCodonScorer(unittest.TestCase):
     def setUp(self):
-        self.scorer = CodonScorer()
+        self.scorer = CodonScorerFactory()
 
     def test_get_codon_scores(self):
         # Define a sample codon scoring scheme

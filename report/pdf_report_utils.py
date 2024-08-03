@@ -9,7 +9,7 @@ from utils.file_utils import create_dir, resource_path, save_file
 from utils.output_utils import Logger
 
 
-class Report:
+class ReportController:
     def __init__(self,
                  input_seq,
                  target_seq,
@@ -97,7 +97,7 @@ class Report:
 
             # Save to a file
             create_dir('output')
-            file_name = "BioBliss Output Report"
+            file_name = "BioBliss Report"
             self.report_filename = f'{file_name} - {file_date}.html'
 
             # for ui usage

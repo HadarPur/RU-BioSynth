@@ -1,4 +1,4 @@
-class AminoAcidScheme:
+class AminoAcidConfigScheme:
     def __init__(self, w, o, x, s=None):
         self.w = w
         self.o = o

@@ -6,8 +6,8 @@ from PyQt5.QtCore import Qt, QTimer
 from PyQt5.QtWidgets import QApplication, QFileDialog, QLabel, QPushButton, QWidget, QVBoxLayout
 from PyQt5.QtWidgets import QHBoxLayout, QSizePolicy, QSpacerItem, QDialog, QTextEdit, QDialogButtonBox
 
+from executions.controllers.ui.window_utils import add_button, add_code_block, add_text_edit_html, CircularButton
 from executions.execution_utils import mark_non_equal_codons, initialize_report
-from executions.ui.layout_utils import add_button, add_code_block, add_text_edit_html, CircularButton
 
 
 def quit_app():

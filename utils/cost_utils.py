@@ -1,6 +1,6 @@
 from settings.costs_settings import o_non_coding_region, w_non_coding_region, x_non_coding_region
 from settings.costs_settings import s_coding_region, o_coding_region, w_coding_region, x_coding_region
-from utils.amino_acid_utils import AminoAcidScheme
+from utils.amino_acid_utils import AminoAcidConfigScheme
 from utils.output_utils import Logger
 
 
@@ -25,17 +25,17 @@ def get_codon_scores(codon, codon_scores):
     return None  # Codon not found
 
 
-class CodonScorer:
+class CodonScorerFactory:
     def __init__(self):
         """
         Initializes a CodonScorer object with a codon scoring scheme.
         """
 
         # Initialize the object with codon scoring schemes for coding and non-coding regions
-        self.coding_region_scheme = AminoAcidScheme(w_coding_region, o_coding_region, x_coding_region,
-                                                    s_coding_region).get_cost_table_coding_region()
-        self.non_coding_region_scheme = AminoAcidScheme(w_non_coding_region, o_non_coding_region,
-                                                        x_non_coding_region).get_cost_table_none_coding_region()
+        self.coding_region_scheme = AminoAcidConfigScheme(w_coding_region, o_coding_region, x_coding_region,
+                                                          s_coding_region).get_cost_table_coding_region()
+        self.non_coding_region_scheme = AminoAcidConfigScheme(w_non_coding_region, o_non_coding_region,
+                                                              x_non_coding_region).get_cost_table_none_coding_region()
 
     def calculate_scores(self, sequences):
         """
@@ -76,7 +76,7 @@ class CodonScorer:
         return scores_array
 
 
-class EliminationScorer:
+class EliminationScorerConfig:
     def __init__(self):
         """
         Initializes a DNASequenceAnalyzer object.

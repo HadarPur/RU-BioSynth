@@ -23,7 +23,7 @@ app_icon_text = """\
 """
 
 
-class Shared:
+class CommandController:
 
     def __init__(self, seq, unwanted_patterns, output_path=None):
         self.seq = seq
