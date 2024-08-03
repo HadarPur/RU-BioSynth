@@ -2,9 +2,9 @@ import os
 
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QPainterPath, QRegion
-from PyQt5.QtSvg import QSvgWidget
+from PyQt5.QtGui import QPixmap
 from PyQt5.QtWidgets import QFrame, QHBoxLayout, QPushButton, QVBoxLayout, QApplication
-from PyQt5.QtWidgets import QLabel, QFileDialog, QTextEdit, QPlainTextEdit
+from PyQt5.QtWidgets import QLabel, QFileDialog, QTextEdit, QPlainTextEdit, QToolBar
 
 from utils.file_utils import resource_path, save_file
 
@@ -74,22 +74,45 @@ def add_intro(layout):
     return title
 
 
-def add_svg_logo(layout):
+def add_png_logo(layout):
     # Create a frame to hold the logo
     frame = QFrame()
     frame_layout = QHBoxLayout(frame)  # Use a QHBoxLayout within the frame
     frame_layout.setContentsMargins(5, 5, 5, 5)  # Set padding: left, top, right, bottom
 
-    # Create and set up the SVG logo widget
+    # Create and set up the PNG logo widget
     image_path = resource_path("images/BioBliss.png")
-    logo = QSvgWidget(image_path)
-    logo.setFixedSize(110, 60)  # Adjust the size as needed
+    logo = QLabel()
+    pixmap = QPixmap(image_path)
+    logo.setPixmap(pixmap)
+    logo.setFixedSize(110, 110)  # Adjust the size as needed
+    logo.setScaledContents(True)  # Ensure the image scales properly within the label
 
     # Add the logo to the frame's layout
     frame_layout.addWidget(logo)
 
     # Add the frame to the main layout
     layout.addWidget(frame, alignment=Qt.AlignTop)
+
+
+def add_logo_toolbar(layout):
+    # Create a toolbar for the logo
+    logo_toolbar = QToolBar()
+    logo_toolbar.setMovable(False)
+
+    # Create and set up the PNG logo widget
+    image_path = resource_path("images/BioBliss.png")
+    logo_label = QLabel()
+    pixmap = QPixmap(image_path)
+    logo_label.setPixmap(pixmap)
+    logo_label.setFixedSize(110, 110)  # Adjust the size as needed
+    logo_label.setScaledContents(True)  # Ensure the image scales properly within the label
+
+    # Add the logo label to the toolbar
+    logo_toolbar.addWidget(logo_label)
+
+    # Add the toolbar to the main window
+    layout.addToolBar(Qt.TopToolBarArea, logo_toolbar)
 
 
 def add_drop_text_edit(layout, placeholder, content, wrap=None):

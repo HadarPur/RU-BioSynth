@@ -15,6 +15,7 @@ from utils.dna_utils import DNAUtils
 class BaseWindow(QMainWindow):
     def __init__(self):
         super().__init__()
+
         self.stackedLayout = QStackedWidget()
         self.dna_file_content = None
         self.patterns_file_content = None
@@ -24,7 +25,7 @@ class BaseWindow(QMainWindow):
         self.init_ui()
 
     def init_ui(self):
-        self.setWindowTitle("BioBliss App")
+        self.setWindowTitle("🧬 BioBliss App")
         self.setGeometry(100, 100, 800, 800)
         self.setCentralWidget(self.stackedLayout)
         self.show_upload_window()

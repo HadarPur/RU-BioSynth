@@ -3,7 +3,7 @@ from PyQt5.QtWidgets import QHBoxLayout, QSizePolicy, QSpacerItem, QDialog, QDia
 from PyQt5.QtWidgets import QWidget, QMessageBox, QFileDialog, QVBoxLayout
 
 from executions.controllers.ui.window_utils import add_button, CircularButton
-from executions.controllers.ui.window_utils import add_intro, add_svg_logo, add_drop_text_edit, add_text_edit_html
+from executions.controllers.ui.window_utils import add_intro, add_png_logo, add_drop_text_edit, add_text_edit_html
 from utils.text_utils import format_text_bold_for_output
 
 
@@ -40,7 +40,7 @@ class UploadWindow(QWidget):
         fixed_width_spacer = QSpacerItem(50, 0, QSizePolicy.Fixed, QSizePolicy.Minimum)
         top_layout.addSpacerItem(fixed_width_spacer)
 
-        add_svg_logo(top_layout)
+        add_png_logo(top_layout)
 
         middle_layout = QVBoxLayout()
         middle_layout.setContentsMargins(20, 5, 20, 20)

@@ -8,7 +8,7 @@ from utils.output_utils import Logger
 from utils.text_utils import OutputFormat, set_output_format
 
 
-class BioBliss:
+class BioBlissApp:
     @staticmethod
     def execute(args):
         try:
@@ -28,5 +28,5 @@ class BioBliss:
 
 
 if __name__ == "__main__":
-    BioBliss.execute(sys.argv[1:])
+    BioBlissApp.execute(sys.argv[1:])
 
