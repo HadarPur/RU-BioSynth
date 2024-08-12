@@ -81,7 +81,7 @@ def add_png_logo(layout):
     frame_layout.setContentsMargins(5, 5, 5, 5)  # Set padding: left, top, right, bottom
 
     # Create and set up the PNG logo widget
-    image_path = resource_path("images/BioBliss.png")
+    image_path = resource_path("images/BioBlissV2.png")
     logo = QLabel()
     pixmap = QPixmap(image_path)
     logo.setPixmap(pixmap)
@@ -101,7 +101,7 @@ def add_logo_toolbar(layout):
     logo_toolbar.setMovable(False)
 
     # Create and set up the PNG logo widget
-    image_path = resource_path("images/BioBliss.png")
+    image_path = resource_path("images/BioBlissV2.png")
     logo_label = QLabel()
     pixmap = QPixmap(image_path)
     logo_label.setPixmap(pixmap)
