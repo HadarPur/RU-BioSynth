@@ -47,8 +47,8 @@ class CommandController:
 
         Logger.notice(app_icon_text)
 
-        # Print the original DNA sequence
-        Logger.debug(f"{format_text_bold_for_output('DNA sequence:')}")
+        # Print the target sequence
+        Logger.debug(f"{format_text_bold_for_output('Target sequence:')}")
         Logger.info(f"{self.seq}")
         Logger.space()
 
@@ -66,7 +66,7 @@ class CommandController:
 
         # Highlight coding regions and print the sequence
         highlighted_sequence = ''.join(SequenceUtils.highlight_sequences_to_terminal(original_region_list))
-        Logger.debug(f'Identify the coding regions within the given DNA sequence and mark them for emphasis:')
+        Logger.debug(f'Identify the coding regions within the given target sequence and mark them for emphasis:')
         Logger.info(f"{highlighted_sequence}")
         Logger.space()
 
@@ -76,21 +76,21 @@ class CommandController:
         Logger.info('\n'.join(f"[{key}] {value}" for key, value in original_coding_regions.items()))
 
         # Eliminate unwanted patterns and generate the resulting sequence
-        info, detailed_changes, target_seq, min_cost = eliminate_unwanted_patterns(self.seq,
-                                                                                   self.unwanted_patterns,
-                                                                                   original_region_list)
+        info, detailed_changes, optimized_seq, min_cost = eliminate_unwanted_patterns(self.seq,
+                                                                                      self.unwanted_patterns,
+                                                                                      original_region_list)
 
         Logger.notice(format_text_bold_for_output('\n' + '_' * 100 + '\n' + '_' * 100 + '\n'))
         Logger.info(info)
         Logger.notice(format_text_bold_for_output('\n' + '_' * 100 + '\n' + '_' * 100 + '\n'))
 
-        # Mark non-equal codons and print the target sequence
-        index_seq_str, marked_input_seq, marked_target_seq = mark_non_equal_codons(self.seq,
-                                                                                   target_seq,
+        # Mark non-equal codons and print the optimized sequence
+        index_seq_str, marked_input_seq, marked_optimized_seq = mark_non_equal_codons(self.seq,
+                                                                                   optimized_seq,
                                                                                    original_region_list)
 
-        Logger.debug(format_text_bold_for_output('Target DNA Sequence'))
-        Logger.info(f"{target_seq}")
+        Logger.debug(format_text_bold_for_output('Optimized Sequence'))
+        Logger.info(f"{optimized_seq}")
         Logger.space()
 
         changes = '\n'.join(detailed_changes) if detailed_changes else None
@@ -100,33 +100,33 @@ class CommandController:
 
         # Create a report summarizing the processing and save if the user chooses to
         file_date = datetime.today().strftime("%d %b %Y, %H:%M:%S")
-        self.save_report(target_seq,
+        self.save_report(optimized_seq,
                          index_seq_str,
                          marked_input_seq,
-                         marked_target_seq,
+                         marked_optimized_seq,
                          original_coding_regions,
                          original_region_list,
                          min_cost,
                          detailed_changes,
                          file_date)
 
-        self.save_target_sequence(target_seq, file_date)
+        self.save_optimized_sequence(optimized_seq, file_date)
 
     def save_report(self,
-                    target_seq,
+                    optimized_seq,
                     index_seq_str,
                     marked_input_seq,
-                    marked_target_seq,
+                    marked_optimized_seq,
                     original_coding_regions,
                     region_list,
                     min_cost,
                     detailed_changes,
                     file_date):
         report = initialize_report(self.seq,
-                                   target_seq,
+                                   optimized_seq,
                                    index_seq_str,
                                    marked_input_seq,
-                                   marked_target_seq,
+                                   marked_optimized_seq,
                                    self.unwanted_patterns,
                                    original_coding_regions,
                                    region_list,
@@ -140,7 +140,7 @@ class CommandController:
         path = report.download_report(self.output_path)
         Logger.notice(path)
 
-    def save_target_sequence(self, target_seq, file_date):
-        filename = f'Target DNA Sequence - {file_date}.txt'
-        path = save_file(target_seq, filename, self.output_path)
+    def save_optimized_sequence(self, optimized_seq, file_date):
+        filename = f'Optimized Sequence - {file_date}.txt'
+        path = save_file(optimized_seq, filename, self.output_path)
         Logger.notice(path)

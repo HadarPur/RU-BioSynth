@@ -4,7 +4,7 @@ from PyQt5.QtWidgets import QDialog, QDialogButtonBox
 from PyQt5.QtWidgets import QMainWindow, QMessageBox, QStackedWidget, QVBoxLayout
 
 from executions.controllers.ui.elimination_window import EliminationWindow
-from executions.controllers.ui.processing_window import ProcessWindow
+from executions.controllers.ui.settings_window import SettingsWindow
 from executions.controllers.ui.results_window import ResultsWindow
 from executions.controllers.ui.upload_window import UploadWindow
 from executions.controllers.ui.window_utils import add_text_edit_html, add_text_edit
@@ -36,8 +36,8 @@ class BaseWindow(QMainWindow):
         self.stackedLayout.setCurrentWidget(upload_window)
 
     def show_process_window(self):
-        process_window = ProcessWindow(self.switch_to_elimination_window, self.dna_sequence, self.unwanted_patterns,
-                                       self.show_upload_window)
+        process_window = SettingsWindow(self.switch_to_elimination_window, self.dna_sequence, self.unwanted_patterns,
+                                        self.show_upload_window)
         self.stackedLayout.addWidget(process_window)
         self.stackedLayout.setCurrentWidget(process_window)
 
@@ -51,17 +51,17 @@ class BaseWindow(QMainWindow):
         self.stackedLayout.setCurrentWidget(elimination_window)
 
     def switch_to_results_window(self, original_coding_regions, original_region_list, selected_regions_to_exclude,
-                                 selected_region_list, target_seq, min_cost, detailed_changes):
+                                 selected_region_list, optimized_seq, min_cost, detailed_changes):
         results_window = ResultsWindow(self.dna_sequence, self.unwanted_patterns,
                                        original_coding_regions, original_region_list, selected_regions_to_exclude,
-                                       selected_region_list, target_seq, min_cost, detailed_changes,
+                                       selected_region_list, optimized_seq, min_cost, detailed_changes,
                                        self.show_elimination_window)
         self.stackedLayout.addWidget(results_window)
         self.stackedLayout.setCurrentWidget(results_window)
 
     def switch_to_process_window(self, dna_sequence, unwanted_patterns):
         if not dna_sequence:
-            QMessageBox.warning(self, "Error", "DNA sequence file is missing")
+            QMessageBox.warning(self, "Error", "Target sequence file is missing")
             return
 
         if not is_valid_dna(dna_sequence):
@@ -94,8 +94,8 @@ class BaseWindow(QMainWindow):
 
         self.dna_file_content = dna_sequence
         self.patterns_file_content = unwanted_patterns
-        process_window = ProcessWindow(self.switch_to_elimination_window, dna_sequence, unwanted_patterns,
-                                       self.show_upload_window)
+        process_window = SettingsWindow(self.switch_to_elimination_window, dna_sequence, unwanted_patterns,
+                                        self.show_upload_window)
         self.stackedLayout.addWidget(process_window)
         self.stackedLayout.setCurrentWidget(process_window)
 

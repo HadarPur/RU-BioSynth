@@ -22,7 +22,7 @@ def show_preview_report(report_local_file_path):
 
 class ResultsWindow(QWidget):
     def __init__(self, dna_sequence, unwanted_patterns, original_coding_regions, original_region_list,
-                 selected_regions_to_exclude, selected_region_list, target_seq, min_cost, detailed_changes,
+                 selected_regions_to_exclude, selected_region_list, optimized_seq, min_cost, detailed_changes,
                  back_to_elimination_callback):
         super().__init__()
         self.dna_sequence = dna_sequence
@@ -31,7 +31,7 @@ class ResultsWindow(QWidget):
         self.original_region_list = original_region_list
         self.selected_regions_to_exclude = selected_regions_to_exclude
         self.selected_region_list = selected_region_list
-        self.target_seq = target_seq
+        self.optimized_seq = optimized_seq
         self.min_cost = min_cost
         self.detailed_changes = detailed_changes
 
@@ -86,13 +86,13 @@ class ResultsWindow(QWidget):
         info_button.clicked.connect(self.show_info)
         info_layout.addWidget(info_button, alignment=Qt.AlignRight)
 
-        # Mark non-equal codons and print the target sequence
-        index_seq_str, marked_input_seq, marked_target_seq = mark_non_equal_codons(self.dna_sequence,
-                                                                                   self.target_seq,
+        # Mark non-equal codons and print the optimized sequence
+        index_seq_str, marked_input_seq, marked_optimized_seq = mark_non_equal_codons(self.dna_sequence,
+                                                                                   self.optimized_seq,
                                                                                    self.selected_region_list)
 
         content = '''<pre>''' + index_seq_str + '''<br></pre>'''
-        content += '''<pre>''' + marked_input_seq + '''<br><br>''' + marked_target_seq + '''</pre>'''
+        content += '''<pre>''' + marked_input_seq + '''<br><br>''' + marked_optimized_seq + '''</pre>'''
 
         content = content.replace("\n", "<br>")
         content = content.replace(" ", "&nbsp;")
@@ -111,7 +111,7 @@ class ResultsWindow(QWidget):
         label_html = f"""
             <br>
             <br>
-            <h3>Target DNA Sequence:</h3>
+            <h3>Optimized Sequence:</h3>
         """
 
         label = QLabel(label_html)
@@ -120,12 +120,12 @@ class ResultsWindow(QWidget):
         # Create a report summarizing the processing and save if the user chooses to
         file_date = datetime.today().strftime("%d %b %Y, %H:%M:%S")
 
-        add_code_block(self.middle_layout, self.target_seq, file_date, self.update_status)
+        add_code_block(self.middle_layout, self.optimized_seq, file_date, self.update_status)
 
         # Spacer to push other widgets to the top
         layout.addSpacerItem(QSpacerItem(0, 0, QSizePolicy.Minimum, QSizePolicy.Expanding))
 
-        self.prompt_report(self.middle_layout, self.target_seq, index_seq_str, marked_input_seq, marked_target_seq,
+        self.prompt_report(self.middle_layout, self.optimized_seq, index_seq_str, marked_input_seq, marked_optimized_seq,
                            self.original_coding_regions, self.original_region_list, self.selected_regions_to_exclude,
                            self.selected_region_list, self.min_cost, file_date, self.detailed_changes)
 
@@ -143,12 +143,12 @@ class ResultsWindow(QWidget):
         done_button.clicked.connect(lambda: quit_app())  # Connect to quit the application
         self.bottom_layout.addWidget(done_button, alignment=Qt.AlignRight)
 
-    def prompt_report(self, layout, target_seq, index_seq_str, marked_input_seq, marked_target_seq,
+    def prompt_report(self, layout, optimized_seq, index_seq_str, marked_input_seq, marked_optimized_seq,
                       original_coding_regions,
                       original_region_list, selected_regions_to_exclude, selected_region_list, min_cost, file_date,
                       detailed_changes):
-        self.report = initialize_report(self.dna_sequence, target_seq, index_seq_str, marked_input_seq,
-                                        marked_target_seq,
+        self.report = initialize_report(self.dna_sequence, optimized_seq, index_seq_str, marked_input_seq,
+                                        marked_optimized_seq,
                                         self.unwanted_patterns, original_coding_regions, original_region_list,
                                         selected_regions_to_exclude, selected_region_list,
                                         min_cost, detailed_changes)

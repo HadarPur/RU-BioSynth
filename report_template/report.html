@@ -6,7 +6,7 @@
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-    <title>Elimination results</title>
+    <title>BioBliss Report 🧬</title>
     <meta content="A flexible and comprehensive software app for design of synthetic DNA sequences without unwanted patterns"
           name="description">
     <meta content="Hadar Pur" name="author">
@@ -407,7 +407,7 @@
         <div class="sidepanel">
 
             <a class="title" href="#">Input</a>
-            <a class="section" href="#dna-sequence">DNA Sequence</a>
+            <a class="section" href="#dna-sequence">Target Sequence</a>
             <a class="section" href="#unwanted-patterns">Unwanted Patterns</a>
 
             <div class="divider left"></div>
@@ -421,7 +421,7 @@
             <a class="title" href="#results">Results</a>
             <a class="section" href="#dna-sequences-difference">DNA Sequences Difference</a>
             <a class="section" href="#dna-detailed_changes">Detailed Changes</a>
-            <a class="section" href="#target-dna-sequence">Target DNA Sequence</a>
+            <a class="section" href="#optimized-dna-sequence">Optimized Sequence</a>
 
             <div class="space double"></div>
 
@@ -430,7 +430,7 @@
         <div class="right-col">
 
             <h1 id="dna-sequence">Input</h1>
-            <h2>DNA Sequence:</h2>
+            <h2>Target Sequence:</h2>
             <p class="scrollable-paragraph">
                 {{input}}
             </p>
@@ -479,7 +479,7 @@
             <h2 id="dna-sequences-difference">DNA Sequences Difference:</h2>
             <div class="horizontal-scroll">
                 <pre style="color: lightgray;">{{index_seq_str}}<br><br></pre>
-                <pre>{{marked_input_seq}}<br><br>{{marked_target_seq}}</pre>
+                <pre>{{marked_input_seq}}<br><br>{{marked_optimized_seq}}</pre>
             </div>
 
             <h2 id="dna-detailed_changes">Detailed Changes:</h2>
@@ -487,9 +487,9 @@
                 <pre>{{detailed_changes}}</pre>
             </div>
 
-            <h2 id="target-dna-sequence">Target DNA Sequence:</h2>
+            <h2 id="optimized-dna-sequence">Optimized Sequence:</h2>
             <p class="scrollable-paragraph">
-                {{target}}
+                {{optimized_seq}}
             </p>
 
             <div class="double-space"></div>

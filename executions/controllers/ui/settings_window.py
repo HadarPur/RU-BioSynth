@@ -11,7 +11,7 @@ from utils.display_utils import SequenceUtils
 from utils.dna_utils import DNAUtils
 
 
-class ProcessWindow(QWidget):
+class SettingsWindow(QWidget):
     def __init__(self, switch_to_eliminate_callback, dna_sequence, unwanted_patterns, back_to_upload_callback):
         super().__init__()
         self.switch_to_eliminate_callback = switch_to_eliminate_callback
@@ -57,7 +57,7 @@ class ProcessWindow(QWidget):
         # Adding formatted text to QLabel
         label_html = f"""
             <h2>Input</h2>
-            <h3>DNA Sequence:</h3>
+            <h3>Target Sequence:</h3>
         """
         label = QLabel(label_html)
         content_layout.addWidget(label)
@@ -98,7 +98,7 @@ class ProcessWindow(QWidget):
             <br>
             <h2>DNA Elimination</h2>
             <h3>Coding Regions:</h3>
-            <p>Identify the coding regions within the given DNA sequence and mark them for emphasis:
+            <p>Identify the coding regions within the given target sequence and mark them for emphasis:
         """
 
         label = QLabel(label_html)
@@ -269,7 +269,7 @@ class ProcessWindow(QWidget):
         if event.type() == QEvent.Wheel and source == self.scroll.viewport():
             self.animation.stop()
             self.scroll.viewport().removeEventFilter(self)  # Remove event filter.
-        return super(ProcessWindow, self).eventFilter(source, event)  # Allow other eventHandlers to respond.
+        return super(SettingsWindow, self).eventFilter(source, event)  # Allow other eventHandlers to respond.
 
 
 class RegionSelector(QWidget):

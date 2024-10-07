@@ -13,7 +13,7 @@ class EliminationController:
     def eliminate(seq, unwanted_patterns, cost_table):
         # Initialize information string for the elimination process
         info = f"{format_text_bold_for_output('Starting Elimination Process...')}\n"
-        info += f"\n{format_text_bold_for_output('Original Sequence:')}\n{seq}\n"
+        info += f"\n{format_text_bold_for_output('Target Sequence:')}\n{seq}\n"
         info += f"\n{format_text_bold_for_output('Unwanted Patterns:')}\n{', '.join(sorted(unwanted_patterns))}\n"
         # Additional descriptions (placeholders for actual descriptions)
         info += f"\n{format_text_bold_for_output('Elimination Process:')}\n{elimination_process_description}\n"
@@ -82,7 +82,7 @@ class EliminationController:
         info += f"\n🎉 {format_text_bold_for_output('Congrats!')}\n\n"
         info += "🚀 Elimination Process Completed!\n"
         info += f"📆 {format_current_date()}\n"
-        info += f"\n{format_text_bold_for_output('Modified Sequence:')}\n{''.join(sequence)}\n"
+        info += f"\n{format_text_bold_for_output('Optimized Sequence:')}\n{''.join(sequence)}\n"
         info += f"\n{format_text_bold_for_output('Total Cost:')}\n{min_cost:.10g}"
 
         return info, changes_info, ''.join(sequence), min_cost

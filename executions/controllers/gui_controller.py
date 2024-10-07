@@ -7,7 +7,7 @@ from executions.controllers.ui.base_window import BaseWindow
 from utils.file_utils import resource_path
 
 
-class UIController:
+class GUIController:
     @staticmethod
     def execute():
         stylesheet = """

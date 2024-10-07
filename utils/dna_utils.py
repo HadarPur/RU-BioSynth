@@ -39,7 +39,7 @@ class DNAUtils:
 
     @staticmethod
     def get_overlapping_regions(dna_sequence, overlaps):
-        info = f"DNA Sequence:\n{dna_sequence}\n"
+        info = f"Target Sequence:\n{dna_sequence}\n"
         for (start1, end1), (start2, end2) in overlaps:
             start1 -= 1
             end1 -= 1
@@ -80,7 +80,7 @@ class DNAUtils:
         i = 0
         non_coding_region = ""  # Initialize a variable to store non-coding sequences
 
-        # Traverse the DNA sequence to identify coding regions
+        # Traverse the target sequence to identify coding regions
         while i < len(seq):
             found_stop_codons = any(seq[j:j + 3] in stop_codons for j in range(i + 3, len(seq), 3))
             if seq[i:i + 3] == start_codon and found_stop_codons:  # Check for the start codon

@@ -71,9 +71,9 @@ class SequenceUtils:
         return [S[i:i + n] for i in range(0, len(S), n)]
 
     @staticmethod
-    def mark_non_equal_characters(input_seq, target_seq, region_list):
-        if len(input_seq) != len(target_seq):
-            raise ValueError("Input sequence and Target sequence must be of the same length")
+    def mark_non_equal_characters(input_seq, optimized_seq, region_list):
+        if len(input_seq) != len(optimized_seq):
+            raise ValueError("Target sequence and Optimized sequence must be of the same length")
 
         marked_seq1 = []
         marked_seq2 = []
@@ -93,22 +93,22 @@ class SequenceUtils:
                     if is_coding_region:
                         index_seq.append(f"{i + j + 1}-{i + j + 3}")
                         # Compare 3 characters at a time
-                        if input_seq[i + j:i + j + 3] != target_seq[i + j:i + j + 3]:
+                        if input_seq[i + j:i + j + 3] != optimized_seq[i + j:i + j + 3]:
                             marked_seq1.append(f"[{input_seq[i + j:i + j + 3]}]")
-                            marked_seq2.append(f"[{target_seq[i + j:i + j + 3]}]")
+                            marked_seq2.append(f"[{optimized_seq[i + j:i + j + 3]}]")
                         else:
                             marked_seq1.append(f"{input_seq[i + j:i + j + 3]}")
-                            marked_seq2.append(f"{target_seq[i + j:i + j + 3]}")
+                            marked_seq2.append(f"{optimized_seq[i + j:i + j + 3]}")
                         j += 3
                     else:
                         index_seq.append(f"{i + j + 1}")
                         # Compare 1 character at a time
-                        if input_seq[i + j] != target_seq[i + j]:
+                        if input_seq[i + j] != optimized_seq[i + j]:
                             marked_seq1.append(f"[{input_seq[i + j]}]")
-                            marked_seq2.append(f"[{target_seq[i + j]}]")
+                            marked_seq2.append(f"[{optimized_seq[i + j]}]")
                         else:
                             marked_seq1.append(f"{input_seq[i + j]}")
-                            marked_seq2.append(f"{target_seq[i + j]}")
+                            marked_seq2.append(f"{optimized_seq[i + j]}")
                         j += 1
 
                 # Move to the next region if applicable

@@ -46,9 +46,9 @@ class UploadWindow(QWidget):
         middle_layout.setContentsMargins(20, 5, 20, 20)
         layout.addLayout(middle_layout)
 
-        self.dna_text_edit = add_drop_text_edit(middle_layout, "Upload DNA Sequence/Drag&Drop DNA Sequence file (.txt)",
+        self.dna_text_edit = add_drop_text_edit(middle_layout, "Upload Target Sequence/Drag&Drop Target Sequence file (.txt)",
                                                 self.dna_file_content)
-        add_button(middle_layout, 'Load DNA Sequence', Qt.AlignCenter, self.load_file, (self.dna_text_edit,),
+        add_button(middle_layout, 'Load Target Sequence', Qt.AlignCenter, self.load_file, (self.dna_text_edit,),
                    size=(200, 30))
 
         self.patterns_text_edit = add_drop_text_edit(middle_layout,

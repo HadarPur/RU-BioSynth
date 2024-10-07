@@ -8,7 +8,7 @@ o_non_coding_region = 0.  # origin
 w_non_coding_region = 2.  # changes codons
 x_non_coding_region = 1.  # does not change codons
 
-elimination_process_description = 'When considering the costs associated with changing DNA sequences in both coding and non-coding regions, different expense structures come into play.'
+elimination_process_description = 'When considering the costs associated with changing target sequences in both coding and non-coding regions, different expense structures come into play.'
 
 coding_region_cost_description = f'In coding regions, a substitution that does not change the amino acid incurs an expense of {x_coding_region}. ' \
                                  f'\nA higher cost of {w_coding_region} is associated with substitutions that change the amino acid.' \

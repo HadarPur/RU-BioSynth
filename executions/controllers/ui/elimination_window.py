@@ -43,9 +43,9 @@ class EliminationWindow(QWidget):
         content_layout = QVBoxLayout()
         middle_layout.addLayout(content_layout)
 
-        info, detailed_changes, target_seq, min_cost = eliminate_unwanted_patterns(self.dna_sequence,
-                                                                                   self.unwanted_patterns,
-                                                                                   self.selected_region_list)
+        info, detailed_changes, optimized_seq, min_cost = eliminate_unwanted_patterns(self.dna_sequence,
+                                                                                      self.unwanted_patterns,
+                                                                                      self.selected_region_list)
 
         info = info.replace("\n", "<br>")
         label_html = f"""
@@ -67,5 +67,5 @@ class EliminationWindow(QWidget):
                    lambda: (self.original_coding_regions,
                             self.original_region_list,
                             self.selected_regions_to_exclude,
-                            self.selected_region_list, target_seq,
+                            self.selected_region_list, optimized_seq,
                             min_cost, detailed_changes))

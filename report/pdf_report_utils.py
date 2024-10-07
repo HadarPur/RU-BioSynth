@@ -12,10 +12,10 @@ from utils.output_utils import Logger
 class ReportController:
     def __init__(self,
                  input_seq,
-                 target_seq,
+                 optimized_seq,
                  index_seq_str,
                  marked_input_seq,
-                 marked_target_seq,
+                 marked_optimized_seq,
                  unwanted_patterns,
                  original_coding_regions,
                  original_region_list,
@@ -26,10 +26,10 @@ class ReportController:
 
         self.input_seq = input_seq
         self.highlight_input = SequenceUtils.highlight_sequences_to_html(original_region_list)
-        self.target_seq = target_seq
+        self.optimized_seq = optimized_seq
         self.index_seq_str = index_seq_str
         self.marked_input_seq = marked_input_seq
-        self.marked_target_seq = marked_target_seq
+        self.marked_optimized_seq = marked_optimized_seq
         self.unwanted_patterns = ', '.join(unwanted_patterns)
         self.num_of_coding_regions = len(original_coding_regions)
         self.detailed_changes = '<br>'.join(detailed_changes) if detailed_changes else None
@@ -56,7 +56,7 @@ class ReportController:
                 self.chosen_regions = '''<p><br>No coding regions were selected for exclusion. Continuing with the current settings.</p>'''
                 self.highlight_selected = ""
         else:
-            self.regions = '''<p><br>No coding region was identified in the provided DNA sequence</p>'''
+            self.regions = '''<p><br>No coding region was identified in the provided target sequence</p>'''
             self.chosen_regions = ""
             self.highlight_selected = ""
 
@@ -67,10 +67,10 @@ class ReportController:
                    'input': self.input_seq,
                    'highlight_input': self.highlight_input,
                    'highlight_selected': self.highlight_selected,
-                   'target': self.target_seq,
+                   'optimized_seq': self.optimized_seq,
                    'index_seq_str': self.index_seq_str,
                    'marked_input_seq': self.marked_input_seq,
-                   'marked_target_seq': self.marked_target_seq,
+                   'marked_optimized_seq': self.marked_optimized_seq,
                    'patterns': self.unwanted_patterns,
                    'num_of_coding_regions': self.num_of_coding_regions,
                    'chosen_regions': self.chosen_regions,

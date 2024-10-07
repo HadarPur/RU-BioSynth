@@ -52,23 +52,23 @@ def eliminate_unwanted_patterns(seq, unwanted_patterns, selected_region_list):
     cost_table = scorer.calculate_scores(selected_region_list)
 
     # Start elimination
-    info, detailed_changes, target_seq, min_cost = EliminationController.eliminate(seq, unwanted_patterns, cost_table)
+    info, detailed_changes, optimized_seq, min_cost = EliminationController.eliminate(seq, unwanted_patterns, cost_table)
 
-    return info, detailed_changes, target_seq, min_cost
+    return info, detailed_changes, optimized_seq, min_cost
 
 
-def mark_non_equal_codons(input_seq, target_seq, region_list):
-    # Mark non-equal codons between the original and target sequences
-    index_seq_str, marked_input_seq, marked_target_seq = SequenceUtils.mark_non_equal_characters(input_seq, target_seq,
+def mark_non_equal_codons(input_seq, optimized_seq, region_list):
+    # Mark non-equal codons between the original and optimized sequences
+    index_seq_str, marked_input_seq, marked_optimized_seq = SequenceUtils.mark_non_equal_characters(input_seq, optimized_seq,
                                                                                                  region_list)
-    return index_seq_str, marked_input_seq, marked_target_seq
+    return index_seq_str, marked_input_seq, marked_optimized_seq
 
 
 def initialize_report(seq,
-                      target_seq,
+                      optimized_seq,
                       index_seq_str,
                       marked_input_seq,
-                      marked_target_seq,
+                      marked_optimized_seq,
                       unwanted_patterns,
                       original_coding_regions,
                       original_region_list,
@@ -77,10 +77,10 @@ def initialize_report(seq,
                       min_cost,
                       detailed_changes):
     report = ReportController(seq,
-                              target_seq,
+                              optimized_seq,
                               index_seq_str,
                               marked_input_seq,
-                              marked_target_seq,
+                              marked_optimized_seq,
                               unwanted_patterns,
                               original_coding_regions,
                               original_region_list,

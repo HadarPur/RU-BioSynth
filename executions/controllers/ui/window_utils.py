@@ -62,10 +62,10 @@ class DropTextEdit(QTextEdit):
 def add_intro(layout):
     content = "Hi,"
     content += "\nWelcome to the BioBliss App."
-    content += "\nTo eliminate unwanted patterns from a specific DNA sequence, please upload the DNA sequence file " \
+    content += "\nTo eliminate unwanted patterns from a specific target sequence, please upload the target sequence file " \
                "along with the patterns file you wish to remove."
     content += "\n"
-    content += "\nThe DNA sequence file should contain only one continuous sequence."
+    content += "\nThe target sequence file should contain only one continuous sequence."
     content += "\nThe patterns file should list each pattern on a new line, containing only standard characters" \
                " without any special symbols."
     content += "\n"
@@ -239,7 +239,7 @@ def add_code_block(parent_layout, text, file_date, update_status):
 
 
 def download_file(code_display, file_date, update_status):
-    filename = f'Target DNA Sequence - {file_date}.txt'
+    filename = f'Optimized Sequence - {file_date}.txt'
     text = code_display.toPlainText()
     path = save_file(text, filename)
     update_status(path)
