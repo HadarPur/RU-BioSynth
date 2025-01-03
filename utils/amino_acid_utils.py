@@ -5,12 +5,12 @@ class AminoAcidConfigScheme:
         self.x = x
         self.s = s
 
-    def get_cost_table_none_coding_region(self):
+    def get_cost_table_non_coding_region(self):
         return [{
-            "A": [dict(A=self.o, T=self.x, C=self.w, G=self.w)],
-            "T": [dict(A=self.x, T=self.o, C=self.w, G=self.w)],
-            "C": [dict(A=self.w, T=self.w, C=self.o, G=self.x)],
-            "G": [dict(A=self.w, T=self.w, C=self.x, G=self.o)]
+            "A": [dict(A=self.o, T=self.w, C=self.w, G=self.x)],
+            "T": [dict(A=self.w, T=self.o, C=self.x, G=self.w)],
+            "C": [dict(A=self.w, T=self.x, C=self.o, G=self.w)],
+            "G": [dict(A=self.x, T=self.w, C=self.w, G=self.o)]
         }]
 
     def get_cost_table_coding_region(self):

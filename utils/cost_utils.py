@@ -35,7 +35,7 @@ class CodonScorerFactory:
         self.coding_region_scheme = AminoAcidConfigScheme(w_coding_region, o_coding_region, x_coding_region,
                                                           s_coding_region).get_cost_table_coding_region()
         self.non_coding_region_scheme = AminoAcidConfigScheme(w_non_coding_region, o_non_coding_region,
-                                                              x_non_coding_region).get_cost_table_none_coding_region()
+                                                              x_non_coding_region).get_cost_table_non_coding_region()
 
     def calculate_scores(self, sequences):
         """
