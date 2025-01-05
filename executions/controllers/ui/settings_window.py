@@ -12,11 +12,12 @@ from utils.dna_utils import DNAUtils
 
 
 class SettingsWindow(QWidget):
-    def __init__(self, switch_to_eliminate_callback, dna_sequence, unwanted_patterns, back_to_upload_callback):
+    def __init__(self, switch_to_eliminate_callback, dna_sequence, unwanted_patterns, codon_usage, back_to_upload_callback):
         super().__init__()
         self.switch_to_eliminate_callback = switch_to_eliminate_callback
         self.dna_sequence = dna_sequence
         self.unwanted_patterns = unwanted_patterns
+        self.codon_usage = codon_usage
 
         self.scroll = None
         self.next_button = None
@@ -154,7 +155,7 @@ class SettingsWindow(QWidget):
         self.yes_button = add_button(prompt_layout, 'Yes', Qt.AlignLeft, self.select_all_regions, callback_args)
 
         # Create the 'No' button
-        callback_args = (layout, original_coding_regions, original_region_list,
+        callback_args = (layout, original_coding_regions, original_region_list, self.codon_usage,
                          coding_indexes, unwanted_patterns)
         self.no_button = add_button(prompt_layout, 'No', Qt.AlignLeft, self.select_regions_to_exclude, callback_args)
 

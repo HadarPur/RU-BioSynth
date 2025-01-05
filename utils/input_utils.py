@@ -26,6 +26,7 @@ class ArgumentParser:
     def __init__(self):
         self.s_path = None
         self.p_path = None
+        self.c_path = None
         self.o_path = None
         self.gui = False
 
@@ -40,7 +41,7 @@ class ArgumentParser:
             tuple: A tuple containing the paths to the patterns file and sequence file, and a flag for GUI.
         """
         try:
-            opts, args = getopt.getopt(argv, "hs:p:o:g", ["help", "s_path=", "p_path=", "o_path=", "gui"])
+            opts, args = getopt.getopt(argv, "hs:p:c:o:g", ["help", "s_path=", "p_path=", "c_path=", "o_path=", "gui"])
         except getopt.GetoptError as err:
             Logger.error(err)
             Logger.info(get_terminal_usage())
@@ -54,10 +55,12 @@ class ArgumentParser:
                 self.s_path = arg
             elif opt in ("-p", "--p_path"):
                 self.p_path = arg
+            elif opt in ("-c", "--c_path"):
+                self.c_path = arg
             elif opt in ("-o", "--o_path"):
                 self.o_path = arg
             elif opt in ("-g", "--gui"):
                 self.gui = True
 
-        return self.gui, self.s_path, self.p_path, self.o_path
+        return self.gui, self.s_path, self.p_path, self.c_path, self.o_path
 

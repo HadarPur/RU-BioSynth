@@ -25,9 +25,10 @@ app_icon_text = """\
 
 class CommandController:
 
-    def __init__(self, seq, unwanted_patterns, output_path=None):
+    def __init__(self, seq, unwanted_patterns, codon_usage_table, output_path=None):
         self.seq = seq
         self.unwanted_patterns = unwanted_patterns
+        self.codon_usage_table = codon_usage_table
         self.output_path = output_path
 
     def run(self):

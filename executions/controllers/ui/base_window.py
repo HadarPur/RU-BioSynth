@@ -8,7 +8,7 @@ from executions.controllers.ui.settings_window import SettingsWindow
 from executions.controllers.ui.results_window import ResultsWindow
 from executions.controllers.ui.upload_window import UploadWindow
 from executions.controllers.ui.window_utils import add_text_edit_html, add_text_edit
-from executions.execution_utils import is_valid_dna, is_valid_patterns
+from executions.execution_utils import is_valid_dna, is_valid_patterns, is_valid_codon_usage, read_codon_usage_map
 from utils.dna_utils import DNAUtils
 
 
@@ -19,9 +19,11 @@ class BaseWindow(QMainWindow):
         self.stackedLayout = QStackedWidget()
         self.dna_file_content = None
         self.patterns_file_content = None
+        self.codon_usage_file_content = None
 
         self.dna_sequence = None
         self.unwanted_patterns = None
+        self.codon_usage = None
         self.init_ui()
 
     def init_ui(self):
@@ -31,12 +33,12 @@ class BaseWindow(QMainWindow):
         self.show_upload_window()
 
     def show_upload_window(self):
-        upload_window = UploadWindow(self.switch_to_process_window, self.dna_file_content, self.patterns_file_content)
+        upload_window = UploadWindow(self.switch_to_process_window, self.dna_file_content, self.patterns_file_content, self.codon_usage_file_content)
         self.stackedLayout.addWidget(upload_window)
         self.stackedLayout.setCurrentWidget(upload_window)
 
     def show_process_window(self):
-        process_window = SettingsWindow(self.switch_to_elimination_window, self.dna_sequence, self.unwanted_patterns,
+        process_window = SettingsWindow(self.switch_to_elimination_window, self.dna_sequence, self.unwanted_patterns, self.codon_usage,
                                         self.show_upload_window)
         self.stackedLayout.addWidget(process_window)
         self.stackedLayout.setCurrentWidget(process_window)
@@ -59,7 +61,7 @@ class BaseWindow(QMainWindow):
         self.stackedLayout.addWidget(results_window)
         self.stackedLayout.setCurrentWidget(results_window)
 
-    def switch_to_process_window(self, dna_sequence, unwanted_patterns):
+    def switch_to_process_window(self, dna_sequence, unwanted_patterns, codon_usage):
         if not dna_sequence:
             QMessageBox.warning(self, "Error", "Target sequence file is missing")
             return
@@ -84,6 +86,21 @@ class BaseWindow(QMainWindow):
                                 f"The patterns:\n{unwanted_patterns}\n\nare not valid, please check and try again later.")
             return
 
+        if not codon_usage:
+            QMessageBox.warning(self, "Error", "Codon Usage file is missing")
+            return
+
+        codon_usage = read_codon_usage_map(codon_usage.splitlines())
+        if len(codon_usage) == 0:
+            QMessageBox.warning(self, "Error",
+                                "There is an issue with the codon usage file, please check and try again later.")
+            return
+
+        if not is_valid_codon_usage(codon_usage):
+            QMessageBox.warning(self, "Error",
+                                f"The codon usage:\n{codon_usage}\n\nare not valid, please check and try again later.")
+            return
+
         has_overlaps, overlaps = DNAUtils.find_overlapping_regions(dna_sequence)
         if has_overlaps:
             self.show_overlapping_msg(dna_sequence, overlaps)
@@ -91,10 +108,12 @@ class BaseWindow(QMainWindow):
 
         self.dna_sequence = dna_sequence
         self.unwanted_patterns = unwanted_patterns
+        self.codon_usage = codon_usage
 
         self.dna_file_content = dna_sequence
         self.patterns_file_content = unwanted_patterns
-        process_window = SettingsWindow(self.switch_to_elimination_window, dna_sequence, unwanted_patterns,
+        self.codon_usage_file_content = codon_usage
+        process_window = SettingsWindow(self.switch_to_elimination_window, dna_sequence, unwanted_patterns, codon_usage,
                                         self.show_upload_window)
         self.stackedLayout.addWidget(process_window)
         self.stackedLayout.setCurrentWidget(process_window)

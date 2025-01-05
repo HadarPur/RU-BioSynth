@@ -5,6 +5,37 @@ import sys
 from pathlib import Path
 
 
+def read_codon_usage_map(raw_lines):
+    """
+    Reads the codon usage table from the file and parses it into a dictionary.
+
+    :return: A dictionary where keys are codons and values are dictionaries with frequency and epsilon.
+    """
+
+    # Read all lines from the file
+    codon_usage_data = {}
+
+    # Parse each line to extract codon and frequency data
+    for line in raw_lines:
+        parts = line.split()
+        if len(parts) == 6:  # Header or new first and second base
+            codon = parts[2]
+            frequency = float(parts[5])
+        elif len(parts) == 4:  # Codon data
+            codon = parts[0]
+            frequency = float(parts[3])
+        else:
+            continue
+
+        # codon_data = {
+        #     "frequency": frequency,
+        #     "epsilon": np.log(frequency) if frequency > 0 else float('-inf')  # Handle log(0) case
+        # }
+        codon_usage_data[codon] = frequency
+
+    return codon_usage_data
+
+
 # Define a base class for reading data from a file.
 class FileDataReader:
     def __init__(self, file_path):
@@ -65,6 +96,22 @@ class PatternReader(FileDataReader):
             patterns = line.strip().split(',')
             res.update(patterns)
         return res
+
+
+# Inherit from FileDataReader to read the codon usage table from a file.
+class CodonUsageReader(FileDataReader):
+    def read_codon_usage(self):
+        """
+        Reads the codon usage table from the file and parses it into a dictionary.
+
+        :return: A dictionary where keys are codons and values are dictionaries with frequency and epsilon.
+        """
+        if self.file_path is None:
+            return None
+
+        # Read all lines from the file
+        raw_lines = self.read_lines()
+        return read_codon_usage_map(raw_lines)
 
 
 def create_dir(directory):
