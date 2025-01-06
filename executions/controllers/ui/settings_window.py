@@ -155,7 +155,7 @@ class SettingsWindow(QWidget):
         self.yes_button = add_button(prompt_layout, 'Yes', Qt.AlignLeft, self.select_all_regions, callback_args)
 
         # Create the 'No' button
-        callback_args = (layout, original_coding_regions, original_region_list, self.codon_usage,
+        callback_args = (layout, original_coding_regions, original_region_list,
                          coding_indexes, unwanted_patterns)
         self.no_button = add_button(prompt_layout, 'No', Qt.AlignLeft, self.select_regions_to_exclude, callback_args)
 

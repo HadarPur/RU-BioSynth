@@ -62,6 +62,7 @@ class BaseWindow(QMainWindow):
         self.stackedLayout.setCurrentWidget(results_window)
 
     def switch_to_process_window(self, dna_sequence, unwanted_patterns, codon_usage):
+        self.dna_file_content = dna_sequence
         if not dna_sequence:
             QMessageBox.warning(self, "Error", "Target sequence file is missing")
             return
@@ -75,6 +76,7 @@ class BaseWindow(QMainWindow):
             QMessageBox.warning(self, "Error", "Patterns file is missing")
             return
 
+        self.patterns_file_content = unwanted_patterns
         unwanted_patterns = set(unwanted_patterns.split())
         if len(unwanted_patterns) == 0:
             QMessageBox.warning(self, "Error",
@@ -90,6 +92,7 @@ class BaseWindow(QMainWindow):
             QMessageBox.warning(self, "Error", "Codon Usage file is missing")
             return
 
+        self.codon_usage_file_content = codon_usage
         codon_usage = read_codon_usage_map(codon_usage.splitlines())
         if len(codon_usage) == 0:
             QMessageBox.warning(self, "Error",
@@ -110,9 +113,6 @@ class BaseWindow(QMainWindow):
         self.unwanted_patterns = unwanted_patterns
         self.codon_usage = codon_usage
 
-        self.dna_file_content = dna_sequence
-        self.patterns_file_content = unwanted_patterns
-        self.codon_usage_file_content = codon_usage
         process_window = SettingsWindow(self.switch_to_elimination_window, dna_sequence, unwanted_patterns, codon_usage,
                                         self.show_upload_window)
         self.stackedLayout.addWidget(process_window)
