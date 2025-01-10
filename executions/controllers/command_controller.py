@@ -69,12 +69,10 @@ class CommandController:
         Logger.info('\n'.join(f"[{key}] {value}" for key, value in original_coding_regions.items()))
 
         # Eliminate unwanted patterns
-        info, detailed_changes, AppData.optimized_seq, min_cost = eliminate_unwanted_patterns(
-            AppData.dna_sequence, AppData.patterns, original_region_list
-        )
+        eliminate_unwanted_patterns(AppData.dna_sequence, AppData.patterns, original_region_list)
 
         Logger.notice(format_text_bold_for_output('\n' + '_' * 100 + '\n'))
-        Logger.info(info)
+        Logger.info(AppData.info)
         Logger.notice(format_text_bold_for_output('\n' + '_' * 100 + '\n'))
 
         # Mark non-equal codons
@@ -86,7 +84,7 @@ class CommandController:
         Logger.info(AppData.optimized_seq)
         Logger.space()
 
-        changes = '\n'.join(detailed_changes) if detailed_changes else None
+        changes = '\n'.join(AppData.detailed_changes) if AppData.detailed_changes else None
         Logger.debug(format_text_bold_for_output('Detailed Changes:'))
         Logger.info(f"{changes}")
         Logger.space()
@@ -97,7 +95,7 @@ class CommandController:
         report = initialize_report(
             AppData.dna_sequence, AppData.optimized_seq, index_seq_str, marked_input_seq,
             marked_optimized_seq, AppData.patterns, original_coding_regions, original_region_list,
-            None, None, min_cost, detailed_changes
+            None, None, AppData.min_cost, AppData.detailed_changes
         )
 
         report.create_report(file_date)
