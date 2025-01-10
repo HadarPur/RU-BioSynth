@@ -6,69 +6,61 @@ from utils.dna_utils import DNAUtils
 from utils.file_utils import save_file
 from utils.output_utils import Logger
 from utils.text_utils import format_text_bold_for_output
+from executions.controllers.app_data import AppData
 
 app_icon_text = """\
-================================================================
-================================================================
+=================================================================
+=================================================================
 
              ____  _       ____  _ _         
             | __ )(_) ___ | __ )| (_)___ ___ 
-            |  _ \| |/ _ \|  _ \| | / __/ __|
-            | |_) | | (_) | |_) | | \__ \__ \ 
-            |____/|_|\___/|____/|_|_|___/___/
-                                
-                                
-================================================================
-================================================================                                                          
+            |  _ \\| |/ _ \\|  _ \\| | / __/ __|
+            | |_) | | (_) | |_) | | \\__ \\__ \\ 
+            |____/|_|\\___/|____/|_|_|___/___/
+
+=================================================================
+=================================================================                                                          
 """
 
 
 class CommandController:
-
-    def __init__(self, seq, unwanted_patterns, codon_usage_table, output_path=None):
-        self.seq = seq
-        self.unwanted_patterns = unwanted_patterns
-        self.codon_usage_table = codon_usage_table
-        self.output_path = output_path
+    def __init__(self, output_path=None):
+        self.output_path = output_path or AppData.download_location
 
     def run(self):
-        if self.seq is None or len(self.seq) == 0:
+        if not AppData.dna_sequence:
             Logger.error("The input sequence is empty, please try again")
             return
 
-        has_overlaps, overlaps = DNAUtils.find_overlapping_regions(self.seq)
+        has_overlaps, overlaps = DNAUtils.find_overlapping_regions(AppData.dna_sequence)
 
         if has_overlaps:
             Logger.error(f"{format_text_bold_for_output('Error Occurred:')}")
             Logger.error("The input sequence contains overlapping coding regions.")
             Logger.space()
-            Logger.info(DNAUtils.get_overlapping_regions(self.seq, overlaps))
-            Logger.error("Please make sure that the input seq will not contains any overlapping regions.")
+            Logger.info(DNAUtils.get_overlapping_regions(AppData.dna_sequence, overlaps))
+            Logger.error("Please ensure the input sequence does not contain overlapping regions.")
             return
 
         Logger.notice(app_icon_text)
 
         # Print the target sequence
         Logger.debug(f"{format_text_bold_for_output('Target sequence:')}")
-        Logger.info(f"{self.seq}")
+        Logger.info(f"{AppData.dna_sequence}")
         Logger.space()
 
         # Print the list of unwanted patterns
         Logger.debug(f"{format_text_bold_for_output('Pattern list:')}")
-        Logger.info(f"{SequenceUtils.get_patterns(self.unwanted_patterns)}")
+        Logger.info(f"{SequenceUtils.get_patterns(AppData.patterns)}")
         Logger.space()
 
-        # Extract coding regions from the sequence
-        original_region_list = DNAUtils.get_coding_and_non_coding_regions(self.seq)
-
-        # Extract coding regions and their indexes from the highlighted sequence
-        original_coding_regions, coding_indexes = DNAUtils.extract_coding_regions_with_indexes(
-            original_region_list)
-
-        # Highlight coding regions and print the sequence
+        # Extract coding regions
+        original_region_list = DNAUtils.get_coding_and_non_coding_regions(AppData.dna_sequence)
+        original_coding_regions, coding_indexes = DNAUtils.extract_coding_regions_with_indexes(original_region_list)
         highlighted_sequence = ''.join(SequenceUtils.highlight_sequences_to_terminal(original_region_list))
-        Logger.debug(f'Identify the coding regions within the given target sequence and mark them for emphasis:')
-        Logger.info(f"{highlighted_sequence}")
+
+        Logger.debug('Identify the coding regions within the given target sequence and mark them for emphasis:')
+        Logger.info(highlighted_sequence)
         Logger.space()
 
         # Handle elimination of coding regions if the user chooses to
@@ -76,22 +68,22 @@ class CommandController:
         Logger.debug(f"The total number of coding regions is {len(original_coding_regions)}, identifies as follows:")
         Logger.info('\n'.join(f"[{key}] {value}" for key, value in original_coding_regions.items()))
 
-        # Eliminate unwanted patterns and generate the resulting sequence
-        info, detailed_changes, optimized_seq, min_cost = eliminate_unwanted_patterns(self.seq,
-                                                                                      self.unwanted_patterns,
-                                                                                      original_region_list)
+        # Eliminate unwanted patterns
+        info, detailed_changes, AppData.optimized_seq, min_cost = eliminate_unwanted_patterns(
+            AppData.dna_sequence, AppData.patterns, original_region_list
+        )
 
-        Logger.notice(format_text_bold_for_output('\n' + '_' * 100 + '\n' + '_' * 100 + '\n'))
+        Logger.notice(format_text_bold_for_output('\n' + '_' * 100 + '\n'))
         Logger.info(info)
-        Logger.notice(format_text_bold_for_output('\n' + '_' * 100 + '\n' + '_' * 100 + '\n'))
+        Logger.notice(format_text_bold_for_output('\n' + '_' * 100 + '\n'))
 
-        # Mark non-equal codons and print the optimized sequence
-        index_seq_str, marked_input_seq, marked_optimized_seq = mark_non_equal_codons(self.seq,
-                                                                                   optimized_seq,
-                                                                                   original_region_list)
+        # Mark non-equal codons
+        index_seq_str, marked_input_seq, marked_optimized_seq = mark_non_equal_codons(
+            AppData.dna_sequence, AppData.optimized_seq, original_region_list
+        )
 
         Logger.debug(format_text_bold_for_output('Optimized Sequence'))
-        Logger.info(f"{optimized_seq}")
+        Logger.info(AppData.optimized_seq)
         Logger.space()
 
         changes = '\n'.join(detailed_changes) if detailed_changes else None
@@ -99,49 +91,21 @@ class CommandController:
         Logger.info(f"{changes}")
         Logger.space()
 
-        # Create a report summarizing the processing and save if the user chooses to
-        file_date = datetime.today().strftime("%d %b %Y, %H:%M:%S")
-        self.save_report(optimized_seq,
-                         index_seq_str,
-                         marked_input_seq,
-                         marked_optimized_seq,
-                         original_coding_regions,
-                         original_region_list,
-                         min_cost,
-                         detailed_changes,
-                         file_date)
+        file_date = datetime.today().strftime("%d%b%Y,%H:%M:%S")
 
-        self.save_optimized_sequence(optimized_seq, file_date)
-
-    def save_report(self,
-                    optimized_seq,
-                    index_seq_str,
-                    marked_input_seq,
-                    marked_optimized_seq,
-                    original_coding_regions,
-                    region_list,
-                    min_cost,
-                    detailed_changes,
-                    file_date):
-        report = initialize_report(self.seq,
-                                   optimized_seq,
-                                   index_seq_str,
-                                   marked_input_seq,
-                                   marked_optimized_seq,
-                                   self.unwanted_patterns,
-                                   original_coding_regions,
-                                   region_list,
-                                   None,
-                                   None,
-                                   min_cost,
-                                   detailed_changes)
+        # Save the results
+        report = initialize_report(
+            AppData.dna_sequence, AppData.optimized_seq, index_seq_str, marked_input_seq,
+            marked_optimized_seq, AppData.patterns, original_coding_regions, original_region_list,
+            None, None, min_cost, detailed_changes
+        )
 
         report.create_report(file_date)
-
         path = report.download_report(self.output_path)
         Logger.notice(path)
 
-    def save_optimized_sequence(self, optimized_seq, file_date):
-        filename = f'Optimized Sequence - {file_date}.txt'
-        path = save_file(optimized_seq, filename, self.output_path)
+        filename = f"Optimized Sequence - {file_date}.txt"
+        path = save_file(AppData.optimized_seq, filename, self.output_path)
         Logger.notice(path)
+        Logger.space()
+

@@ -5,15 +5,19 @@ from executions.execution_utils import is_valid_input
 from settings.pattern_settings import P
 from settings.sequence_settings import S
 from settings.codon_usage_settings import C
+from executions.controllers.app_data import AppData
 
 
 class DebugController:
-    def __init__(self):
-        self.seq = S
-        self.unwanted_patterns = P
-        self.codon_usage_table = C
+    @staticmethod
+    def execute():
+        if is_valid_input(S, P, C):
+            AppData.dna_sequence = S
+            AppData.patterns = P
+            AppData.codon_usage = C
+            AppData.download_location = Path.home() / 'Downloads'
 
-    def execute(self):
-        if is_valid_input(self.seq, self.unwanted_patterns, self.codon_usage_table):
-            CommandController(self.seq, self.unwanted_patterns, self.codon_usage_table, Path.home() / 'Downloads').run()
-        return
+            controller = CommandController()
+            controller.run()
+
+            return

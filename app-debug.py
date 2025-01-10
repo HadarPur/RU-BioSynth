@@ -24,7 +24,7 @@ if __name__ == "__main__":
         execute_unittests()
         time.sleep(0.2)
         set_output_format(OutputFormat.TERMINAL)
-        DebugController().execute()
+        DebugController.execute()
 
     except KeyboardInterrupt:
         Logger.error("\nProgram stopped by the user.")
