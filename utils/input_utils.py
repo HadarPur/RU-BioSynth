@@ -7,14 +7,15 @@ from utils.text_utils import format_text_bold_for_output
 
 def get_terminal_usage():
     return f"{format_text_bold_for_output('Usage:')}\n"\
-           "\t$ python ./BioBliss.py -s <seq_file_path> -p <pattern_file_path> -o <output_path_dir> [-g]\n\n"\
+           "\t$ python ./BioBliss.py -s <seq_file_path> -p <pattern_file_path> -o <output_path_dir> -c <codon_usage_file> [-g]\n\n"\
            "\tThis application is designed for the elimination of unwanted patterns from synthetic DNA sequences.\n\n"\
            f"{format_text_bold_for_output('Options:')}\n" \
            "\t-g --gui\tOption to run the program via user interface. If using this option, there is no need to specify any -s, -p, or -o options.\n" \
            "\t-s --s_path\tSpecifies the sequence file path (mandatory)\n"\
-           "\t-p --p_path\tSpecifies the unwanted patterns file path (mandatory)\n"\
-           "\t-o --o_path\tSpecifies the output directory path (optional - default is the downloads directory)\n\n"\
-           f"{format_text_bold_for_output('Info:')}\n"\
+           "\t-p --p_path\tSpecifies the unwanted patterns file path (mandatory)\n" \
+           "\t-c --c_path\tSpecifies the codon usage table file path (mandatory). This parameter allows the program to prioritize codon usage based on the provided table.\n\n" \
+           "\t-o --o_path\tSpecifies the output directory path (optional - default is the downloads directory)\n\n" \
+    f"{format_text_bold_for_output('Info:')}\n"\
            "\tThe elimination program via terminal is designed to run automatically without any user intervention.\n"\
            "\tPlease be advised that the program makes the following decisions:\n"\
            "\t - The minimum length of a coding region is 5 codons (excluding start and stop codons).\n"\
