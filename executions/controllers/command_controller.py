@@ -55,21 +55,20 @@ class CommandController:
         Logger.space()
 
         # Extract coding regions
-        original_region_list = DNAUtils.get_coding_and_non_coding_regions(AppData.dna_sequence)
-        original_coding_regions, coding_indexes = DNAUtils.extract_coding_regions_with_indexes(original_region_list)
-        highlighted_sequence = ''.join(SequenceUtils.highlight_sequences_to_terminal(original_region_list))
+        coding_positions, coding_indexes = DNAUtils.get_coding_and_non_coding_regions_positions(AppData.dna_sequence)
+        highlighted_sequence = ''.join(SequenceUtils.highlight_sequences_to_terminal(AppData.dna_sequence, coding_indexes))
 
         Logger.debug('Identify the coding regions within the given target sequence and mark them for emphasis:')
         Logger.info(highlighted_sequence)
         Logger.space()
 
-        # Handle elimination of coding regions if the user chooses to
-        original_coding_regions = DNAUtils.get_coding_regions_list(original_coding_regions)
-        Logger.debug(f"The total number of coding regions is {len(original_coding_regions)}, identifies as follows:")
-        Logger.info('\n'.join(f"[{key}] {value}" for key, value in original_coding_regions.items()))
+        # # Handle elimination of coding regions if the user chooses to
+        coding_regions_list = DNAUtils.get_coding_regions_list(coding_indexes, AppData.dna_sequence)
+        Logger.debug(f"The total number of coding regions is {len(coding_indexes)}, identifies as follows:")
+        Logger.info('\n'.join(f"[{key}] {value}" for key, value in coding_regions_list.items()))
 
         # Eliminate unwanted patterns
-        eliminate_unwanted_patterns(AppData.dna_sequence, AppData.patterns, original_region_list)
+        eliminate_unwanted_patterns(AppData.dna_sequence, AppData.patterns, coding_positions)
 
         Logger.notice(format_text_bold_for_output('\n' + '_' * 100 + '\n'))
         Logger.info(AppData.info)
@@ -77,7 +76,7 @@ class CommandController:
 
         # Mark non-equal codons
         index_seq_str, marked_input_seq, marked_optimized_seq = mark_non_equal_codons(
-            AppData.dna_sequence, AppData.optimized_seq, original_region_list
+            AppData.dna_sequence, AppData.optimized_seq, coding_positions
         )
 
         Logger.debug(format_text_bold_for_output('Optimized Sequence'))
@@ -94,7 +93,7 @@ class CommandController:
         # Save the results
         report = initialize_report(
             AppData.dna_sequence, AppData.optimized_seq, index_seq_str, marked_input_seq,
-            marked_optimized_seq, AppData.patterns, original_coding_regions, original_region_list,
+            marked_optimized_seq, AppData.patterns, coding_regions_list, coding_indexes,
             None, None, AppData.min_cost, AppData.detailed_changes
         )
 

@@ -17,21 +17,21 @@ class ReportController:
                  marked_input_seq,
                  marked_optimized_seq,
                  unwanted_patterns,
-                 original_coding_regions,
-                 original_region_list,
+                 coding_regions_list,
+                 coding_indexes,
                  selected_regions_to_exclude,
                  selected_region_list,
                  min_cost,
                  detailed_changes):
 
         self.input_seq = input_seq
-        self.highlight_input = SequenceUtils.highlight_sequences_to_html(original_region_list)
+        self.highlight_input = SequenceUtils.highlight_sequences_to_html(input_seq, coding_indexes)
         self.optimized_seq = optimized_seq
         self.index_seq_str = index_seq_str
         self.marked_input_seq = marked_input_seq
         self.marked_optimized_seq = marked_optimized_seq
         self.unwanted_patterns = ', '.join(unwanted_patterns)
-        self.num_of_coding_regions = len(original_coding_regions)
+        self.num_of_coding_regions = len(coding_indexes)
         self.detailed_changes = '<br>'.join(detailed_changes) if detailed_changes else None
         self.output_text = None
         self.report_filename = None
@@ -40,7 +40,7 @@ class ReportController:
             self.regions = '''<p><br>The total number of coding regions is ''' + ''.join(
                 f'{self.num_of_coding_regions}') + ''', identifies as follows:</p>
                                   <p class="scrollable-paragraph horizontal-scroll">''' + '<br>'.join(
-                f"[{key}] {value}" for key, value in original_coding_regions.items()) + '''</p>'''
+                f"[{key}] {value}" for key, value in coding_regions_list.items()) + '''</p>'''
 
             if selected_regions_to_exclude is not None and len(selected_regions_to_exclude) > 0:
                 self.chosen_regions = '''<p><br>The specific coding regions that the user wish to exclude from the elimination process are as follows:</p>

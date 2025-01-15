@@ -18,9 +18,13 @@ def read_codon_usage_map(raw_lines):
     # Parse each line to extract codon and frequency data
     for line in raw_lines:
         parts = line.split()
+        print(len(parts))
         if len(parts) == 6:  # Header or new first and second base
             codon = parts[2]
             frequency = float(parts[5])
+        elif len(parts) == 5:  # Header or new first and second base
+            codon = parts[1]
+            frequency = float(parts[4])
         elif len(parts) == 4:  # Codon data
             codon = parts[0]
             frequency = float(parts[3])

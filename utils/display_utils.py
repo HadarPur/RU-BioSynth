@@ -71,53 +71,67 @@ class SequenceUtils:
         return [S[i:i + n] for i in range(0, len(S), n)]
 
     @staticmethod
-    def mark_non_equal_characters(input_seq, optimized_seq, region_list):
+    def mark_non_equal_characters(input_seq, optimized_seq, coding_positions):
+        """
+        Marks non-equal characters between two sequences, distinguishing coding and non-coding regions.
+
+        Args:
+            input_seq (str): Original input sequence.
+            optimized_seq (str): Optimized sequence to compare against the input sequence.
+            coding_positions (list): Precomputed array where each index contains 0 for non-coding
+                                    or 1, 2, 3 for coding positions.
+
+        Returns:
+            tuple: index_seq, marked_seq1, marked_seq2
+                - index_seq: String representation of sequence indices.
+                - marked_seq1: Marked input sequence with differences highlighted.
+                - marked_seq2: Marked optimized sequence with differences highlighted.
+        """
         if len(input_seq) != len(optimized_seq):
-            raise ValueError("Target sequence and Optimized sequence must be of the same length")
+            raise ValueError("Input sequence and optimized sequence must be of the same length")
 
         marked_seq1 = []
         marked_seq2 = []
         index_seq = []
 
-        region_index = 0
-        i = 0  # Initialize i outside the loop
+        i = 0
+        while i < len(coding_positions):
+            if coding_positions[i] != 0:
+                # Coding region: process in codons (3 characters at a time)
+                start = i
+                while i < len(coding_positions) and coding_positions[i] != 0:
+                    i += 1
+                end = i
 
-        while i < len(input_seq):  # Use a while loop to allow flexible increment of i
-            if region_index < len(region_list):
-                seq = region_list[region_index]['seq']
-                is_coding_region = region_list[region_index]['is_coding_region']
-
-                j = 0  # Initialize j inside the loop
-                while j < len(seq) and i + j < len(
-                        input_seq):  # Ensure j doesn't exceed seq length or input_seq length
-                    if is_coding_region:
-                        index_seq.append(f"{i + j + 1}-{i + j + 3}")
-                        # Compare 3 characters at a time
-                        if input_seq[i + j:i + j + 3] != optimized_seq[i + j:i + j + 3]:
-                            marked_seq1.append(f"[{input_seq[i + j:i + j + 3]}]")
-                            marked_seq2.append(f"[{optimized_seq[i + j:i + j + 3]}]")
-                        else:
-                            marked_seq1.append(f"{input_seq[i + j:i + j + 3]}")
-                            marked_seq2.append(f"{optimized_seq[i + j:i + j + 3]}")
-                        j += 3
+                for j in range(start, end, 3):
+                    index_seq.append(f"{j + 1}-{j + 3}")
+                    codon_input = input_seq[j:j + 3]
+                    codon_optimized = optimized_seq[j:j + 3]
+                    if codon_input != codon_optimized:
+                        marked_seq1.append(f"[{codon_input}]")
+                        marked_seq2.append(f"[{codon_optimized}]")
                     else:
-                        index_seq.append(f"{i + j + 1}")
-                        # Compare 1 character at a time
-                        if input_seq[i + j] != optimized_seq[i + j]:
-                            marked_seq1.append(f"[{input_seq[i + j]}]")
-                            marked_seq2.append(f"[{optimized_seq[i + j]}]")
-                        else:
-                            marked_seq1.append(f"{input_seq[i + j]}")
-                            marked_seq2.append(f"{optimized_seq[i + j]}")
-                        j += 1
+                        marked_seq1.append(codon_input)
+                        marked_seq2.append(codon_optimized)
+            else:
+                # Non-coding region: process single characters
+                start = i
+                while i < len(coding_positions) and coding_positions[i] == 0:
+                    i += 1
+                end = i
 
-                # Move to the next region if applicable
-                i += j
+                for j in range(start, end):
+                    index_seq.append(f"{j + 1}")
+                    char_input = input_seq[j]
+                    char_optimized = optimized_seq[j]
+                    if char_input != char_optimized:
+                        marked_seq1.append(f"[{char_input}]")
+                        marked_seq2.append(f"[{char_optimized}]")
+                    else:
+                        marked_seq1.append(char_input)
+                        marked_seq2.append(char_optimized)
 
-                # Increment region_index
-                region_index += 1
-
-        # Create the index sequence string
+        # Create formatted strings for output
         index_seq = ''.join([f'{i:12}' for i in index_seq])
         marked_seq1 = ''.join([f'{i:12}' for i in marked_seq1])
         marked_seq2 = ''.join([f'{i:12}' for i in marked_seq2])
@@ -125,12 +139,13 @@ class SequenceUtils:
         return index_seq, marked_seq1, marked_seq2
 
     @staticmethod
-    def highlight_sequences_to_html(sequences):
+    def highlight_sequences_to_html(seq, coding_indexes):
         """
-        Converts DNA sequences to HTML markup with highlighted coding regions.
+        Converts a DNA sequence to HTML markup with highlighted coding regions.
 
         Parameters:
-            sequences (list of dict): List of dictionaries containing sequences and flags for coding regions.
+            seq (str): The full DNA sequence.
+            coding_indexes (list of tuples): List of (start, end) tuples representing coding regions.
 
         Returns:
             str: HTML markup with highlighted coding regions.
@@ -138,25 +153,39 @@ class SequenceUtils:
         html_output = ""
         color_counter = 0
 
-        for seq_info in sequences:
-            if seq_info['is_coding_region']:
-                coding_sequence = seq_info["seq"]
-                coding_sequence_with_spaces = ''.join(
-                    coding_sequence[i:i + 3] for i in range(0, len(coding_sequence), 3))
-                color_counter, color = get_color_for_coding_region(color_counter)
-                html_output += f'<span style="color: {color};">&nbsp;&nbsp;&nbsp;&nbsp;{coding_sequence_with_spaces}&nbsp;&nbsp;&nbsp;&nbsp;</span>'
-            else:
-                html_output += f"{seq_info['seq']}"
+        # Define a list of colors for coding regions
+        colors = ['#FF0000', '#00FF00', '#0000FF', '#FF00FF', '#00FFFF', '#FFA500']
+
+        last_end = 0  # Track the end of the last processed region
+
+        for start, end in coding_indexes:
+            # Add non-coding region before the current coding region
+            if last_end < start:
+                html_output += seq[last_end:start]
+
+            # Add coding region with highlighted color
+            coding_sequence = seq[start:end]
+            spaced_triplets = ' '.join(coding_sequence[i:i + 3] for i in range(0, len(coding_sequence), 3))
+            color = colors[color_counter % len(colors)]
+            color_counter += 1
+            html_output += f'<span style="color: {color};">&nbsp;&nbsp;{spaced_triplets}&nbsp;&nbsp;</span>'
+
+            last_end = end
+
+        # Add any remaining non-coding region after the last coding region
+        if last_end < len(seq):
+            html_output += seq[last_end:]
 
         return html_output
 
     @staticmethod
-    def highlight_sequences_to_terminal(sequences):
+    def highlight_sequences_to_terminal(seq, coding_indexes):
         """
-        Converts DNA sequences to terminal output with highlighted coding regions.
+        Converts DNA sequences to terminal output with highlighted coding regions based on coding index ranges.
 
         Parameters:
-            sequences (list of dict): List of dictionaries containing sequences and flags for coding regions.
+            seq (str): The full DNA sequence.
+            coding_indexes (list of tuples): List of (start, end) tuples representing coding regions.
 
         Returns:
             str: String with terminal escape codes for colorized coding regions.
@@ -164,22 +193,26 @@ class SequenceUtils:
         output = ""
         color_counter = 0
 
-        # ANSI color codes
+        # ANSI color codes for highlighting coding regions
         colors = ['\033[91m', '\033[92m', '\033[93m', '\033[94m', '\033[95m', '\033[96m']
 
-        for seq_info in sequences:
-            if seq_info['is_coding_region']:
-                coding_sequence = seq_info["seq"]
-                coding_sequence_with_spaces = ''.join(
-                    coding_sequence[i:i + 3] for i in range(0, len(coding_sequence), 3))
-                # Get the next color from the colors list, and wrap around if needed
-                color = colors[color_counter % len(colors)]
-                color_counter += 1
-                # Append the colorized sequence
-                output += f' {color}{coding_sequence_with_spaces}\033[0m '  # Reset color at the end
-            else:
-                # Non-coding regions will not be colorized
-                output += seq_info['seq']
+        # Process the sequence by iterating over coding and non-coding regions
+        last_end = 0  # Track the end of the last processed region
+        for start, end in coding_indexes:
+            # Add non-coding region before the current coding region
+            if last_end < start:
+                output += seq[last_end:start]
+
+            # Add coding region with highlighting
+            subsequence = seq[start:end]
+            color = colors[color_counter % len(colors)]
+            color_counter += 1
+            spaced_triplets = " ".join(subsequence[j:j + 3] for j in range(0, len(subsequence), 3))
+            output += f" {color}{spaced_triplets}\033[0m "
+            last_end = end
+
+        # Add any remaining non-coding region after the last coding region
+        if last_end < len(seq):
+            output += seq[last_end:]
 
         return output
-

@@ -1,39 +1,54 @@
 import unittest
 
 from Bio.Seq import Seq
-
 from utils.dna_utils import DNAUtils
 
 
 class TestDNAHighlighter(unittest.TestCase):
-
     def test_get_coding_and_non_coding_regions(self):
         seq = Seq(
             "CGCGGTTTTGTAGAAGGTTAGGGGAATAGGTTAGATTGAGTGGCTTAAGAATGTAAATGCTTCTTGTGGAACTCGACAACGCAACAACGCGACGGATCTA"
             "CGTCACAGCGTGCATAGTGAAAACGGAGTTGCTGACGACGAAAGCGACATTGGGATCTGTCAGTTGTCATTCGCGAAAAACATCCGTCCCCGAGGCGGAC"
-            "ACTGATTGAGCGTACAATGGTTTAGATGCCCTGA")
+            "ACTGATTGAGCGTACAATGGTTTAGATGCCCTGA"
+        )
+        seq_str = str(seq)
 
-        regions = DNAUtils.get_coding_and_non_coding_regions(seq)
-        expected_regions = [
-            {'seq': Seq('CGCGGTTTTGTAGAAGGTTAGGGGAATAGGTTAGATTGAGTGGCTTAAGAATGTAA'), 'is_coding_region': False},
-            {'seq': Seq(
-                'ATGCTTCTTGTGGAACTCGACAACGCAACAACGCGACGGATCTACGTCACAGCGTGCATAGTGAAAACGGAGTTGCTGACGACGAAAGCGACATTGGGATCTGTCAGTTGTCATTCGCGAAAAACATCCGTCCCCGAGGCGGACACTGATTGA'),
-             'is_coding_region': True},
-            {'seq': Seq('GCGTACAATGGTTTAGATGCCCTGA'), 'is_coding_region': False},
-        ]
+        coding_positions, coding_indexes = DNAUtils.get_coding_and_non_coding_regions_positions(seq_str)
 
-        self.assertEqual(regions, expected_regions)
+        expected_coding_indexes = [(56, 209)]
+
+        expected_coding_positions = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                                     0, 0, 0, 0, 0, 0, 0, 0, 0,
+                                     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 1, 2, 3, 1, 2, 3,
+                                     1, 2, 3, 1, 2, 3, 1, 2, 3,
+                                     1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 3, 1,
+                                     2, 3, 1, 2, 3, 1, 2, 3, 1,
+                                     2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2,
+                                     3, 1, 2, 3, 1, 2, 3, 1, 2,
+                                     3, 1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 3,
+                                     1, 2, 3, 1, 2, 3, 1, 2, 3,
+                                     1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 3, 0, 0, 0, 0,
+                                     0, 0, 0, 0, 0, 0, 0, 0, 0,
+                                     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+
+        self.assertEqual(coding_indexes, expected_coding_indexes)
+        self.assertEqual(coding_positions, expected_coding_positions)
 
     def test_get_coding_and_non_coding_regions_contained(self):
         seq = Seq("TATAATGTACATACAGTAAATGATGTACATACAGATGATGTACATACAGATGTAATACATACAGATGATGTACATACAGATGTAATAA")
-        regions = DNAUtils.get_coding_and_non_coding_regions(seq)
-        expected_regions = [{'seq': Seq('TATAATGTACATACAGTAA'), 'is_coding_region': False},
-                            {'seq': Seq('ATGATGTACATACAGATGATGTACATACAGATGTAA'), 'is_coding_region': True},
-                            {'seq': Seq('TACATACAG'), 'is_coding_region': False},
-                            {'seq': Seq('ATGATGTACATACAGATGTAA'), 'is_coding_region': True},
-                            {'seq': Seq('TAA'), 'is_coding_region': False}]
+        seq_str = str(seq)
 
-        self.assertEqual(regions, expected_regions)
+        coding_positions, coding_indexes = DNAUtils.get_coding_and_non_coding_regions_positions(seq_str)
+        expected_coding_indexes = [(19, 55), (64, 85)]
+
+        expected_coding_positions = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 1, 2, 3, 1, 2, 3,
+                                     1, 2, 3, 1, 2, 3, 1, 2, 3,
+                                     1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
+                                     2, 3, 1, 2, 3, 1, 2, 3, 1,
+                                     2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 3, 0, 0, 0]
+
+        self.assertEqual(coding_indexes, expected_coding_indexes)
+        self.assertEqual(coding_positions, expected_coding_positions)
 
     def test_extract_coding_regions_with_indexes(self):
         region_list = [

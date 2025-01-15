@@ -18,13 +18,9 @@ class TestCodonScorer(unittest.TestCase):
         self.assertIsNone(get_codon_scores("AAA", codon_scores))  # Codon not found
 
     def test_calculate_scores(self):
-        # Define a sample list of sequences with is_coding_region information
-        sequences = [
-            {'seq': "ATG", 'is_coding_region': True},
-            {'seq': "TAA", 'is_coding_region': True},
-            {'seq': "AAA", 'is_coding_region': False},
-            {'seq': "GGG", 'is_coding_region': False}
-        ]
+        sequences = "ATGTAAAAAGGG"
+
+        expected_coding_regions = [1, 2, 3, 1, 2, 3, 0, 0, 0, 0, 0, 0]
 
         # Update the expected scores to match the actual outputs (based on debugging results)
         expected_scores = [
@@ -43,8 +39,7 @@ class TestCodonScorer(unittest.TestCase):
         ]
 
         # Call the calculate_scores method
-        actual_scores = self.scorer.calculate_scores(sequences)
+        actual_scores = self.scorer.calculate_scores(sequences, expected_coding_regions)
 
         # Assert that the actual scores match the expected scores
         self.assertEqual(actual_scores, expected_scores)
-

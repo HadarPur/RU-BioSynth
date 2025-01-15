@@ -59,81 +59,70 @@ class DNAUtils:
         return info
 
     @staticmethod
-    def get_coding_regions_list(coding_regions):
-        original_coding_regions = {}
-        for i, region in enumerate(coding_regions):
-            original_coding_regions[f'{i + 1}'] = region
-        return original_coding_regions
-
-    @staticmethod
-    def get_coding_and_non_coding_regions(seq):
+    def get_coding_regions_list(coding_indexes, seq):
         """
-        Identifies and returns coding regions within the DNA sequence.
+        Constructs a dictionary of coding regions from coding index ranges.
+
+        Parameters:
+            coding_indexes (list of tuples): List of (start, end) tuples representing coding regions.
+            seq (str): The full DNA sequence.
 
         Returns:
-            list of dict: List of dictionaries containing "seq" (Seq object) and "is_coding_region" (bool) keys.
+            dict: A dictionary where keys are coding region numbers (as strings) and values are the corresponding sequences.
         """
-        start_codon = Seq("ATG")  # Define the start codon
-        stop_codons = [Seq("TAA"), Seq("TAG"), Seq("TGA")]  # Define the stop codons
-        coding_regions = []  # Create a list to store coding regions
+        coding_regions_list = {}
 
-        i = 0
-        non_coding_region = ""  # Initialize a variable to store non-coding sequences
+        for region_counter, (start, end) in enumerate(coding_indexes, start=1):
+            # Extract the sequence for the current coding region
+            coding_regions_list[str(region_counter)] = seq[start:end]
 
-        # Traverse the target sequence to identify coding regions
-        while i < len(seq):
-            found_stop_codons = any(seq[j:j + 3] in stop_codons for j in range(i + 3, len(seq), 3))
-            if seq[i:i + 3] == start_codon and found_stop_codons:  # Check for the start codon
-                if non_coding_region:  # Only append non-coding regions if they exist.
-                    coding_regions.append({
-                        "seq": non_coding_region,
-                        "is_coding_region": False
-                    })
-                    non_coding_region = ""  # Reset the non-coding region.
-                start_idx = i
-                for j in range(i + 3, len(seq), 3):
-                    if seq[j:j + 3] in stop_codons:  # Check for stop codons
-                        if len(seq[start_idx:j + 3]) < min_coding_region_length:
-                            coding_regions.append({
-                                "seq": seq[start_idx:j + 3],
-                                "is_coding_region": False
-                            })
-                        else:
-                            coding_regions.append({
-                                "seq": seq[start_idx:j + 3],
-                                "is_coding_region": True
-                            })
-                        i = j + 3
+        return coding_regions_list
+
+    @staticmethod
+    def get_coding_and_non_coding_regions_positions(seq):
+        """
+        Identifies coding regions in the DNA sequence and precomputes an array of codon positions.
+
+        Args:
+            seq (str): The DNA sequence to analyze.
+
+        Returns:
+            list: An array where each index represents the codon position (1, 2, 3) for coding regions,
+                  and 0 for non-coding regions.
+        """
+        start_codon = "ATG"
+        stop_codons = {"TAA", "TAG", "TGA"}
+
+        N = len(seq)
+        codon_positions = [0] * N  # Initialize all positions as non-coding (0)
+        coding_region_indexes = []
+
+        i = 0  # Pointer to traverse the sequence
+
+        while i < len(seq) - 2:
+            if seq[i:i + 3] == start_codon:
+                # Search for the nearest stop codon in the same reading frame
+                for j in range(i + 3, len(seq) - 2, 3):
+                    if seq[j:j + 3] in stop_codons:
+                        start_idx = i
+                        end_idx = j + 3  # Include the stop codon
+
+                        # Check if this is a valid coding region
+                        if end_idx - start_idx >= min_coding_region_length:
+                            # Assign codon positions for this coding region
+                            for k in range(start_idx, end_idx):
+                                codon_positions[k] = ((k - start_idx) % 3) + 1
+
+                            coding_region_indexes.append((start_idx, end_idx))
+                        i = end_idx  # Move the pointer past the coding region
                         break
                 else:
-                    i += 3
+                    # No valid stop codon; treat the rest as non-coding
+                    break
             else:
-                non_coding_region += seq[i]
                 i += 1
 
-        # Append any remaining non-coding region after the loop.
-        if non_coding_region:
-            coding_regions.append({
-                "seq": non_coding_region,
-                "is_coding_region": False
-            })
-
-        # Merge consecutive non-coding regions
-        merged_regions = []
-        current_region = {'seq': '', 'is_coding_region': False}
-        for region in coding_regions[0:]:
-            if region["is_coding_region"]:
-                if len(current_region["seq"]) > 0:
-                    merged_regions.append(current_region)
-                merged_regions.append(region)
-                current_region = {'seq': '', 'is_coding_region': False}
-            else:
-                current_region["is_coding_region"] = False
-                current_region["seq"] += region["seq"]
-
-        merged_regions.append(current_region)
-
-        return merged_regions  # Return a list of dictionaries containing coding and non-coding regions
+        return codon_positions, coding_region_indexes
 
     @staticmethod
     def extract_coding_regions_with_indexes(region_list):

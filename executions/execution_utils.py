@@ -74,6 +74,10 @@ def is_valid_input(sequence, unwanted_patterns, codon_usage_table):
         Logger.error("Unfortunately, the codon usage file is empty. Please insert fully one and try again.")
         return False
 
+    if len(codon_usage_table) != 64:
+        Logger.error("Unfortunately, the codon usage file is not contains all the codons. Please insert fully one and try again.")
+        return False
+
     if not is_valid_codon_usage(codon_usage_table):
         Logger.error(f"The codon_usage_table:\n{codon_usage_table}\n\nare not valid, please check and try again later.")
         return False
@@ -81,10 +85,10 @@ def is_valid_input(sequence, unwanted_patterns, codon_usage_table):
     return True
 
 
-def eliminate_unwanted_patterns(seq, unwanted_patterns, selected_region_list):
+def eliminate_unwanted_patterns(seq, unwanted_patterns, coding_positions):
     # Calculate scores for the regions using the CodonScorer
     scorer = CodonScorerFactory()
-    cost_table = scorer.calculate_scores(selected_region_list)
+    cost_table = scorer.calculate_scores(seq, coding_positions)
 
     # Start elimination
     AppData.info, AppData.detailed_changes, AppData.optimized_seq, AppData.min_cost = EliminationController.eliminate(seq, unwanted_patterns, cost_table)
@@ -92,10 +96,11 @@ def eliminate_unwanted_patterns(seq, unwanted_patterns, selected_region_list):
     return AppData.info, AppData.detailed_changes, AppData.optimized_seq, AppData.min_cost
 
 
-def mark_non_equal_codons(input_seq, optimized_seq, region_list):
+def mark_non_equal_codons(input_seq, optimized_seq, coding_positions):
     # Mark non-equal codons between the original and optimized sequences
-    index_seq_str, marked_input_seq, marked_optimized_seq = SequenceUtils.mark_non_equal_characters(input_seq, optimized_seq,
-                                                                                                 region_list)
+    index_seq_str, marked_input_seq, marked_optimized_seq = SequenceUtils.mark_non_equal_characters(input_seq,
+                                                                                                    optimized_seq,
+                                                                                                    coding_positions)
     return index_seq_str, marked_input_seq, marked_optimized_seq
 
 
@@ -105,8 +110,8 @@ def initialize_report(seq,
                       marked_input_seq,
                       marked_optimized_seq,
                       unwanted_patterns,
-                      original_coding_regions,
-                      original_region_list,
+                      coding_regions_list,
+                      coding_indexes,
                       selected_regions_to_exclude,
                       selected_region_list,
                       min_cost,
@@ -117,8 +122,8 @@ def initialize_report(seq,
                               marked_input_seq,
                               marked_optimized_seq,
                               unwanted_patterns,
-                              original_coding_regions,
-                              original_region_list,
+                              coding_regions_list,
+                              coding_indexes,
                               selected_regions_to_exclude,
                               selected_region_list,
                               min_cost,

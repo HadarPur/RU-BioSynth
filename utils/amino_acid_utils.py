@@ -362,3 +362,81 @@ class AminoAcidConfigScheme:
             Leucine,
             Stop
         ]
+
+
+class AminoAcidConfig:
+    codon_to_amino_acid = {
+        'TTT': 'F',
+        'TTC': 'F',  # Phenylalanine (F)
+        'TTA': 'L',
+        'TTG': 'L',  # Leucine (L)
+        'CTT': 'L',
+        'CTC': 'L',
+        'CTA': 'L',
+        'CTG': 'L',  # Leucine (L)
+        'ATT': 'I',
+        'ATC': 'I',
+        'ATA': 'I',  # Isoleucine (I)
+        'ATG': 'M',  # Methionine (M) (Start codon)
+        'GTT': 'V',
+        'GTC': 'V',
+        'GTA': 'V',
+        'GTG': 'V',  # Valine (V)
+        'TCT': 'S',
+        'TCC': 'S',
+        'TCA': 'S',
+        'TCG': 'S',  # Serine (S)
+        'CCT': 'P',
+        'CCC': 'P',
+        'CCA': 'P',
+        'CCG': 'P',  # Proline (P)
+        'ACT': 'T',
+        'ACC': 'T',
+        'ACA': 'T',
+        'ACG': 'T',  # Threonine (T)
+        'GCT': 'A',
+        'GCC': 'A',
+        'GCA': 'A',
+        'GCG': 'A',  # Alanine (A)
+        'TAT': 'Y',
+        'TAC': 'Y',  # Tyrosine (Y)
+        'CAT': 'H',
+        'CAC': 'H',  # Histidine (H)
+        'CAA': 'Q',
+        'CAG': 'Q',  # Glutamine (Q)
+        'AAT': 'N',
+        'AAC': 'N',  # Asparagine (N)
+        'AAA': 'K',
+        'AAG': 'K',  # Lysine (K)
+        'GAT': 'D',
+        'GAC': 'D',  # Aspartic acid (D)
+        'GAA': 'E',
+        'GAG': 'E',  # Glutamic acid (E)
+        'TGT': 'C',
+        'TGC': 'C',  # Cysteine (C)
+        'TGG': 'W',  # Tryptophan (W)
+        'CGT': 'R',
+        'CGC': 'R',
+        'CGA': 'R',
+        'CGG': 'R',  # Arginine (R)
+        'AGT': 'S',
+        'AGC': 'S',  # Serine (S)
+        'AGA': 'R',
+        'AGG': 'R',  # Arginine (R)
+        'GGT': 'G',
+        'GGC': 'G',
+        'GGA': 'G',
+        'GGG': 'G'  # Glycine (G)
+    }
+
+    stop_codons = [
+        'TGA',
+        'TAA',
+        'TAG'
+    ]
+
+    def encodes_same_amino_acid(self, proposed_codon, current_codon):
+        return self.codon_to_amino_acid[proposed_codon] == self.codon_to_amino_acid[current_codon]
+
+    def is_stop_codon(self, proposed_codon):
+        return proposed_codon in self.stop_codons

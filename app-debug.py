@@ -22,7 +22,7 @@ if __name__ == "__main__":
 
         # DEBUG
         execute_unittests()
-        time.sleep(0.2)
+        time.sleep(2.2)
         set_output_format(OutputFormat.TERMINAL)
         DebugController.execute()
 

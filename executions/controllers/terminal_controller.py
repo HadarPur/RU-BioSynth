@@ -18,6 +18,7 @@ class TerminalController:
         unwanted_patterns = PatternReader(p_path).read_patterns()
         codon_usage_table = CodonUsageReader(c_path).read_codon_usage()
 
+        print(codon_usage_table)
         if is_valid_input(seq, unwanted_patterns, codon_usage_table):
             AppData.dna_sequence = seq
             AppData.patterns = unwanted_patterns

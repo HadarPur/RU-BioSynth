@@ -37,41 +37,48 @@ class CodonScorerFactory:
         self.non_coding_region_scheme = AminoAcidConfigScheme(w_non_coding_region, o_non_coding_region,
                                                               x_non_coding_region).get_cost_table_non_coding_region()
 
-    def calculate_scores(self, sequences):
+    def calculate_scores(self, seq, codon_positions):
         """
-        Calculates scores for each codon in a list of sequences using the provided scoring schemes based on 'is_coding_region'.
+        Calculates scores for each codon in coding regions and each base in non-coding regions.
 
         Parameters:
-            sequences (list of dict): List of dictionaries, each containing a 'seq' key and an 'is_coding_region' key.
+            seq (str): The DNA sequence to analyze.
+            codon_positions (list): Precomputed array where each index contains 0 for non-coding or 1, 2, 3 for coding positions.
 
         Returns:
-            list: List of scores for each codon in the sequences.
+            list: List of scores for each codon or base in the sequence.
         """
-        scores_array = []  # To store scores for each codon
 
-        for seq_info in sequences:
-            sequence = seq_info['seq']
-            is_coding_region = seq_info['is_coding_region']
+        scores_array = []
+        i = 0
 
-            # Select the appropriate scoring scheme based on 'is_coding_region'
-            if is_coding_region:
-                # Iterate through the sequence in steps of 3 (codons)
-                for i in range(0, len(sequence), 3):
-                    codon = sequence[i:i + 3]
-                    score = get_codon_scores(codon, self.coding_region_scheme)
-                    if score:
-                        scores_array = scores_array + score
-                    else:
-                        Logger.warning(f"Codon {codon} not found in the scoring scheme.")
+        while i < len(seq):
+            if codon_positions[i] != 0:
+                # Start of a coding region (process codons)
+                start = i
+                while i < len(seq) and codon_positions[i] != 0:
+                    i += 1
+                end = i
+
+                # Process codons within this coding region
+                for j in range(start, end, 3):
+                    codon = seq[j:j + 3]
+                    if len(codon) == 3:  # Ensure codon is complete
+                        score = get_codon_scores(codon, self.coding_region_scheme)
+                        if score:
+                            scores_array += score
+                        else:
+                            Logger.warning(
+                                f"Codon {codon} at positions {j}-{j + 2} not found in the coding scoring scheme.")
             else:
-                # Iterate through the sequence in steps of 1
-                for i in range(0, len(sequence)):
-                    codon = sequence[i]
-                    score = get_codon_scores(codon, self.non_coding_region_scheme)
-                    if score:
-                        scores_array = scores_array + score
-                    else:
-                        Logger.warning(f"Codon {codon} not found in the scoring scheme.")
+                # Non-coding region (process bases)
+                base = seq[i]
+                score = get_codon_scores(base, self.non_coding_region_scheme)
+                if score:
+                    scores_array += score
+                else:
+                    Logger.warning(f"Base {base} at position {i} not found in the non-coding scoring scheme.")
+                i += 1
 
         return scores_array
 
