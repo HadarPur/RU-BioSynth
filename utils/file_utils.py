@@ -18,7 +18,6 @@ def read_codon_usage_map(raw_lines):
     # Parse each line to extract codon and frequency data
     for line in raw_lines:
         parts = line.split()
-        print(len(parts))
         if len(parts) == 6:  # Header or new first and second base
             codon = parts[2]
             frequency = float(parts[5])

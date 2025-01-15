@@ -3,8 +3,7 @@ from report.pdf_report_utils import ReportController
 from utils.cost_utils import CodonScorerFactory
 from utils.display_utils import SequenceUtils
 from utils.output_utils import Logger
-from utils.file_utils import read_codon_usage_map
-from executions.controllers.app_data import AppData
+from data.app_data import AppData
 
 
 def is_valid_dna(sequence):
@@ -75,7 +74,8 @@ def is_valid_input(sequence, unwanted_patterns, codon_usage_table):
         return False
 
     if len(codon_usage_table) != 64:
-        Logger.error("Unfortunately, the codon usage file is not contains all the codons. Please insert fully one and try again.")
+        Logger.error(
+            "Unfortunately, the codon usage file is not contains all the codons. Please insert fully one and try again.")
         return False
 
     if not is_valid_codon_usage(codon_usage_table):
@@ -91,9 +91,10 @@ def eliminate_unwanted_patterns(seq, unwanted_patterns, coding_positions):
     cost_table = scorer.calculate_scores(seq, coding_positions)
 
     # Start elimination
-    AppData.info, AppData.detailed_changes, AppData.optimized_seq, AppData.min_cost = EliminationController.eliminate(seq, unwanted_patterns, cost_table)
+    AppData.info, AppData.detailed_changes, AppData.optimized_sequence, AppData.min_cost = EliminationController.eliminate(
+        seq, unwanted_patterns, cost_table)
 
-    return AppData.info, AppData.detailed_changes, AppData.optimized_seq, AppData.min_cost
+    return AppData.info, AppData.detailed_changes, AppData.optimized_sequence, AppData.min_cost
 
 
 def mark_non_equal_codons(input_seq, optimized_seq, coding_positions):
@@ -104,28 +105,6 @@ def mark_non_equal_codons(input_seq, optimized_seq, coding_positions):
     return index_seq_str, marked_input_seq, marked_optimized_seq
 
 
-def initialize_report(seq,
-                      optimized_seq,
-                      index_seq_str,
-                      marked_input_seq,
-                      marked_optimized_seq,
-                      unwanted_patterns,
-                      coding_regions_list,
-                      coding_indexes,
-                      selected_regions_to_exclude,
-                      selected_region_list,
-                      min_cost,
-                      detailed_changes):
-    report = ReportController(seq,
-                              optimized_seq,
-                              index_seq_str,
-                              marked_input_seq,
-                              marked_optimized_seq,
-                              unwanted_patterns,
-                              coding_regions_list,
-                              coding_indexes,
-                              selected_regions_to_exclude,
-                              selected_region_list,
-                              min_cost,
-                              detailed_changes)
+def initialize_report():
+    report = ReportController()
     return report
