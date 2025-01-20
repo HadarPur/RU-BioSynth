@@ -6,44 +6,46 @@ from settings.costs_settings import elimination_process_description, coding_regi
 from utils.cost_utils import EliminationScorerConfig
 from utils.date_utils import format_current_date
 from utils.text_utils import format_text_bold_for_output
+from data.app_data import CostData
 
 
 class EliminationController:
     @staticmethod
-    def eliminate(seq, unwanted_patterns, cost_table):
+    def eliminate(target_sequence, unwanted_patterns, coding_positions):
         # Initialize information string for the elimination process
         info = f"{format_text_bold_for_output('Starting Elimination Process...')}\n"
-        info += f"\n{format_text_bold_for_output('Target Sequence:')}\n{seq}\n"
+        info += f"\n{format_text_bold_for_output('Target Sequence:')}\n{target_sequence}\n"
         info += f"\n{format_text_bold_for_output('Unwanted Patterns:')}\n{', '.join(sorted(unwanted_patterns))}\n"
+
         # Additional descriptions (placeholders for actual descriptions)
         info += f"\n{format_text_bold_for_output('Elimination Process:')}\n{elimination_process_description}\n"
         info += f"\n{format_text_bold_for_output('Coding regions:')}\n{coding_region_cost_description}\n"
         info += f"\n{format_text_bold_for_output('Non-Coding regions:')}\n{non_coding_region_cost_description}\n"
 
-        sequence_length = len(seq)
+        sequence_length = len(target_sequence)
         backtrack = {}
 
         # Initialize utility and FSM classes
         elimination_utils = EliminationScorerConfig()
-        cost_function = elimination_utils.cost_function(cost_table)
+        cost_function = elimination_utils.cost_function(target_sequence, coding_positions, CostData.codon_usage, CostData.alpha, CostData.beta, CostData.w)
         fsm = FSM(unwanted_patterns, elimination_utils.alphabet)
 
         # Dynamic programming table A, initialized with infinity
         A = defaultdict(lambda: float('inf'))
-        A[(0, '')] = 0
+        A[(0, fsm.initial_state)] = 0
 
         changes_backtrack = {}
         # Fill the dynamic programming table
         for i in range(1, sequence_length + 1):
             for v in fsm.V:
-                for s in fsm.sigma:
-                    u = fsm.f.get((v, s))
+                for sigma in fsm.sigma:
+                    u = fsm.f.get((v, sigma))
                     if u is not None:
-                        cost = A[(i - 1, v)] + cost_function(i, s)
+                        cost = A[(i - 1, v)] + cost_function(i-1, v, sigma)
                         if cost < A[(i, u)]:
                             A[(i, u)] = cost
-                            backtrack[(i, u)] = (v, s)
-                            changes_backtrack[(i, u)] = cost_function(i, s)
+                            backtrack[(i, u)] = (v, sigma)
+                            changes_backtrack[(i, u)] = cost_function(i, v, sigma)
 
         # Find the minimum cost and final state
         min_cost = float('inf')
@@ -65,9 +67,9 @@ class EliminationController:
             prev_state, char = backtrack[(i, current_state)]
             cost = changes_backtrack[(i, current_state)]
 
-            if seq[i - 1] != char:
+            if target_sequence[i - 1] != char:
                 change = f"Position {f'{i}:':<10}" \
-                         f"\t{f'{seq[i - 1]}':<5}->{f'{char}':>5}" \
+                         f"\t{f'{target_sequence[i - 1]}':<5}->{f'{char}':>5}" \
                          f"\t\tCost: {f'{cost:.2f}':<7}"
                 changes_info.append(change)
 

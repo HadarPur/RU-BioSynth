@@ -50,7 +50,7 @@ def kmp_based_fsm(unwanted_patterns, sigma):
                 g[v + s] = f[(g[v], s)]
                 state_queue.append(v + s)
 
-    return states, f, g
+    return epsilon, states, f, g
 
 
 class FSM:
@@ -80,4 +80,4 @@ class FSM:
         self.sigma = alphabet
         self.unwanted_patterns = unwanted_patterns
 
-        self.V, self.f, self.g = kmp_based_fsm(self.unwanted_patterns, self.sigma)
+        self.initial_state, self.V, self.f, self.g = kmp_based_fsm(self.unwanted_patterns, self.sigma)

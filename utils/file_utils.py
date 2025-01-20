@@ -18,22 +18,14 @@ def read_codon_usage_map(raw_lines):
     # Parse each line to extract codon and frequency data
     for line in raw_lines:
         parts = line.split()
-        if len(parts) == 6:  # Header or new first and second base
-            codon = parts[2]
-            frequency = float(parts[5])
-        elif len(parts) == 5:  # Header or new first and second base
-            codon = parts[1]
-            frequency = float(parts[4])
-        elif len(parts) == 4:  # Codon data
-            codon = parts[0]
-            frequency = float(parts[3])
-        else:
-            continue
+        if len(parts) in {4, 5, 6}:  # Process lines with valid lengths
+            codon = parts[-4]  # Codon is always the 4th element from the end
+            frequency = float(parts[-1])  # Frequency is always the last element
 
-        # codon_data = {
-        #     "frequency": frequency,
-        #     "epsilon": np.log(frequency) if frequency > 0 else float('-inf')  # Handle log(0) case
-        # }
+        codon_data = {
+            "frequency": frequency,
+            "epsilon": np.log(frequency) if frequency > 0 else float('-inf')  # Handle log(0) case
+        }
         codon_usage_data[codon] = frequency
 
     return codon_usage_data

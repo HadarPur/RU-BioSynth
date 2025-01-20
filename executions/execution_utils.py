@@ -1,9 +1,8 @@
 from algorithm.eliminate_sequence import EliminationController
 from report.pdf_report_utils import ReportController
-from utils.cost_utils import CodonScorerFactory
 from utils.display_utils import SequenceUtils
 from utils.output_utils import Logger
-from data.app_data import AppData
+from data.app_data import EliminationData, OutputData
 
 
 def is_valid_dna(sequence):
@@ -86,15 +85,11 @@ def is_valid_input(sequence, unwanted_patterns, codon_usage_table):
 
 
 def eliminate_unwanted_patterns(seq, unwanted_patterns, coding_positions):
-    # Calculate scores for the regions using the CodonScorer
-    scorer = CodonScorerFactory()
-    cost_table = scorer.calculate_scores(seq, coding_positions)
-
     # Start elimination
-    AppData.info, AppData.detailed_changes, AppData.optimized_sequence, AppData.min_cost = EliminationController.eliminate(
-        seq, unwanted_patterns, cost_table)
+    EliminationData.info, EliminationData.detailed_changes, OutputData.optimized_sequence, EliminationData.min_cost = EliminationController.eliminate(
+        seq, unwanted_patterns, coding_positions)
 
-    return AppData.info, AppData.detailed_changes, AppData.optimized_sequence, AppData.min_cost
+    return EliminationData.info, EliminationData.detailed_changes, OutputData.optimized_sequence, EliminationData.min_cost
 
 
 def mark_non_equal_codons(input_seq, optimized_seq, coding_positions):
