@@ -45,7 +45,7 @@ class EliminationController:
                         if cost < A[(i, u)]:
                             A[(i, u)] = cost
                             backtrack[(i, u)] = (v, sigma)
-                            changes_backtrack[(i, u)] = cost_function(i, v, sigma)
+                            changes_backtrack[(i, u)] = cost_function(i-1, v, sigma)
 
         # Find the minimum cost and final state
         min_cost = float('inf')
@@ -85,6 +85,6 @@ class EliminationController:
         info += "🚀 Elimination Process Completed!\n"
         info += f"📆 {format_current_date()}\n"
         info += f"\n{format_text_bold_for_output('Optimized Sequence:')}\n{''.join(sequence)}\n"
-        info += f"\n{format_text_bold_for_output('Total Cost:')}\n{min_cost:.10g}"
+        info += f"\n{format_text_bold_for_output('Total Cost:')}\n{min_cost}"
 
         return info, changes_info, ''.join(sequence), min_cost

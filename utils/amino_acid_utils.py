@@ -446,7 +446,7 @@ class AminoAcidConfig:
         """
         # Assuming v contains a string representation of the bases (e.g., "ACGT")
         if len(v) < 2:
-            raise ValueError(f"FSM state must contain at least two bases. v = {v}")
+            return f'NN{v}'[-2:]  # Default fallback
         return v[-2:]
 
     @staticmethod
@@ -477,8 +477,7 @@ class AminoAcidConfig:
         Returns:
             bool: True if both codons encode the same amino acid, False otherwise.
         """
-        print(proposed_codon, current_codon)
-        return codon_to_amino_acid[proposed_codon] == codon_to_amino_acid[current_codon]
+        return codon_to_amino_acid.get(proposed_codon) == codon_to_amino_acid.get(current_codon)
 
     @staticmethod
     def is_stop_codon(proposed_codon):
@@ -491,7 +490,7 @@ class AminoAcidConfig:
         Returns:
             bool: True if the codon is a stop codon, False otherwise.
         """
-        return codon_to_amino_acid[proposed_codon] == '*'
+        return codon_to_amino_acid.get(proposed_codon) == '*'
 
     @staticmethod
     def is_transition(nucleotide1, nucleotide2):
