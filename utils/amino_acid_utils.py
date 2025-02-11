@@ -446,7 +446,8 @@ class AminoAcidConfig:
         """
         # Assuming v contains a string representation of the bases (e.g., "ACGT")
         if len(v) < 2:
-            return f'NN{v}'[-2:]  # Default fallback
+            raise ValueError("Length of v must contains at least 2 bases.")
+
         return v[-2:]
 
     @staticmethod
@@ -504,11 +505,5 @@ class AminoAcidConfig:
         Returns:
             bool: True if the substitution is a transition mutation, False otherwise.
         """
-        purines = {'A', 'G'}
-        pyrimidines = {'C', 'T'}
 
-        if nucleotide1 == nucleotide2:
-            return False  # No substitution
-
-        return (nucleotide1 in purines and nucleotide2 in purines) or \
-            (nucleotide1 in pyrimidines and nucleotide2 in pyrimidines)
+        return (nucleotide1, nucleotide2) in [("A", "G"), ("G", "A"), ("C", "T"), ("T", "C")]

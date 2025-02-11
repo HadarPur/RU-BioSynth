@@ -17,7 +17,7 @@ def kmp_based_fsm(unwanted_patterns, sigma):
 
     f = {}
     g = {}
-    states = set()
+    states = list()
     epsilon = ''
 
     # Prefix elongation and invalid transitions
@@ -28,7 +28,7 @@ def kmp_based_fsm(unwanted_patterns, sigma):
 
     # Computing state space V and the functions f and g
     state_queue = deque()
-    states.add(epsilon)
+    states.append(epsilon)
     for s in sigma:
         if (epsilon, s) not in f:
             f[(epsilon, s)] = epsilon
@@ -39,7 +39,7 @@ def kmp_based_fsm(unwanted_patterns, sigma):
     # Efficient BFS State Processing in FSM Pattern Matching
     while state_queue:
         v = state_queue.popleft()
-        states.add(v)
+        states.append(v)
 
         for s in sigma:
             if f[g[v], s] is None:
@@ -81,3 +81,5 @@ class FSM:
         self.unwanted_patterns = unwanted_patterns
 
         self.initial_state, self.V, self.f, self.g = kmp_based_fsm(self.unwanted_patterns, self.sigma)
+
+

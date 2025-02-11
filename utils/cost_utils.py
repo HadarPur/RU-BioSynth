@@ -50,25 +50,30 @@ def calculate_cost(target_sequence, coding_positions, codon_usage, i, v, sigma, 
     - Stop codon formation is heavily penalized as biologically deleterious.
     """
 
+    # Validate codon usage
+    if any(prob <= 0 for prob in codon_usage.values()):
+        raise ValueError("Invalid codon usage: probabilities must be positive and normalized.")
+
     # Determine coding position of the current index.
     codon_pos = coding_positions[i]  # Non-coding: 0; Coding: ((i - \text{coding\_start}) \mod 3) + 1.
 
     # Non-coding region logic
     if codon_pos == 0:
+        changes = target_sequence[i], sigma
         if target_sequence[i] == sigma:
             # No substitution
-            return 0.0
+            return changes, 0.0
         if AminoAcidConfig.is_transition(target_sequence[i], sigma):
             # Transition substitution
-            return alpha
+            return changes, alpha
         else:
             # Transversion substitution
-            return beta
+            return changes, beta
 
     # Coding region positions 1 and 2
     elif codon_pos in {1, 2}:
         # Cost is always 0 for positions 1 and 2
-        return 0.0
+        return ("", ""), 0.0
 
     # Coding region, position 3
     elif codon_pos == 3:  # At 3rd position of codon
@@ -77,19 +82,20 @@ def calculate_cost(target_sequence, coding_positions, codon_usage, i, v, sigma, 
         last2_bases = AminoAcidConfig.get_last2(v)
         proposed_codon = f'{last2_bases}{sigma}'
 
+        changes = current_codon, proposed_codon
         # Evaluate substitution costs
         if proposed_codon == current_codon:
             # No substitution
-            return 0.0
+            return changes, 0.0
         elif AminoAcidConfig.encodes_same_amino_acid(proposed_codon, current_codon):
             # Synonymous substitution with a logarithmic penalty based on codon usage
-            return -np.log(codon_usage[proposed_codon])
+            return changes, -np.log(codon_usage[proposed_codon])
         elif AminoAcidConfig.is_stop_codon(proposed_codon):
             # Penalize stop codon formation
-            return float('inf')
+            return changes, float('inf')
         else:
             # Non-synonymous substitution
-            return w
+            return changes, w
 
     # Fallback (should not be reached under correct conditions)
     raise ValueError(f"Unexpected codon position value: {codon_pos}")
