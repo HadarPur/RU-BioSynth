@@ -3,7 +3,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 
-def visualize_fsm(states, transitions, initial_state, output_file='fsm_diagram', size="20,20", nodesep=0.3, ranksep=2.0):
+def visualize_fsm(states, transitions, initial_state, output_file='fsm_diagram', size="25,20", nodesep=0.3, ranksep=2.0):
     """
     Visualizes the FSM using Graphviz.
 

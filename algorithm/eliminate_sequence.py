@@ -33,9 +33,6 @@ class EliminationController:
         visualize_fsm(fsm.V, fsm.f, fsm.initial_state)
         save_fsm_table_as_image(fsm.V, fsm.f, fsm.initial_state)
 
-        print("States:", fsm.V)
-        print("f:", fsm.f)
-
         # print("\nTransition Function (f):")
         # for key, value in fsm.f.items():
         #     print(f"f{key} -> {value}")
