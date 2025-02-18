@@ -6,7 +6,7 @@ from settings.costs_settings import elimination_process_description, coding_regi
 from utils.cost_utils import EliminationScorerConfig
 from utils.date_utils import format_current_date
 from utils.text_utils import format_text_bold_for_output
-from utils.fsm_utils import visualize_fsm, fsm_to_table
+from utils.fsm_utils import visualize_fsm, save_fsm_table_as_image
 from data.app_data import CostData
 
 
@@ -31,8 +31,11 @@ class EliminationController:
         fsm = FSM(unwanted_patterns, elimination_utils.alphabet)
 
         visualize_fsm(fsm.V, fsm.f, fsm.initial_state)
+        save_fsm_table_as_image(fsm.V, fsm.f, fsm.initial_state)
 
-        # print("States:", fsm.V)
+        print("States:", fsm.V)
+        print("f:", fsm.f)
+
         # print("\nTransition Function (f):")
         # for key, value in fsm.f.items():
         #     print(f"f{key} -> {value}")

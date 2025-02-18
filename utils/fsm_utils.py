@@ -1,5 +1,6 @@
 from graphviz import Digraph
 import pandas as pd
+import matplotlib.pyplot as plt
 
 
 def visualize_fsm(states, transitions, initial_state, output_file='fsm_diagram', size="20,20", nodesep=0.3, ranksep=2.0):
@@ -37,33 +38,28 @@ def visualize_fsm(states, transitions, initial_state, output_file='fsm_diagram',
     print(f"FSM diagram saved as {output_file}.png")
 
 
-def fsm_to_table(states, transitions, initial_state):
-    """
-    Converts an FSM representation into a table format.
 
-    Args:
-        states (list): List of states in the FSM.
-        transitions (dict): Transition function (state, character) -> new state.
-        initial_state (str): The initial state of the FSM.
+def save_fsm_table_as_image(states, transitions, initial_state, output_file="fsm_table_v1.png"):
+    headers = ["State", "Initial"] + sorted(set(char for (_, char) in transitions.keys()))
+    table = []
 
-    Returns:
-        pd.DataFrame: FSM transition table.
-    """
-    table_data = []
-
-    for (state, char), next_state in transitions.items():
-        if next_state is not None:
-            table_data.append([state, char, next_state])
-
-    # Create DataFrame
-    df = pd.DataFrame(table_data, columns=["Current State", "Input Symbol", "Next State"])
-
-    # Ensure all states are included in the table, even if they have no transitions
     for state in states:
-        if state not in df["Current State"].values:
-            df = pd.concat([df, pd.DataFrame([[state, "-", "-"]], columns=df.columns)], ignore_index=True)
+        row = [state, "Yes" if state == initial_state else "No"]
+        for char in headers[2:]:
+            next_state = transitions.get((state, char), "-")
+            row.append(next_state if next_state is not None else "-")
+        table.append(row)
 
-    # Mark the initial state
-    df["Current State"] = df["Current State"].apply(lambda x: f"-> {x}" if x == initial_state else x)
+    # Convert to DataFrame
+    df = pd.DataFrame(table, columns=headers)
 
-    return df
+    # Plot table using Matplotlib
+    fig, ax = plt.subplots(figsize=(10, len(states) * 0.5))
+    ax.axis("tight")
+    ax.axis("off")
+    ax.table(cellText=df.values, colLabels=df.columns, cellLoc="center", loc="center")
+
+    # Save image
+    plt.savefig(output_file, dpi=300, bbox_inches="tight")
+    plt.show()
+    print(f"FSM table saved as {output_file}")
