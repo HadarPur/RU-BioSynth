@@ -59,7 +59,7 @@ def pairwise_kmp_fsm(unwanted_patterns, sigma):
 
     Args:
         unwanted_patterns (set): The set of unwanted patterns.
-        sigma (list): The alphabet of allowed characters.
+        sigma (set): The alphabet of allowed characters.
 
     Returns:
         pair_states (set): The set of pairwise bases in the FSM.
@@ -125,5 +125,4 @@ class FSM:
         self.sigma = alphabet
         self.unwanted_patterns = unwanted_patterns
 
-        # self.initial_states, self.V, self.f, self.g = kmp_based_fsm(self.unwanted_patterns, self.sigma)
         self.pair_states, self.V, self.f = pairwise_kmp_fsm(self.unwanted_patterns, self.sigma)

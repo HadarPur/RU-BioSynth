@@ -35,7 +35,8 @@ class EliminationController:
 
         # Dynamic programming table A, initialized with infinity
         A = defaultdict(lambda: float('inf'))
-        A[(0, fsm.initial_state)] = 0
+        for init_state in fsm.pair_states:
+            A[(0, init_state)] = 0
 
         # A* table for backtracking (stores the previous state and transition symbol)
         A_star = {}
