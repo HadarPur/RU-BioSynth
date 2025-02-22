@@ -1,5 +1,4 @@
 from collections import deque
-from itertools import product
 
 
 def kmp_based_fsm(unwanted_patterns, sigma):
@@ -128,5 +127,3 @@ class FSM:
 
         # self.initial_states, self.V, self.f, self.g = kmp_based_fsm(self.unwanted_patterns, self.sigma)
         self.pair_states, self.V, self.f = pairwise_kmp_fsm(self.unwanted_patterns, self.sigma)
-
-

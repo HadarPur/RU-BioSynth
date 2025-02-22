@@ -1,6 +1,5 @@
 import unittest
 from algorithm.fsm import FSM
-import pprint
 
 
 class TestCalculateFSM(unittest.TestCase):
@@ -126,5 +125,5 @@ class TestCalculateFSM(unittest.TestCase):
         self.assertTrue(len(fsm.f) == len(fsm.V) * len(fsm.sigma))
 
         for key, expected_value in expected_transitions.items():
-            if key not in fsm.f or fsm.f[key] != expected_value:
+            if fsm.f[key] != expected_value:
                 self.fail(f"FSM transition mismatches:\n{(key, expected_value)}")
