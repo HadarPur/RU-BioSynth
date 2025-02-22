@@ -6,7 +6,7 @@ from settings.costs_settings import elimination_process_description, coding_regi
 from utils.cost_utils import EliminationScorerConfig
 from utils.date_utils import format_current_date
 from utils.text_utils import format_text_bold_for_output
-from utils.fsm_utils import visualize_fsm, save_fsm_table_as_image
+from utils.fsm_utils import save_fsm_table_as_image
 from data.app_data import CostData
 
 
@@ -30,16 +30,8 @@ class EliminationController:
         cost_function = elimination_utils.cost_function(target_sequence, coding_positions, CostData.codon_usage, CostData.alpha, CostData.beta, CostData.w)
         fsm = FSM(unwanted_patterns, elimination_utils.alphabet)
 
-        visualize_fsm(fsm.V, fsm.f, fsm.initial_state)
-        save_fsm_table_as_image(fsm.V, fsm.f, fsm.initial_state)
-
-        # print("\nTransition Function (f):")
-        # for key, value in fsm.f.items():
-        #     print(f"f{key} -> {value}")
-        #
-        # print("\nFailure Function (g):")
-        # for key, value in fsm.g.items():
-        #     print(f"g({key}) -> {value}")
+        # visualize_fsm(fsm.V, fsm.f, fsm.initial_state)\
+        save_fsm_table_as_image(fsm.V, fsm.f)
 
         # Dynamic programming table A, initialized with infinity
         A = defaultdict(lambda: float('inf'))
