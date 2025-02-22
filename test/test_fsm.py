@@ -30,21 +30,6 @@ class TestCalculateFSM(unittest.TestCase):
                                 ('AT', 'G'): 'TG',
                                 ('AT', 'T'): 'TT',
 
-                                ('ATA', 'A'): 'AA',
-                                ('ATA', 'C'): 'AC',
-                                ('ATA', 'G'): 'TAG',
-                                ('ATA', 'T'): 'ATAT',
-
-                                ('ATAT', 'A'): 'ATA',
-                                ('ATAT', 'C'): 'ATATC',
-                                ('ATAT', 'G'): 'TG',
-                                ('ATAT', 'T'): 'TT',
-
-                                ('ATATC', 'A'): None,
-                                ('ATATC', 'C'): 'CC',
-                                ('ATATC', 'G'): 'CG',
-                                ('ATATC', 'T'): 'CT',
-
                                 ('CA', 'A'): 'AA',
                                 ('CA', 'C'): 'AC',
                                 ('CA', 'G'): 'AG',
@@ -90,21 +75,6 @@ class TestCalculateFSM(unittest.TestCase):
                                 ('TA', 'G'): 'TAG',
                                 ('TA', 'T'): 'AT',
 
-                                ('TAG', 'A'): 'GA',
-                                ('TAG', 'C'): 'GC',
-                                ('TAG', 'G'): 'GG',
-                                ('TAG', 'T'): 'TAGT',
-
-                                ('TAGT', 'A'): 'TAGTA',
-                                ('TAGT', 'C'): 'TC',
-                                ('TAGT', 'G'): 'TG',
-                                ('TAGT', 'T'): 'TT',
-
-                                ('TAGTA', 'A'): 'AA',
-                                ('TAGTA', 'C'): None,
-                                ('TAGTA', 'G'): 'TAG',
-                                ('TAGTA', 'T'): 'AT',
-
                                 ('TC', 'A'): 'CA',
                                 ('TC', 'C'): 'CC',
                                 ('TC', 'G'): 'CG',
@@ -118,7 +88,37 @@ class TestCalculateFSM(unittest.TestCase):
                                 ('TT', 'A'): 'TA',
                                 ('TT', 'C'): 'TC',
                                 ('TT', 'G'): 'TG',
-                                ('TT', 'T'): 'TT'}
+                                ('TT', 'T'): 'TT',
+
+                                ('ATA', 'A'): 'AA',
+                                ('ATA', 'C'): 'AC',
+                                ('ATA', 'G'): 'TAG',
+                                ('ATA', 'T'): 'ATAT',
+
+                                ('ATAT', 'A'): 'ATA',
+                                ('ATAT', 'C'): 'ATATC',
+                                ('ATAT', 'G'): 'TG',
+                                ('ATAT', 'T'): 'TT',
+
+                                ('ATATC', 'A'): None,
+                                ('ATATC', 'C'): 'CC',
+                                ('ATATC', 'G'): 'CG',
+                                ('ATATC', 'T'): 'CT',
+
+                                ('TAG', 'A'): 'GA',
+                                ('TAG', 'C'): 'GC',
+                                ('TAG', 'G'): 'GG',
+                                ('TAG', 'T'): 'TAGT',
+
+                                ('TAGT', 'A'): 'TAGTA',
+                                ('TAGT', 'C'): 'TC',
+                                ('TAGT', 'G'): 'TG',
+                                ('TAGT', 'T'): 'TT',
+
+                                ('TAGTA', 'A'): 'AA',
+                                ('TAGTA', 'C'): None,
+                                ('TAGTA', 'G'): 'TAG',
+                                ('TAGTA', 'T'): 'AT'}
 
         self.assertTrue(len(fsm.pair_states) == 16)
         self.assertTrue(len(fsm.V) == 22)
