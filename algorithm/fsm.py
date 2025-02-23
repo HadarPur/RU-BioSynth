@@ -17,7 +17,7 @@ def kmp_based_fsm(unwanted_patterns, sigma):
 
     f = {}
     g = {}
-    states = list()
+    states = set()
     epsilon = ''
 
     # Prefix elongation and invalid transitions
@@ -28,7 +28,7 @@ def kmp_based_fsm(unwanted_patterns, sigma):
 
     # Computing state space V and the functions f and g
     state_queue = deque()
-    states.append(epsilon)
+    states.add(epsilon)
     for s in sigma:
         if (epsilon, s) not in f:
             f[(epsilon, s)] = epsilon
@@ -39,7 +39,7 @@ def kmp_based_fsm(unwanted_patterns, sigma):
     # Efficient BFS State Processing in FSM Pattern Matching
     while state_queue:
         v = state_queue.popleft()
-        states.append(v)
+        states.add(v)
 
         for s in sigma:
             if f[g[v], s] is None:
@@ -50,7 +50,24 @@ def kmp_based_fsm(unwanted_patterns, sigma):
                 g[v + s] = f[(g[v], s)]
                 state_queue.append(v + s)
 
-    return epsilon, states, f, g
+    # Remove epsilon and single-character states
+    states.discard(epsilon)
+    states.difference_update(sigma)
+
+    # Generate all bigrams from the alphabet and update states
+    pair_states = [x + y for x in sigma for y in sigma]
+    states.update(pair_states)
+
+    # Clean up invalid transitions in f
+    f = {(v, s): val for (v, s), val in f.items() if v and v not in sigma and val != epsilon and val not in sigma}
+
+    # Calculate bigrams states
+    for v in states:
+        for s in sigma:
+            if (v, s) not in f:
+                f[(v, s)] = v[-1] + s
+
+    return pair_states, states, f, g
 
 
 def pairwise_kmp_fsm(unwanted_patterns, sigma):
@@ -125,4 +142,4 @@ class FSM:
         self.sigma = alphabet
         self.unwanted_patterns = unwanted_patterns
 
-        self.pair_states, self.V, self.f = pairwise_kmp_fsm(self.unwanted_patterns, self.sigma)
+        self.initial_states, self.V, self.f, self.g = kmp_based_fsm(self.unwanted_patterns, self.sigma)

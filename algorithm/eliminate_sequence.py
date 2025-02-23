@@ -30,12 +30,12 @@ class EliminationController:
         cost_function = elimination_utils.cost_function(target_sequence, coding_positions, CostData.codon_usage, CostData.alpha, CostData.beta, CostData.w)
         fsm = FSM(unwanted_patterns, elimination_utils.alphabet)
 
-        visualize_fsm_graph(fsm.V, fsm.f, fsm.pair_states)
+        visualize_fsm_graph(fsm.V, fsm.f, fsm.initial_states)
         visualize_fsm_table(fsm.V, fsm.f)
 
         # Dynamic programming table A, initialized with infinity
         A = defaultdict(lambda: float('inf'))
-        for init_state in fsm.pair_states:
+        for init_state in fsm.initial_states:
             A[(0, init_state)] = 0
 
         # A* table for backtracking (stores the previous state and transition symbol)
