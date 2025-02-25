@@ -3,7 +3,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 
-def visualize_fsm_graph(states, transitions, initial_states, output_file='fsm_diagram', size="20,20", nodesep=0.2, ranksep=1.0):
+def visualize_fsm_graph(states, transitions, output_file='fsm_diagram', size="20,20", nodesep=0.2, ranksep=1.0):
     """
     Visualizes the FSM using Graphviz.
 
@@ -21,14 +21,8 @@ def visualize_fsm_graph(states, transitions, initial_states, output_file='fsm_di
 
     # Add nodes (states)
     for state in states:
-        shape = 'doublecircle' if state in initial_states else 'circle'  # Highlight final states
+        shape = 'doublecircle'  # Highlight final states
         fsm_graph.node(str(state), shape=shape)
-
-    # Add initial state markers (for multiple initial states)
-    for i, init_state in enumerate(initial_states):
-        start_node = f"start_{i}"  # Unique start markers
-        fsm_graph.node(start_node, shape="point")  # Invisible starting point
-        fsm_graph.edge(start_node, str(init_state))  # Connect start to initial state
 
     # Add transitions
     for (state, char), next_state in transitions.items():

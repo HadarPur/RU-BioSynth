@@ -1,7 +1,7 @@
 from collections import deque
 
 
-def kmp_based_fsm(unwanted_patterns, sigma):
+def kmp_based_fsm_bigram(unwanted_patterns, sigma):
     """
     Constructs the FSM by calculating the states and transition function.
 
@@ -55,8 +55,8 @@ def kmp_based_fsm(unwanted_patterns, sigma):
     states.difference_update(sigma)
 
     # Generate all bigrams from the alphabet and update states
-    pair_states = [x + y for x in sigma for y in sigma]
-    states.update(pair_states)
+    bigram_states = [x + y for x in sigma for y in sigma]
+    states.update(bigram_states)
 
     # Clean up invalid transitions in f
     f = {(v, s): val for (v, s), val in f.items() if v and v not in sigma and val != epsilon and val not in sigma}
@@ -67,52 +67,7 @@ def kmp_based_fsm(unwanted_patterns, sigma):
             if (v, s) not in f:
                 f[(v, s)] = v[-1] + s
 
-    return pair_states, states, f, g
-
-
-def pairwise_kmp_fsm(unwanted_patterns, sigma):
-    """
-    Constructs the FSM by calculating the states and transition function.
-
-    Args:
-        unwanted_patterns (set): The set of unwanted patterns.
-        sigma (set): The alphabet of allowed characters.
-
-    Returns:
-        pair_states (set): The set of pairwise bases in the FSM.
-        states (set): The full state space of the FSM.
-        f (dict): The transition function of the FSM.
-    """
-
-    # Initialize dictionaries for the transition (f) and failure (g) functions
-    f = {}
-    states = set()
-
-    # Generate all bigrams from the alphabet
-    pair_states = [x + y for x in sigma for y in sigma]
-
-    # Initialize states based on bigrams instead of '' (empty string), A, T
-    for v in pair_states:
-        for s in sigma:
-            if (v, s) not in f:
-                f[(v, s)] = v[-1] + s
-                states.add(v)
-
-    # Prefix elongation and invalid transitions
-    for p in unwanted_patterns:
-        for j in range(3, len(p) + 1):
-            f[(p[:j - 1], p[j - 1])] = p[:j]
-            states.add(p[:j - 1])
-        f[(p[:- 1], p[- 1])] = None  # Invalid transition into complete pattern
-
-    for v in states:
-        for s in sigma:
-            if (v, s) not in f:
-                f[(v, s)] = v[-1:] + s
-            if v[-2:] + s in states:
-                f[(v, s)] = v[-2:] + s
-
-    return pair_states, states, f
+    return bigram_states, states, f, g
 
 
 class FSM:
@@ -142,4 +97,4 @@ class FSM:
         self.sigma = alphabet
         self.unwanted_patterns = unwanted_patterns
 
-        self.initial_states, self.V, self.f, self.g = kmp_based_fsm(self.unwanted_patterns, self.sigma)
+        self.initial_states, self.V, self.f, self.g = kmp_based_fsm_bigram(self.unwanted_patterns, self.sigma)

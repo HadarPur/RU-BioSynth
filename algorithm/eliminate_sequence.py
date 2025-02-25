@@ -18,6 +18,11 @@ class EliminationController:
         info += f"\n{format_text_bold_for_output('Target Sequence:')}\n{target_sequence}\n"
         info += f"\n{format_text_bold_for_output('Unwanted Patterns:')}\n{', '.join(sorted(unwanted_patterns))}\n"
 
+        # Check if unwanted patterns exist
+        if not any(x in target_sequence for x in unwanted_patterns):
+            info += "\nNo unwanted patterns found. Returning the original sequence."
+            return info, None, target_sequence, 0.0  # Return unchanged sequence
+
         # Additional descriptions (placeholders for actual descriptions)
         info += f"\n{format_text_bold_for_output('Elimination Process:')}\n{elimination_process_description}\n"
         info += f"\n{format_text_bold_for_output('Coding regions:')}\n{coding_region_cost_description}\n"
@@ -27,31 +32,34 @@ class EliminationController:
 
         # Initialize utility and FSM classes
         elimination_utils = EliminationScorerConfig()
-        cost_function = elimination_utils.cost_function(target_sequence, coding_positions, CostData.codon_usage, CostData.alpha, CostData.beta, CostData.w)
+        cost_function = elimination_utils.cost_function(target_sequence, coding_positions, CostData.codon_usage,
+                                                        CostData.alpha, CostData.beta, CostData.w)
         fsm = FSM(unwanted_patterns, elimination_utils.alphabet)
 
-        visualize_fsm_graph(fsm.V, fsm.f, fsm.initial_states)
+        visualize_fsm_graph(fsm.V, fsm.f)
         visualize_fsm_table(fsm.V, fsm.f)
 
         # Dynamic programming table A, initialized with infinity
         A = defaultdict(lambda: float('inf'))
-        for init_state in fsm.initial_states:
-            A[(0, init_state)] = 0
+        for v in fsm.V:
+            A[(0, v)] = 0  # Initialize all states as potential starting points
 
         # A* table for backtracking (stores the previous state and transition symbol)
         A_star = {}
 
         # Fill the dynamic programming table
-        for i in range(1, n + 1):
+        for i in range(1, n+1):
             for v in fsm.V:
                 for sigma in fsm.sigma:
                     u = fsm.f.get((v, sigma))  # Transition to the next state
                     if u is not None:
-                        changes, cost_f = cost_function(i - 1, u, sigma)
+                        changes, cost_f = cost_function(i-1, u, sigma)  # Compute cost
+
+                        # Compute cost and update DP table if it's a better path
                         cost = A[(i - 1, v)] + cost_f
                         if cost < A[(i, u)]:
                             A[(i, u)] = cost
-                            A_star[(i, u)] = (u, sigma, changes, cost_f)  # Store the best previous state and symbol
+                            A_star[(i, u)] = (v, sigma, changes, cost_f)  # Store the best previous state
 
         # Find the minimum cost and final state
         min_cost = float('inf')
@@ -61,8 +69,9 @@ class EliminationController:
                 min_cost = A[(n, v)]
                 final_state = v
 
+        # If no valid sequence was found
         if min_cost == float('inf'):
-            info += "\nNo valid sequence found that matches the unwanted pattern list."
+            info += "\nNo valid sequence found that avoids the unwanted patterns."
             return info, None, None, min_cost
 
         # Reconstruct the sequence with the minimum cost
@@ -77,17 +86,15 @@ class EliminationController:
 
             prev_state, char, changes, cost_f = A_star[(i, current_state)]  # Get the previous state and symbol
 
+            # Log changes if cost is incurred
             if cost_f > 0:
-                print(changes)
-                log_change = f"Position {f'{i}:':<10}" \
-                        f"\t{f'{changes[0]}':<8}->{f'{changes[1]}':>8}" \
-                        f"\t\tCost: {f'{cost_f:.2f}':<7}"
+                log_change = f"Position {i:<10}\t{changes[0]:<8}->{changes[1]:>8}\t\tCost: {cost_f:.2f}"
                 changes_info.append(log_change)
 
             sequence.append(char)
             current_state = prev_state
 
-        # Reverse the sequence and changes info
+        # Reverse the sequence and changes info for correct order
         sequence.reverse()
         changes_info.reverse()
 
