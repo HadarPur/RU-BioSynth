@@ -50,8 +50,6 @@ def kmp_based_fsm_bigram(unwanted_patterns, sigma):
                 g[v + s] = f[(g[v], s)]
                 state_queue.append(v + s)
 
-    print(f"Before changes:\n\tV = {states}\n\tf = {f}")
-
     # Remove epsilon and single-character states
     states.discard(epsilon)
     states.difference_update(sigma)
@@ -68,8 +66,6 @@ def kmp_based_fsm_bigram(unwanted_patterns, sigma):
         for s in sigma:
             if (v, s) not in f:
                 f[(v, s)] = v[-1] + s
-
-    print(f"After changes:\n\tV = {states}\n\tf = {f}")
 
     return bigram_states, states, f, g
 

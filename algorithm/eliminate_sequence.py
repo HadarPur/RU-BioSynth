@@ -6,7 +6,7 @@ from settings.costs_settings import elimination_process_description, coding_regi
 from utils.cost_utils import EliminationScorerConfig
 from utils.date_utils import format_current_date
 from utils.text_utils import format_text_bold_for_output
-from utils.fsm_utils import visualize_fsm_graph, visualize_fsm_table
+from utils.graphic_utils import visualize_fsm_graph, visualize_fsm_table, visualize_dp_table
 from data.app_data import CostData
 
 
@@ -36,13 +36,11 @@ class EliminationController:
                                                         CostData.alpha, CostData.beta, CostData.w)
         fsm = FSM(unwanted_patterns, elimination_utils.alphabet)
 
-        visualize_fsm_graph(fsm.V, fsm.f)
-        visualize_fsm_table(fsm.V, fsm.f)
-
         # Dynamic programming table A, initialized with infinity
         A = defaultdict(lambda: float('inf'))
         for v in fsm.V:
-            A[(0, v)] = 0  # Initialize all states as potential starting points
+            if target_sequence.startswith(v):
+                A[(0, v)] = 0  # Initialize all states as potential starting points
 
         # A* table for backtracking (stores the previous state and transition symbol)
         A_star = {}
@@ -77,6 +75,7 @@ class EliminationController:
         # Reconstruct the sequence with the minimum cost
         sequence = []
         changes_info = []
+        path = []
         current_state = final_state
 
         # Backtrack to reconstruct the sequence
@@ -91,12 +90,18 @@ class EliminationController:
                 log_change = f"Position {i:<10}\t{changes[0]:<8}->{changes[1]:>8}\t\tCost: {cost_f:.2f}"
                 changes_info.append(log_change)
 
+            path.append((i, current_state))
             sequence.append(char)
             current_state = prev_state
 
         # Reverse the sequence and changes info for correct order
+        path.reverse()
         sequence.reverse()
         changes_info.reverse()
+
+        visualize_fsm_graph(fsm.V, fsm.f)
+        visualize_fsm_table(fsm.V, fsm.f)
+        visualize_dp_table(A, n, fsm, path)
 
         # Append final information to the info string
         info += f"{format_text_bold_for_output('_' * 50)}\n"
@@ -107,3 +112,4 @@ class EliminationController:
         info += f"\n{format_text_bold_for_output('Total Cost:')}\n{min_cost}"
 
         return info, changes_info, ''.join(sequence), min_cost
+

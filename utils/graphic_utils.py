@@ -1,6 +1,45 @@
+import numpy as np
 from graphviz import Digraph
 import pandas as pd
 import matplotlib.pyplot as plt
+
+
+def visualize_dp_table(A, sequence_length, fsm, path=None, output_file='dp_heatmap'):
+    states = sorted(fsm.V)  # מיון מצבים כדי לוודא סדר קבוע
+    state_to_idx = {state: idx for idx, state in enumerate(states)}
+
+    dp_matrix = np.full((len(states), sequence_length + 1), np.inf)
+
+    for (i, state), cost in A.items():
+        if state in state_to_idx:
+            dp_matrix[state_to_idx[state], i] = cost
+
+    plt.figure(figsize=(12, 7))
+    plt.imshow(dp_matrix, aspect='auto', cmap='coolwarm', origin='lower')
+
+    for i in range(sequence_length + 1):
+        for j in range(len(states)):
+            cost_value = dp_matrix[j, i]
+            if cost_value != np.inf:
+                plt.text(i, j, f"{cost_value:.2f}", ha='center', va='center', color='black')
+
+    if path:
+        path_x = [i for i, _ in path]
+        path_y = [state_to_idx[state] for _, state in path]
+        plt.plot(path_x, path_y, marker='o', color='black', markersize=8, linestyle='-', linewidth=2, label="Optimal Path")
+
+    plt.colorbar(label='Cost')
+    plt.xticks(ticks=range(sequence_length + 1), labels=range(sequence_length + 1))
+    plt.yticks(ticks=range(len(states)), labels=states)
+
+    plt.xlabel("Sequence Position")
+    plt.ylabel("FSM State")
+    plt.title("Dynamic Programming Table with Optimal Path")
+    plt.legend(loc='upper right', bbox_to_anchor=(1, 1))
+
+    plt.savefig(output_file, dpi=300, bbox_inches="tight")
+    plt.show()
+    print(f"DP table saved as {output_file}")
 
 
 def visualize_fsm_graph(states, transitions, output_file='fsm_diagram', size="20,20", nodesep=0.2, ranksep=1.0):
