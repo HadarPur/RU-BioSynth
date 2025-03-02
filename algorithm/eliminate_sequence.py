@@ -38,7 +38,7 @@ class EliminationController:
 
         # Dynamic programming table A, initialized with infinity
         A = defaultdict(lambda: float('inf'))
-        for v in fsm.initial_states:
+        for v in fsm.V:
             if target_sequence.startswith(v):
                 A[(0, v)] = 0  # Initialize all states as potential starting points
 
