@@ -120,7 +120,7 @@ class TestCalculateFSM(unittest.TestCase):
                                 ('TAGTA', 'G'): 'TAG',
                                 ('TAGTA', 'T'): 'AT'}
 
-        self.assertTrue(len(fsm.initial_states) == 16)
+        self.assertTrue(len(fsm.bigram_states) == 16)
         self.assertTrue(len(fsm.V) == 22)
         self.assertTrue(len(fsm.f) == len(fsm.V) * len(fsm.sigma))
 

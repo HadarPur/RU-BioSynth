@@ -31,27 +31,38 @@ class EliminationController:
         n = len(target_sequence)
 
         # Initialize utility and FSM classes
-        elimination_utils = EliminationScorerConfig()
-        cost_function = elimination_utils.cost_function(target_sequence, coding_positions, CostData.codon_usage,
-                                                        CostData.alpha, CostData.beta, CostData.w)
-        fsm = FSM(unwanted_patterns, elimination_utils.alphabet)
+        elimination_scorer = EliminationScorerConfig()
+        initial_cost_function, cost_function = elimination_scorer.cost_function(target_sequence,
+                                                                                coding_positions,
+                                                                                CostData.codon_usage,
+                                                                                CostData.alpha,
+                                                                                CostData.beta, CostData.w)
+        fsm = FSM(unwanted_patterns, elimination_scorer.alphabet)
 
         # Dynamic programming table A, initialized with infinity
         A = defaultdict(lambda: float('inf'))
-        for v in fsm.V:
-            if target_sequence.startswith(v):
-                A[(0, v)] = 0  # Initialize all states as potential starting points
-
         # A* table for backtracking (stores the previous state and transition symbol)
         A_star = {}
 
+        # Initialize all bigram states in column 2
+        for v in fsm.bigram_states:
+            A[(2, v)] = 0  # Initialize as zero cost
+            A_star[(2, v)] = (None, None, None, 0.0)  # Initialize A_star with placeholders
+
+        # Fill the initial dynamic programming table (columns 0 and 1 are skipped)
+        for i in range(0, 2):
+            for v in fsm.bigram_states:
+                changes, cost_f = initial_cost_function(i, v)  # Compute cost
+                A[(2, v)] += cost_f  # Update cost
+                A_star[(2, v)] = (v, v, changes, cost_f)  # Store initial state information
+
         # Fill the dynamic programming table
-        for i in range(1, n+1):
+        for i in range(3, n + 1):
             for v in fsm.V:
                 for sigma in fsm.sigma:
                     u = fsm.f.get((v, sigma))  # Transition to the next state
                     if u is not None:
-                        changes, cost_f = cost_function(i-1, u, sigma)  # Compute cost
+                        changes, cost_f = cost_function(i - 1, u, sigma)  # Compute cost
 
                         # Compute cost and update DP table if it's a better path
                         cost = A[(i - 1, v)] + cost_f
@@ -79,7 +90,7 @@ class EliminationController:
         current_state = final_state
 
         # Backtrack to reconstruct the sequence
-        for i in range(n, 0, -1):
+        for i in range(n, 1, -1):
             if (i, current_state) not in A_star:
                 raise ValueError(f"No transition found for position {i} and state {current_state}")
 
@@ -112,4 +123,3 @@ class EliminationController:
         info += f"\n{format_text_bold_for_output('Total Cost:')}\n{min_cost}"
 
         return info, changes_info, ''.join(sequence), min_cost
-

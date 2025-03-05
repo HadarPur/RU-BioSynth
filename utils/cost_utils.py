@@ -2,6 +2,32 @@ import numpy as np
 from utils.amino_acid_utils import AminoAcidConfig
 
 
+def evaluate_substitution(target_sequence, i, sigma, alpha, beta):
+    """
+    Evaluates the substitution cost for a given nucleotide change in a non-coding region.
+
+    Parameters:
+        target_sequence (str): The original sequence.
+        sigma (str): The proposed nucleotide substitution.
+        i (int): The index of the nucleotide in the sequence.
+        alpha (float): The cost for a transition substitution in a non-coding region.
+        beta (float): The cost for a transversion substitution in a non-coding region.
+
+    Returns:
+        tuple: ((original_nucleotide, proposed_nucleotide), substitution_cost)
+    """
+    changes = target_sequence[i], sigma
+    if target_sequence[i] == sigma:
+        # No substitution
+        return changes, 0.0
+    if AminoAcidConfig.is_transition(target_sequence[i], sigma):
+        # Transition substitution
+        return changes, alpha
+    else:
+        # Transversion substitution
+        return changes, beta
+
+
 def calculate_cost(target_sequence, coding_positions, codon_usage, i, v, sigma, alpha, beta, w):
     """
     Calculate the substitution cost for a given position in a nucleotide sequence.
@@ -126,7 +152,11 @@ class EliminationScorerConfig:
             function: A cost function that takes index i, current state v, and proposed symbol σ
                       as arguments, and returns the dynamic cost.
         """
-        def cost(i, v, sigma):
+
+        def initial_cost_function(i, v):
+            return evaluate_substitution(target_sequence, i, v[i], alpha, beta)
+
+        def cost_function(i, v, sigma):
             return calculate_cost(target_sequence, coding_positions, codon_usage, i, v, sigma, alpha, beta, w)
 
-        return cost
+        return initial_cost_function, cost_function

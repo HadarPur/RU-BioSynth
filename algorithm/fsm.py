@@ -97,4 +97,4 @@ class FSM:
         self.sigma = alphabet
         self.unwanted_patterns = unwanted_patterns
 
-        self.initial_states, self.V, self.f, self.g = kmp_based_fsm_bigram(self.unwanted_patterns, self.sigma)
+        self.bigram_states, self.V, self.f, self.g = kmp_based_fsm_bigram(self.unwanted_patterns, self.sigma)
