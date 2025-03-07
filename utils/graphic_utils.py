@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 
 
 def visualize_dp_table(A, sequence_length, fsm, path=None, output_file='dp_heatmap'):
-    states = sorted(fsm.V)  # מיון מצבים כדי לוודא סדר קבוע
+    states = sorted(fsm.V)
     state_to_idx = {state: idx for idx, state in enumerate(states)}
 
     dp_matrix = np.full((len(states), sequence_length + 1), np.inf)
@@ -43,18 +43,6 @@ def visualize_dp_table(A, sequence_length, fsm, path=None, output_file='dp_heatm
 
 
 def visualize_fsm_graph(states, transitions, output_file='fsm_diagram', size="20,20", nodesep=0.2, ranksep=1.0):
-    """
-    Visualizes the FSM using Graphviz.
-
-    Args:
-        states (list): List of states in the FSM.
-        transitions (dict): Transition function {(state, character) -> new state}.
-        initial_states (list): List of initial states of the FSM.
-        output_file (str): The name of the output file for the diagram (without extension).
-        size (str): Size of the diagram (width, height) in inches.
-        nodesep (float): Spacing between adjacent nodes.
-        ranksep (float): Spacing between ranks of nodes.
-    """
     fsm_graph = Digraph(format='png')
     fsm_graph.attr(rankdir='LR', size=size, nodesep=str(nodesep), ranksep=str(ranksep))  # Adjust size and spacing
 
