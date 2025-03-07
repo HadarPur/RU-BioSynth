@@ -45,16 +45,11 @@ class EliminationController:
         A_star = {}
 
         # Initialize all bigram states in column 2
-        for v in fsm.bigram_states:
-            A[(2, v)] = 0  # Initialize as zero cost
-            A_star[(2, v)] = (None, None, None, 0.0)  # Initialize A_star with placeholders
-
-        # Fill the initial dynamic programming table (columns 0 and 1 are skipped)
-        for i in range(0, 2):
-            for v in fsm.bigram_states:
-                changes, cost_f = initial_cost_function(i, v)  # Compute cost
-                A[(2, v)] += cost_f  # Update cost
-                A_star[(2, v)] = (v, v, changes, cost_f)  # Store initial state information
+        for v in fsm.V:
+            if len(v) == 2:
+                _, cost_f_0 = initial_cost_function(0, v[0])
+                _, cost_f_1 = initial_cost_function(1, v[1])
+                A[(2, v)] = cost_f_0 + cost_f_1
 
         # Fill the dynamic programming table
         for i in range(3, n + 1):
@@ -90,7 +85,7 @@ class EliminationController:
         current_state = final_state
 
         # Backtrack to reconstruct the sequence
-        for i in range(n, 1, -1):
+        for i in range(n, 2, -1):
             if (i, current_state) not in A_star:
                 raise ValueError(f"No transition found for position {i} and state {current_state}")
 
@@ -104,6 +99,11 @@ class EliminationController:
             path.append((i, current_state))
             sequence.append(char)
             current_state = prev_state
+
+        # Concatenate S after v2
+        # TODO: Maybe add the log logic here also
+        sequence.append(current_state)
+        path.append((2, current_state))
 
         # Reverse the sequence and changes info for correct order
         path.reverse()
