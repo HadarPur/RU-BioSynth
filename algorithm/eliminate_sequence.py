@@ -47,8 +47,8 @@ class EliminationController:
         # Initialize all bigram states in column 2
         for v in fsm.V:
             if len(v) == 2:
-                _, cost_f_0 = initial_cost_function(0, v[0])
-                _, cost_f_1 = initial_cost_function(1, v[1])
+                _, cost_f_0 = initial_cost_function(1, v[0])
+                _, cost_f_1 = initial_cost_function(2, v[1])
                 A[(2, v)] = cost_f_0 + cost_f_1
 
         # Fill the dynamic programming table
@@ -57,7 +57,7 @@ class EliminationController:
                 for sigma in fsm.sigma:
                     u = fsm.f.get((v, sigma))  # Transition to the next state
                     if u is not None:
-                        changes, cost_f = cost_function(i - 1, u, sigma)  # Compute cost
+                        changes, cost_f = cost_function(i, u, sigma)  # Compute cost
 
                         # Compute cost and update DP table if it's a better path
                         cost = A[(i - 1, v)] + cost_f
