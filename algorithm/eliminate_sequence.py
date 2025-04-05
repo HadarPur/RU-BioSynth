@@ -43,12 +43,13 @@ class EliminationController:
         A = defaultdict(lambda: float('inf'))
         # A* table for backtracking (stores the previous state and transition symbol)
         A_star = {}
+        changes_info = []
 
         # Initialize all bigram states in column 2
         for v in fsm.V:
             if len(v) == 2:
-                _, cost_f_0 = initial_cost_function(0, v[0])
-                _, cost_f_1 = initial_cost_function(1, v[1])
+                changes0, cost_f_0 = initial_cost_function(0, v[0])
+                changes1, cost_f_1 = initial_cost_function(1, v[1])
                 A[(2, v)] = cost_f_0 + cost_f_1
 
         # Fill the dynamic programming table
@@ -63,7 +64,7 @@ class EliminationController:
                         cost = A[(i - 1, v)] + cost_f
                         if cost < A[(i, u)]:
                             A[(i, u)] = cost
-                            A_star[(i, u)] = (v, sigma, changes, cost_f)  # Store the best previous state
+                            A_star[(i, u)] = (v, sigma)  # Store the best previous state
 
         # Find the minimum cost and final state
         min_cost = float('inf')
@@ -80,8 +81,8 @@ class EliminationController:
 
         # Reconstruct the sequence with the minimum cost
         sequence = []
-        changes_info = []
         path = []
+
         current_state = final_state
 
         # Backtrack to reconstruct the sequence
@@ -89,30 +90,42 @@ class EliminationController:
             if (i, current_state) not in A_star:
                 raise ValueError(f"No transition found for position {i} and state {current_state}")
 
-            prev_state, char, changes, cost_f = A_star[(i, current_state)]  # Get the previous state and symbol
+            prev_state, char = A_star[(i, current_state)]  # Get the previous state and symbol
 
-            # Log changes if cost is incurred
-            if cost_f > 0:
-                log_change = f"Position {i:<10}\t{changes[0]:<8}->{changes[1]:>8}\t\tCost: {cost_f:.2f}"
-                changes_info.append(log_change)
+            # Record the change that actually occurred
+            changes, cost_f = cost_function(i - 1, current_state, char)
+            if cost_f > 0.0:
+                changes_info.append(
+                    f"Position {i:<10}\t{changes[0]:<8}->{changes[1]:>8}\t\tCost: {cost_f:.2f}"
+                )
 
             path.append((i, current_state))
             sequence.append(char)
+
             current_state = prev_state
 
         # Concatenate S after v2
-        # TODO: Maybe add the log logic here also
         sequence.append(current_state)
         path.append((2, current_state))
+
+        # Reconstruct the first two positions (0 and 1) from current_state
+        # Check and log changes at positions 0 and 1
+        original0, original1 = target_sequence[0], target_sequence[1]
+        if current_state[0] != original0:
+            cost_f_0 = initial_cost_function(0, current_state[0])[1]
+            changes_info.append(f"Position {1:<10}\t{original0:<8}->{current_state[0]:>8}\t\tCost: {cost_f_0:.2f}")
+        if current_state[1] != original1:
+            cost_f_1 = initial_cost_function(1, current_state[1])[1]
+            changes_info.append(f"Position {2:<10}\t{original1:<8}->{current_state[1]:>8}\t\tCost: {cost_f_1:.2f}")
 
         # Reverse the sequence and changes info for correct order
         path.reverse()
         sequence.reverse()
         changes_info.reverse()
 
-        visualize_fsm_graph(fsm.V, fsm.f)
-        visualize_fsm_table(fsm.V, fsm.f)
-        visualize_dp_table(A, n, fsm, path)
+        # visualize_fsm_graph(fsm.V, fsm.f)
+        # visualize_fsm_table(fsm.V, fsm.f)
+        # visualize_dp_table(A, n, fsm, path)
 
         # Append final information to the info string
         info += f"{format_text_bold_for_output('_' * 50)}\n"
