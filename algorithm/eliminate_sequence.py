@@ -57,7 +57,7 @@ class EliminationController:
                 for sigma in fsm.sigma:
                     u = fsm.f.get((v, sigma))  # Transition to the next state
                     if u is not None:
-                        changes, cost_f = cost_function(i - 1, u, sigma)  # Compute cost
+                        changes, cost_f = cost_function(i, u, sigma)  # Compute cost
 
                         # Compute cost and update DP table if it's a better path
                         cost = A[(i - 1, v)] + cost_f
@@ -94,7 +94,7 @@ class EliminationController:
             prev_state, char = A_star[(i, current_state)]  # Get the previous state and symbol
 
             # Record the change that actually occurred
-            changes, cost_f = cost_function(i - 1, current_state, char)
+            changes, cost_f = cost_function(i, current_state, char)
             if cost_f > 0.0:
                 changes_info.append(
                     f"Position {i:<10}\t{changes[0]:<8}->{changes[1]:>8}\t\tCost: {cost_f:.2f}"
@@ -112,12 +112,12 @@ class EliminationController:
         # Reconstruct the first two positions (0 and 1) from current_state
         # Check and log changes at positions 0 and 1
         original0, original1 = target_sequence[0], target_sequence[1]
-        if current_state[0] != original0:
-            cost_f_0 = initial_cost_function(0, current_state[0])[1]
-            changes_info.append(f"Position {1:<10}\t{original0:<8}->{current_state[0]:>8}\t\tCost: {cost_f_0:.2f}")
         if current_state[1] != original1:
             cost_f_1 = initial_cost_function(1, current_state[1])[1]
             changes_info.append(f"Position {2:<10}\t{original1:<8}->{current_state[1]:>8}\t\tCost: {cost_f_1:.2f}")
+        if current_state[0] != original0:
+            cost_f_0 = initial_cost_function(0, current_state[0])[1]
+            changes_info.append(f"Position {1:<10}\t{original0:<8}->{current_state[0]:>8}\t\tCost: {cost_f_0:.2f}")
 
         # Reverse the sequence and changes info for correct order
         path.reverse()

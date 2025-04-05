@@ -154,9 +154,9 @@ class EliminationScorerConfig:
         """
 
         def initial_cost_function(i, sigma):
-            return evaluate_substitution(target_sequence, i, sigma, alpha, beta)
+            return evaluate_substitution(target_sequence, i-1, sigma, alpha, beta)
 
         def cost_function(i, v, sigma):
-            return calculate_cost(target_sequence, coding_positions, codon_usage, i, v, sigma, alpha, beta, w)
+            return calculate_cost(target_sequence, coding_positions, codon_usage, i-1, v, sigma, alpha, beta, w)
 
         return initial_cost_function, cost_function
