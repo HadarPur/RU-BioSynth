@@ -47,9 +47,9 @@ class EliminationController:
         # Initialize all bigram states in column 2
         for v in fsm.V:
             if len(v) == 2:
-                changes0, cost_f_0 = initial_cost_function(0, v[0])
-                changes1, cost_f_1 = initial_cost_function(1, v[1])
-                A[(2, v)] = cost_f_0 + cost_f_1
+                _, cost_f_1 = initial_cost_function(1, v[0])
+                _, cost_f_2 = initial_cost_function(2, v[1])
+                A[(2, v)] = cost_f_1 + cost_f_2
 
         # Fill the dynamic programming table
         for i in range(3, n + 1):
@@ -113,11 +113,15 @@ class EliminationController:
         # Check and log changes at positions 0 and 1
         original0, original1 = target_sequence[0], target_sequence[1]
         if current_state[1] != original1:
-            cost_f_1 = initial_cost_function(1, current_state[1])[1]
-            changes_info.append(f"Position {2:<10}\t{original1:<8}->{current_state[1]:>8}\t\tCost: {cost_f_1:.2f}")
+            changes, cost_f = initial_cost_function(2, current_state[1])
+            changes_info.append(
+                f"Position {2:<10}\t{changes[0]:<8}->{changes[1]:>8}\t\tCost: {cost_f:.2f}"
+            )
         if current_state[0] != original0:
-            cost_f_0 = initial_cost_function(0, current_state[0])[1]
-            changes_info.append(f"Position {1:<10}\t{original0:<8}->{current_state[0]:>8}\t\tCost: {cost_f_0:.2f}")
+            changes, cost_f = initial_cost_function(1, current_state[0])
+            changes_info.append(
+                f"Position {1:<10}\t{changes[0]:<8}->{changes[1]:>8}\t\tCost: {cost_f:.2f}"
+            )
 
         # Reverse the sequence and changes info for correct order
         path.reverse()
