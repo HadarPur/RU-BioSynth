@@ -43,7 +43,6 @@ class EliminationController:
         A = defaultdict(lambda: float('inf'))
         # A* table for backtracking (stores the previous state and transition symbol)
         A_star = {}
-        changes_info = []
 
         # Initialize all bigram states in column 2
         for v in fsm.V:
@@ -80,9 +79,11 @@ class EliminationController:
             return info, None, None, min_cost
 
         # Reconstruct the sequence with the minimum cost
-        sequence = []
         path = []
+        sequence = []
+        changes_info = []
 
+        # starting from the end
         current_state = final_state
 
         # Backtrack to reconstruct the sequence
@@ -105,8 +106,8 @@ class EliminationController:
             current_state = prev_state
 
         # Concatenate S after v2
-        sequence.append(current_state)
         path.append((2, current_state))
+        sequence.append(current_state)
 
         # Reconstruct the first two positions (0 and 1) from current_state
         # Check and log changes at positions 0 and 1
