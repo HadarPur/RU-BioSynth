@@ -3,8 +3,8 @@ import os
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QPainterPath, QRegion
 from PyQt5.QtGui import QPixmap
-from PyQt5.QtWidgets import QFrame, QHBoxLayout, QPushButton, QVBoxLayout, QApplication
-from PyQt5.QtWidgets import QLabel, QFileDialog, QTextEdit, QPlainTextEdit, QToolBar
+from PyQt5.QtWidgets import QFrame, QPushButton, QVBoxLayout, QApplication, QLabel, QHBoxLayout
+from PyQt5.QtWidgets import QFileDialog, QTextEdit, QPlainTextEdit, QToolBar, QDoubleSpinBox
 
 from utils.file_utils import resource_path, save_file
 
@@ -279,6 +279,40 @@ def add_button(layout, text, alignment=None, callback=None, args=(), size=(60, 3
     bottom_layout.addWidget(button, alignment=alignment)
 
     return button
+
+def add_spinbox(layout, default_value, step=0.01,
+                alignment=None, callback=None, args=(), size=(80, 30)):
+    """
+    Adds a QSpinBox to the given layout with optional callback.
+
+    If args[0] is provided, it is shown as a label before the spinbox.
+
+    Returns:
+        QSpinBox instance.
+    """
+    bottom_layout = QHBoxLayout()
+    layout.addLayout(bottom_layout)
+
+    # Optional label based on args[0]
+    if args and isinstance(args[0], str):
+        label = QLabel(str(args[0]))
+        label.setAlignment(Qt.AlignVCenter | Qt.AlignLeft)
+        bottom_layout.addWidget(label)
+
+    spinbox = QDoubleSpinBox()
+    spinbox.setMinimum(0.0)
+    spinbox.setMaximum(2147483647.0)
+    spinbox.setValue(default_value)
+    spinbox.setSingleStep(step)
+    spinbox.setFixedSize(size[0], size[1])
+    spinbox.setFocusPolicy(Qt.NoFocus)
+
+    if callback is not None:
+        spinbox.valueChanged.connect(lambda val: callback(val))
+
+    bottom_layout.addWidget(spinbox, alignment=alignment)
+
+    return spinbox
 
 
 def copy_to_clipboard(code_display, update_status):

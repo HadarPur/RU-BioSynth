@@ -1,9 +1,10 @@
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QHBoxLayout, QSizePolicy, QSpacerItem, QDialog, QDialogButtonBox
+from PyQt5.QtWidgets import QHBoxLayout, QGridLayout, QSizePolicy, QSpacerItem, QDialog, QDialogButtonBox
 from PyQt5.QtWidgets import QWidget, QMessageBox, QFileDialog, QVBoxLayout
 
+from data.app_data import CostData
 from executions.controllers.ui.window_utils import add_button, CircularButton
-from executions.controllers.ui.window_utils import add_intro, add_png_logo, add_drop_text_edit, add_text_edit_html
+from executions.controllers.ui.window_utils import add_intro, add_png_logo, add_drop_text_edit, add_text_edit_html, add_spinbox
 from utils.text_utils import format_text_bold_for_output
 
 
@@ -45,27 +46,44 @@ class UploadWindow(QWidget):
 
         add_png_logo(top_layout)
 
-        middle_layout = QVBoxLayout()
-        middle_layout.setContentsMargins(20, 5, 20, 20)
-        layout.addLayout(middle_layout)
+        grid_layout = QGridLayout()
+        grid_layout.setContentsMargins(20, 5, 20, 20)
+        layout.addLayout(grid_layout)
 
-        self.dna_text_edit = add_drop_text_edit(middle_layout,
+        dna_layout = QVBoxLayout()  # For row 0, column 0
+        pattern_layout = QVBoxLayout()  # For row 1, column 0
+        codon_usage_layout = QVBoxLayout()  # For row 0, column 1
+        custom_scores_layout = QVBoxLayout()  # For row 1, column 1
+
+        grid_layout.addLayout(dna_layout, 0, 0)
+        self.dna_text_edit = add_drop_text_edit(dna_layout,
                                                 "Upload Target Sequence/Drag&Drop Target Sequence file (.txt)",
                                                 self.dna_file_content)
-        add_button(middle_layout, 'Load Target Sequence', Qt.AlignCenter, self.load_file, (self.dna_text_edit,),
+        add_button(dna_layout, 'Load Target Sequence', Qt.AlignCenter, self.load_file, (self.dna_text_edit,),
                    size=(200, 30))
 
-        self.patterns_text_edit = add_drop_text_edit(middle_layout,
+        grid_layout.addLayout(pattern_layout, 1, 0)
+        self.patterns_text_edit = add_drop_text_edit(pattern_layout,
                                                      "Upload Patterns file/Drag&Drop Patterns file (.txt)",
                                                      self.patterns_file_content)
-        add_button(middle_layout, 'Load Patterns', Qt.AlignCenter, self.load_file, (self.patterns_text_edit,),
+        add_button(pattern_layout, 'Load Patterns', Qt.AlignCenter, self.load_file, (self.patterns_text_edit,),
                    size=(200, 30))
 
-        self.codon_usage_text_edit = add_drop_text_edit(middle_layout,
+        grid_layout.addLayout(codon_usage_layout, 0, 1)
+        self.codon_usage_text_edit = add_drop_text_edit(codon_usage_layout,
                                                         "Upload Codon Usage file/Drag&Drop Codon Usage file (.txt)",
                                                         self.codon_usage_file_content)
-        add_button(middle_layout, 'Load Codon Usage', Qt.AlignCenter, self.load_file, (self.codon_usage_text_edit,),
+        add_button(codon_usage_layout, 'Load Codon Usage', Qt.AlignCenter, self.load_file, (self.codon_usage_text_edit,),
                    size=(200, 30))
+
+        grid_layout.addLayout(custom_scores_layout, 1, 1)
+        add_spinbox(custom_scores_layout, default_value=CostData.alpha,
+                    callback=lambda val: setattr(CostData, 'alpha', val), args=("Transition substitution cost",), alignment=Qt.AlignCenter)
+        add_spinbox(custom_scores_layout, default_value=CostData.beta,
+                    callback=lambda val: setattr(CostData, 'beta', val), args=("Transversion substitution cost",), alignment=Qt.AlignCenter)
+        add_spinbox(custom_scores_layout, default_value=CostData.w,
+                    callback=lambda val: setattr(CostData, 'w', val), args=("Non-synonymous substitution cost",), alignment=Qt.AlignCenter)
+        custom_scores_layout.addStretch(1)  # This will push content upwards and add space at the bottom
 
         bottom_layout = QHBoxLayout()
         bottom_layout.setContentsMargins(20, 5, 20, 20)
@@ -80,6 +98,9 @@ class UploadWindow(QWidget):
                    lambda: (self.dna_text_edit.toPlainText().strip(),
                             self.patterns_text_edit.toPlainText().strip(),
                             self.codon_usage_text_edit.toPlainText().strip()))
+
+    def on_spin_change(self, value, extra_text):
+        print(f"Value: {value}, Extra: {extra_text}")
 
     def load_file(self, text_edit):
         fileName, _ = QFileDialog.getOpenFileName(self, "Open File", "", "Text Files (*.txt)")

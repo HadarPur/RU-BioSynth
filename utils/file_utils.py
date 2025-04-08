@@ -3,7 +3,7 @@ import re
 import shutil
 import sys
 from pathlib import Path
-
+import numpy as np
 
 def read_codon_usage_map(raw_lines):
     """

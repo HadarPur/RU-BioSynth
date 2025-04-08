@@ -3,21 +3,14 @@ from PyQt5.QtWidgets import QWidget, QSizePolicy, QVBoxLayout
 
 from executions.controllers.ui.window_utils import add_button, add_text_edit_html
 from executions.execution_utils import eliminate_unwanted_patterns
+from data.app_data import InputData, EliminationData
 
 
 class EliminationWindow(QWidget):
-    def __init__(self, switch_to_results_callback, dna_sequence, unwanted_patterns, original_coding_regions,
-                 original_region_list,
-                 selected_regions_to_exclude,
-                 selected_region_list, back_to_processing_callback):
+    def __init__(self, switch_to_results_callback, updated_coding_positions, back_to_processing_callback):
         super().__init__()
         self.switch_to_results_callback = switch_to_results_callback
-        self.dna_sequence = dna_sequence
-        self.unwanted_patterns = unwanted_patterns
-        self.original_coding_regions = original_coding_regions
-        self.original_region_list = original_region_list
-        self.selected_regions_to_exclude = selected_regions_to_exclude
-        self.selected_region_list = selected_region_list
+        self.updated_coding_positions = updated_coding_positions
 
         self.top_layout = None
         self.middle_layout = None
@@ -43,11 +36,9 @@ class EliminationWindow(QWidget):
         content_layout = QVBoxLayout()
         middle_layout.addLayout(content_layout)
 
-        info, detailed_changes, optimized_seq, min_cost = eliminate_unwanted_patterns(self.dna_sequence,
-                                                                                      self.unwanted_patterns,
-                                                                                      self.selected_region_list)
+        eliminate_unwanted_patterns(InputData.dna_sequence, InputData.patterns, self.updated_coding_positions)
 
-        info = info.replace("\n", "<br>")
+        info = EliminationData.info.replace("\n", "<br>")
         label_html = f"""
             <h2>Elimination Process:</h2>
             <p>{info}</p>
@@ -63,9 +54,4 @@ class EliminationWindow(QWidget):
         content_layout.addStretch(1)  # This ensures that the layout can expand and push content
 
         # Add next button to the bottom layout
-        add_button(layout, 'Next', Qt.AlignRight, self.switch_to_results_callback,
-                   lambda: (self.original_coding_regions,
-                            self.original_region_list,
-                            self.selected_regions_to_exclude,
-                            self.selected_region_list, optimized_seq,
-                            min_cost, detailed_changes))
+        add_button(layout, 'Next', Qt.AlignRight, self.switch_to_results_callback)

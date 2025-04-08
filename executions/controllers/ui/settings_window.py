@@ -9,15 +9,13 @@ from executions.controllers.ui.window_utils import add_button, add_text_edit_htm
     adjust_scroll_area_height
 from utils.display_utils import SequenceUtils
 from utils.dna_utils import DNAUtils
+from data.app_data import InputData
 
 
 class SettingsWindow(QWidget):
-    def __init__(self, switch_to_eliminate_callback, dna_sequence, unwanted_patterns, codon_usage, back_to_upload_callback):
+    def __init__(self, switch_to_eliminate_callback, back_to_upload_callback):
         super().__init__()
         self.switch_to_eliminate_callback = switch_to_eliminate_callback
-        self.dna_sequence = dna_sequence
-        self.unwanted_patterns = unwanted_patterns
-        self.codon_usage = codon_usage
 
         self.scroll = None
         self.next_button = None
@@ -63,7 +61,7 @@ class SettingsWindow(QWidget):
         label = QLabel(label_html)
         content_layout.addWidget(label)
 
-        content = f'{self.dna_sequence}'
+        content = f'{InputData.dna_sequence}'
         text_edit = add_text_edit(content_layout, "", content)
         adjust_text_edit_height(text_edit)
         text_edit.setStyleSheet("""
@@ -79,7 +77,7 @@ class SettingsWindow(QWidget):
         label = QLabel(label_html)
         content_layout.addWidget(label)
 
-        content = f'{SequenceUtils.get_patterns(self.unwanted_patterns)}'
+        content = f'{SequenceUtils.get_patterns(InputData.patterns)}'
         text_edit = add_text_edit(content_layout, "", content)
         adjust_text_edit_height(text_edit)
         text_edit.setStyleSheet("""
@@ -89,10 +87,12 @@ class SettingsWindow(QWidget):
             }
         """)
 
-        original_region_list = DNAUtils.get_coding_and_non_coding_regions(self.dna_sequence)
-        original_coding_regions, coding_indexes = DNAUtils.extract_coding_regions_with_indexes(
-            original_region_list)
-        highlighted_sequence = SequenceUtils.highlight_sequences_to_html(original_region_list)
+        # Extract coding regions
+        InputData.coding_positions, InputData.coding_indexes = DNAUtils.get_coding_and_non_coding_regions_positions(InputData.dna_sequence)
+        highlighted_sequence = ''.join(SequenceUtils.highlight_sequences_to_html(InputData.dna_sequence, InputData.coding_indexes))
+
+        # Handle elimination of coding regions if the user chooses to
+        InputData.coding_regions_list = DNAUtils.get_coding_regions_list(InputData.coding_indexes, InputData.dna_sequence)
 
         # Adding formatted text to QLabel
         label_html = f"""
@@ -119,15 +119,14 @@ class SettingsWindow(QWidget):
         """)
 
         label_html = f"""
-            <p>Number of coding regions is {len(original_coding_regions)}</p>
+            <p>The total number of coding regions is {len(InputData.coding_regions_list)}</p>
         """
 
         label = QLabel(label_html)
         content_layout.addWidget(label)
 
-        if len(original_coding_regions) > 0:
-            self.prompt_coding_regions_decision(content_layout, original_coding_regions, original_region_list,
-                                                coding_indexes, self.unwanted_patterns)
+        if len(InputData.coding_regions_list) > 0:
+            self.prompt_coding_regions_decision(content_layout)
 
         # Add a stretch to push all content to the top
         content_layout.addStretch(1)
@@ -137,8 +136,7 @@ class SettingsWindow(QWidget):
 
         QTimer.singleShot(50, self.scroll_to_bottom)  # Add this line
 
-    def prompt_coding_regions_decision(self, layout, original_coding_regions, original_region_list, coding_indexes,
-                                       unwanted_patterns):
+    def prompt_coding_regions_decision(self, layout):
         # Create a horizontal layout for the entire prompt
         prompt_layout = QHBoxLayout()
         container_widget = QWidget()
@@ -151,32 +149,24 @@ class SettingsWindow(QWidget):
         prompt_layout.addWidget(question_label)
 
         # Create the 'Yes' button
-        callback_args = (original_coding_regions, original_region_list)
-        self.yes_button = add_button(prompt_layout, 'Yes', Qt.AlignLeft, self.select_all_regions, callback_args)
+        self.yes_button = add_button(prompt_layout, 'Yes', Qt.AlignLeft, self.select_all_regions)
 
         # Create the 'No' button
-        callback_args = (layout, original_coding_regions, original_region_list,
-                         coding_indexes, unwanted_patterns)
-        self.no_button = add_button(prompt_layout, 'No', Qt.AlignLeft, self.select_regions_to_exclude, callback_args)
+        self.no_button = add_button(prompt_layout, 'No', Qt.AlignLeft, self.select_regions_to_exclude, (layout, ))
 
         # Add a spacer to push the buttons to the left
         spacer = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
         prompt_layout.addItem(spacer)
 
-    def select_all_regions(self, original_coding_regions, original_region_list):
+    def select_all_regions(self):
         if not self.no_button.isEnabled() or self.next_button.isEnabled():
             return
 
         self.no_button.setEnabled(False)
-        original_coding_regions = DNAUtils.get_coding_regions_list(original_coding_regions)
-
-        self.next_button.clicked.connect(
-            lambda: self.switch_to_eliminate_callback(original_coding_regions, original_region_list, None,
-                                                      original_region_list))
+        self.next_button.clicked.connect(lambda: self.switch_to_eliminate_callback(InputData.coding_positions))
         self.next_button.setEnabled(True)
 
-    def select_regions_to_exclude(self, layout, original_coding_regions, original_region_list, coding_indexes,
-                                  unwanted_patterns):
+    def select_regions_to_exclude(self, layout):
 
         if not self.yes_button.isEnabled() or self.next_button.isEnabled():
             return
@@ -185,20 +175,14 @@ class SettingsWindow(QWidget):
         layout.addWidget(container_widget, alignment=Qt.AlignTop)
 
         self.yes_button.setEnabled(False)
-        self.region_selector = RegionSelector(container_widget, original_coding_regions, original_region_list,
-                                              coding_indexes,
-                                              unwanted_patterns, self.handle_results)
+        self.region_selector = RegionSelector(container_widget, self.handle_results)
 
         QTimer.singleShot(50, self.scroll_to_bottom)  # Add this line
 
-    def handle_results(self, layout, original_coding_regions, original_region_list, selected_regions_to_exclude,
-                       selected_region_list):
-
+    def handle_results(self, layout):
         self.region_selector.setEnabled(False)
-
         self.next_button.clicked.connect(
-            lambda: self.switch_to_eliminate_callback(original_coding_regions, original_region_list,
-                                                      selected_regions_to_exclude, selected_region_list))
+            lambda: self.switch_to_eliminate_callback(InputData.excluded_coding_positions))
         self.next_button.setEnabled(True)
 
         label = QLabel(f"\nSelected regions to exclude:")
@@ -217,8 +201,8 @@ class SettingsWindow(QWidget):
 
         exclude_layout = QVBoxLayout(scroll_content)  # Layout for the content widget
 
-        for index, region in selected_regions_to_exclude.items():
-            exclude = QLabel(f"[{index}]: {region}")
+        for key, value in InputData.excluded_regions_list.items():
+            exclude = QLabel(f"[{key}]: {value}")
             exclude_layout.addWidget(exclude, alignment=Qt.AlignTop)
 
         # Set the content widget for the scroll area
@@ -241,7 +225,7 @@ class SettingsWindow(QWidget):
 
         # Adding formatted text to QLabel
         label_html = f'''
-        <p>{SequenceUtils.highlight_sequences_to_html(selected_region_list)}</p>'''
+        <p>{SequenceUtils.highlight_sequences_to_html(InputData.dna_sequence, InputData.excluded_coding_indexes)}</p>'''
         text_edit = add_text_edit_html(layout, "", label_html)
         adjust_text_edit_height(text_edit)
         text_edit.setStyleSheet("""
@@ -274,13 +258,8 @@ class SettingsWindow(QWidget):
 
 
 class RegionSelector(QWidget):
-    def __init__(self, layout, original_coding_regions, original_region_list, coding_indexes, unwanted_patterns,
-                 result_callback):
+    def __init__(self, layout, result_callback):
         super().__init__()
-        self.original_coding_regions = original_coding_regions
-        self.original_region_list = original_region_list
-        self.coding_indexes = coding_indexes
-        self.unwanted_patterns = unwanted_patterns
         self.result_callback = result_callback
 
         self.checkboxes = []
@@ -308,8 +287,8 @@ class RegionSelector(QWidget):
 
         layout = QVBoxLayout(scroll_content)  # Layout for the content widget
 
-        for index, region in enumerate(self.original_coding_regions):
-            checkbox = QCheckBox(f"[{index + 1}]: {region}")
+        for index, region in InputData.coding_regions_list.items():
+            checkbox = QCheckBox(f"[{index}]: {region}")
             layout.addWidget(checkbox, alignment=Qt.AlignTop)
             self.checkboxes.append((checkbox, region))
 
@@ -339,30 +318,21 @@ class RegionSelector(QWidget):
         if reply == QMessageBox.Yes:
             self.submit_button.setEnabled(False)
             self.disable_checkboxes()
-            original_coding_regions, original_region_list, selected_regions_to_exclude, selected_region_list = self.handle_coding_region_checkboxes()
-            self.result_callback(layout, original_coding_regions, original_region_list, selected_regions_to_exclude,
-                                 selected_region_list)
+            self.handle_coding_region_checkboxes()
+            self.result_callback(layout)
 
     def handle_coding_region_checkboxes(self):
+        InputData.excluded_regions_list = dict()
+        InputData.excluded_coding_positions = InputData.coding_positions
+        InputData.excluded_coding_indexes = InputData.coding_indexes
+
         # Implementation of the exclusion logic
-        original_region_list = copy.deepcopy(self.original_region_list)
-        selected_region_list = copy.deepcopy(self.original_region_list)
-
-        original_coding_regions = {}
-        selected_regions_to_exclude = {}
-        coding_regions_to_exclude = {}
-
         for index, (checkbox, region) in enumerate(self.checkboxes):
-            original_coding_regions[f'{index + 1}'] = region
             if checkbox.isChecked():
-                selected_regions_to_exclude[f'{index + 1}'] = region
-                coding_regions_to_exclude[index] = region
-
-        # Update the coding regions based on user input
-        selected_region_list = DNAUtils.update_coding_regions(selected_region_list, self.coding_indexes,
-                                                              coding_regions_to_exclude)
-
-        return original_coding_regions, original_region_list, selected_regions_to_exclude, selected_region_list
+                InputData.excluded_regions_list[f'{index+1}'] = region
+                start, end = InputData.coding_indexes[index]
+                InputData.excluded_coding_positions[start:end] = [0] * (end - start)
+                InputData.excluded_coding_indexes.remove((start, end))
 
     def disable_checkboxes(self):
         for checkbox, region in self.checkboxes:

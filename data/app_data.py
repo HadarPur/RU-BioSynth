@@ -8,10 +8,11 @@ class InputData:
 
     coding_indexes = None
     coding_positions = None
-
     coding_regions_list = None
-    selected_regions_to_exclude = None
-    selected_regions_to_include = None
+
+    excluded_coding_indexes = None
+    excluded_coding_positions = None
+    excluded_regions_list = None
 
 
 class CostData:

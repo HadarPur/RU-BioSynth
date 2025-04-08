@@ -11,6 +11,7 @@ from executions.controllers.ui.window_utils import add_text_edit_html, add_text_
 from executions.execution_utils import is_valid_dna, is_valid_patterns, is_valid_codon_usage
 from utils.file_utils import read_codon_usage_map
 from utils.dna_utils import DNAUtils
+from data.app_data import InputData, CostData, OutputData
 
 
 class BaseWindow(QMainWindow):
@@ -22,9 +23,6 @@ class BaseWindow(QMainWindow):
         self.patterns_file_content = None
         self.codon_usage_file_content = None
 
-        self.dna_sequence = None
-        self.unwanted_patterns = None
-        self.codon_usage = None
         self.init_ui()
 
     def init_ui(self):
@@ -39,8 +37,7 @@ class BaseWindow(QMainWindow):
         self.stackedLayout.setCurrentWidget(upload_window)
 
     def show_process_window(self):
-        process_window = SettingsWindow(self.switch_to_elimination_window, self.dna_sequence, self.unwanted_patterns, self.codon_usage,
-                                        self.show_upload_window)
+        process_window = SettingsWindow(self.switch_to_elimination_window, self.show_upload_window)
         self.stackedLayout.addWidget(process_window)
         self.stackedLayout.setCurrentWidget(process_window)
 
@@ -110,21 +107,17 @@ class BaseWindow(QMainWindow):
             self.show_overlapping_msg(dna_sequence, overlaps)
             return
 
-        self.dna_sequence = dna_sequence
-        self.unwanted_patterns = unwanted_patterns
-        self.codon_usage = codon_usage
+        InputData.dna_sequence = dna_sequence
+        InputData.patterns = unwanted_patterns
+        CostData.codon_usage = codon_usage
 
-        process_window = SettingsWindow(self.switch_to_elimination_window, dna_sequence, unwanted_patterns, codon_usage,
-                                        self.show_upload_window)
+        process_window = SettingsWindow(self.switch_to_elimination_window, self.show_upload_window)
+
         self.stackedLayout.addWidget(process_window)
         self.stackedLayout.setCurrentWidget(process_window)
 
-    def switch_to_elimination_window(self, original_coding_regions, original_region_list, selected_regions_to_exclude,
-                                     selected_region_list):
-        elimination_window = EliminationWindow(self.switch_to_results_window, self.dna_sequence, self.unwanted_patterns,
-                                               original_coding_regions, original_region_list,
-                                               selected_regions_to_exclude,
-                                               selected_region_list, self.show_process_window)
+    def switch_to_elimination_window(self, updated_coding_positions):
+        elimination_window = EliminationWindow(self.switch_to_results_window, updated_coding_positions, self.show_process_window)
         self.stackedLayout.addWidget(elimination_window)
         self.stackedLayout.setCurrentWidget(elimination_window)
 
