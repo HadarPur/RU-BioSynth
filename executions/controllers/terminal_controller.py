@@ -22,7 +22,7 @@ class TerminalController:
             return
 
         InputData.dna_sequence = seq
-        InputData.patterns = unwanted_patterns
+        InputData.unwanted_patterns = unwanted_patterns
         CostData.codon_usage = codon_usage_table
 
         # optional values

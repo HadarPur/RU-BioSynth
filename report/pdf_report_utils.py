@@ -11,7 +11,7 @@ from utils.display_utils import SequenceUtils
 
 
 class ReportController:
-    def __init__(self):
+    def __init__(self, updated_coding_positions):
 
         self.input_seq = InputData.dna_sequence
         self.highlight_input = SequenceUtils.highlight_sequences_to_html(InputData.dna_sequence, InputData.coding_indexes)
@@ -19,10 +19,10 @@ class ReportController:
 
         # Mark non-equal codons
         self.index_seq_str, self.marked_input_seq, self.marked_optimized_seq = SequenceUtils.mark_non_equal_characters(
-            InputData.dna_sequence, OutputData.optimized_sequence, InputData.coding_positions
+            InputData.dna_sequence, OutputData.optimized_sequence, updated_coding_positions
         )
 
-        self.unwanted_patterns = ', '.join(InputData.patterns)
+        self.unwanted_patterns = ', '.join(InputData.unwanted_patterns)
         self.num_of_coding_regions = len(InputData.coding_indexes)
         self.detailed_changes = '<br>'.join(EliminationData.detailed_changes) if EliminationData.detailed_changes else None
         self.output_text = None
@@ -34,15 +34,15 @@ class ReportController:
                                   <p class="scrollable-paragraph horizontal-scroll">''' + '<br>'.join(
                 f"[{key}] {value}" for key, value in InputData.coding_regions_list.items()) + '''</p>'''
 
-            if InputData.selected_regions_to_exclude is not None and len(InputData.selected_regions_to_exclude) > 0:
+            if InputData.excluded_regions_list is not None and len(InputData.excluded_regions_list) > 0:
                 self.chosen_regions = '''<p><br>The specific coding regions that the user wish to exclude from the elimination process are as follows:</p>
                                             <p class="scrollable-paragraph horizontal-scroll">''' + '<br>'.join(
-                    f"[{key}] {value}" for key, value in InputData.selected_regions_to_exclude.items()) + '''</p>
+                    f"[{key}] {value}" for key, value in InputData.excluded_regions_list.items()) + '''</p>
                                       <p>These coding regions will be classified as non-coding areas.</p>'''
 
                 self.highlight_selected = '''<p><br>The full sequence after selection is:</p>
                                       <p class="scrollable-paragraph">''' + ''.join(
-                    SequenceUtils.highlight_sequences_to_html(InputData.selected_regions_to_include)) + '''</p>'''
+                    SequenceUtils.highlight_sequences_to_html(InputData.dna_sequence, InputData.excluded_coding_indexes)) + '''</p>'''
 
             else:
                 self.chosen_regions = '''<p><br>No coding regions were selected for exclusion. Continuing with the current settings.</p>'''

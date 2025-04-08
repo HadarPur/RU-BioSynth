@@ -4,7 +4,7 @@ from pathlib import Path
 class InputData:
     # Input Data
     dna_sequence = None
-    patterns = None
+    unwanted_patterns = None
 
     coding_indexes = None
     coding_positions = None

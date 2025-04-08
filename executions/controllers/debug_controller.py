@@ -12,7 +12,7 @@ class DebugController:
     def execute():
         if is_valid_input(S, P, C):
             InputData.dna_sequence = S
-            InputData.patterns = P
+            InputData.unwanted_patterns = P
             CostData.codon_usage = C
 
             controller = CommandController()

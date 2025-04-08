@@ -50,7 +50,7 @@ class CommandController:
 
         # Print the list of unwanted patterns
         Logger.debug(f"{format_text_bold_for_output('Pattern list:')}")
-        Logger.info(f"{SequenceUtils.get_patterns(InputData.patterns)}")
+        Logger.info(f"{SequenceUtils.get_patterns(InputData.unwanted_patterns)}")
         Logger.space()
 
         # Extract coding regions
@@ -67,7 +67,7 @@ class CommandController:
         Logger.info('\n'.join(f"[{key}] {value}" for key, value in InputData.coding_regions_list.items()))
 
         # Eliminate unwanted patterns
-        eliminate_unwanted_patterns(InputData.dna_sequence, InputData.patterns, InputData.coding_positions)
+        eliminate_unwanted_patterns(InputData.dna_sequence, InputData.unwanted_patterns, InputData.coding_positions)
 
         Logger.notice(format_text_bold_for_output('\n' + '_' * 100 + '\n'))
         Logger.info(EliminationData.info)

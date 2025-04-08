@@ -41,21 +41,13 @@ class BaseWindow(QMainWindow):
         self.stackedLayout.addWidget(process_window)
         self.stackedLayout.setCurrentWidget(process_window)
 
-    def show_elimination_window(self, original_coding_regions, original_region_list, selected_regions_to_exclude,
-                                selected_region_list):
-        elimination_window = EliminationWindow(self.switch_to_results_window, self.dna_sequence, self.unwanted_patterns,
-                                               original_coding_regions, original_region_list,
-                                               selected_regions_to_exclude, selected_region_list,
-                                               self.show_process_window)
+    def show_elimination_window(self, updated_coding_positions):
+        elimination_window = EliminationWindow(self.switch_to_results_window, updated_coding_positions, self.show_process_window)
         self.stackedLayout.addWidget(elimination_window)
         self.stackedLayout.setCurrentWidget(elimination_window)
 
-    def switch_to_results_window(self, original_coding_regions, original_region_list, selected_regions_to_exclude,
-                                 selected_region_list, optimized_seq, min_cost, detailed_changes):
-        results_window = ResultsWindow(self.dna_sequence, self.unwanted_patterns,
-                                       original_coding_regions, original_region_list, selected_regions_to_exclude,
-                                       selected_region_list, optimized_seq, min_cost, detailed_changes,
-                                       self.show_elimination_window)
+    def switch_to_results_window(self, updated_coding_positions):
+        results_window = ResultsWindow(self.show_elimination_window, updated_coding_positions)
         self.stackedLayout.addWidget(results_window)
         self.stackedLayout.setCurrentWidget(results_window)
 
@@ -108,7 +100,7 @@ class BaseWindow(QMainWindow):
             return
 
         InputData.dna_sequence = dna_sequence
-        InputData.patterns = unwanted_patterns
+        InputData.unwanted_patterns = unwanted_patterns
         CostData.codon_usage = codon_usage
 
         process_window = SettingsWindow(self.switch_to_elimination_window, self.show_upload_window)

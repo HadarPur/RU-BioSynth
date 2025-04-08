@@ -36,7 +36,7 @@ class EliminationWindow(QWidget):
         content_layout = QVBoxLayout()
         middle_layout.addLayout(content_layout)
 
-        eliminate_unwanted_patterns(InputData.dna_sequence, InputData.patterns, self.updated_coding_positions)
+        eliminate_unwanted_patterns(InputData.dna_sequence, InputData.unwanted_patterns, self.updated_coding_positions)
 
         info = EliminationData.info.replace("\n", "<br>")
         label_html = f"""
@@ -54,4 +54,4 @@ class EliminationWindow(QWidget):
         content_layout.addStretch(1)  # This ensures that the layout can expand and push content
 
         # Add next button to the bottom layout
-        add_button(layout, 'Next', Qt.AlignRight, self.switch_to_results_callback)
+        add_button(layout, 'Next', Qt.AlignRight, self.switch_to_results_callback, lambda: (self.updated_coding_positions,))

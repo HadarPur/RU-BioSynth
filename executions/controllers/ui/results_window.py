@@ -8,6 +8,7 @@ from PyQt5.QtWidgets import QHBoxLayout, QSizePolicy, QSpacerItem, QDialog, QTex
 
 from executions.controllers.ui.window_utils import add_button, add_code_block, add_text_edit_html, CircularButton
 from executions.execution_utils import mark_non_equal_codons, initialize_report
+from data.app_data import InputData, OutputData
 
 
 def quit_app():
@@ -21,26 +22,15 @@ def show_preview_report(report_local_file_path):
 
 
 class ResultsWindow(QWidget):
-    def __init__(self, dna_sequence, unwanted_patterns, original_coding_regions, original_region_list,
-                 selected_regions_to_exclude, selected_region_list, optimized_seq, min_cost, detailed_changes,
-                 back_to_elimination_callback):
+    def __init__(self, back_to_elimination_callback, updated_coding_positions):
         super().__init__()
-        self.dna_sequence = dna_sequence
-        self.unwanted_patterns = unwanted_patterns
-        self.original_coding_regions = original_coding_regions
-        self.original_region_list = original_region_list
-        self.selected_regions_to_exclude = selected_regions_to_exclude
-        self.selected_region_list = selected_region_list
-        self.optimized_seq = optimized_seq
-        self.min_cost = min_cost
-        self.detailed_changes = detailed_changes
-
         self.top_layout = None
         self.middle_layout = None
         self.bottom_layout = None
         self.report = None
         self.status_label = None
 
+        self.updated_coding_positions = updated_coding_positions
         self.init_ui(back_to_elimination_callback)
 
         # Timer for status label
@@ -50,8 +40,7 @@ class ResultsWindow(QWidget):
     def init_ui(self, callback):
         layout = QVBoxLayout(self)
 
-        callback_args = (self.original_coding_regions, self.original_region_list,
-                         self.selected_regions_to_exclude, self.selected_region_list)
+        callback_args = (self.updated_coding_positions, )
         add_button(layout, 'Back', Qt.AlignLeft, callback, callback_args)
 
         self.display_info(layout)
@@ -87,9 +76,9 @@ class ResultsWindow(QWidget):
         info_layout.addWidget(info_button, alignment=Qt.AlignRight)
 
         # Mark non-equal codons and print the optimized sequence
-        index_seq_str, marked_input_seq, marked_optimized_seq = mark_non_equal_codons(self.dna_sequence,
-                                                                                   self.optimized_seq,
-                                                                                   self.selected_region_list)
+        index_seq_str, marked_input_seq, marked_optimized_seq = mark_non_equal_codons(InputData.dna_sequence,
+                                                                                   OutputData.optimized_sequence,
+                                                                                   self.updated_coding_positions)
 
         content = '''<pre>''' + index_seq_str + '''<br></pre>'''
         content += '''<pre>''' + marked_input_seq + '''<br><br>''' + marked_optimized_seq + '''</pre>'''
@@ -120,14 +109,12 @@ class ResultsWindow(QWidget):
         # Create a report summarizing the processing and save if the user chooses to
         file_date = datetime.today().strftime("%d %b %Y, %H:%M:%S")
 
-        add_code_block(self.middle_layout, self.optimized_seq, file_date, self.update_status)
+        add_code_block(self.middle_layout, OutputData.optimized_sequence, file_date, self.update_status)
 
         # Spacer to push other widgets to the top
         layout.addSpacerItem(QSpacerItem(0, 0, QSizePolicy.Minimum, QSizePolicy.Expanding))
 
-        self.prompt_report(self.middle_layout, self.optimized_seq, index_seq_str, marked_input_seq, marked_optimized_seq,
-                           self.original_coding_regions, self.original_region_list, self.selected_regions_to_exclude,
-                           self.selected_region_list, self.min_cost, file_date, self.detailed_changes)
+        self.prompt_report(self.middle_layout, file_date)
 
         # Create a horizontal layout for the bottom section
         self.bottom_layout = QHBoxLayout()
@@ -143,15 +130,8 @@ class ResultsWindow(QWidget):
         done_button.clicked.connect(lambda: quit_app())  # Connect to quit the application
         self.bottom_layout.addWidget(done_button, alignment=Qt.AlignRight)
 
-    def prompt_report(self, layout, optimized_seq, index_seq_str, marked_input_seq, marked_optimized_seq,
-                      original_coding_regions,
-                      original_region_list, selected_regions_to_exclude, selected_region_list, min_cost, file_date,
-                      detailed_changes):
-        self.report = initialize_report(self.dna_sequence, optimized_seq, index_seq_str, marked_input_seq,
-                                        marked_optimized_seq,
-                                        self.unwanted_patterns, original_coding_regions, original_region_list,
-                                        selected_regions_to_exclude, selected_region_list,
-                                        min_cost, detailed_changes)
+    def prompt_report(self, layout, file_date):
+        self.report = initialize_report(self.updated_coding_positions)
 
         report_local_file_path = self.report.create_report(file_date)
 

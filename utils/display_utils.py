@@ -158,6 +158,8 @@ class SequenceUtils:
 
         last_end = 0  # Track the end of the last processed region
 
+        print(f"coding_indexes = {coding_indexes}")
+
         for start, end in coding_indexes:
             # Add non-coding region before the current coding region
             if last_end < start:

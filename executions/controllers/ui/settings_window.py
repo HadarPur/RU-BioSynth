@@ -77,7 +77,7 @@ class SettingsWindow(QWidget):
         label = QLabel(label_html)
         content_layout.addWidget(label)
 
-        content = f'{SequenceUtils.get_patterns(InputData.patterns)}'
+        content = f'{SequenceUtils.get_patterns(InputData.unwanted_patterns)}'
         text_edit = add_text_edit(content_layout, "", content)
         adjust_text_edit_height(text_edit)
         text_edit.setStyleSheet("""
