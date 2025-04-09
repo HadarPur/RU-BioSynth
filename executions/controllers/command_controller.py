@@ -1,13 +1,13 @@
 from datetime import datetime
 
-from executions.execution_utils import eliminate_unwanted_patterns, mark_non_equal_codons, initialize_report
+from data.app_data import InputData, EliminationData, OutputData
+from executions.execution_utils import eliminate_unwanted_patterns
+from report.pdf_report_utils import ReportController
 from utils.display_utils import SequenceUtils
 from utils.dna_utils import DNAUtils
 from utils.file_utils import save_file
 from utils.output_utils import Logger
 from utils.text_utils import format_text_bold_for_output
-from data.app_data import InputData, EliminationData, OutputData
-from report.pdf_report_utils import ReportController
 
 app_icon_text = """\
 =================================================================

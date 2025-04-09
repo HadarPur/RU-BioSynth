@@ -1,13 +1,12 @@
 from collections import defaultdict
 
 from algorithm.fsm import FSM
+from data.app_data import CostData
 from settings.costs_settings import elimination_process_description, coding_region_cost_description, \
     non_coding_region_cost_description
 from utils.cost_utils import EliminationScorerConfig
 from utils.date_utils import format_current_date
 from utils.text_utils import format_text_bold_for_output
-from utils.graphic_utils import visualize_fsm_graph, visualize_fsm_table, visualize_dp_table
-from data.app_data import CostData
 
 
 class EliminationController:

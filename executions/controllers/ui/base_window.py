@@ -3,15 +3,15 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QDialog, QDialogButtonBox
 from PyQt5.QtWidgets import QMainWindow, QMessageBox, QStackedWidget, QVBoxLayout
 
+from data.app_data import InputData, CostData
 from executions.controllers.ui.elimination_window import EliminationWindow
-from executions.controllers.ui.settings_window import SettingsWindow
 from executions.controllers.ui.results_window import ResultsWindow
+from executions.controllers.ui.settings_window import SettingsWindow
 from executions.controllers.ui.upload_window import UploadWindow
 from executions.controllers.ui.window_utils import add_text_edit_html, add_text_edit
 from executions.execution_utils import is_valid_dna, is_valid_patterns, is_valid_codon_usage
-from utils.file_utils import read_codon_usage_map
 from utils.dna_utils import DNAUtils
-from data.app_data import InputData, CostData, OutputData
+from utils.file_utils import read_codon_usage_map
 
 
 class BaseWindow(QMainWindow):

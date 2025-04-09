@@ -3,8 +3,8 @@ import os
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QPainterPath, QRegion
 from PyQt5.QtGui import QPixmap
-from PyQt5.QtWidgets import QFrame, QPushButton, QVBoxLayout, QApplication, QLabel, QHBoxLayout
 from PyQt5.QtWidgets import QFileDialog, QTextEdit, QPlainTextEdit, QToolBar, QDoubleSpinBox
+from PyQt5.QtWidgets import QFrame, QPushButton, QVBoxLayout, QApplication, QLabel, QHBoxLayout, QSizePolicy
 
 from utils.file_utils import resource_path, save_file
 
@@ -59,22 +59,25 @@ class DropTextEdit(QTextEdit):
                 event.acceptProposedAction()
 
 
-def add_intro(layout):
-    content = "Hi,"
-    content += "\nWelcome to the BioBliss App."
-    content += "\nTo eliminate unwanted patterns from a specific target sequence, please upload the target sequence file " \
-               "along with the patterns file you wish to remove."
-    content += "\n"
-    content += "\nThe target sequence file should contain only one continuous sequence."
-    content += "\nThe patterns file should list each pattern on a new line, containing only standard characters" \
-               " without any special symbols."
-    content += "\n"
+def add_intro(layout, row=0, column=0):
+    content = (
+        "Hi there, and welcome to the BioBliss App!\n"
+        "To start eliminating unwanted patterns from your DNA sequence, please upload three files: (1) a target sequence file with a continuous DNA string, (2) a patterns file with one pattern per line using standard characters, and (3) a codon usage file to guide biologically meaningful substitutions.\n"
+        "You can also adjust substitution costs—transitions (A↔G, C↔T, default: 1.0), transversions (A/G↔C/T, default: 2.0), and non-synonymous changes (default: 100.0). If not specified, default values will apply.\n"
+        "Once files are uploaded and options set, BioBliss will optimize your sequence."
+        "\nLet’s get started!"
+    )
+
     title = QLabel(content)
-    layout.addWidget(title)
+    title.setWordWrap(True)
+    title.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Preferred)
+
+    layout.addWidget(title, row, column)
+
     return title
 
 
-def add_png_logo(layout):
+def add_png_logo(layout, row=0, column=0):
     # Create a frame to hold the logo
     frame = QFrame()
     frame_layout = QHBoxLayout(frame)  # Use a QHBoxLayout within the frame
@@ -92,7 +95,7 @@ def add_png_logo(layout):
     frame_layout.addWidget(logo)
 
     # Add the frame to the main layout
-    layout.addWidget(frame, alignment=Qt.AlignTop)
+    layout.addWidget(frame, row, column, alignment=Qt.AlignTop)
 
 
 def add_logo_toolbar(layout):
@@ -291,13 +294,14 @@ def add_spinbox(layout, default_value, step=0.01,
         QSpinBox instance.
     """
     bottom_layout = QHBoxLayout()
+    bottom_layout.setContentsMargins(0, 5, 0, 10)
     layout.addLayout(bottom_layout)
 
     # Optional label based on args[0]
     if args and isinstance(args[0], str):
         label = QLabel(str(args[0]))
         label.setAlignment(Qt.AlignVCenter | Qt.AlignLeft)
-        bottom_layout.addWidget(label)
+        bottom_layout.addWidget(label, stretch=4)
 
     spinbox = QDoubleSpinBox()
     spinbox.setMinimum(0.0)
@@ -310,8 +314,7 @@ def add_spinbox(layout, default_value, step=0.01,
     if callback is not None:
         spinbox.valueChanged.connect(lambda val: callback(val))
 
-    bottom_layout.addWidget(spinbox, alignment=alignment)
-
+    bottom_layout.addWidget(spinbox, alignment=alignment, stretch=1)
     return spinbox
 
 

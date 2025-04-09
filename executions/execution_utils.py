@@ -1,8 +1,8 @@
 from algorithm.eliminate_sequence import EliminationController
+from data.app_data import EliminationData, OutputData
 from report.pdf_report_utils import ReportController
 from utils.display_utils import SequenceUtils
 from utils.output_utils import Logger
-from data.app_data import EliminationData, OutputData
 
 
 def is_valid_dna(sequence):

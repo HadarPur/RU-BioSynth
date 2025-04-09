@@ -1,10 +1,11 @@
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QHBoxLayout, QGridLayout, QSizePolicy, QSpacerItem, QDialog, QDialogButtonBox
+from PyQt5.QtWidgets import QHBoxLayout, QGridLayout, QDialog, QDialogButtonBox
 from PyQt5.QtWidgets import QWidget, QMessageBox, QFileDialog, QVBoxLayout
 
 from data.app_data import CostData
 from executions.controllers.ui.window_utils import add_button, CircularButton
-from executions.controllers.ui.window_utils import add_intro, add_png_logo, add_drop_text_edit, add_text_edit_html, add_spinbox
+from executions.controllers.ui.window_utils import add_intro, add_png_logo, add_drop_text_edit, add_text_edit_html, \
+    add_spinbox
 from utils.text_utils import format_text_bold_for_output
 
 
@@ -35,16 +36,16 @@ class UploadWindow(QWidget):
     def init_ui(self, next_callback):
         layout = QVBoxLayout(self)
 
-        top_layout = QHBoxLayout()
+        top_layout = QGridLayout()
         top_layout.setContentsMargins(20, 20, 20, 5)
         layout.addLayout(top_layout)
 
-        add_intro(top_layout)
+        add_intro(top_layout, 0, 0)
 
-        fixed_width_spacer = QSpacerItem(50, 0, QSizePolicy.Fixed, QSizePolicy.Minimum)
-        top_layout.addSpacerItem(fixed_width_spacer)
+        # fixed_width_spacer = QSpacerItem(50, 0, QSizePolicy.Fixed, QSizePolicy.Minimum)
+        # top_layout.addSpacerItem(fixed_width_spacer)
 
-        add_png_logo(top_layout)
+        add_png_logo(top_layout, 0, 1)
 
         grid_layout = QGridLayout()
         grid_layout.setContentsMargins(20, 5, 20, 20)

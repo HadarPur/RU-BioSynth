@@ -2,12 +2,12 @@ import os
 
 import jinja2
 
+from data.app_data import InputData, EliminationData, OutputData
 from settings.costs_settings import elimination_process_description, coding_region_cost_description, \
     non_coding_region_cost_description
+from utils.display_utils import SequenceUtils
 from utils.file_utils import create_dir, resource_path, save_file
 from utils.output_utils import Logger
-from data.app_data import InputData, EliminationData, OutputData
-from utils.display_utils import SequenceUtils
 
 
 class ReportController:

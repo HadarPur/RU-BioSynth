@@ -1,7 +1,7 @@
-import numpy as np
-from graphviz import Digraph
-import pandas as pd
 import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+from graphviz import Digraph
 
 
 def visualize_dp_table(A, sequence_length, fsm, path=None, output_file='dp_heatmap'):

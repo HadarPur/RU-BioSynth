@@ -1,4 +1,5 @@
 import unittest
+
 from algorithm.fsm import FSM
 
 

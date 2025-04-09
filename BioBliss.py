@@ -1,7 +1,7 @@
 import sys
 
-from executions.controllers.terminal_controller import TerminalController
 from executions.controllers.gui_controller import GUIController
+from executions.controllers.terminal_controller import TerminalController
 from utils.file_utils import delete_dir
 from utils.input_utils import ArgumentParser
 from utils.output_utils import Logger

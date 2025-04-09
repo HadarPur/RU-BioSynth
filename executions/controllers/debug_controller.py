@@ -1,10 +1,10 @@
 
+from data.app_data import InputData, CostData
 from executions.controllers.command_controller import CommandController
 from executions.execution_utils import is_valid_input
+from settings.codon_usage_settings import C
 from settings.pattern_settings import P
 from settings.sequence_settings import S
-from settings.codon_usage_settings import C
-from data.app_data import InputData, CostData, OutputData
 
 
 class DebugController:

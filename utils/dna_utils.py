@@ -1,5 +1,3 @@
-from Bio.Seq import Seq
-
 min_coding_region_length = 7 * 3  # start_codon_length + stop_codon_length + 5 codons length in the coding area
 
 

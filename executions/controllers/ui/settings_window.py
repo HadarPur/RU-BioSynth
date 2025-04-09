@@ -1,15 +1,13 @@
-import copy
-
 from PyQt5.QtCore import Qt, QEvent, QTimer, QPropertyAnimation, QEasingCurve
 from PyQt5.QtWidgets import QSpacerItem, QSizePolicy, QScrollArea
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QLabel, QCheckBox, QHBoxLayout, QMessageBox
 
+from data.app_data import InputData
 from executions.controllers.ui.window_utils import add_button, add_text_edit_html, add_text_edit, \
     adjust_text_edit_height, \
     adjust_scroll_area_height
 from utils.display_utils import SequenceUtils
 from utils.dna_utils import DNAUtils
-from data.app_data import InputData
 
 
 class SettingsWindow(QWidget):

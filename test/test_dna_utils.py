@@ -1,6 +1,7 @@
 import unittest
 
 from Bio.Seq import Seq
+
 from utils.dna_utils import DNAUtils
 
 

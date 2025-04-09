@@ -1,9 +1,9 @@
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QWidget, QSizePolicy, QVBoxLayout
 
+from data.app_data import InputData, EliminationData
 from executions.controllers.ui.window_utils import add_button, add_text_edit_html
 from executions.execution_utils import eliminate_unwanted_patterns
-from data.app_data import InputData, EliminationData
 
 
 class EliminationWindow(QWidget):
