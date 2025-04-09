@@ -44,7 +44,7 @@ class EliminationWindow(QWidget):
             <p>{info}</p>
         """
         info_text_edit = add_text_edit_html(content_layout, "", label_html)
-        info_text_edit.setMinimumHeight(650)
+        info_text_edit.setMinimumHeight(550)
 
         # Adjust size policy to expand with content
         info_text_edit.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)

@@ -83,6 +83,7 @@ class UploadWindow(QWidget):
                     callback=lambda val: setattr(CostData, 'beta', val), args=("Transversion substitution cost",), alignment=Qt.AlignCenter)
         add_spinbox(custom_scores_layout, default_value=CostData.w,
                     callback=lambda val: setattr(CostData, 'w', val), args=("Non-synonymous substitution cost",), alignment=Qt.AlignCenter)
+
         custom_scores_layout.addStretch(1)  # This will push content upwards and add space at the bottom
 
         bottom_layout = QHBoxLayout()
@@ -99,14 +100,12 @@ class UploadWindow(QWidget):
                             self.patterns_text_edit.toPlainText().strip(),
                             self.codon_usage_text_edit.toPlainText().strip()))
 
-    def on_spin_change(self, value, extra_text):
-        print(f"Value: {value}, Extra: {extra_text}")
 
     def load_file(self, text_edit):
-        fileName, _ = QFileDialog.getOpenFileName(self, "Open File", "", "Text Files (*.txt)")
-        if fileName:
+        file_name, _ = QFileDialog.getOpenFileName(self, "Open File", "", "Text Files (*.txt)")
+        if file_name:
             try:
-                with open(fileName, 'r') as file:
+                with open(file_name, 'r') as file:
                     text_edit.setPlainText(file.read())
             except Exception as e:
                 QMessageBox.critical(self, "Error", f"Failed to read the file: {e}")

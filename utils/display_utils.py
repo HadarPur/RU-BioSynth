@@ -150,6 +150,7 @@ class SequenceUtils:
         Returns:
             str: HTML markup with highlighted coding regions.
         """
+
         html_output = ""
         color_counter = 0
 
@@ -157,8 +158,6 @@ class SequenceUtils:
         colors = ['#FF0000', '#00FF00', '#0000FF', '#FF00FF', '#00FFFF', '#FFA500']
 
         last_end = 0  # Track the end of the last processed region
-
-        print(f"coding_indexes = {coding_indexes}")
 
         for start, end in coding_indexes:
             # Add non-coding region before the current coding region

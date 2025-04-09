@@ -27,7 +27,8 @@ class BaseWindow(QMainWindow):
 
     def init_ui(self):
         self.setWindowTitle("🧬 BioBliss App")
-        self.setGeometry(100, 100, 800, 800)
+        self.setGeometry(100, 100, 1000, 700)
+        self.setFixedSize(self.size())
         self.setCentralWidget(self.stackedLayout)
         self.show_upload_window()
 

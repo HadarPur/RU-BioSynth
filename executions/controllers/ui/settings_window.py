@@ -40,7 +40,7 @@ class SettingsWindow(QWidget):
         layout.addLayout(middle_layout)
 
         self.scroll = QScrollArea()
-        self.scroll.setFixedHeight(650)  # Set the maximum height for scrolling to begin.
+        self.scroll.setFixedHeight(550)  # Set the maximum height for scrolling to begin.
         self.scroll.setWidgetResizable(True)  # Ensure the scroll area can resize to its content.
         self.scroll.setStyleSheet("QScrollArea { border: none; }")
         self.scroll.setAlignment(Qt.AlignTop)
