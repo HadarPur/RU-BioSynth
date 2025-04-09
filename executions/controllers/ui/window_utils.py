@@ -63,7 +63,7 @@ def add_intro(layout, row=0, column=0):
     content = (
         "Hi there, and welcome to the BioBliss App!\n"
         "To start eliminating unwanted patterns from your DNA sequence, please upload three files: (1) a target sequence file with a continuous DNA string, (2) a patterns file with one pattern per line using standard characters, and (3) a codon usage file to guide biologically meaningful substitutions.\n"
-        "You can also adjust substitution costs—transitions (A↔G, C↔T, default: 1.0), transversions (A/G↔C/T, default: 2.0), and non-synonymous changes (default: 100.0). If not specified, default values will apply.\n"
+        "You can also adjust substitution costs—transitions (A ↔ G, C ↔ T, default: 1.0), transversions (A/G ↔ C/T, default: 2.0), and non-synonymous changes (default: 100.0). If not specified, default values will apply.\n"
         "Once files are uploaded and options set, BioBliss will optimize your sequence."
         "\nLet’s get started!"
     )

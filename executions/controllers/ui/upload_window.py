@@ -41,10 +41,6 @@ class UploadWindow(QWidget):
         layout.addLayout(top_layout)
 
         add_intro(top_layout, 0, 0)
-
-        # fixed_width_spacer = QSpacerItem(50, 0, QSizePolicy.Fixed, QSizePolicy.Minimum)
-        # top_layout.addSpacerItem(fixed_width_spacer)
-
         add_png_logo(top_layout, 0, 1)
 
         grid_layout = QGridLayout()
