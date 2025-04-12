@@ -6,7 +6,7 @@ from PyQt5.QtCore import Qt, QTimer
 from PyQt5.QtWidgets import QApplication, QFileDialog, QLabel, QPushButton, QWidget, QVBoxLayout
 from PyQt5.QtWidgets import QHBoxLayout, QSizePolicy, QSpacerItem, QDialog, QTextEdit, QDialogButtonBox
 
-from data.app_data import InputData, OutputData
+from data.app_data import InputData, OutputData, EliminationData
 from executions.controllers.ui.window_utils import add_button, add_code_block, add_text_edit_html, CircularButton
 from executions.execution_utils import mark_non_equal_codons, initialize_report
 
@@ -175,7 +175,7 @@ class ResultsWindow(QWidget):
             layout.addLayout(prompt_layout)
 
     def show_info(self):
-        info_text = '\n'.join(self.detailed_changes) if self.detailed_changes else None
+        info_text = '\n'.join(EliminationData.detailed_changes) if EliminationData.detailed_changes else None
 
         # Create a dialog to show detailed information
         dialog = QDialog(self)
