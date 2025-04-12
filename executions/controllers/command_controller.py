@@ -85,7 +85,7 @@ class CommandController:
         file_date = datetime.today().strftime("%d%b%Y,%H:%M:%S")
 
         # Save the results
-        report = ReportController()
+        report = ReportController(InputData.coding_positions)
 
         report.create_report(file_date)
         path = report.download_report(OutputData.output_path)
