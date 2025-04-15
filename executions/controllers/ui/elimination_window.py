@@ -1,9 +1,9 @@
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QWidget, QSizePolicy, QVBoxLayout
+from PyQt5.QtWidgets import QWidget, QVBoxLayout, QTextBrowser, QSizePolicy
 
 from data.app_data import InputData, EliminationData
-from executions.controllers.ui.window_utils import add_button, add_text_edit_html
 from executions.execution_utils import eliminate_unwanted_patterns
+from executions.controllers.ui.window_utils import FloatingScrollIndicator, add_button
 
 
 class EliminationWindow(QWidget):
@@ -19,6 +19,7 @@ class EliminationWindow(QWidget):
         self.yes_button = None
         self.no_button = None
         self.next_button = None
+        self.floating_btn = None
 
         self.init_ui(back_to_processing_callback)
 
@@ -33,25 +34,45 @@ class EliminationWindow(QWidget):
 
         layout.addLayout(middle_layout)
 
-        content_layout = QVBoxLayout()
-        middle_layout.addLayout(content_layout)
-
         eliminate_unwanted_patterns(InputData.dna_sequence, InputData.unwanted_patterns, self.updated_coding_positions)
 
         info = EliminationData.info.replace("\n", "<br>")
-        label_html = f"""
+        html = f"""
             <h2>Elimination Process:</h2>
-            <p>{info}</p>
+            <div style="word-break: break-all;">{info}</div>
         """
-        info_text_edit = add_text_edit_html(content_layout, "", label_html)
-        info_text_edit.setMinimumHeight(550)
 
-        # Adjust size policy to expand with content
-        info_text_edit.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
-        document = info_text_edit.document()
-        document.contentsChanged.connect(lambda: info_text_edit.setMaximumHeight(document.size().height()))
+        text_browser = QTextBrowser()
+        text_browser.setStyleSheet("""
+            QTextBrowser {
+                background-color: transparent;
+                border: transparent;
+            }
+        """)
+        text_browser.setHtml(html)
+        text_browser.setOpenExternalLinks(False)
 
-        content_layout.addStretch(1)  # This ensures that the layout can expand and push content
+        # Disable the internal scroll bars
+        text_browser.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+
+        text_browser.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Preferred)
+        text_browser.setMinimumHeight(550)
+
+        text_browser.setAlignment(Qt.AlignTop)
+
+        # Optionally, force the QTextBrowser to adjust to the content.
+        text_browser.document().setTextWidth(text_browser.viewport().width())
+        text_browser.adjustSize()
+
+        middle_layout.addWidget(text_browser)
 
         # Add next button to the bottom layout
         add_button(layout, 'Next', Qt.AlignRight, self.switch_to_results_callback, lambda: (self.updated_coding_positions,))
+
+        # Add floating button
+        self.floating_btn = FloatingScrollIndicator(parent=self, scroll_area=text_browser)
+        self.floating_btn.on_scroll(text_browser.verticalScrollBar().value())
+
+    def resizeEvent(self, event):
+        self.floating_btn.raise_()  # Bring to front
+        self.floating_btn.reposition()

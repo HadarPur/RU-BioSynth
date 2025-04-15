@@ -1,11 +1,10 @@
-from PyQt5.QtCore import Qt, QEvent, QTimer, QPropertyAnimation, QEasingCurve
+from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QSpacerItem, QSizePolicy, QScrollArea
-from PyQt5.QtWidgets import QWidget, QVBoxLayout, QLabel, QCheckBox, QHBoxLayout, QMessageBox
+from PyQt5.QtWidgets import QWidget, QVBoxLayout, QLabel, QCheckBox, QHBoxLayout, QMessageBox,QTextEdit
 
 from data.app_data import InputData
-from executions.controllers.ui.window_utils import add_button, add_text_edit_html, add_text_edit, \
-    adjust_text_edit_height, \
-    adjust_scroll_area_height
+from executions.controllers.ui.window_utils import FloatingScrollIndicator, add_button, add_text_edit_html, add_text_edit, \
+    adjust_text_edit_height, adjust_scroll_area_height, create_scroll_area
 from utils.display_utils import SequenceUtils
 from utils.dna_utils import DNAUtils
 
@@ -15,13 +14,13 @@ class SettingsWindow(QWidget):
         super().__init__()
         self.switch_to_eliminate_callback = switch_to_eliminate_callback
 
-        self.scroll = None
+        self.scroll_area = None
         self.next_button = None
         self.yes_button = None
         self.no_button = None
         self.region_selector = None
         self.submit_button = None
-        self.animation = None
+        self.floating_btn = None
 
         self.content_widget = None
 
@@ -37,19 +36,7 @@ class SettingsWindow(QWidget):
         middle_layout.setContentsMargins(20, 10, 20, 10)
         layout.addLayout(middle_layout)
 
-        self.scroll = QScrollArea()
-        self.scroll.setFixedHeight(550)  # Set the maximum height for scrolling to begin.
-        self.scroll.setWidgetResizable(True)  # Ensure the scroll area can resize to its content.
-        self.scroll.setStyleSheet("QScrollArea { border: none; }")
-        self.scroll.setAlignment(Qt.AlignTop)
-
-        middle_layout.addWidget(self.scroll, alignment=Qt.AlignTop)
-
-        self.content_widget = QWidget()
-        self.scroll.setWidget(self.content_widget)
-
-        content_layout = QVBoxLayout(self.content_widget)
-        content_layout.setAlignment(Qt.AlignTop)  # Align the content_layout to the top
+        self.scroll_area, content_widget, content_layout = create_scroll_area(middle_layout)
 
         # Adding formatted text to QLabel
         label_html = f"""
@@ -132,7 +119,13 @@ class SettingsWindow(QWidget):
         self.next_button = add_button(layout, 'Next', Qt.AlignRight)
         self.next_button.setEnabled(False)
 
-        QTimer.singleShot(50, self.scroll_to_bottom)  # Add this line
+        # Add floating button
+        self.floating_btn = FloatingScrollIndicator(parent=self, scroll_area=self.scroll_area)
+        self.floating_btn.on_scroll(self.scroll_area.verticalScrollBar().value())
+
+    def resizeEvent(self, event):
+        self.floating_btn.raise_()  # Bring to front
+        self.floating_btn.reposition()
 
     def prompt_coding_regions_decision(self, layout):
         # Create a horizontal layout for the entire prompt
@@ -174,8 +167,6 @@ class SettingsWindow(QWidget):
 
         self.yes_button.setEnabled(False)
         self.region_selector = RegionSelector(container_widget, self.handle_results)
-
-        QTimer.singleShot(50, self.scroll_to_bottom)  # Add this line
 
     def handle_results(self, layout):
         self.region_selector.setEnabled(False)
@@ -233,26 +224,8 @@ class SettingsWindow(QWidget):
             }
         """)
 
-        QTimer.singleShot(50, self.scroll_to_bottom)  # Add this line
-
-    def scroll_to_bottom(self):
-        vertical_scroll_bar = self.scroll.verticalScrollBar()
-        self.animation = QPropertyAnimation(vertical_scroll_bar, b'value')
-        self.animation.setDuration(1000)
-        self.animation.setStartValue(vertical_scroll_bar.value())
-        self.animation.setEndValue(vertical_scroll_bar.maximum())
-        self.animation.setEasingCurve(QEasingCurve.OutCubic)
-        self.animation.start()
-
         # Install an event filter for the scroll area's viewport.
-        self.scroll.viewport().installEventFilter(self)
-
-    def eventFilter(self, source, event):
-        # If the user scrolls, stop the animation.
-        if event.type() == QEvent.Wheel and source == self.scroll.viewport():
-            self.animation.stop()
-            self.scroll.viewport().removeEventFilter(self)  # Remove event filter.
-        return super(SettingsWindow, self).eventFilter(source, event)  # Allow other eventHandlers to respond.
+        self.scroll_area.viewport().installEventFilter(self)
 
 
 class RegionSelector(QWidget):

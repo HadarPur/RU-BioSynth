@@ -1,7 +1,7 @@
 
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, QTimer
 from PyQt5.QtWidgets import QDialog, QDialogButtonBox
-from PyQt5.QtWidgets import QMainWindow, QMessageBox, QStackedWidget, QVBoxLayout
+from PyQt5.QtWidgets import QMainWindow, QMessageBox, QStackedWidget, QVBoxLayout, QPushButton
 
 from data.app_data import InputData, CostData
 from executions.controllers.ui.elimination_window import EliminationWindow
@@ -12,7 +12,6 @@ from executions.controllers.ui.window_utils import add_text_edit_html, add_text_
 from executions.execution_utils import is_valid_dna, is_valid_patterns, is_valid_codon_usage
 from utils.dna_utils import DNAUtils
 from utils.file_utils import read_codon_usage_map
-
 
 class BaseWindow(QMainWindow):
     def __init__(self):
@@ -30,6 +29,7 @@ class BaseWindow(QMainWindow):
         self.setGeometry(100, 100, 1000, 700)
         self.setFixedSize(self.size())
         self.setCentralWidget(self.stackedLayout)
+
         self.show_upload_window()
 
     def show_upload_window(self):

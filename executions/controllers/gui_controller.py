@@ -1,4 +1,5 @@
 import sys
+import os
 
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QApplication
@@ -6,6 +7,7 @@ from PyQt5.QtWidgets import QApplication
 from executions.controllers.ui.base_window import BaseWindow
 from utils.file_utils import resource_path
 
+sys.stderr = open(os.devnull, 'w')
 
 class GUIController:
     @staticmethod

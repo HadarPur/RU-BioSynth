@@ -3,7 +3,7 @@ import os
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QPainterPath, QRegion
 from PyQt5.QtGui import QPixmap
-from PyQt5.QtWidgets import QFileDialog, QTextEdit, QPlainTextEdit, QToolBar, QDoubleSpinBox
+from PyQt5.QtWidgets import QFileDialog, QTextEdit, QPlainTextEdit, QToolBar, QDoubleSpinBox, QScrollArea, QWidget
 from PyQt5.QtWidgets import QFrame, QPushButton, QVBoxLayout, QApplication, QLabel, QHBoxLayout, QSizePolicy
 
 from utils.file_utils import resource_path, save_file
@@ -57,6 +57,54 @@ class DropTextEdit(QTextEdit):
                 with open(file_path, 'r') as file:
                     self.setPlainText(file.read())
                 event.acceptProposedAction()
+
+
+class FloatingScrollIndicator(QPushButton):
+    def __init__(self, parent=None, scroll_area=None, direction="bottom"):
+        super().__init__("▼", parent)
+        self.scroll_area = scroll_area
+        self.direction = direction
+
+        self.setFixedSize(20, 20)
+        self.setStyleSheet("""
+            QPushButton {
+                background-color: gray;
+                border: 1px solid lightgray;
+                color: white;
+                border-radius: 10px;
+                font-weight: bold;
+            }
+        """)
+        self.hide()
+
+        # Connect scroll listener
+        if self.scroll_area:
+            self.scroll_area.verticalScrollBar().valueChanged.connect(self.on_scroll)
+
+        # Handle click
+        self.clicked.connect(self.scroll)
+
+    def on_scroll(self, value):
+        if value < 80:
+            self.show()
+        else:
+            self.hide()
+
+    def scroll(self):
+        bar = self.scroll_area.verticalScrollBar()
+        if self.direction == "top":
+            bar.setValue(0)
+        elif self.direction == "bottom":
+            bar.setValue(bar.maximum())
+
+    def reposition(self):
+        """Call this on parent resize"""
+        if not self.parent():
+            return
+        margin = 80
+        x = self.parent().width()/2
+        y = self.parent().height() - self.height() - margin
+        self.move(int(x), int(y))
 
 
 def add_intro(layout, row=0, column=0):
@@ -162,17 +210,10 @@ def add_text_edit(layout, placeholder, content, wrap=None):
 
 
 def adjust_text_edit_height(text_edit):
-    # Ensure the document size is recalculated
-    text_edit.document().adjustSize()
-
-    # Get the new height of the document
-    doc_height = text_edit.document().size().height()
-
-    # Calculate the new height with a maximum limit and padding
-    new_height = min(150, int(doc_height) + 10)  # 10 pixels of padding
-
-    # Set the fixed height of the text edit
-    text_edit.setFixedHeight(new_height + 10)  # Additional 10 pixels padding
+    text_edit.document().setTextWidth(text_edit.viewport().width())
+    margins = text_edit.contentsMargins()
+    height = int(text_edit.document().size().height() + margins.top() + margins.bottom() + 10)
+    text_edit.setFixedHeight(height)
 
 
 def adjust_scroll_area_height(scroll_area):
@@ -322,3 +363,23 @@ def copy_to_clipboard(code_display, update_status):
     text = code_display.toPlainText()
     QApplication.clipboard().setText(text)
     update_status(f"Sequence copied to clipboard")
+
+def create_scroll_area(parent_layout):
+    scroll_area = QScrollArea()
+    scroll_area.setFixedHeight(550)  # Set the maximum height for scrolling to begin
+    scroll_area.setWidgetResizable(True)  # Ensure the scroll area can resize to its content
+    scroll_area.setStyleSheet("QScrollArea { border: none; }")
+    scroll_area.setAlignment(Qt.AlignTop)
+
+    parent_layout.addWidget(scroll_area, alignment=Qt.AlignTop)
+
+    content_widget = QWidget()
+    scroll_area.setWidget(content_widget)
+
+    content_layout = QVBoxLayout(content_widget)
+    content_layout.setAlignment(Qt.AlignTop)
+
+    return scroll_area, content_widget, content_layout
+
+
+
