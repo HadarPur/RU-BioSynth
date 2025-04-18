@@ -103,21 +103,31 @@ class SettingsWindow(QWidget):
             }
         """)
 
-        label_html = f"""
-            <p>The total number of coding regions is {len(InputData.coding_regions_list)}</p>
-        """
-
-        label = QLabel(label_html)
+        label = QLabel()
         content_layout.addWidget(label)
+        self.next_button = add_button(layout, 'Next', Qt.AlignRight)
 
         if len(InputData.coding_regions_list) > 0:
-            self.prompt_coding_regions_decision(content_layout)
+            label_html = f"""
+                <p>The total number of coding regions is {len(InputData.coding_regions_list)}</p>
+            """
+
+            label.setText(label_html)
+
+            if len(InputData.coding_regions_list) > 0:
+                self.prompt_coding_regions_decision(content_layout)
+        else:
+            label_html = f"""
+                <p>No coding region was identified in the provided target sequence</p>
+            """
+
+            label.setText(label_html)
+            self.next_button.clicked.connect(
+                lambda: self.switch_to_eliminate_callback(InputData.coding_positions))
 
         # Add a stretch to push all content to the top
         content_layout.addStretch(1)
-
-        self.next_button = add_button(layout, 'Next', Qt.AlignRight)
-        self.next_button.setEnabled(False)
+        self.next_button.setEnabled(len(InputData.coding_regions_list) == 0)
 
         # Add floating button
         self.floating_btn = FloatingScrollIndicator(parent=self, scroll_area=self.scroll_area)

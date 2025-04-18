@@ -89,8 +89,6 @@ def eliminate_unwanted_patterns(seq, unwanted_patterns, coding_positions):
     EliminationData.info, EliminationData.detailed_changes, OutputData.optimized_sequence, EliminationData.min_cost = EliminationController.eliminate(
         seq, unwanted_patterns, coding_positions)
 
-    return EliminationData.info, EliminationData.detailed_changes, OutputData.optimized_sequence, EliminationData.min_cost
-
 
 def mark_non_equal_codons(input_seq, optimized_seq, coding_positions):
     # Mark non-equal codons between the original and optimized sequences

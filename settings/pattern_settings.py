@@ -1,10 +1,10 @@
 # Unwanted Patterns set
-# P = {
-#     "TAGTAC",
-#     "ATATCA",  # BlaI
-# }
+P = {
+    "TAGTAC",
+    "ATATCA",  # BlaI
+}
 
-# # Unwanted Patterns set
+# # # Unwanted Patterns set
 # P = {
 #     "TACA",  # BlaI
 #     "TATC",  #
@@ -12,4 +12,4 @@
 #     "TATA",  #
 # }
 
-P={"TCGA"}
+# P={"TCGA"}

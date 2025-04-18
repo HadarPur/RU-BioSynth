@@ -63,8 +63,12 @@ class CommandController:
 
         # Handle elimination of coding regions if the user chooses to
         InputData.coding_regions_list = DNAUtils.get_coding_regions_list(InputData.coding_indexes, InputData.dna_sequence)
-        Logger.debug(f"The total number of coding regions is {len(InputData.coding_indexes)}, identifies as follows:")
-        Logger.info('\n'.join(f"[{key}] {value}" for key, value in InputData.coding_regions_list.items()))
+        if len(InputData.coding_indexes) > 0:
+            Logger.debug(
+                f"The total number of coding regions is {len(InputData.coding_indexes)}, identifies as follows:")
+            Logger.info('\n'.join(f"[{key}] {value}" for key, value in InputData.coding_regions_list.items()))
+        else:
+            Logger.debug("No coding region was identified in the provided target sequence")
 
         # Eliminate unwanted patterns
         eliminate_unwanted_patterns(InputData.dna_sequence, InputData.unwanted_patterns, InputData.coding_positions)

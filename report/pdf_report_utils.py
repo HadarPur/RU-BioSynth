@@ -68,9 +68,9 @@ class ReportController:
                    'chosen_regions': self.chosen_regions,
                    'regions': self.regions,
                    'cost': self.min_cost,
-                   'elimination_process_description': elimination_process_description,
-                   'coding_region_cost_description': coding_region_cost_description,
-                   'non_coding_region_cost_description': non_coding_region_cost_description,
+                   'elimination_process_description': elimination_process_description.replace("\n", "<br>"),
+                   'coding_region_cost_description': coding_region_cost_description.replace("\n", "<br>"),
+                   'non_coding_region_cost_description': non_coding_region_cost_description.replace("\n", "<br>"),
                    'detailed_changes': self.detailed_changes
                    }
 
