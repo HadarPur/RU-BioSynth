@@ -2,7 +2,6 @@ import unittest
 from unittest.mock import patch
 
 import numpy as np
-
 from utils.cost_utils import calculate_cost
 
 
@@ -55,8 +54,17 @@ class TestCalculateCost(unittest.TestCase):
     def test_stop_codon_formation(self, MockAminoAcidConfig):
         MockAminoAcidConfig.get_last3.return_value = "ATG"  # Valid stop codon
         MockAminoAcidConfig.get_last2.return_value = "TG"  # Partial codon (just for setup)
-        MockAminoAcidConfig.is_stop_codon.return_value = True  # This should confirm it's a stop codon
+        MockAminoAcidConfig.either_is_stop_codon.return_value = True  # This should confirm it's a stop codon
         _, cost = calculate_cost(self.target_sequence, self.coding_positions, self.codon_usage, 5, "ATG", "A", self.alpha,
+                              self.beta, self.w)
+        self.assertEqual(cost, float("inf"))
+
+    @patch("utils.amino_acid_utils.AminoAcidConfig")
+    def test_stop_codon_substitution(self, MockAminoAcidConfig):
+        MockAminoAcidConfig.get_last3.return_value = "TAA"  # Valid stop codon
+        MockAminoAcidConfig.get_last2.return_value = "TC"  # Partial codon (just for setup)
+        MockAminoAcidConfig.either_is_stop_codon.return_value = True  # This should confirm it's a stop codon
+        _, cost = calculate_cost(self.target_sequence, self.coding_positions, self.codon_usage, 14, "TAC", "A", self.alpha,
                               self.beta, self.w)
         self.assertEqual(cost, float("inf"))
 
@@ -65,7 +73,7 @@ class TestCalculateCost(unittest.TestCase):
         MockAminoAcidConfig.get_last3.return_value = "CGT"
         MockAminoAcidConfig.get_last2.return_value = "CG"
         MockAminoAcidConfig.encodes_same_amino_acid.return_value = False
-        MockAminoAcidConfig.is_stop_codon.return_value = False
+        MockAminoAcidConfig.either_is_stop_codon.return_value = False
         _, cost = calculate_cost(self.target_sequence, self.coding_positions, self.codon_usage, 8, "CGT", "A", self.alpha,
                               self.beta, self.w)
         self.assertEqual(cost, self.w)

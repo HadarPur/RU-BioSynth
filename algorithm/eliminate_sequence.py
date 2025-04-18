@@ -62,7 +62,7 @@ class EliminationController:
                         cost = A[(i - 1, v)] + cost_f
                         if cost < A[(i, u)]:
                             A[(i, u)] = cost
-                            A_star[(i, u)] = (v, sigma)  # Store the best previous state
+                            A_star[(i, u)] = (v, sigma, changes, cost_f)  # Store the best previous state
 
         # Find the minimum cost and final state
         min_cost = float('inf')
@@ -90,10 +90,10 @@ class EliminationController:
             if (i, current_state) not in A_star:
                 raise ValueError(f"No transition found for position {i} and state {current_state}")
 
-            prev_state, char = A_star[(i, current_state)]  # Get the previous state and symbol
+            prev_state, char, changes, cost_f = A_star[(i, current_state)]  # Get the previous state and symbol
 
+            print(f"consruct: {(prev_state, char, changes, cost_f)}")
             # Record the change that actually occurred
-            changes, cost_f = cost_function(i, current_state, char)
             if cost_f > 0.0:
                 changes_info.append(
                     f"Position {i:<10}\t{changes[0]:<8}->{changes[1]:>8}\t\tCost: {cost_f:.2f}"
@@ -110,13 +110,13 @@ class EliminationController:
 
         # Reconstruct the first two positions (0 and 1) from current_state
         # Check and log changes at positions 0 and 1
-        original0, original1 = target_sequence[0], target_sequence[1]
-        if current_state[1] != original1:
+        original_0, original_1 = target_sequence[0], target_sequence[1]
+        if current_state[1] != original_1:
             changes, cost_f = initial_cost_function(2, current_state[1])
             changes_info.append(
                 f"Position {2:<10}\t{changes[0]:<8}->{changes[1]:>8}\t\tCost: {cost_f:.2f}"
             )
-        if current_state[0] != original0:
+        if current_state[0] != original_0:
             changes, cost_f = initial_cost_function(1, current_state[0])
             changes_info.append(
                 f"Position {1:<10}\t{changes[0]:<8}->{changes[1]:>8}\t\tCost: {cost_f:.2f}"
@@ -126,6 +126,9 @@ class EliminationController:
         path.reverse()
         sequence.reverse()
         changes_info.reverse()
+
+        for change in changes_info:
+            print(change)
 
         # visualize_fsm_graph(fsm.V, fsm.f)
         # visualize_fsm_table(fsm.V, fsm.f)

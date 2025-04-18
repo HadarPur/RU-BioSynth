@@ -1,6 +1,6 @@
 import os
 
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, QPropertyAnimation, QEasingCurve
 from PyQt5.QtGui import QPainterPath, QRegion
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtWidgets import QFileDialog, QTextEdit, QPlainTextEdit, QToolBar, QDoubleSpinBox, QScrollArea, QWidget
@@ -92,10 +92,20 @@ class FloatingScrollIndicator(QPushButton):
 
     def scroll(self):
         bar = self.scroll_area.verticalScrollBar()
+        start_value = bar.value()
         if self.direction == "top":
-            bar.setValue(0)
+            end_value = 0
         elif self.direction == "bottom":
-            bar.setValue(bar.maximum())
+            end_value = bar.maximum()
+        else:
+            return
+
+        self.animation = QPropertyAnimation(bar, b"value")
+        self.animation.setDuration(500)  # Duration in milliseconds
+        self.animation.setStartValue(start_value)
+        self.animation.setEndValue(end_value)
+        self.animation.setEasingCurve(QEasingCurve.OutCubic)
+        self.animation.start()
 
     def reposition(self):
         """Call this on parent resize"""

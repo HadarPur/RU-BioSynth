@@ -99,7 +99,8 @@ class AminoAcidConfig:
         """
         if i < 2:
             raise ValueError("Position i must be at least 2 to extract the last three bases.")
-        return target_sequence[i - 2:i + 1]
+
+        return target_sequence[i - 2:i+1]
 
     @staticmethod
     def encodes_same_amino_acid(proposed_codon, current_codon):
@@ -116,17 +117,18 @@ class AminoAcidConfig:
         return codon_to_amino_acid.get(proposed_codon) == codon_to_amino_acid.get(current_codon)
 
     @staticmethod
-    def is_stop_codon(proposed_codon):
+    def either_is_stop_codon(current_codon, proposed_codon):
         """
         Checks if a given codon is a stop codon.
 
         Args:
+            current_codon (str): The original codon.
             proposed_codon (str): The codon to be tested.
 
         Returns:
             bool: True if the codon is a stop codon, False otherwise.
         """
-        return codon_to_amino_acid.get(proposed_codon) == '*'
+        return codon_to_amino_acid.get(current_codon) == '*' or codon_to_amino_acid.get(proposed_codon) == '*'
 
     @staticmethod
     def is_transition(nucleotide1, nucleotide2):
