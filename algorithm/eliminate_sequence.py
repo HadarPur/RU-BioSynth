@@ -92,7 +92,6 @@ class EliminationController:
 
             prev_state, char, changes, cost_f = A_star[(i, current_state)]  # Get the previous state and symbol
 
-            print(f"consruct: {(prev_state, char, changes, cost_f)}")
             # Record the change that actually occurred
             if cost_f > 0.0:
                 changes_info.append(
@@ -126,9 +125,6 @@ class EliminationController:
         path.reverse()
         sequence.reverse()
         changes_info.reverse()
-
-        for change in changes_info:
-            print(change)
 
         # visualize_fsm_graph(fsm.V, fsm.f)
         # visualize_fsm_table(fsm.V, fsm.f)
