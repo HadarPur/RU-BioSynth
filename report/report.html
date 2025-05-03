@@ -92,7 +92,7 @@
 
         .navbar {
             overflow: hidden;
-            background-color: #6210d1;
+            background-color: #245076;
             color: #333;
             top: 0;
             width: 100%;
@@ -129,23 +129,24 @@
         }
 
         .nav-top {
-            border-top: 8px solid #6210d1;
+            border-top: 8px solid #245076;
         }
 
-        .row {
+        .row.content {
             max-width: 70rem;
             margin: auto;
-            display: block;
-        }
-
-        .content {
-            padding: 32px;
-            height: 70px;
-        }
-
-        .wrapper {
             display: flex;
-            padding: 22px;
+            align-items: center;  /* ← This vertically centers the items */
+            justify-content: space-between; /* Optional: spreads left and right items */
+            padding: 32px;
+            height: 100px; /* Adjust height as needed */
+        }
+
+        .row.wrapper {
+            max-width: 70rem;
+            margin: auto;
+            display: flex;
+            padding: 52px;
         }
 
         .sidepanel {
@@ -232,7 +233,7 @@
         }
 
         .right-col a {
-            color: #6210d1;
+            color: #245076;
             text-decoration: underline;
         }
 
@@ -247,7 +248,7 @@
         .divider {
             width: 40px;
             height: 4px;
-            background: #6210d1;
+            background: #245076;
             border-radius: 30px;
             margin: 8px auto;
         }
@@ -314,7 +315,7 @@
 
         /* Handle */
         ::-webkit-scrollbar-thumb {
-            background: #6210d1;
+            background: #245076;
             border-radius: 10px;
         }
 
