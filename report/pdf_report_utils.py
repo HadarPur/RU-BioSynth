@@ -89,7 +89,7 @@ class ReportController:
 
             # Save to a file
             create_dir('output')
-            file_name = "BioBliss Report"
+            file_name = "BioSynth Report"
             self.report_filename = f'{file_name} - {file_date}.html'
 
             # for ui usage

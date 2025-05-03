@@ -119,10 +119,10 @@ class FloatingScrollIndicator(QPushButton):
 
 def add_intro(layout, row=0, column=0):
     content = (
-        "Hi there, and welcome to the BioBliss App!\n"
+        "Hi there, and welcome to the BioSynth App!\n"
         "To start eliminating unwanted patterns from your DNA sequence, please upload three files: (1) a target sequence file with a continuous DNA string, (2) a patterns file with one pattern per line using standard characters, and (3) a codon usage file to guide biologically meaningful substitutions.\n"
         "You can also adjust substitution costs—transitions (A ↔ G, C ↔ T, default: 1.0), transversions (A/G ↔ C/T, default: 2.0), and non-synonymous changes (default: 100.0). If not specified, default values will apply.\n"
-        "Once files are uploaded and options set, BioBliss will optimize your sequence."
+        "Once files are uploaded and options set, BioSynth will optimize your sequence."
         "\nLet’s get started!"
     )
 
@@ -142,7 +142,7 @@ def add_png_logo(layout, row=0, column=0):
     frame_layout.setContentsMargins(5, 5, 5, 5)  # Set padding: left, top, right, bottom
 
     # Create and set up the PNG logo widget
-    image_path = resource_path("images/BioBlissV2.png")
+    image_path = resource_path("images/BioSynth.png")
     logo = QLabel()
     pixmap = QPixmap(image_path)
     logo.setPixmap(pixmap)
@@ -162,7 +162,7 @@ def add_logo_toolbar(layout):
     logo_toolbar.setMovable(False)
 
     # Create and set up the PNG logo widget
-    image_path = resource_path("images/BioBlissV2.png")
+    image_path = resource_path("images/BioSynth.png")
     logo_label = QLabel()
     pixmap = QPixmap(image_path)
     logo_label.setPixmap(pixmap)

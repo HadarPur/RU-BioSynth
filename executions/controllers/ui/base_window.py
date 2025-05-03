@@ -25,7 +25,7 @@ class BaseWindow(QMainWindow):
         self.init_ui()
 
     def init_ui(self):
-        self.setWindowTitle("🧬 BioBliss App")
+        self.setWindowTitle("🧬 BioSynth App")
         self.setGeometry(100, 100, 1000, 700)
         self.setFixedSize(self.size())
         self.setCentralWidget(self.stackedLayout)

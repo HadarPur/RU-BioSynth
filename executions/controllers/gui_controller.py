@@ -90,7 +90,7 @@ class GUIController:
         app = QApplication(sys.argv)
         ex = BaseWindow()
         ex.show()
-        icon_path = resource_path('images/BioBlissV2.png')
+        icon_path = resource_path('images/BioSynth.png')
         icon = QIcon(icon_path)
         app.setWindowIcon(icon)
         app.setStyleSheet(stylesheet)

@@ -7,7 +7,7 @@ from utils.text_utils import format_text_bold_for_output
 
 def get_terminal_usage():
     return f"{format_text_bold_for_output('Usage:')}\n"\
-           "\t$ python ./BioBliss.py -s <seq_file_path> -p <pattern_file_path> -o <output_path_dir> -c <codon_usage_file> [-g] [-a <alpha>] [-b <beta>] [-w <w>]\n\n"\
+           "\t$ python ./BioSynth.py -s <seq_file_path> -p <pattern_file_path> -o <output_path_dir> -c <codon_usage_file> [-g] [-a <alpha>] [-b <beta>] [-w <w>]\n\n"\
            "\tThis application is designed for the elimination of unwanted patterns from synthetic DNA sequences.\n\n"\
            f"{format_text_bold_for_output('Options:')}\n" \
            "\t-g --gui\tOption to run the program via user interface. If using this option, there is no need to specify any -s, -p, or -o options.\n" \

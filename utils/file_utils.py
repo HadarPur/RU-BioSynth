@@ -129,10 +129,10 @@ def save_file(output, filename, path=None):
     try:
         # Convert path to Path object if it's not None
         if path:
-            output_path = Path(path) / 'BioBliss Outputs'
+            output_path = Path(path) / 'BioSynth Outputs'
         else:
             downloads_path = Path.home() / 'Downloads'
-            output_path = downloads_path / 'BioBliss Outputs'
+            output_path = downloads_path / 'BioSynth Outputs'
 
         # Replace colons with underscores in the filename
         filename = re.sub(':', '_', filename)
