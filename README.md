@@ -13,13 +13,13 @@ pip3 install -r requirements.txt
 To execute the elimination tool from the Terminal, please use the following command:
 
 ```
-python3 ./BioBliss.py -s <seq_file_path> -p <pattern_file_path> -c <codon_usage_table>
+python3 ./BioSynth.py -s <seq_file_path> -p <pattern_file_path> -c <codon_usage_table>
 ```
 
 For example:
 
 ```
-python3 ./BioBliss.py -s ./files/one_coding/s_file.txt -p ./files/one_coding/p_file.txt -c ./files/codon_usage_table/codon_usage.txt
+python3 ./BioSynth.py -s ./files/one_coding/s_file.txt -p ./files/one_coding/p_file.txt -c ./files/codon_usage_table/codon_usage.txt
 ```
 
 ## Execute GUI Program
@@ -27,5 +27,5 @@ python3 ./BioBliss.py -s ./files/one_coding/s_file.txt -p ./files/one_coding/p_f
 To execute the elimination tool GUI, please use the following command:
 
 ```
-python3 ./BioBliss.py -g
+python3 ./BioSynth.py -g
 ```
