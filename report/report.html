@@ -1,280 +1,421 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>BioSynth Report 🧬</title>
-  <meta name="description" content="A flexible and comprehensive software app for design of synthetic DNA sequences without unwanted patterns">
-  <meta name="author" content="Hadar Pur">
+    <title>BioSynth Report 🧬</title>
+    <meta name="description"
+          content="A flexible and comprehensive software app for design of synthetic DNA sequences without unwanted patterns">
+    <meta name="author" content="Hadar Pur">
 
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;700&family=Open+Sans:ital,wght@0,400;0,700;1,600&display=swap" rel="stylesheet">
-  <script defer crossorigin="anonymous" integrity="sha384-0pzryjIRos8mFBWMzSSZApWtPl/5++eIfzYmTgBBmXYdhvxPc+XcFEk+zJwDgWbP" src="https://use.fontawesome.com/releases/v5.7.2/js/all.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;700&family=Open+Sans:ital,wght@0,400;0,700;1,600&display=swap"
+          rel="stylesheet">
+    <script defer crossorigin="anonymous"
+            integrity="sha384-0pzryjIRos8mFBWMzSSZApWtPl/5++eIfzYmTgBBmXYdhvxPc+XcFEk+zJwDgWbP"
+            src="https://use.fontawesome.com/releases/v5.7.2/js/all.js"></script>
 
-  <style>
-    html, body {
-      scroll-behavior: smooth;
-      overflow-x: hidden;
-      max-width: 100%;
-      margin: 0;
-      font-family: 'Open Sans', sans-serif;
-      color: #333;
-    }
+    <style>
+        html, body {
+            scroll-behavior: smooth;
+            overflow-x: hidden;
+            max-width: 100%;
+            margin: 0;
+            font-family: 'Open Sans', sans-serif;
+            color: #333;
+        }
 
-    h1, h2, h3 {
-      font-family: 'Noto Serif', serif;
-      color: #333;
-    }
+        h1, h2, h3 {
+            font-family: 'Noto Serif', serif;
+            color: #333;
+        }
 
-    h1 { font-size: 39px; line-height: 42px; margin-bottom: 50px; }
-    h2 { font-size: 28px; line-height: 30px; margin: 40px 0 30px; }
-    h3 { font-size: 18px; line-height: 30px; margin: 40px 0 0; }
+        h1 {
+            font-size: 39px;
+            line-height: 42px;
+            margin-bottom: 50px;
+        }
 
-    p, pre {
-      font-size: 16px;
-      line-height: 24px;
-      max-width: 90%;
-      margin-right: auto;
-      overflow-wrap: break-word;
-    }
+        h2 {
+            font-size: 28px;
+            line-height: 30px;
+            margin: 40px 0 30px;
+        }
 
-    a { text-decoration: none; color: inherit; }
-    a:hover { text-decoration: underline; }
+        h3 {
+            font-size: 18px;
+            line-height: 30px;
+            margin: 40px 0 0;
+        }
 
-    .navbar {
-      background-color: #fff;
-      color: #fff;
-      width: 100%;
-      position: fixed;
-      top: 0;
-      z-index: 10;
-      padding: 10px 0;
-    }
+        p, pre {
+            font-size: 16px;
+            line-height: 24px;
+            max-width: 90%;
+            margin-right: auto;
+            overflow-wrap: break-word;
+        }
 
-    .navbar .row.content {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      justify-content: space-between;
-      max-width: 70rem;
-      margin: auto;
-      padding: 0 20px;
-    }
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
 
-    .navbar a {
-      color: #000;
-      margin: 10px;
-      white-space: nowrap;
-    }
+        a:hover {
+            text-decoration: underline;
+        }
 
-    .container {
-      margin-top: 120px;
-      padding: 0 20px;
-    }
+        .navbar {
+            background-color: #fff;
+            color: #fff;
+            width: 100%;
+            position: fixed;
+            top: 0;
+            z-index: 10;
+            padding: 10px 0;
+        }
 
-    .row.wrapper {
-      display: flex;
-      flex-wrap: nowrap;
-      max-width: 70rem;
-      margin: auto;
-    }
+        .navbar .row.content {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            max-width: 70rem;
+            margin: auto;
+            padding: 0 20px;
+        }
 
-    .sidepanel {
-      flex: 0 0 200px;
-      padding: 20px;
-      position: relative;
-    }
+        .navbar a {
+            color: #000;
+            margin: 10px;
+            white-space: nowrap;
+        }
 
-    .sidepanel a.title {
-      font-weight: 600;
-      display: block;
-      margin: 20px 0 10px;
-    }
+        .container {
+            margin-top: 130px;
+            padding: 0 20px 0 20px;
+        }
 
-    .sidepanel a.section {
-      display: block;
-      margin-bottom: 10px;
-    }
+        .row.wrapper {
+            display: flex;
+            flex-wrap: nowrap;
+            max-width: 70rem;
+            margin: auto;
+        }
 
-    .nav-top {
-       border-top: 8px solid #245076;
-    }
+        .sidepanel {
+            flex: 0 0 200px;
+            padding: 20px;
+            position: relative;
+        }
 
-    .divider {
-      width: 40px;
-      height: 4px;
-      background: #245076;
-      border-radius: 30px;
-      margin: 20px 0;
-    }
+        .sidepanel a.title {
+            font-weight: 600;
+            display: block;
+            margin: 20px 0 10px;
+        }
 
-    .right-col {
-      flex: 1;
-      padding: 20px;
-      max-width: 75%;  /* ✅ Prevent overflow */
-      margin-right:20px;
-    }
+        .sidepanel a.section {
+            display: block;
+            margin-bottom: 10px;
+        }
 
-    .scrollable-paragraph {
-      max-height: 150px;
-      overflow-y: auto;
-      padding: 10px;
-    }
+        .nav-top {
+            border-top: 8px solid #245076;
+        }
 
-    .horizontal-scroll {
-      padding: 10px;
-      white-space: nowrap;
-      overflow-x: auto;
-      height: fit-content;
-      max-width: 90%;
-    }
+        .divider {
+            width: 40px;
+            height: 4px;
+            background: #245076;
+            border-radius: 30px;
+            margin: 20px 0;
+        }
 
-    /* Scrollbar style */
-    ::-webkit-scrollbar {
-      width: 5px; height: 5px;
-    }
+        .right-col {
+            flex: 1;
+            padding: 20px;
+            max-width: 75%; /* ✅ Prevent overflow */
+            margin-right: 20px;
+        }
 
-    ::-webkit-scrollbar-track {
-      box-shadow: inset 0 0 5px grey;
-      border-radius: 10px;
-    }
+        .scrollable-paragraph {
+            max-height: 150px;
+            overflow-y: auto;
+            padding: 10px;
+        }
 
-    ::-webkit-scrollbar-thumb {
-      background: #245076;
-      border-radius: 10px;
-    }
+        .horizontal-scroll {
+            padding: 10px;
+            white-space: nowrap;
+            overflow-x: auto;
+            height: fit-content;
+            max-width: 75%;
+        }
 
-    /* Responsive styles */
-    @media (max-width: 768px) {
-      .row.wrapper {
-        flex-direction: column;
-        flex-wrap: wrap;  /* ✅ Allow wrapping on small screens */
-        padding: 0;
-      }
+        /* Scrollbar style */
+        ::-webkit-scrollbar {
+            width: 5px;
+            height: 5px;
+        }
 
-      .sidepanel {
-        width: 100%;
-        margin-top: 120px; /* Same or more than navbar height */
-        text-align: center;
-        border-bottom: 1px solid #ccc;
-      }
+        ::-webkit-scrollbar-track {
+            box-shadow: inset 0 0 5px grey;
+            border-radius: 10px;
+        }
 
-      .sidepanel a {
-        display: inline-block;
-        margin: 5px 10px;
-      }
+        ::-webkit-scrollbar-thumb {
+            background: #245076;
+            border-radius: 10px;
+        }
 
-      .right-col {
-        margin: 0;
-        width: 100%;
-      }
+        /* Responsive styles */
+        @media (max-width: 768px) {
+            .row.wrapper {
+                flex-direction: column;
+                flex-wrap: wrap; /* ✅ Allow wrapping on small screens */
+                padding: 0;
+            }
 
-      .navbar .row.content {
-        flex-direction: column;
-        align-items: center;
-      }
+            .sidepanel {
+                width: 100%;
+                margin-top: 120px; /* Same or more than navbar height */
+                text-align: center;
+                border-bottom: 1px solid #ccc;
+                padding: 0;
+            }
 
-      .navbar a {
-        float: none;
-        margin: 5px 0;
-      }
+            .sidepanel a {
+                display: inline-block;
+                margin: 5px 10px;
+            }
 
-      .divider {
-          width: 50%;
-          margin: 20px auto;    /* centers it horizontally */
-      }
+            .right-col {
+                margin: 0;
+                width: 100%;
+            }
 
-      h1 { font-size: 28px; }
-      h2 { font-size: 22px; }
-      p, pre { font-size: 14px; }
-    }
-  </style>
+            .navbar .row.content {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .navbar a {
+                float: none;
+                margin: 5px 0;
+            }
+
+            .divider {
+                width: 50%;
+                margin: 20px auto; /* centers it horizontally */
+            }
+
+            h1 {
+                font-size: 28px;
+            }
+
+            h2 {
+                font-size: 22px;
+            }
+
+            p, pre {
+                font-size: 14px;
+            }
+        }
+
+        /* Print-specific styling */
+        @media print {
+            body {
+                padding-top: 0.5in;
+            }
+
+            /* Hide navbar and sidepanel in print */
+            .sidepanel,
+            .no-print {
+                display: none !important;
+            }
+
+            .navbar {
+                position: absolute;
+                display: block !important;
+                margin-bottom: 30px; /* space below navbar */
+                padding-bottom: 10px;
+                border-bottom: 8px solid #245076;
+            }
+
+            .navbar .row.content {
+                flex-direction: row !important;
+                justify-content: space-between !important;
+                align-items: center !important;
+                flex-wrap: nowrap !important;
+            }
+
+            .navbar a {
+                color: #000;
+                margin: 5px;
+                white-space: nowrap;
+            }
+
+            .container {
+                margin-right: 0.5in;
+                margin-left: 0.5in;
+            }
+
+            .right-col {
+                max-width: 100%;
+                margin: 0;
+                padding: 0;
+            }
+
+            /* Avoid breaking inside pre blocks or important content */
+            .scrollable-paragraph, .horizontal-scroll {
+                page-break-inside: avoid;
+                max-width: 100%;
+            }
+
+            h1 {
+                font-size: 28px;
+            }
+
+            h2 {
+                font-size: 22px;
+            }
+
+            p, pre {
+                font-size: 14px;
+            }
+
+            .divider {
+                background: none !important;
+                border-top: 4px solid #245076 !important;
+                height: 0 !important;
+                width: 50%;
+                margin: 20px 0 !important;
+            }
+
+            /* Page layout */
+            @page:first {
+                margin: 0 0 1in 0; /* top, right, bottom, left */
+            }
+
+            @page {
+                size: A4 portrait;
+                margin: 1in 0 1in 0; /* top, right, bottom, left */
+            }
+        }
+
+    </style>
+
+
 </head>
 
 <body>
 
 <div class="navbar clear nav-top">
-  <div class="row content">
-    <a><img alt="logo" class="logo" style="height: 100px;" src="https://raw.githubusercontent.com/HadarPur/RU-FinalProject-syntheticDNA/main/images/BioSynth.png"></a>
-    <a href="https://www.runi.ac.il" target="_blank"><i class="fas fa-book"></i> runi.ac.il</a>
-    <a href="mailto:hadar.pur@post.runi.ac.il" target="_blank"><i class="fas fa-paper-plane"></i> hadar.pur@post.runi.ac.il</a>
-    <a><i class='fas fa-calendar-alt'></i> {{today_date}}</a>
-  </div>
+    <div class="row content">
+        <a><img alt="logo" class="logo" style="height: 100px;"
+                src="https://raw.githubusercontent.com/HadarPur/RU-FinalProject-syntheticDNA/main/images/BioSynth.png"></a>
+        <a href="https://www.runi.ac.il" target="_blank"><i class="fas fa-book"></i> runi.ac.il</a>
+        <a href="mailto:hadar.pur@post.runi.ac.il" target="_blank"><i class="fas fa-paper-plane"></i>
+            hadar.pur@post.runi.ac.il</a>
+        <a><i class='fas fa-calendar-alt'></i> {{today_date}}</a>
+    </div>
 </div>
 
 <div class="container">
-  <div class="row wrapper">
+    <div class="row wrapper">
 
-    <div class="sidepanel">
-      <a class="title" href="#">Input</a>
-      <a class="section" href="#dna-sequence">Target Sequence</a>
-      <a class="section" href="#unwanted-patterns">Unwanted Patterns</a>
+        <div class="sidepanel">
+            <a class="title" href="#">Input</a>
+            <a class="section" href="#dna-sequence">Target Sequence</a>
+            <a class="section" href="#unwanted-patterns">Unwanted Patterns</a>
 
-      <div class="divider"></div>
+            <div class="divider"></div>
 
-      <a class="title" href="#elimination">DNA Elimination</a>
-      <a class="section" href="#elimination-process">Elimination Process</a>
-      <a class="section" href="#elimination-cost">Elimination Cost</a>
+            <a class="title" href="#elimination">DNA Elimination</a>
+            <a class="section" href="#elimination-process">Elimination Process</a>
+            <a class="section" href="#elimination-cost">Elimination Cost</a>
 
-      <div class="divider"></div>
+            <div class="divider"></div>
 
-      <a class="title" href="#results">Results</a>
-      <a class="section" href="#dna-sequences-difference">DNA Sequences Difference</a>
-      <a class="section" href="#dna-detailed_changes">Detailed Changes</a>
-      <a class="section" href="#optimized-dna-sequence">Optimized Sequence</a>
+            <a class="title" href="#results">Results</a>
+            <a class="section" href="#dna-sequences-difference">DNA Sequences Difference</a>
+            <a class="section" href="#dna-detailed_changes">Detailed Changes</a>
+            <a class="section" href="#optimized-dna-sequence">Optimized Sequence</a>
+        </div>
+
+        <div class="right-col">
+            <div>
+            <h1 id="dna-sequence">Input</h1>
+            <h2>Target Sequence:</h2>
+            <p class="scrollable-paragraph">{{input}}</p>
+            </div>
+
+            <div>
+            <h2 id="unwanted-patterns">Unwanted Patterns:</h2>
+            <p class="scrollable-paragraph">{{patterns}}</p>
+            </div>
+
+            <div class="divider" style="width:24%; margin:30px 0;"></div>
+
+            <div>
+            <h1 id="elimination">DNA Elimination</h1>
+            <p>Identifies in the target sequence the following coding regions:</p>
+            <p class="scrollable-paragraph">{{highlight_input}}</p>
+
+            {{ regions | safe }}
+            {{chosen_regions}}
+            {{highlight_selected}}
+            </div>
+
+            <div>
+            <h2 id="elimination-process">Elimination Process</h2>
+            <p>{{elimination_process_description}}</p>
+            </div>
+
+            <div>
+            <h3>Coding regions:</h3>
+            <p>{{coding_region_cost_description}}</p>
+            </div>
+
+            <div>
+            <h3>Non-Coding regions:</h3>
+            <p>{{non_coding_region_cost_description}}</p>
+            </div>
+
+            <div>
+            <h2 id="elimination-cost">Elimination Cost</h2>
+            <p>We've successfully achieved the minimum elimination cost of {{cost}}</p>
+            </div>
+
+            <div class="divider" style="width:24%; margin:30px 0;"></div>
+
+            <div>
+            <h1 id="results">Results</h1>
+
+            <h2 id="dna-sequences-difference">DNA Sequences Difference:</h2>
+            <div class="horizontal-scroll">
+                <pre style="color: lightgray;">{{index_seq_str}}</pre>
+                <pre>{{marked_input_seq}}</pre>
+                <pre>{{marked_optimized_seq}}</pre>
+            </div>
+            </div>
+
+            <div>
+            <h2 id="dna-detailed_changes">Detailed Changes:</h2>
+            <div class="horizontal-scroll scrollable-paragraph">
+                <pre>{{detailed_changes}}</pre>
+            </div>
+            </div>
+
+            <div>
+            <h2 id="optimized-dna-sequence">Optimized Sequence:</h2>
+            <p class="scrollable-paragraph">{{optimized_seq}}</p>
+            </div>
+
+        </div>
+
     </div>
-
-    <div class="right-col">
-      <h1 id="dna-sequence">Input</h1>
-      <h2>Target Sequence:</h2>
-      <p class="scrollable-paragraph">{{input}}</p>
-
-      <h2 id="unwanted-patterns">Unwanted Patterns:</h2>
-      <p class="scrollable-paragraph">{{patterns}}</p>
-
-      <div class="divider" style="width:24%; margin:30px 0;"></div>
-
-      <h1 id="elimination">DNA Elimination</h1>
-      <p>Identifies in the target sequence the following coding regions:</p>
-      <p class="scrollable-paragraph">{{highlight_input}}</p>
-
-      {{ regions | safe }}
-      {{chosen_regions}}
-      {{highlight_selected}}
-
-      <h2 id="elimination-process">Elimination Process</h2>
-      <p>{{elimination_process_description}}</p>
-
-      <h3>Coding regions:</h3>
-      <p>{{coding_region_cost_description}}</p>
-
-      <h3>Non-Coding regions:</h3>
-      <p>{{non_coding_region_cost_description}}</p>
-
-      <h2 id="elimination-cost">Elimination Cost</h2>
-      <p>We've successfully achieved the minimum elimination cost of {{cost}}</p>
-
-      <div class="divider" style="width:24%; margin:30px 0;"></div>
-
-      <h1 id="results">Results</h1>
-
-      <h2 id="dna-sequences-difference">DNA Sequences Difference:</h2>
-      <div class="horizontal-scroll">
-        <pre style="color: lightgray;">{{index_seq_str}}</pre>
-        <pre>{{marked_input_seq}}</pre>
-        <pre>{{marked_optimized_seq}}</pre>
-      </div>
-
-      <h2 id="dna-detailed_changes">Detailed Changes:</h2>
-      <div class="horizontal-scroll scrollable-paragraph">
-        <pre>{{detailed_changes}}</pre>
-      </div>
-
-      <h2 id="optimized-dna-sequence">Optimized Sequence:</h2>
-      <p class="scrollable-paragraph">{{optimized_seq}}</p>
-    </div>
-
-  </div>
 </div>
 
 </body>
