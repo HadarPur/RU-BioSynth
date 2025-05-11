@@ -24,11 +24,11 @@ def read_codon_usage_map(raw_lines):
             codon = parts[-4]  # Codon is always the 4th element from the end
             frequency = float(parts[-1])  # Frequency is always the last element
 
-        codon_data = {
-            "frequency": frequency,
-            "epsilon": np.log(frequency) if frequency > 0 else float('-inf')  # Handle log(0) case
-        }
-        codon_usage_data[codon] = frequency
+            codon_data = {
+                "frequency": frequency,
+                "epsilon": np.log(frequency) if frequency > 0 else float('-inf')  # Handle log(0) case
+            }
+            codon_usage_data[codon] = frequency
 
     return codon_usage_data
 

@@ -2,7 +2,7 @@ from datetime import datetime
 
 from data.app_data import InputData, EliminationData, OutputData
 from executions.execution_utils import eliminate_unwanted_patterns
-from report.pdf_report_utils import ReportController
+from report.html_report_utils import ReportController
 from utils.display_utils import SequenceUtils
 from utils.dna_utils import DNAUtils
 from utils.file_utils import save_file
