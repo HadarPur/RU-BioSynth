@@ -67,7 +67,8 @@ class EliminationWindow(QWidget):
         middle_layout.addWidget(text_browser)
 
         # Add next button to the bottom layout
-        add_button(layout, 'Next', Qt.AlignRight, self.switch_to_results_callback, lambda: (self.updated_coding_positions,))
+        add_button(layout, 'Next', Qt.AlignRight, self.switch_to_results_callback,
+                   lambda: (self.updated_coding_positions,))
 
         # Add floating button
         self.floating_btn = FloatingScrollIndicator(parent=self, scroll_area=text_browser)

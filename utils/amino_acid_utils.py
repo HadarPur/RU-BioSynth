@@ -100,7 +100,7 @@ class AminoAcidConfig:
         if i < 2:
             raise ValueError("Position i must be at least 2 to extract the last three bases.")
 
-        return target_sequence[i - 2:i+1]
+        return target_sequence[i - 2:i + 1]
 
     @staticmethod
     def encodes_same_amino_acid(proposed_codon, current_codon):

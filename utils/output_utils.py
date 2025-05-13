@@ -1,4 +1,3 @@
-
 class Logger:
     COLORS = {
         "ERROR": "\033[91m",  # Red

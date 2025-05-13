@@ -40,7 +40,7 @@ class ResultsWindow(QWidget):
     def init_ui(self, callback):
         layout = QVBoxLayout(self)
 
-        callback_args = (self.updated_coding_positions, )
+        callback_args = (self.updated_coding_positions,)
         add_button(layout, 'Back', Qt.AlignLeft, callback, callback_args)
 
         self.display_info(layout)
@@ -77,8 +77,8 @@ class ResultsWindow(QWidget):
 
         # Mark non-equal codons and print the optimized sequence
         index_seq_str, marked_input_seq, marked_optimized_seq = mark_non_equal_codons(InputData.dna_sequence,
-                                                                                   OutputData.optimized_sequence,
-                                                                                   self.updated_coding_positions)
+                                                                                      OutputData.optimized_sequence,
+                                                                                      self.updated_coding_positions)
 
         content = '''<pre>''' + index_seq_str + '''<br></pre>'''
         content += '''<pre>''' + marked_input_seq + '''<br><br>''' + marked_optimized_seq + '''</pre>'''

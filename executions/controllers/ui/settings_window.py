@@ -74,11 +74,14 @@ class SettingsWindow(QWidget):
         """)
 
         # Extract coding regions
-        InputData.coding_positions, InputData.coding_indexes = DNAUtils.get_coding_and_non_coding_regions_positions(InputData.dna_sequence)
-        highlighted_sequence = ''.join(SequenceUtils.highlight_sequences_to_html(InputData.dna_sequence, InputData.coding_indexes))
+        InputData.coding_positions, InputData.coding_indexes = DNAUtils.get_coding_and_non_coding_regions_positions(
+            InputData.dna_sequence)
+        highlighted_sequence = ''.join(
+            SequenceUtils.highlight_sequences_to_html(InputData.dna_sequence, InputData.coding_indexes))
 
         # Handle elimination of coding regions if the user chooses to
-        InputData.coding_regions_list = DNAUtils.get_coding_regions_list(InputData.coding_indexes, InputData.dna_sequence)
+        InputData.coding_regions_list = DNAUtils.get_coding_regions_list(InputData.coding_indexes,
+                                                                         InputData.dna_sequence)
 
         # Adding formatted text to QLabel
         label_html = f"""
@@ -154,7 +157,7 @@ class SettingsWindow(QWidget):
         self.yes_button = add_button(prompt_layout, 'Yes', Qt.AlignLeft, self.select_all_regions)
 
         # Create the 'No' button
-        self.no_button = add_button(prompt_layout, 'No', Qt.AlignLeft, self.select_regions_to_exclude, (layout, ))
+        self.no_button = add_button(prompt_layout, 'No', Qt.AlignLeft, self.select_regions_to_exclude, (layout,))
 
         # Add a spacer to push the buttons to the left
         spacer = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
@@ -311,7 +314,7 @@ class RegionSelector(QWidget):
         # Implementation of the exclusion logic
         for index, (checkbox, region) in enumerate(self.checkboxes):
             if checkbox.isChecked():
-                InputData.excluded_regions_list[f'{index+1}'] = region
+                InputData.excluded_regions_list[f'{index + 1}'] = region
                 start, end = InputData.coding_indexes[index]
                 InputData.excluded_coding_positions[start:end] = [0] * (end - start)
                 InputData.excluded_coding_indexes.remove((start, end))

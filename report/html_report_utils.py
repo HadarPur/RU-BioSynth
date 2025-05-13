@@ -14,7 +14,8 @@ class ReportController:
     def __init__(self, updated_coding_positions):
 
         self.input_seq = InputData.dna_sequence
-        self.highlight_input = SequenceUtils.highlight_sequences_to_html(InputData.dna_sequence, InputData.coding_indexes)
+        self.highlight_input = SequenceUtils.highlight_sequences_to_html(InputData.dna_sequence,
+                                                                         InputData.coding_indexes)
         self.optimized_seq = OutputData.optimized_sequence
 
         # Mark non-equal codons
@@ -24,7 +25,8 @@ class ReportController:
 
         self.unwanted_patterns = ', '.join(InputData.unwanted_patterns)
         self.num_of_coding_regions = len(InputData.coding_indexes)
-        self.detailed_changes = '<br>'.join(EliminationData.detailed_changes) if EliminationData.detailed_changes else None
+        self.detailed_changes = '<br>'.join(
+            EliminationData.detailed_changes) if EliminationData.detailed_changes else None
         self.output_text = None
         self.report_filename = None
 
@@ -42,7 +44,8 @@ class ReportController:
 
                 self.highlight_selected = '''<p><br>The full sequence after selection is:</p>
                                       <p class="scrollable-paragraph">''' + ''.join(
-                    SequenceUtils.highlight_sequences_to_html(InputData.dna_sequence, InputData.excluded_coding_indexes)) + '''</p>'''
+                    SequenceUtils.highlight_sequences_to_html(InputData.dna_sequence,
+                                                              InputData.excluded_coding_indexes)) + '''</p>'''
 
             else:
                 self.chosen_regions = '''<p><br>No coding regions were selected for exclusion. Continuing with the current settings.</p>'''
@@ -55,24 +58,24 @@ class ReportController:
         self.min_cost = "{}".format('{:.10g}'.format(EliminationData.min_cost))
 
     def create_report(self, file_date):
-        context = {'today_date': file_date,
-                   'input': self.input_seq,
-                   'highlight_input': self.highlight_input,
-                   'highlight_selected': self.highlight_selected,
-                   'optimized_seq': self.optimized_seq,
-                   'index_seq_str': self.index_seq_str,
-                   'marked_input_seq': self.marked_input_seq,
-                   'marked_optimized_seq': self.marked_optimized_seq,
-                   'patterns': self.unwanted_patterns,
-                   'num_of_coding_regions': self.num_of_coding_regions,
-                   'chosen_regions': self.chosen_regions,
-                   'regions': self.regions,
-                   'cost': self.min_cost,
-                   'elimination_process_description': elimination_process_description.replace("\n", "<br>"),
-                   'coding_region_cost_description': coding_region_cost_description.replace("\n", "<br>"),
-                   'non_coding_region_cost_description': non_coding_region_cost_description.replace("\n", "<br>"),
-                   'detailed_changes': self.detailed_changes
-                   }
+        context = { 'today_date': file_date,
+                    'input': self.input_seq,
+                    'highlight_input': self.highlight_input,
+                    'highlight_selected': self.highlight_selected,
+                    'optimized_seq': self.optimized_seq,
+                    'index_seq_str': self.index_seq_str,
+                    'marked_input_seq': self.marked_input_seq,
+                    'marked_optimized_seq': self.marked_optimized_seq,
+                    'patterns': self.unwanted_patterns,
+                    'num_of_coding_regions': self.num_of_coding_regions,
+                    'chosen_regions': self.chosen_regions,
+                    'regions': self.regions,
+                    'cost': self.min_cost,
+                    'elimination_process_description': elimination_process_description.replace("\n", "<br>"),
+                    'coding_region_cost_description': coding_region_cost_description.replace("\n", "<br>"),
+                    'non_coding_region_cost_description': non_coding_region_cost_description.replace("\n", "<br>"),
+                    'detailed_changes': self.detailed_changes
+                    }
 
         try:
             # Get the absolute path to the report.html file

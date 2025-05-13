@@ -1,4 +1,3 @@
-
 from data.app_data import InputData, CostData
 from executions.controllers.command_controller import CommandController
 from executions.execution_utils import is_valid_input

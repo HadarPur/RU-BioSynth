@@ -6,7 +6,7 @@ from graphviz import Digraph
 
 def visualize_dp_table(A, sequence_length, fsm, path=None, output_file='dp_heatmap'):
     states = sorted(fsm.V)
-    state_to_idx = {state: idx for idx, state in enumerate(states)}
+    state_to_idx = { state: idx for idx, state in enumerate(states) }
 
     dp_matrix = np.full((len(states), sequence_length + 1), np.inf)
 
@@ -26,7 +26,8 @@ def visualize_dp_table(A, sequence_length, fsm, path=None, output_file='dp_heatm
     if path:
         path_x = [i for i, _ in path]
         path_y = [state_to_idx[state] for _, state in path]
-        plt.plot(path_x, path_y, marker='o', color='black', markersize=8, linestyle='-', linewidth=2, label="Optimal Path")
+        plt.plot(path_x, path_y, marker='o', color='black', markersize=8, linestyle='-', linewidth=2,
+                 label="Optimal Path")
 
     plt.colorbar(label='Cost')
     plt.xticks(ticks=range(sequence_length + 1), labels=range(sequence_length + 1))

@@ -1,4 +1,3 @@
-
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QDialog, QDialogButtonBox
 from PyQt5.QtWidgets import QMainWindow, QMessageBox, QStackedWidget, QVBoxLayout
@@ -34,7 +33,8 @@ class BaseWindow(QMainWindow):
         self.show_upload_window()
 
     def show_upload_window(self):
-        upload_window = UploadWindow(self.switch_to_process_window, self.dna_file_content, self.patterns_file_content, self.codon_usage_file_content)
+        upload_window = UploadWindow(self.switch_to_process_window, self.dna_file_content, self.patterns_file_content,
+                                     self.codon_usage_file_content)
         self.stackedLayout.addWidget(upload_window)
         self.stackedLayout.setCurrentWidget(upload_window)
 
@@ -44,7 +44,8 @@ class BaseWindow(QMainWindow):
         self.stackedLayout.setCurrentWidget(process_window)
 
     def show_elimination_window(self, updated_coding_positions):
-        elimination_window = EliminationWindow(self.switch_to_results_window, updated_coding_positions, self.show_process_window)
+        elimination_window = EliminationWindow(self.switch_to_results_window, updated_coding_positions,
+                                               self.show_process_window)
         self.stackedLayout.addWidget(elimination_window)
         self.stackedLayout.setCurrentWidget(elimination_window)
 
@@ -111,7 +112,8 @@ class BaseWindow(QMainWindow):
         self.stackedLayout.setCurrentWidget(process_window)
 
     def switch_to_elimination_window(self, updated_coding_positions):
-        elimination_window = EliminationWindow(self.switch_to_results_window, updated_coding_positions, self.show_process_window)
+        elimination_window = EliminationWindow(self.switch_to_results_window, updated_coding_positions,
+                                               self.show_process_window)
         self.stackedLayout.addWidget(elimination_window)
         self.stackedLayout.setCurrentWidget(elimination_window)
 

@@ -9,6 +9,7 @@ from utils.file_utils import resource_path
 
 sys.stderr = open(os.devnull, 'w')
 
+
 class GUIController:
     @staticmethod
     def execute():

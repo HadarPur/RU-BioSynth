@@ -29,4 +29,3 @@ class BioSynthApp:
 
 if __name__ == "__main__":
     BioSynthApp.execute(sys.argv[1:])
-

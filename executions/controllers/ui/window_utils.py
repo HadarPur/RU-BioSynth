@@ -112,7 +112,7 @@ class FloatingScrollIndicator(QPushButton):
         if not self.parent():
             return
         margin = 80
-        x = self.parent().width()/2
+        x = self.parent().width() / 2
         y = self.parent().height() - self.height() - margin
         self.move(int(x), int(y))
 
@@ -334,6 +334,7 @@ def add_button(layout, text, alignment=None, callback=None, args=(), size=(60, 3
 
     return button
 
+
 def add_spinbox(layout, default_value, step=0.01,
                 alignment=None, callback=None, args=(), size=(80, 30)):
     """
@@ -374,6 +375,7 @@ def copy_to_clipboard(code_display, update_status):
     QApplication.clipboard().setText(text)
     update_status(f"Sequence copied to clipboard")
 
+
 def create_scroll_area(parent_layout):
     scroll_area = QScrollArea()
     scroll_area.setFixedHeight(550)  # Set the maximum height for scrolling to begin
@@ -390,6 +392,3 @@ def create_scroll_area(parent_layout):
     content_layout.setAlignment(Qt.AlignTop)
 
     return scroll_area, content_widget, content_layout
-
-
-

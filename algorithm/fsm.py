@@ -15,8 +15,8 @@ def kmp_based_fsm_bigram(unwanted_patterns, sigma):
         g (dict): A helper function used to compute the transition function.
     """
 
-    f = {}
-    g = {}
+    f = { }
+    g = { }
     states = set()
     epsilon = ''
 
@@ -59,7 +59,7 @@ def kmp_based_fsm_bigram(unwanted_patterns, sigma):
     states.update(bigram_states)
 
     # Clean up invalid transitions in f
-    f = {(v, s): val for (v, s), val in f.items() if v and v not in sigma and val != epsilon and val not in sigma}
+    f = { (v, s): val for (v, s), val in f.items() if v and v not in sigma and val != epsilon and val not in sigma }
 
     # Calculate bigrams states
     for v in states:

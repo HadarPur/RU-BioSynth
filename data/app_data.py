@@ -33,4 +33,3 @@ class EliminationData:
 class OutputData:
     output_path = Path.home() / 'Downloads'
     optimized_sequence = None
-

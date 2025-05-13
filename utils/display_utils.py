@@ -88,7 +88,8 @@ class SequenceUtils:
                 - marked_seq2: Marked optimized sequence with differences highlighted.
         """
         if len(input_seq) != len(optimized_seq):
-            raise ValueError(f"Input sequence and optimized sequence must be of the same length:\nlen(input_seq) = {len(input_seq)} != len(optimized_seq) = {len(optimized_seq)}")
+            raise ValueError(
+                f"Input sequence and optimized sequence must be of the same length:\nlen(input_seq) = {len(input_seq)} != len(optimized_seq) = {len(optimized_seq)}")
 
         marked_seq1 = []
         marked_seq2 = []

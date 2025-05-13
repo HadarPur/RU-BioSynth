@@ -2,16 +2,16 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
     <title>BioSynth Report 🧬</title>
-    <meta name="description"
-          content="A flexible and comprehensive software app for design of synthetic DNA sequences without unwanted patterns">
-    <meta name="author" content="Hadar Pur">
+    <meta content="A flexible and comprehensive software app for design of synthetic DNA sequences without unwanted patterns"
+          name="description">
+    <meta content="Hadar Pur" name="author">
 
     <link href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;700&family=Open+Sans:ital,wght@0,400;0,700;1,600&display=swap"
           rel="stylesheet">
-    <script defer crossorigin="anonymous"
+    <script crossorigin="anonymous" defer
             integrity="sha384-0pzryjIRos8mFBWMzSSZApWtPl/5++eIfzYmTgBBmXYdhvxPc+XcFEk+zJwDgWbP"
             src="https://use.fontawesome.com/releases/v5.7.2/js/all.js"></script>
 
@@ -294,7 +294,7 @@
             }
 
             /* Page layout */
-            @page:first {
+            @page :first {
                 margin: 0 0 1in 0; /* top, right, bottom, left */
             }
 
@@ -313,8 +313,8 @@
 
 <div class="navbar clear nav-top">
     <div class="row content">
-        <a><img alt="logo" class="logo" style="height: 100px;"
-                src="https://raw.githubusercontent.com/HadarPur/RU-FinalProject-syntheticDNA/main/images/BioSynth.png"></a>
+        <a><img alt="logo" class="logo" src="https://raw.githubusercontent.com/HadarPur/RU-FinalProject-syntheticDNA/main/images/BioSynth.png"
+                style="height: 100px;"></a>
         <a href="https://www.runi.ac.il" target="_blank"><i class="fas fa-book"></i> runi.ac.il</a>
         <a href="mailto:hadar.pur@post.runi.ac.il" target="_blank"><i class="fas fa-paper-plane"></i>
             hadar.pur@post.runi.ac.il</a>
@@ -346,71 +346,71 @@
 
         <div class="right-col">
             <div>
-            <h1 id="dna-sequence">Input</h1>
-            <h2>Target Sequence:</h2>
-            <p class="scrollable-paragraph">{{input}}</p>
+                <h1 id="dna-sequence">Input</h1>
+                <h2>Target Sequence:</h2>
+                <p class="scrollable-paragraph">{{input}}</p>
             </div>
 
             <div>
-            <h2 id="unwanted-patterns">Unwanted Patterns:</h2>
-            <p class="scrollable-paragraph">{{patterns}}</p>
+                <h2 id="unwanted-patterns">Unwanted Patterns:</h2>
+                <p class="scrollable-paragraph">{{patterns}}</p>
             </div>
 
             <div class="divider" style="width:24%; margin:30px 0;"></div>
 
             <div>
-            <h1 id="elimination">DNA Elimination</h1>
-            <p>Identifies in the target sequence the following coding regions:</p>
-            <p class="scrollable-paragraph">{{highlight_input}}</p>
+                <h1 id="elimination">DNA Elimination</h1>
+                <p>Identifies in the target sequence the following coding regions:</p>
+                <p class="scrollable-paragraph">{{highlight_input}}</p>
 
-            {{ regions | safe }}
-            {{chosen_regions}}
-            {{highlight_selected}}
+                {{ regions | safe }}
+                {{chosen_regions}}
+                {{highlight_selected}}
             </div>
 
             <div>
-            <h2 id="elimination-process">Elimination Process</h2>
-            <p>{{elimination_process_description}}</p>
+                <h2 id="elimination-process">Elimination Process</h2>
+                <p>{{elimination_process_description}}</p>
             </div>
 
             <div>
-            <h3>Coding regions:</h3>
-            <p>{{coding_region_cost_description}}</p>
+                <h3>Coding regions:</h3>
+                <p>{{coding_region_cost_description}}</p>
             </div>
 
             <div>
-            <h3>Non-Coding regions:</h3>
-            <p>{{non_coding_region_cost_description}}</p>
+                <h3>Non-Coding regions:</h3>
+                <p>{{non_coding_region_cost_description}}</p>
             </div>
 
             <div>
-            <h2 id="elimination-cost">Elimination Cost</h2>
-            <p>We've successfully achieved the minimum elimination cost of {{cost}}</p>
+                <h2 id="elimination-cost">Elimination Cost</h2>
+                <p>We've successfully achieved the minimum elimination cost of {{cost}}</p>
             </div>
 
             <div class="divider" style="width:24%; margin:30px 0;"></div>
 
             <div>
-            <h1 id="results">Results</h1>
+                <h1 id="results">Results</h1>
 
-            <h2 id="dna-sequences-difference">DNA Sequences Difference:</h2>
-            <div class="horizontal-scroll">
-                <pre style="color: lightgray;">{{index_seq_str}}</pre>
-                <pre>{{marked_input_seq}}</pre>
-                <pre>{{marked_optimized_seq}}</pre>
-            </div>
-            </div>
-
-            <div>
-            <h2 id="dna-detailed_changes">Detailed Changes:</h2>
-            <div class="horizontal-scroll scrollable-paragraph">
-                <pre>{{detailed_changes}}</pre>
-            </div>
+                <h2 id="dna-sequences-difference">DNA Sequences Difference:</h2>
+                <div class="horizontal-scroll">
+                    <pre style="color: lightgray;">{{index_seq_str}}</pre>
+                    <pre>{{marked_input_seq}}</pre>
+                    <pre>{{marked_optimized_seq}}</pre>
+                </div>
             </div>
 
             <div>
-            <h2 id="optimized-dna-sequence">Optimized Sequence:</h2>
-            <p class="scrollable-paragraph">{{optimized_seq}}</p>
+                <h2 id="dna-detailed_changes">Detailed Changes:</h2>
+                <div class="horizontal-scroll scrollable-paragraph">
+                    <pre>{{detailed_changes}}</pre>
+                </div>
+            </div>
+
+            <div>
+                <h2 id="optimized-dna-sequence">Optimized Sequence:</h2>
+                <p class="scrollable-paragraph">{{optimized_seq}}</p>
             </div>
 
         </div>

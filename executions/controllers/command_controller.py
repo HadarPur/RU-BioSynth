@@ -24,7 +24,6 @@ app_icon_text = """\
 """
 
 
-
 class CommandController:
 
     def run(self):
@@ -55,15 +54,18 @@ class CommandController:
         Logger.space()
 
         # Extract coding regions
-        InputData.coding_positions, InputData.coding_indexes = DNAUtils.get_coding_and_non_coding_regions_positions(InputData.dna_sequence)
-        highlighted_sequence = ''.join(SequenceUtils.highlight_sequences_to_terminal(InputData.dna_sequence, InputData.coding_indexes))
+        InputData.coding_positions, InputData.coding_indexes = DNAUtils.get_coding_and_non_coding_regions_positions(
+            InputData.dna_sequence)
+        highlighted_sequence = ''.join(
+            SequenceUtils.highlight_sequences_to_terminal(InputData.dna_sequence, InputData.coding_indexes))
 
         Logger.debug('Identify the coding regions within the given target sequence and mark them for emphasis:')
         Logger.info(highlighted_sequence)
         Logger.space()
 
         # Handle elimination of coding regions if the user chooses to
-        InputData.coding_regions_list = DNAUtils.get_coding_regions_list(InputData.coding_indexes, InputData.dna_sequence)
+        InputData.coding_regions_list = DNAUtils.get_coding_regions_list(InputData.coding_indexes,
+                                                                         InputData.dna_sequence)
         if len(InputData.coding_indexes) > 0:
             Logger.debug(
                 f"The total number of coding regions is {len(InputData.coding_indexes)}, identifies as follows:")
@@ -100,4 +102,3 @@ class CommandController:
         path = save_file(OutputData.optimized_sequence, filename, OutputData.output_path)
         Logger.notice(path)
         Logger.space()
-

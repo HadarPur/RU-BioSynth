@@ -70,16 +70,20 @@ class UploadWindow(QWidget):
         self.codon_usage_text_edit = add_drop_text_edit(codon_usage_layout,
                                                         "Upload Codon Usage file/Drag&Drop Codon Usage file (.txt)",
                                                         self.codon_usage_file_content)
-        add_button(codon_usage_layout, 'Load Codon Usage', Qt.AlignCenter, self.load_file, (self.codon_usage_text_edit,),
+        add_button(codon_usage_layout, 'Load Codon Usage', Qt.AlignCenter, self.load_file,
+                   (self.codon_usage_text_edit,),
                    size=(200, 30))
 
         grid_layout.addLayout(custom_scores_layout, 1, 1)
         add_spinbox(custom_scores_layout, default_value=CostData.alpha,
-                    callback=lambda val: setattr(CostData, 'alpha', val), args=("Transition substitution cost",), alignment=Qt.AlignCenter)
+                    callback=lambda val: setattr(CostData, 'alpha', val), args=("Transition substitution cost",),
+                    alignment=Qt.AlignCenter)
         add_spinbox(custom_scores_layout, default_value=CostData.beta,
-                    callback=lambda val: setattr(CostData, 'beta', val), args=("Transversion substitution cost",), alignment=Qt.AlignCenter)
+                    callback=lambda val: setattr(CostData, 'beta', val), args=("Transversion substitution cost",),
+                    alignment=Qt.AlignCenter)
         add_spinbox(custom_scores_layout, default_value=CostData.w,
-                    callback=lambda val: setattr(CostData, 'w', val), args=("Non-synonymous substitution cost",), alignment=Qt.AlignCenter)
+                    callback=lambda val: setattr(CostData, 'w', val), args=("Non-synonymous substitution cost",),
+                    alignment=Qt.AlignCenter)
 
         custom_scores_layout.addStretch(1)  # This will push content upwards and add space at the bottom
 
@@ -96,7 +100,6 @@ class UploadWindow(QWidget):
                    lambda: (self.dna_text_edit.toPlainText().strip(),
                             self.patterns_text_edit.toPlainText().strip(),
                             self.codon_usage_text_edit.toPlainText().strip()))
-
 
     def load_file(self, text_edit):
         file_name, _ = QFileDialog.getOpenFileName(self, "Open File", "", "Text Files (*.txt)")
