@@ -1,71 +1,88 @@
-# import unittest
-# from unittest.mock import patch
-# from algorithm.eliminate_sequence import EliminationController
-# import numpy as np
-#
-#
-# class TestEliminationCostCalculation(unittest.TestCase):
-#     def setUp(self):
-#         # Sample target sequence and coding positions
-#         self.target_sequence = "ATGCTTACGTAG"
-#         self.coding_positions = [1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 3]
-#
-#         # Sample Codon Usage
-#         self.codon_usage = {
-#             "TAC": 0.2,
-#             "GTA": 0.5,
-#             "CGT": 0.1,
-#             "TTA": 0.1,
-#             "CTT": 0.1,
-#             "TAG": 0.01,
-#         }
-#
-#         # Cost function parameters
-#         self.alpha = 1.0
-#         self.beta = 2.0
-#         self.w = 5.0
-#
-#     @patch("utils.cost_utils.EliminationScorerConfig")
-#     def test_non_coding_transition_cost(self, MockEliminationScorerConfig):
-#         # Mock the cost function to simulate transition mutation costs
-#         MockEliminationScorerConfig.return_value.cost_function = lambda i, v, sigma: self.alpha if sigma == "T" else self.beta
-#         MockEliminationScorerConfig.return_value.codon_usage = self.codon_usage  # Ensure codon_usage is set
-#
-#         # Test transition mutation (assuming a "T" substitution is a transition)
-#         cost = EliminationController.eliminate(self.target_sequence, ["TAC"], self.coding_positions)[0]
-#         self.assertEqual(self.alpha, cost)  # The cost should be equal to alpha for transitions
-#
-#     @patch("utils.cost_utils.EliminationScorerConfig")
-#     def test_non_coding_transversion_cost(self, MockEliminationScorerConfig):
-#         # Mock the cost function to simulate transversion mutation costs
-#         MockEliminationScorerConfig.return_value.cost_function = lambda i, v, sigma: self.beta if sigma == "C" else self.alpha
-#         MockEliminationScorerConfig.return_value.codon_usage = self.codon_usage  # Ensure codon_usage is set
-#
-#         # Test transversion mutation (assuming a "C" substitution is a transversion)
-#         cost = EliminationController.eliminate(self.target_sequence, ["TAC"], self.coding_positions)[0]
-#         self.assertEqual(self.beta, cost)  # The cost should be equal to beta for transversions
-#
-#     @patch("utils.cost_utils.EliminationScorerConfig")
-#     def test_synonymous_substitution_cost(self, MockEliminationScorerConfig):
-#         MockEliminationScorerConfig.return_value.cost_function = lambda i, v, sigma: -np.log(self.codon_usage["TTA"])
-#         MockEliminationScorerConfig.return_value.codon_usage = self.codon_usage  # Ensure codon_usage is set
-#
-#         # Test synonymous substitution for codon "CTT" -> "TTA"
-#         cost = EliminationController.eliminate(self.target_sequence, ["TAC"], self.coding_positions)[0]
-#         self.assertEqual(-np.log(self.codon_usage['TTA']), cost)  # The cost should be based on codon usage
-#
-#     @patch("utils.cost_utils.EliminationScorerConfig")
-#     def test_stop_codon_formation_cost(self, MockEliminationScorerConfig):
-#         # Mock the cost function to simulate stop codon formation, which should return infinity
-#         MockEliminationScorerConfig.return_value.cost_function = lambda i, v, sigma: float("inf")
-#         MockEliminationScorerConfig.return_value.codon_usage = self.codon_usage  # Ensure codon_usage is set
-#
-#         # Test for stop codon formation (e.g., "TAA" or similar stop codon)
-#         cost = EliminationController.eliminate(self.target_sequence, ["TAC"], self.coding_positions)[0]
-#         self.assertEqual(float('inf'), cost)  # The cost should be infinity for stop codons
-#
-#     def test_invalid_codon_usage(self):
-#         # Test invalid codon usage (negative value in codon usage)
-#         invalid_codon_usage = {"TAC": -0.1}  # Invalid probability
-#         with self.assertRaises(ValueError):
-#             EliminationController.eliminate(self.target_sequence, ["TAC"], self.coding_positions)
+import unittest
+from algorithm.eliminate_sequence import EliminationController
+from utils.text_utils import set_output_format, OutputFormat
+from unittest.mock import MagicMock, patch
+
+class TestEliminationController(unittest.TestCase):
+    def setUp(self):
+        # Set output format
+        set_output_format(OutputFormat.TERMINAL)
+
+        # Setup input data
+        self.target_sequence = "ATGCTTACGTAG"
+        self.unwanted_patterns = {"CGT", "TAG"}
+        self.coding_positions = [1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 3]
+
+        # Patch CostData constants
+        self.patcher_usage = patch("data.app_data.CostData.codon_usage", new={
+             'TTT': 0.46, 'TTC': 0.54, 'TTA': 0.08, 'TTG': 0.13, 'CTT': 0.13, 'CTC': 0.2, 'CTA': 0.07, 'CTG': 0.4,
+             'ATT': 0.36, 'ATC': 0.47, 'ATA': 0.17, 'ATG': 1.0, 'GTT': 0.18, 'GTC': 0.24, 'GTA': 0.12, 'GTG': 0.46,
+             'TCT': 0.19, 'TCC': 0.22, 'TCA': 0.15, 'TCG': 0.05, 'CCT': 0.29, 'CCC': 0.32, 'CCA': 0.28, 'CCG': 0.11,
+             'ACT': 0.25, 'ACC': 0.36, 'ACA': 0.28, 'ACG': 0.11, 'GCT': 0.27, 'GCC': 0.4, 'GCA': 0.23, 'GCG': 0.11,
+             'TAT': 0.44, 'TAC': 0.56, 'TAA': 0.3, 'TAG': 0.24, 'CAT': 0.42, 'CAC': 0.58, 'CAA': 0.27, 'CAG': 0.73,
+             'AAT': 0.47, 'AAC': 0.53, 'AAA': 0.43, 'AAG': 0.57, 'GAT': 0.46, 'GAC': 0.54, 'GAA': 0.42, 'GAG': 0.58,
+             'TGT': 0.46, 'TGC': 0.54, 'TGA': 0.47, 'TGG': 1.0, 'CGT': 0.08, 'CGC': 0.18, 'CGA': 0.11, 'CGG': 0.2,
+             'AGT': 0.15, 'AGC': 0.24, 'AGA': 0.21, 'AGG': 0.21, 'GGT': 0.16, 'GGC': 0.34, 'GGA': 0.25, 'GGG': 0.25
+        })
+        self.patcher_alpha = patch("data.app_data.CostData.alpha", new=1.0)
+        self.patcher_beta = patch("data.app_data.CostData.beta", new=2.0)
+        self.patcher_w = patch("data.app_data.CostData.w", new=5.0)
+
+        self.patcher_usage.start()
+        self.patcher_alpha.start()
+        self.patcher_beta.start()
+        self.patcher_w.start()
+
+    def tearDown(self):
+        self.patcher_usage.stop()
+        self.patcher_alpha.stop()
+        self.patcher_beta.stop()
+        self.patcher_w.stop()
+
+    def test_no_unwanted_patterns(self):
+        result_info, changes, new_seq, cost = EliminationController.eliminate(
+            "AAAAAA", {"TTT"}, [1] * 6
+        )
+        self.assertEqual(new_seq, "AAAAAA")
+        self.assertEqual(cost, 0.0)
+        self.assertIsNone(changes)
+        self.assertIn("No unwanted patterns", result_info)
+
+    def test_patterns_eliminated(self):
+        info, changes, new_seq, cost = EliminationController.eliminate(
+            self.target_sequence,
+            self.unwanted_patterns,
+            self.coding_positions
+        )
+        for pattern in self.unwanted_patterns:
+            self.assertNotIn(pattern, new_seq)
+        self.assertIsInstance(new_seq, str)
+        self.assertGreater(len(new_seq), 0)
+        self.assertIsInstance(cost, float)
+
+    def test_cost_non_negative(self):
+        _, _, _, cost = EliminationController.eliminate(
+            self.target_sequence,
+            self.unwanted_patterns,
+            self.coding_positions
+        )
+        self.assertGreaterEqual(cost, 0.0)
+
+    def test_empty_sequence(self):
+        info, changes, new_seq, cost = EliminationController.eliminate(
+            "", {"TAG"}, []
+        )
+        self.assertEqual(new_seq, "")
+        self.assertEqual(cost, 0.0)
+        self.assertIsNone(changes)
+        self.assertIn("No unwanted patterns", info)
+
+    def test_empty_patterns(self):
+        info, changes, new_seq, cost = EliminationController.eliminate(
+            self.target_sequence,
+            set(),
+            self.coding_positions
+        )
+        self.assertEqual(new_seq, self.target_sequence)
+        self.assertEqual(cost, 0.0)
+        self.assertIsNone(changes)

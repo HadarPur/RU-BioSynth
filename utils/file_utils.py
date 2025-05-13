@@ -4,9 +4,6 @@ import shutil
 import sys
 from pathlib import Path
 
-import numpy as np
-
-
 def read_codon_usage_map(raw_lines):
     """
     Reads the codon usage table from the file and parses it into a dictionary.
@@ -23,11 +20,6 @@ def read_codon_usage_map(raw_lines):
         if len(parts) in {4, 5, 6}:  # Process lines with valid lengths
             codon = parts[-4]  # Codon is always the 4th element from the end
             frequency = float(parts[-1])  # Frequency is always the last element
-
-            codon_data = {
-                "frequency": frequency,
-                "epsilon": np.log(frequency) if frequency > 0 else float('-inf')  # Handle log(0) case
-            }
             codon_usage_data[codon] = frequency
 
     return codon_usage_data
@@ -159,10 +151,9 @@ def save_file(output, filename, path=None):
 
 def resource_path(relative_path):
     """ Get absolute path to resource, works for dev and for PyInstaller """
-    try:
-        # PyInstaller creates a temp folder and stores path in _MEIPASS
-        base_path = sys._MEIPASS
-    except Exception:
+    if hasattr(sys, '_MEIPASS'):
+        base_path = getattr(sys, '_MEIPASS', os.path.abspath("."))
+    else:
         base_path = os.path.abspath(".")
 
     return os.path.join(base_path, relative_path)
