@@ -86,3 +86,33 @@ class TestEliminationController(unittest.TestCase):
         self.assertEqual(new_seq, self.target_sequence)
         self.assertEqual(cost, 0.0)
         self.assertIsNone(changes)
+
+
+    def test_invalid_transition_handling(self):
+        target_sequence = "ATG"
+        unwanted_patterns = {'AAA', 'AAT', 'AAG', 'AAC',
+                             'ATA', 'ATT', 'ATG', 'ATC',
+                             'AGA', 'AGT', 'AGG', 'AGC',
+                             'ACA', 'ACT', 'ACG', 'ACC',
+                             'TAA', 'TAT', 'TAG', 'TAC',
+                             'TTA', 'TTT', 'TTG', 'TTC',
+                             'TGA', 'TGT', 'TGG', 'TGC',
+                             'TCA', 'TCT', 'TCG', 'TCC',
+                             'GAA', 'GAT', 'GAG', 'GAC',
+                             'GTA', 'GTT', 'GTG', 'GTC',
+                             'GGA', 'GGT', 'GGG', 'GGC',
+                             'GCA', 'GCT', 'GCG', 'GCC',
+                             'CAA', 'CAT', 'CAG', 'CAC',
+                             'CTA', 'CTT', 'CTG', 'CTC',
+                             'CGA', 'CGT', 'CGG', 'CGC',
+                             'CCA', 'CCT', 'CCG', 'CCC'}
+
+        coding_positions = [0, 0, 0]
+        info, changes, new_seq, cost = EliminationController.eliminate(
+            target_sequence,
+            unwanted_patterns,
+            coding_positions
+        )
+        self.assertIsNone(new_seq)
+        self.assertEqual(cost, float("inf"))
+        self.assertIn("No valid sequence", info)
