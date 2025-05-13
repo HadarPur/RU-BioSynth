@@ -2,6 +2,7 @@ import unittest
 from unittest.mock import patch
 
 import numpy as np
+
 from utils.cost_utils import calculate_cost
 
 

@@ -1,9 +1,10 @@
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QSpacerItem, QSizePolicy, QScrollArea
-from PyQt5.QtWidgets import QWidget, QVBoxLayout, QLabel, QCheckBox, QHBoxLayout, QMessageBox,QTextEdit
+from PyQt5.QtWidgets import QWidget, QVBoxLayout, QLabel, QCheckBox, QHBoxLayout, QMessageBox
 
 from data.app_data import InputData
-from executions.controllers.ui.window_utils import FloatingScrollIndicator, add_button, add_text_edit_html, add_text_edit, \
+from executions.controllers.ui.window_utils import FloatingScrollIndicator, add_button, add_text_edit_html, \
+    add_text_edit, \
     adjust_text_edit_height, adjust_scroll_area_height, create_scroll_area
 from utils.display_utils import SequenceUtils
 from utils.dna_utils import DNAUtils

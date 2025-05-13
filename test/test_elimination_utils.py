@@ -1,7 +1,9 @@
 import unittest
+from unittest.mock import patch
+
 from algorithm.eliminate_sequence import EliminationController
 from utils.text_utils import set_output_format, OutputFormat
-from unittest.mock import MagicMock, patch
+
 
 class TestEliminationController(unittest.TestCase):
     def setUp(self):

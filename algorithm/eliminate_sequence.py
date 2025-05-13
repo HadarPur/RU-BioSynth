@@ -7,7 +7,7 @@ from settings.costs_settings import elimination_process_description, coding_regi
 from utils.cost_utils import EliminationScorerConfig
 from utils.date_utils import format_current_date
 from utils.text_utils import format_text_bold_for_output
-from utils.graphic_utils import visualize_fsm_graph, visualize_fsm_table, visualize_dp_table
+
 
 class EliminationController:
     @staticmethod
