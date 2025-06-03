@@ -76,6 +76,52 @@ class DNAUtils:
 
         return coding_regions_list
 
+    # @staticmethod
+    # def get_coding_and_non_coding_regions_positions(seq):
+    #     """
+    #     Identifies coding regions in the DNA sequence and precomputes an array of codon positions.
+    #
+    #     Args:
+    #         seq (str): The DNA sequence to analyze.
+    #
+    #     Returns:
+    #         list: An array where each index represents the codon position (1, 2, 3) for coding regions,
+    #               and 0 for non-coding regions.
+    #     """
+    #     start_codon = "ATG"
+    #     stop_codons = { "TAA", "TAG", "TGA" }
+    #
+    #     N = len(seq)
+    #     codon_positions = [0] * N  # Initialize all positions as non-coding (0)
+    #     coding_region_indexes = []
+    #
+    #     i = 0  # Pointer to traverse the sequence
+    #
+    #     while i < len(seq) - 2:
+    #         if seq[i:i + 3] == start_codon:
+    #             # Search for the nearest stop codon in the same reading frame
+    #             for j in range(i + 3, len(seq) - 2, 3):
+    #                 if seq[j:j + 3] in stop_codons:
+    #                     start_idx = i
+    #                     end_idx = j + 3  # Include the stop codon
+    #
+    #                     # Check if this is a valid coding region
+    #                     if end_idx - start_idx >= min_coding_region_length:
+    #                         # Assign codon positions for this coding region
+    #                         for k in range(start_idx, end_idx):
+    #                             codon_positions[k] = ((k - start_idx) % 3) + 1
+    #
+    #                         coding_region_indexes.append((start_idx, end_idx))
+    #                     i = end_idx  # Move the pointer past the coding region
+    #                     break
+    #             else:
+    #                 # No valid stop codon; treat the rest as non-coding
+    #                 break
+    #         else:
+    #             i += 1
+    #
+    #     return codon_positions, coding_region_indexes
+
     @staticmethod
     def get_coding_and_non_coding_regions_positions(seq):
         """
@@ -83,10 +129,10 @@ class DNAUtils:
 
         Args:
             seq (str): The DNA sequence to analyze.
-
         Returns:
-            list: An array where each index represents the codon position (1, 2, 3) for coding regions,
-                  and 0 for non-coding regions.
+            tuple: (codon_positions, coding_region_indexes)
+                - codon_positions: list of codon positions per base (0, 1, 2, 3, or -3)
+                - coding_region_indexes: list of tuples indicating start and end of each coding region
         """
         start_codon = "ATG"
         stop_codons = { "TAA", "TAG", "TGA" }
@@ -105,17 +151,20 @@ class DNAUtils:
                         start_idx = i
                         end_idx = j + 3  # Include the stop codon
 
-                        # Check if this is a valid coding region
                         if end_idx - start_idx >= min_coding_region_length:
-                            # Assign codon positions for this coding region
                             for k in range(start_idx, end_idx):
-                                codon_positions[k] = ((k - start_idx) % 3) + 1
+                                codon_phase = ((k - start_idx) % 3) + 1
+                                if (k - start_idx) < 3 and codon_phase == 3:
+                                    # Only mark the third position of the **first start codon**
+                                    codon_positions[k] = -3
+                                else:
+                                    codon_positions[k] = codon_phase
 
                             coding_region_indexes.append((start_idx, end_idx))
                         i = end_idx  # Move the pointer past the coding region
                         break
                 else:
-                    # No valid stop codon; treat the rest as non-coding
+                    # No valid stop codon found in frame, treat rest as non-coding
                     break
             else:
                 i += 1

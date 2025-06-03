@@ -20,7 +20,7 @@ class TestDNAHighlighter(unittest.TestCase):
 
         expected_coding_positions = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
                                      0, 0, 0, 0, 0, 0, 0, 0, 0,
-                                     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 1, 2, 3, 1, 2, 3,
+                                     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, -3, 1, 2, 3, 1, 2, 3,
                                      1, 2, 3, 1, 2, 3, 1, 2, 3,
                                      1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 3, 1,
                                      2, 3, 1, 2, 3, 1, 2, 3, 1,
@@ -42,10 +42,10 @@ class TestDNAHighlighter(unittest.TestCase):
         coding_positions, coding_indexes = DNAUtils.get_coding_and_non_coding_regions_positions(seq_str)
         expected_coding_indexes = [(19, 55), (64, 85)]
 
-        expected_coding_positions = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 1, 2, 3, 1, 2, 3,
+        expected_coding_positions = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, -3, 1, 2, 3, 1, 2, 3,
                                      1, 2, 3, 1, 2, 3, 1, 2, 3,
                                      1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
-                                     2, 3, 1, 2, 3, 1, 2, 3, 1,
+                                     2, -3, 1, 2, 3, 1, 2, 3, 1,
                                      2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 3, 0, 0, 0]
 
         self.assertEqual(coding_indexes, expected_coding_indexes)

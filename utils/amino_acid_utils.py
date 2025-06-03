@@ -131,6 +131,19 @@ class AminoAcidConfig:
         return codon_to_amino_acid.get(current_codon) == '*' or codon_to_amino_acid.get(proposed_codon) == '*'
 
     @staticmethod
+    def is_start_codon(codon_position):
+        """
+        Checks if a given codon is a stop codon.
+
+        Args:
+            codon_position (number): The codon to be tested, should be always -3
+
+        Returns:
+            bool: True if the codon is a start codon, False otherwise.
+        """
+        return codon_position == -3
+
+    @staticmethod
     def is_transition(nucleotide1, nucleotide2):
         """
         Checks if the substitution between two nucleotides is a transition mutation.

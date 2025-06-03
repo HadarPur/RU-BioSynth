@@ -40,7 +40,7 @@ def calculate_cost(target_sequence, coding_positions, codon_usage, i, v, sigma, 
     coding_positions : list[int]
         A list indicating the coding status of each position in the sequence:
         - Non-coding: 0
-        - Coding: 1, 2, or 3 (indicating the codon phase).
+        - Coding: 1, 2, or -+3 (indicating the codon phase).
     codon_usage : dict
         A dictionary mapping codons to their frequency of use in synonymous substitutions.
     i : int
@@ -103,21 +103,21 @@ def calculate_cost(target_sequence, coding_positions, codon_usage, i, v, sigma, 
         return ("", ""), 0.0
 
     # Coding region, position 3
-    elif codon_pos == 3:  # At 3rd position of codon
+    elif codon_pos in {-3, 3}:  # At 3rd position of codon
         # Retrieve the current codon and construct the proposed codon
-        current_codon = AminoAcidConfig.get_last3(target_sequence, i)
+        target_codon = AminoAcidConfig.get_last3(target_sequence, i)
         last2_bases = AminoAcidConfig.get_last2(v)
         proposed_codon = f'{last2_bases}{sigma}'
 
-        changes = current_codon, proposed_codon
+        changes = target_codon, proposed_codon
         # Evaluate substitution costs
-        if proposed_codon == current_codon:
+        if proposed_codon == target_codon:
             # No substitution
             return changes, 0.0
-        elif AminoAcidConfig.encodes_same_amino_acid(proposed_codon, current_codon):
+        elif AminoAcidConfig.encodes_same_amino_acid(proposed_codon, target_codon):
             # Synonymous substitution with a logarithmic penalty based on codon usage
             return changes, -np.log(codon_usage[proposed_codon])
-        elif AminoAcidConfig.either_is_stop_codon(current_codon, proposed_codon):
+        elif AminoAcidConfig.is_start_codon(codon_pos) or AminoAcidConfig.either_is_stop_codon(target_codon, proposed_codon):
             # Penalize stop codon formation
             return changes, float('inf')
         else:
