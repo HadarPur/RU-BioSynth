@@ -72,7 +72,6 @@ def kmp_based_fsm_bigram(unwanted_patterns, sigma):
             if (v, s) not in f or f[(v, s)] in sigma | {epsilon}:
                 f[(v, s)] = v[-1] + s
 
-    print(f)
     return states, f, g
 
 
