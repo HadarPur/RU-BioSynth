@@ -51,23 +51,29 @@ def kmp_based_fsm_bigram(unwanted_patterns, sigma):
                 state_queue.append(v + s)
 
     # Remove epsilon and single-character states
-    states.discard(epsilon)
-    states.difference_update(sigma)
+    states.remove(epsilon)
+    for s in sigma:
+        if s in states:
+            states.remove(s)
+
+    # Remove transitions of invalid_states
+    for (v, s) in f.copy():
+        if v in sigma | {epsilon}:
+            del f[(v, s)]
 
     # Generate all bigrams from the alphabet and update states
-    bigram_states = [x + y for x in sigma for y in sigma]
-    states.update(bigram_states)
+    for x in sigma:
+        for y in sigma:
+            states.add(x + y)
 
-    # Clean up invalid transitions in f
-    f = { (v, s): val for (v, s), val in f.items() if v and v not in sigma and val != epsilon and val not in sigma }
-
-    # Calculate bigrams states
+    # Clean and fix transitions in a single pass
     for v in states:
         for s in sigma:
-            if (v, s) not in f:
+            if (v, s) not in f or f[(v, s)] in sigma | {epsilon}:
                 f[(v, s)] = v[-1] + s
 
-    return bigram_states, states, f, g
+    print(f)
+    return states, f, g
 
 
 class FSM:
@@ -97,4 +103,4 @@ class FSM:
         self.sigma = alphabet
         self.unwanted_patterns = unwanted_patterns
 
-        self.bigram_states, self.V, self.f, self.g = kmp_based_fsm_bigram(self.unwanted_patterns, self.sigma)
+        self.V, self.f, self.g = kmp_based_fsm_bigram(self.unwanted_patterns, self.sigma)
