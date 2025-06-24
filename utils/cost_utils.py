@@ -78,7 +78,7 @@ def calculate_cost(target_sequence, coding_positions, codon_usage, i, v, sigma, 
     """
 
     # Validate codon usage
-    if any(prob <= 0 for prob in codon_usage.values()):
+    if any(data['freq'] <= 0 for data in codon_usage.values()):
         raise ValueError("Invalid codon usage: probabilities must be positive and normalized.")
 
     # Determine coding position of the current index.
@@ -116,7 +116,7 @@ def calculate_cost(target_sequence, coding_positions, codon_usage, i, v, sigma, 
             return changes, 0.0
         elif AminoAcidConfig.encodes_same_amino_acid(proposed_codon, target_codon):
             # Synonymous substitution with a logarithmic penalty based on codon usage
-            return changes, -np.log(codon_usage[proposed_codon])
+            return changes, -np.log(codon_usage[proposed_codon]['freq'])
         elif AminoAcidConfig.is_start_codon(codon_pos) or AminoAcidConfig.either_is_stop_codon(target_codon, proposed_codon):
             # Penalize stop codon formation
             return changes, float('inf')

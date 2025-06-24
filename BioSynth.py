@@ -1,7 +1,7 @@
 import sys
 
 from executions.controllers.gui_controller import GUIController
-from executions.controllers.terminal_controller import TerminalController
+from executions.controllers.cli_controller import CLIController
 from utils.file_utils import delete_dir
 from utils.input_utils import ArgumentParser
 from utils.output_utils import Logger
@@ -21,7 +21,7 @@ class BioSynthApp:
                 GUIController().execute()
             else:
                 set_output_format(OutputFormat.TERMINAL)
-                TerminalController(args).execute()
+                CLIController(args).execute()
 
         except KeyboardInterrupt:
             Logger.error("\nProgram stopped by the user.")

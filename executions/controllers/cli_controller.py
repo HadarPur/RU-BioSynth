@@ -5,7 +5,7 @@ from utils.file_utils import SequenceReader, PatternReader, CodonUsageReader
 from utils.input_utils import ArgumentParser
 
 
-class TerminalController:
+class CLIController:
     def __init__(self, argv):
         self.argv = argv
 
@@ -24,6 +24,8 @@ class TerminalController:
         InputData.dna_sequence = seq
         InputData.unwanted_patterns = unwanted_patterns
         CostData.codon_usage = codon_usage_table
+
+        print(CostData.codon_usage)
 
         # optional values
         if alpha is not None:

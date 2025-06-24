@@ -11,20 +11,18 @@ def read_codon_usage_map(raw_lines):
 
     :return: A dictionary where keys are codons and values are dictionaries with frequency and epsilon.
     """
-
-    # Read all lines from the file
-    codon_usage_data = { }
-
-    # Parse each line to extract codon and frequency data
+    codon_usage_data = {}
     for line in raw_lines:
         parts = line.split()
-        if len(parts) in { 4, 5, 6 }:  # Process lines with valid lengths
+        if len(parts) in {4, 5, 6}: # Process lines with valid lengths
             codon = parts[-4]  # Codon is always the 4th element from the end
-            frequency = float(parts[-1])  # Frequency is always the last element
-            codon_usage_data[codon] = frequency
-
+            amino_acid = parts[-3]  # AA is always the 4th element from the end
+            try:
+                frequency = float(parts[-1]) # Frequency is always the last element
+                codon_usage_data[codon] = { 'aa': amino_acid, 'freq': frequency }
+            except ValueError:
+                continue  # skip malformed lines
     return codon_usage_data
-
 
 # Define a base class for reading data from a file.
 class FileDataReader:

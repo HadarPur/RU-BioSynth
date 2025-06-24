@@ -4,7 +4,7 @@ from PyQt5.QtCore import Qt, QPropertyAnimation, QEasingCurve
 from PyQt5.QtGui import QPainterPath, QRegion
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtWidgets import QFileDialog, QTextEdit, QPlainTextEdit, QToolBar, QDoubleSpinBox, QScrollArea, QWidget
-from PyQt5.QtWidgets import QFrame, QPushButton, QVBoxLayout, QApplication, QLabel, QHBoxLayout, QSizePolicy
+from PyQt5.QtWidgets import QFrame, QPushButton, QVBoxLayout, QApplication, QLabel, QHBoxLayout, QSizePolicy, QTableWidget, QHeaderView
 
 from utils.file_utils import resource_path, save_file
 
@@ -58,6 +58,27 @@ class DropTextEdit(QTextEdit):
                     self.setPlainText(file.read())
                 event.acceptProposedAction()
 
+class DropTableWidget(QTableWidget):
+    def __init__(self, parent=None, drop_callback=None):
+        super().__init__(parent)
+        self.drop_callback = drop_callback
+        self.setAcceptDrops(True)
+        self.setDragDropMode(QTableWidget.DropOnly)
+        self.viewport().setAcceptDrops(True)
+
+    def dragEnterEvent(self, event):
+        event.accept()
+
+    def dragMoveEvent(self, event):
+        event.accept()
+
+    def dropEvent(self, event):
+        for url in event.mimeData().urls():
+            file_path = url.toLocalFile()
+            if file_path.endswith(".txt"):
+                if self.drop_callback:
+                    self.drop_callback(file_path)
+        event.accept()
 
 class FloatingScrollIndicator(QPushButton):
     def __init__(self, parent=None, scroll_area=None, direction="bottom"):
@@ -176,6 +197,42 @@ def add_logo_toolbar(layout):
     layout.addToolBar(Qt.TopToolBarArea, logo_toolbar)
 
 
+def add_drop_table(layout, placeholder, columns, headers, drop_callback):
+    table = DropTableWidget(drop_callback=drop_callback)
+    table.setColumnCount(columns)
+    table.setHorizontalHeaderLabels(headers)
+    table.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
+    layout.addWidget(table)
+
+    # Now create placeholder overlay
+    placeholder_label = QLabel(placeholder, table.viewport())
+    placeholder_label.setAlignment(Qt.AlignLeft)
+    placeholder_label.setStyleSheet("color: gray; font-size: 16px;")
+    placeholder_label.setAttribute(Qt.WA_TransparentForMouseEvents)
+    placeholder_label.show()
+
+    # Attach placeholder label to the table instance
+    table.placeholder_label = placeholder_label
+
+    # Update placeholder visibility initially
+    def update_placeholder():
+        placeholder_label.setVisible(table.rowCount() == 0)
+
+    table.update_placeholder = update_placeholder
+    update_placeholder()
+
+    # Intercept resizeEvent
+    original_resize_event = table.resizeEvent
+
+    def new_resize_event(event):
+        placeholder_label.resize(table.viewport().size())
+        if original_resize_event:
+            original_resize_event(event)
+
+    table.resizeEvent = new_resize_event
+
+    return table
+
 def add_drop_text_edit(layout, placeholder, content, wrap=None):
     text_edit = DropTextEdit()
     text_edit.setPlaceholderText(placeholder)
@@ -194,7 +251,6 @@ def add_drop_text_edit(layout, placeholder, content, wrap=None):
     layout.addWidget(text_edit)
 
     return text_edit
-
 
 def add_text_edit(layout, placeholder, content, wrap=None):
     text_edit = QTextEdit()

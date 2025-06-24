@@ -10,7 +10,6 @@ from executions.controllers.ui.upload_window import UploadWindow
 from executions.controllers.ui.window_utils import add_text_edit_html, add_text_edit
 from executions.execution_utils import is_valid_dna, is_valid_patterns, is_valid_codon_usage
 from utils.dna_utils import DNAUtils
-from utils.file_utils import read_codon_usage_map
 
 
 class BaseWindow(QMainWindow):
@@ -86,7 +85,6 @@ class BaseWindow(QMainWindow):
             return
 
         self.codon_usage_file_content = codon_usage
-        codon_usage = read_codon_usage_map(codon_usage.splitlines())
         if len(codon_usage) == 0:
             QMessageBox.warning(self, "Error",
                                 "There is an issue with the codon usage file, please check and try again later.")

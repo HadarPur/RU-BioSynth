@@ -22,22 +22,31 @@ def is_valid_codon_usage(codon_usage):
     """
     Validates the codon usage data.
 
-    :param codon_usage: A dictionary where keys are codons and values are dictionaries with frequency and epsilon.
-                        Example: {"AAA": {"frequency": 0.5, "epsilon": -0.693}}
+    :param codon_usage: A dictionary where keys are codons and values are dictionaries with 'aa' and 'freq'.
+                        Example: {"AAA": {"aa": "K", "freq": 0.5}}
     :return: True if the codon usage data is valid, otherwise False.
     """
     valid_bases = set('ATCG')
 
-    for codon, frequency in codon_usage.items():
-        # Validate the codon is a string of 3 valid bases
+    if len(codon_usage) != 64:
+        return False
+
+    for codon, data in codon_usage.items():
+        # Validate codon format
         if not (isinstance(codon, str) and len(codon) == 3 and all(base in valid_bases for base in codon.upper())):
             return False
 
-        # Validate the frequency is a non-negative float or integer
-        if not (isinstance(frequency, (float, int)) and frequency >= 0):
+        # Validate 'aa' field
+        aa = data.get('aa')
+        if not (isinstance(aa, str) and len(aa) == 3 and aa.isalpha()):
             return False
-    return True
 
+        # Validate 'freq' field
+        freq = data.get('freq')
+        if not (isinstance(freq, (float, int)) and freq >= 0):
+            return False
+
+    return True
 
 def is_valid_input(sequence, unwanted_patterns, codon_usage_table):
     if sequence is None:
@@ -70,11 +79,6 @@ def is_valid_input(sequence, unwanted_patterns, codon_usage_table):
 
     if len(codon_usage_table) == 0:
         Logger.error("Unfortunately, the codon usage file is empty. Please insert fully one and try again.")
-        return False
-
-    if len(codon_usage_table) != 64:
-        Logger.error(
-            "Unfortunately, the codon usage file is not contains all the codons. Please insert fully one and try again.")
         return False
 
     if not is_valid_codon_usage(codon_usage_table):

@@ -19,7 +19,7 @@ class EliminationController:
 
         # Check if unwanted patterns exist
         if not any(x in target_sequence for x in unwanted_patterns):
-            info += "\nNo unwanted patterns found. Returning the original sequence."
+            info += "\nNo unwanted patterns found - returning the original sequence."
             return info, None, target_sequence, 0.0  # Return unchanged sequence
 
         # Additional descriptions (placeholders for actual descriptions)
