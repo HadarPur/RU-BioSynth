@@ -5,7 +5,7 @@
 Please execute the following command within your working environment:
 
 ```
-pip3 install -r requirements.txt
+pip3.9 install -r requirements.txt
 ```
 
 ## Execute Terminal Program
@@ -13,13 +13,13 @@ pip3 install -r requirements.txt
 To execute the elimination tool from the Terminal, please use the following command:
 
 ```
-python3 ./BioSynth.py -s <seq_file_path> -p <pattern_file_path> -c <codon_usage_table>
+python3.9 ./BioSynth.py -s <seq_file_path> -p <pattern_file_path> -c <codon_usage_table>
 ```
 
 For example:
 
 ```
-python3 ./BioSynth.py -s ./files/one_coding/s_file_one_coding.txt -p ./files/one_coding/p_file_one_coding.txt -c ./files/one_coding/codon_usage.txt
+python3.9 ./BioSynth.py -s ./files/one_coding/s_file_one_coding.txt -p ./files/one_coding/p_file_one_coding.txt -c ./files/one_coding/codon_usage.txt
 ```
 
 ## Execute GUI Program
@@ -27,5 +27,5 @@ python3 ./BioSynth.py -s ./files/one_coding/s_file_one_coding.txt -p ./files/one
 To execute the elimination tool GUI, please use the following command:
 
 ```
-python3 ./BioSynth.py -g
+python3.9 ./BioSynth.py -g
 ```

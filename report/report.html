@@ -142,15 +142,13 @@
         .scrollable-paragraph {
             max-height: 150px;
             overflow-y: auto;
-            padding: 10px;
         }
 
         .horizontal-scroll {
-            padding: 10px;
             white-space: nowrap;
             overflow-x: auto;
             height: fit-content;
-            max-width: 75%;
+            max-width: 90%;
         }
 
         /* Scrollbar style */
@@ -267,10 +265,11 @@
                 padding: 0;
             }
 
-            /* Avoid breaking inside pre blocks or important content */
-            .scrollable-paragraph, .horizontal-scroll {
-                page-break-inside: avoid;
-                max-width: 100%;
+            .horizontal-scroll {
+                white-space: nowrap;
+                overflow-x: auto;
+                height: fit-content;
+                max-width: 90%;
             }
 
             h1 {
@@ -403,7 +402,7 @@
 
             <div>
                 <h2 id="dna-detailed_changes">Detailed Changes:</h2>
-                <div class="horizontal-scroll scrollable-paragraph">
+                <div class="horizontal-scroll">
                     <pre>{{detailed_changes}}</pre>
                 </div>
             </div>
