@@ -25,8 +25,6 @@ class CLIController:
         InputData.unwanted_patterns = unwanted_patterns
         CostData.codon_usage = codon_usage_table
 
-        print(CostData.codon_usage)
-
         # optional values
         if alpha is not None:
             CostData.alpha = alpha

@@ -116,7 +116,7 @@ def calculate_cost(target_sequence, coding_positions, codon_usage, i, v, sigma, 
             return changes, 0.0
         elif AminoAcidConfig.encodes_same_amino_acid(proposed_codon, target_codon):
             # Synonymous substitution with a logarithmic penalty based on codon usage
-            return changes, -np.log(codon_usage[proposed_codon]['freq'])
+            return changes, -np.log10(codon_usage[proposed_codon]['freq'])
         elif AminoAcidConfig.is_start_codon(codon_pos) or AminoAcidConfig.either_is_stop_codon(target_codon, proposed_codon):
             # Penalize stop codon formation
             return changes, float('inf')

@@ -52,7 +52,7 @@ class TestCalculateCost(unittest.TestCase):
         _, cost = calculate_cost(self.target_sequence, self.coding_positions, self.codon_usage, 8, "CTT", "A",
                                  self.alpha,
                                  self.beta, self.w)
-        self.assertAlmostEqual(cost, -np.log(self.codon_usage["TTA"]['freq']))
+        self.assertAlmostEqual(cost, -np.log10(self.codon_usage["TTA"]['freq']))
 
     @patch("utils.amino_acid_utils.AminoAcidConfig")
     def test_stop_codon_formation(self, MockAminoAcidConfig):

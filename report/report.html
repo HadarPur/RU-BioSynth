@@ -265,6 +265,7 @@
                 padding: 0;
             }
 
+
             .horizontal-scroll {
                 white-space: nowrap;
                 overflow-x: auto;
@@ -282,6 +283,14 @@
 
             p, pre {
                 font-size: 14px;
+            }
+
+            div {
+                page-break-inside: avoid;
+            }
+
+            .scrollable-paragraph {
+                max-height: 100%;
             }
 
             .divider {
@@ -347,7 +356,7 @@
             <div>
                 <h1 id="dna-sequence">Input</h1>
                 <h2>Target Sequence:</h2>
-                <p class="scrollable-paragraph">{{input}}</p>
+                <p class="scrollable-paragraph" style="font-family: monospace;">{{input}}</p>
             </div>
 
             <div>
