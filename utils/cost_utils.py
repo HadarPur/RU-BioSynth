@@ -103,7 +103,7 @@ def calculate_cost(target_sequence, coding_positions, codon_usage, i, v, sigma, 
         return ("", ""), 0.0
 
     # Coding region, position 3
-    elif codon_pos in {-3, 3}:  # At 3rd position of codon
+    elif codon_pos in { -3, 3 }:  # At 3rd position of codon
         # Retrieve the current codon and construct the proposed codon
         target_codon = AminoAcidConfig.get_last3(target_sequence, i)
         last2_bases = AminoAcidConfig.get_last2(v)
@@ -117,7 +117,8 @@ def calculate_cost(target_sequence, coding_positions, codon_usage, i, v, sigma, 
         elif AminoAcidConfig.encodes_same_amino_acid(proposed_codon, target_codon):
             # Synonymous substitution with a logarithmic penalty based on codon usage
             return changes, -np.log10(codon_usage[proposed_codon]['freq'])
-        elif AminoAcidConfig.is_start_codon(codon_pos) or AminoAcidConfig.either_is_stop_codon(target_codon, proposed_codon):
+        elif AminoAcidConfig.is_start_codon(codon_pos) or AminoAcidConfig.either_is_stop_codon(target_codon,
+                                                                                               proposed_codon):
             # Penalize stop codon formation
             return changes, float('inf')
         else:

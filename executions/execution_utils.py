@@ -48,6 +48,7 @@ def is_valid_codon_usage(codon_usage):
 
     return True
 
+
 def is_valid_input(sequence, unwanted_patterns, codon_usage_table):
     if sequence is None:
         Logger.error("Unfortunately, we couldn't find any sequence file. Please insert one and try again.")

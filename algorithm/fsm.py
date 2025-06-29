@@ -58,7 +58,7 @@ def kmp_based_fsm_bigram(unwanted_patterns, sigma):
 
     # Remove transitions of invalid_states
     for (v, s) in f.copy():
-        if v in sigma | {epsilon}:
+        if v in sigma | { epsilon }:
             del f[(v, s)]
 
     # Generate all bigrams from the alphabet and update states
@@ -69,7 +69,7 @@ def kmp_based_fsm_bigram(unwanted_patterns, sigma):
     # Clean and fix transitions in a single pass
     for v in states:
         for s in sigma:
-            if (v, s) not in f or f[(v, s)] in sigma | {epsilon}:
+            if (v, s) not in f or f[(v, s)] in sigma | { epsilon }:
                 f[(v, s)] = v[-1] + s
 
     return states, f, g

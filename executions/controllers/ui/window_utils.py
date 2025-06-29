@@ -4,7 +4,8 @@ from PyQt5.QtCore import Qt, QPropertyAnimation, QEasingCurve
 from PyQt5.QtGui import QPainterPath, QRegion
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtWidgets import QFileDialog, QTextEdit, QPlainTextEdit, QToolBar, QDoubleSpinBox, QScrollArea, QWidget
-from PyQt5.QtWidgets import QFrame, QPushButton, QVBoxLayout, QApplication, QLabel, QHBoxLayout, QSizePolicy, QTableWidget, QHeaderView
+from PyQt5.QtWidgets import QFrame, QPushButton, QVBoxLayout, QApplication, QLabel, QHBoxLayout, QSizePolicy, \
+    QTableWidget, QHeaderView
 
 from utils.file_utils import resource_path, save_file
 
@@ -58,6 +59,7 @@ class DropTextEdit(QTextEdit):
                     self.setPlainText(file.read())
                 event.acceptProposedAction()
 
+
 class DropTableWidget(QTableWidget):
     def __init__(self, parent=None, drop_callback=None):
         super().__init__(parent)
@@ -79,6 +81,7 @@ class DropTableWidget(QTableWidget):
                 if self.drop_callback:
                     self.drop_callback(file_path)
         event.accept()
+
 
 class FloatingScrollIndicator(QPushButton):
     def __init__(self, parent=None, scroll_area=None, direction="bottom"):
@@ -233,6 +236,7 @@ def add_drop_table(layout, placeholder, columns, headers, drop_callback):
 
     return table
 
+
 def add_drop_text_edit(layout, placeholder, content, wrap=None):
     text_edit = DropTextEdit()
     text_edit.setPlaceholderText(placeholder)
@@ -251,6 +255,7 @@ def add_drop_text_edit(layout, placeholder, content, wrap=None):
     layout.addWidget(text_edit)
 
     return text_edit
+
 
 def add_text_edit(layout, placeholder, content, wrap=None):
     text_edit = QTextEdit()
