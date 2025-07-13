@@ -13,7 +13,7 @@ pip3 install -r requirements.txt
 To execute the elimination tool from the Terminal, please use the following command:
 
 ```
-python3 ./BioSynth.py -s <seq_file_path> -p <pattern_file_path> -c <codon_usage_table>
+python3 ./BioSynth.py -s <seq_file_path> -p <pattern_file_path> -c <codon_usage_file_path>
 ```
 
 For example:

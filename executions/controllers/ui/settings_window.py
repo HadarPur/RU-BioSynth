@@ -21,7 +21,9 @@ class SettingsWindow(QWidget):
         self.no_button = None
         self.region_selector = None
         self.submit_button = None
-        self.floating_btn = None
+
+
+
 
         self.content_widget = None
 

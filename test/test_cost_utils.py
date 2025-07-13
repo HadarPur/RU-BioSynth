@@ -13,12 +13,12 @@ class TestCalculateCost(unittest.TestCase):
         self.coding_positions = [0, 0, 0, 1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2,
                                  3]  # Adjusted codon positions: 1, 2, 3 for each codon
         self.codon_usage = {
-            "TAC": { "aa": "Y", "freq": 0.2 },
-            "GTA": { "aa": "V", "freq": 0.5 },
-            "CGT": { "aa": "R", "freq": 0.1 },
-            "TTA": { "aa": "L", "freq": 0.1 },
-            "CTT": { "aa": "L", "freq": 0.1 },  # synonymous codon for Leucine
-            "TAG": { "aa": "*", "freq": 0.01 },  # stop codon
+            "TAC": 0.2,
+            "GTA": 0.5,
+            "CGT": 0.1,
+            "TTA": 0.1,
+            "CTT": 0.1,  # synonymous codon for Leucine
+            "TAG": 0.01,  # stop codon
         }
 
         self.alpha = 1.0
@@ -52,7 +52,7 @@ class TestCalculateCost(unittest.TestCase):
         _, cost = calculate_cost(self.target_sequence, self.coding_positions, self.codon_usage, 8, "CTT", "A",
                                  self.alpha,
                                  self.beta, self.w)
-        self.assertAlmostEqual(cost, -np.log10(self.codon_usage["TTA"]['freq']))
+        self.assertAlmostEqual(cost, -np.log10(self.codon_usage["TTA"]))
 
     @patch("utils.amino_acid_utils.AminoAcidConfig")
     def test_stop_codon_formation(self, MockAminoAcidConfig):
@@ -91,7 +91,7 @@ class TestCalculateCost(unittest.TestCase):
                            self.beta, self.w)
 
     def test_invalid_codon_usage(self):
-        invalid_codon_usage = { "TAC": { 'aa': 'Tyr', 'freq': -0.1 } }  # Invalid probability
+        invalid_codon_usage = { "TAC": -0.1 }  # Invalid probability
         with self.assertRaises(ValueError):
             calculate_cost(self.target_sequence, self.coding_positions, invalid_codon_usage, 8, "", "A", self.alpha,
                            self.beta, self.w)

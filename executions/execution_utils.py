@@ -29,20 +29,15 @@ def is_valid_codon_usage(codon_usage):
     valid_bases = set('ATCG')
 
     if len(codon_usage) != 64:
+        print(len(codon_usage))
         return False
 
-    for codon, data in codon_usage.items():
+    for codon, freq in codon_usage.items():
         # Validate codon format
         if not (isinstance(codon, str) and len(codon) == 3 and all(base in valid_bases for base in codon.upper())):
             return False
 
-        # Validate 'aa' field
-        aa = data.get('aa')
-        if not (isinstance(aa, str) and len(aa) == 3 and aa.isalpha()):
-            return False
-
         # Validate 'freq' field
-        freq = data.get('freq')
         if not (isinstance(freq, (float, int)) and freq >= 0):
             return False
 
@@ -83,7 +78,7 @@ def is_valid_input(sequence, unwanted_patterns, codon_usage_table):
         return False
 
     if not is_valid_codon_usage(codon_usage_table):
-        Logger.error(f"The codon_usage_table:\n{codon_usage_table}\n\nare not valid, please check and try again later.")
+        Logger.error(f"The codon_usage_table:\n{codon_usage_table}\n\nis not valid, please check and try again later.")
         return False
 
     return True

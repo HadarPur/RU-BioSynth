@@ -1,64 +1,64 @@
-TTT	Phe (F)	0.46
-TTC	Phe (F)	0.54
-TTA	Leu (L)	0.08
-TTG	Leu (L)	0.13
-C	CTT	Leu (L)	0.13
-CTC	Leu (L)	0.20
-CTA	Leu (L)	0.07
-CTG	Leu (L)	0.40
-A	ATT	Ile (I)	0.36
-ATC	Ile (I)	0.47
-ATA	Ile (I)	0.17
-ATG	Met (M)	1.00
-G	GTT	Val (V)	0.18
-GTC	Val (V)	0.24
-GTA	Val (V)	0.12
-GTG	Val (V)	0.46
-T	C	TCT	Ser (S)	0.19
-TCC	Ser (S)	0.22
-TCA	Ser (S)	0.15
-TCG	Ser (S)	0.05
-C	CCT	Pro (P)	0.29
-CCC	Pro (P)	0.32
-CCA	Pro (P)	0.28
-CCG	Pro (P)	0.11
-A	ACT	Thr (T)	0.25
-ACC	Thr (T)	0.36
-ACA	Thr (T)	0.28
-ACG	Thr (T)	0.11
-G	GCT	Ala (A)	0.27
-GCC	Ala (A)	0.40
-GCA	Ala (A)	0.23
-GCG	Ala (A)	0.11
-T	A	TAT	Tyr (Y)	0.44
-TAC	Tyr (Y)	0.56
-TAA	Ter (*)	0.30
-TAG	Ter (*)	0.24
-C	CAT	His (H)	0.42
-CAC	His (H)	0.58
-CAA	Gln (Q)	0.27
-CAG	Gln (Q)	0.73
-A	AAT	Asn (N)	0.47
-AAC	Asn (N)	0.53
-AAA	Lys (K)	0.43
-AAG	Lys (K)	0.57
-G	GAT	Asp (D)	0.46
-GAC	Asp (D)	0.54
-GAA	Glu (E)	0.42
-GAG	Glu (E)	0.58
-T	G	TGT	Cys (C)	0.46
-TGC	Cys (C)	0.54
-TGA	Ter (*)	0.47
-TGG	Trp (W)	1.00
-C	CGT	Arg (R)	0.08
-CGC	Arg (R)	0.18
-CGA	Arg (R)	0.11
-CGG	Arg (R)	0.20
-A	AGT	Ser (S)	0.15
-AGC	Ser (S)	0.24
-AGA	Arg (R)	0.21
-AGG	Arg (R)	0.21
-G	GGT	Gly (G)	0.16
-GGC	Gly (G)	0.34
-GGA	Gly (G)	0.25
-GGG	Gly (G)	0.25
+UUU	0.94
+UCU	0.40
+UAU	0.89
+UGU	0.85
+UUC	0.06
+UCC	0.05
+UAC	0.11
+UGC	0.15
+UUA	0.67
+UCA	0.23
+UAA	0.91
+UGA	0.02
+UUG	0.07
+UCG	0.03
+UAG	0.06
+UGG	1.00
+CUU	0.19
+CCU	0.51
+CAU	0.86
+CGU	0.34
+CUC	0.01
+CCC	0.04
+CAC	0.14
+CGC	0.05
+CUA	0.05
+CCA	0.40
+CAA	0.94
+CGA	0.23
+CUG	0.01
+CCG	0.05
+CAG	0.06
+CGG	0.02
+AUU	0.65
+ACU	0.51
+AAU	0.88
+AGU	0.26
+AUC	0.04
+ACC	0.05
+AAC	0.12
+AGC	0.03
+AUA	0.30
+ACA	0.40
+AAA	0.95
+AGA	0.34
+AUG	1.00
+ACG	0.04
+AAG	0.05
+AGG	0.02
+GUU	0.54
+GCU	0.58
+GAU	0.91
+GGU	0.43
+GUC	0.04
+GCC	0.05
+GAC	0.09
+GGC	0.05
+GUA	0.38
+GCA	0.34
+GAA	0.93
+GGA	0.45
+GUG	0.04
+GCG	0.03
+GAG	0.07
+GGG	0.06

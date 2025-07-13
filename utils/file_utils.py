@@ -5,24 +5,33 @@ import sys
 from pathlib import Path
 
 
-def read_codon_usage_map(raw_lines):
+def read_codon_freq_file(raw_lines, convert_to_dna=True):
     """
-    Reads the codon usage table from the file and parses it into a dictionary.
+    Reads a codon-frequency file with 2 columns: codon and frequency.
 
-    :return: A dictionary where keys are codons and values are dictionaries with frequency and epsilon.
+    :param raw_lines: Path to file (e.g., biosynth_codon_usage.txt)
+    :param convert_to_dna: If True, replaces 'U' with 'T' in codons (RNA to DNA).
+    :return: Dictionary {codon: frequency}
     """
-    codon_usage_data = { }
+    codon_usage = {}
+
     for line in raw_lines:
+        line = line.strip()
         parts = line.split()
-        if len(parts) in { 4, 5, 6 }:  # Process lines with valid lengths
-            codon = parts[-4]  # Codon is always the 4th element from the end
-            amino_acid = parts[-3]  # AA is always the 4th element from the end
-            try:
-                frequency = float(parts[-1])  # Frequency is always the last element
-                codon_usage_data[codon] = { 'aa': amino_acid, 'freq': frequency }
-            except ValueError:
-                continue  # skip malformed lines
-    return codon_usage_data
+        if len(parts) != 2:
+            raise ValueError(f"Invalid line format: {line}")
+
+        codon = parts[0].upper()
+        if convert_to_dna:
+            codon = codon.replace('U', 'T')
+        try:
+            freq = float(parts[1])
+        except ValueError:
+            raise ValueError(f"Invalid frequency value: {parts[1]} in line: {line}")
+
+        codon_usage[codon] = freq
+
+    return codon_usage
 
 
 # Define a base class for reading data from a file.
@@ -98,9 +107,8 @@ class CodonUsageReader(FileDataReader):
         if self.file_path is None:
             return None
 
-        # Read all lines from the file
         raw_lines = self.read_lines()
-        return read_codon_usage_map(raw_lines)
+        return read_codon_freq_file(raw_lines)
 
 
 def create_dir(directory):
