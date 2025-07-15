@@ -8,6 +8,7 @@ from PyQt5.QtWidgets import QFrame, QPushButton, QVBoxLayout, QApplication, QLab
     QTableWidget, QHeaderView
 
 from utils.file_utils import resource_path, save_file
+from utils.text_utils import format_text_bold_for_output
 
 
 class CircularButton(QPushButton):
@@ -140,23 +141,73 @@ class FloatingScrollIndicator(QPushButton):
         y = self.parent().height() - self.height() - margin
         self.move(int(x), int(y))
 
+def get_info_usage():
+    return f"{format_text_bold_for_output('Information:')}\n" \
+           "The elimination program in the GUI runs automatically once initiated by the user.\n" \
+           "Please note the following rules applied by the program:\n" \
+           "\t - Minimum Codon Length: Each coding region must contain at least 5 internal codons " \
+           "(excluding start and stop codons).\n" \
+           "\t\t This ensures only substantial ORFs are analyzed.\n" \
+           "\t - Overlap Resolution Strategy:\n" \
+           "\t\t • Fully overlapping ORFs – the first valid ORF is retained; the rest are discarded.\n" \
+           "\t\t • Partially overlapping ORFs – considered ambiguous; the program halts execution with an error message.\n"
+
 
 def add_intro(layout, row=0, column=0):
-    content = (
-        "Hi there, and welcome to the BioSynth App!\n"
-        "To start eliminating unwanted patterns from your DNA sequence, please upload three files: (1) a target sequence file with a continuous DNA string, (2) a patterns file with one pattern per line using standard characters, and (3) a codon usage file to guide biologically meaningful substitutions.\n"
-        "You can also adjust substitution costs—transitions (A ↔ G, C ↔ T, default: 1.0), transversions (A/G ↔ C/T, default: 2.0), and non-synonymous changes (default: 100.0). If not specified, default values will apply.\n"
-        "Once files are uploaded and options set, BioSynth will optimize your sequence."
-        "\nLet’s get started!"
+    # --- Top full-width intro ---
+    intro_text = (
+        "Welcome to the BioSynth App!\n\n"
+        "To begin, upload the following files and optionally adjust substitution costs."
     )
+    intro_label = QLabel(intro_text)
+    intro_label.setWordWrap(True)
+    intro_label.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Preferred)
 
-    title = QLabel(content)
-    title.setWordWrap(True)
-    title.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Preferred)
+    # --- Left column: Required files ---
+    required_files_text = (
+        "Required files:\n"
+        "• Target DNA sequence file\n"
+        "• Unwanted patterns file\n"
+        "• Codon usage file"
+    )
+    required_label = QLabel(required_files_text)
+    required_label.setWordWrap(True)
+    required_label.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Preferred)
 
-    layout.addWidget(title, row, column)
+    # --- Right column: Optional costs ---
+    optional_costs_text = (
+        "Optional substitution costs:\n"
+        "• Transitions (default: 1.0)\n"
+        "• Transversions (default: 2.0)\n"
+        "• Non-synonymous changes (default: 100.0)"
+    )
+    optional_label = QLabel(optional_costs_text)
+    optional_label.setWordWrap(True)
+    optional_label.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Preferred)
 
-    return title
+    # --- Bottom full-width message ---
+    bottom_text = (
+        "Once you're done, BioSynth will optimize your sequence.\n"
+        "Let’s get started!"
+    )
+    bottom_label = QLabel(bottom_text)
+    bottom_label.setWordWrap(True)
+    bottom_label.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Preferred)
+
+    # --- Create layouts ---
+    mid_layout = QHBoxLayout()
+    mid_layout.addWidget(required_label)
+    mid_layout.addWidget(optional_label)
+
+    container = QWidget()
+    container_layout = QVBoxLayout(container)
+    container_layout.addWidget(intro_label)
+    container_layout.addLayout(mid_layout)
+    container_layout.addWidget(bottom_label)
+
+    layout.addWidget(container, row, column)
+
+    return intro_label, required_label, optional_label, bottom_label
 
 
 def add_png_logo(layout, row=0, column=0):

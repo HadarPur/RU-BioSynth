@@ -3,10 +3,11 @@ import sys
 
 from utils.output_utils import Logger
 from utils.text_utils import format_text_bold_for_output
+from utils.text_utils import set_output_format, OutputFormat
 
 
 def get_terminal_usage():
-    return f"{format_text_bold_for_output('Usage:')}\n" \
+    return f"\n{format_text_bold_for_output('Usage:')}\n" \
            "\t$ python ./BioSynth.py -s <seq_file_path> -p <pattern_file_path> -o <output_path_dir> -c <codon_usage_file> [-g] [-a <alpha>] [-b <beta>] [-w <w>]\n\n" \
            "\tThis application is designed for the elimination of unwanted patterns from synthetic DNA sequences.\n\n" \
            f"{format_text_bold_for_output('Options:')}\n" \
@@ -17,14 +18,15 @@ def get_terminal_usage():
            "\t-o --o_path\tSpecifies the output directory path (optional - default is the downloads directory)\n" \
            "\t-a --alpha\tSpecifies the value for transition substitution cost (optional - default is 1.0)\n" \
            "\t-b --beta\tSpecifies the value for transversion substitution cost (optional - default is 2.0)\n" \
-           "\t-w --w\tSpecifies the value for non-synonymous substitution cost (optional - default is 100.0)\n\n" \
+           "\t-w --w\t\tSpecifies the value for non-synonymous substitution cost (optional - default is 100.0)\n\n" \
            f"{format_text_bold_for_output('Info:')}\n" \
            "\tThe elimination program via terminal is designed to run automatically without any user intervention.\n" \
-           "\tPlease be advised that the program makes the following decisions:\n" \
-           "\t - The minimum length of a coding region is 5 codons (excluding start and stop codons).\n" \
-           "\t - If a coding region contains another coding region, the longer region will be selected.\n" \
-           "\t - If a coding region overlaps another coding region, the program will raise an error message and stop.\n"
-
+           "\tPlease note the following rules enforced by the program:\n" \
+           "\t - Minimum Codon Length: Each coding region must contain at least 5 internal codons " \
+           "(excluding start and stop codons). This ensures only substantial ORFs are analyzed.\n" \
+           "\t - Overlap Resolution Strategy:\n" \
+           "\t\t • Fully overlapping ORFs – the first valid ORF is retained; the rest are discarded.\n" \
+           "\t\t • Partially overlapping ORFs – considered ambiguous; the program halts execution with an error message.\n"
 
 class ArgumentParser:
     def __init__(self):
@@ -53,12 +55,14 @@ class ArgumentParser:
                                        ["help", "s_path=", "p_path=", "c_path=", "o_path=", "gui", "alpha=", "beta=",
                                         "w="])
         except getopt.GetoptError as err:
+            set_output_format(OutputFormat.TERMINAL)
             Logger.error(err)
             Logger.info(get_terminal_usage())
             sys.exit(2)
 
         for opt, arg in opts:
             if opt in ("-h", "--help"):
+                set_output_format(OutputFormat.TERMINAL)
                 Logger.info(get_terminal_usage())
                 sys.exit(1)
             elif opt in ("-g", "--gui"):

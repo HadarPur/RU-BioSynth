@@ -4,20 +4,10 @@ from PyQt5.QtWidgets import (QHBoxLayout, QGridLayout, QDialog, QDialogButtonBox
                              QTableWidgetItem)
 
 from data.app_data import CostData
-from executions.controllers.ui.window_utils import add_button, CircularButton
+from executions.controllers.ui.window_utils import add_button, CircularButton, get_info_usage
 from executions.controllers.ui.window_utils import add_intro, add_png_logo, add_drop_text_edit, add_text_edit_html, \
     add_spinbox, add_drop_table
 from utils.file_utils import read_codon_freq_file
-from utils.text_utils import format_text_bold_for_output
-
-
-def get_info_usage():
-    return f"{format_text_bold_for_output('Information:')}\n" \
-           "The elimination program via terminal is designed to run automatically without any user intervention.\n" \
-           "Please be advised that the program makes the following decisions:\n" \
-           "\t - The minimum length of a coding region is 5 codons (excluding start and stop codons).\n" \
-           "\t - If a coding region contains another coding region, the longer region will be selected.\n" \
-           "\t - If a coding region overlaps another coding region, the program will raise an error message and stop.\n"
 
 
 class UploadWindow(QWidget):

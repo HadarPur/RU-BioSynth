@@ -22,9 +22,6 @@ class SettingsWindow(QWidget):
         self.region_selector = None
         self.submit_button = None
 
-
-
-
         self.content_widget = None
 
         self.init_ui(back_to_upload_callback)
