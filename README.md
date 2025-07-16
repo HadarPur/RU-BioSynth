@@ -66,7 +66,7 @@ To operate the application, the user must provide the following **three input te
    3. Run the script from the command line:
 
        ```bash
-       python3 convert_kazusa_to_biosynth.py
+       python3 ./convert_kazusa_to_biosynth.py <codon_usage_file_path>
        ```
 
    4. The output file `biosynth_codon_usage.txt` will contain lines like:
