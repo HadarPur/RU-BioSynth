@@ -474,7 +474,7 @@ def add_spinbox(layout, default_value, step=0.01,
     spinbox.setValue(default_value)
     spinbox.setSingleStep(step)
     spinbox.setFixedSize(size[0], size[1])
-    spinbox.setFocusPolicy(Qt.NoFocus)
+    spinbox.setFocusPolicy(Qt.StrongFocus)
 
     if callback is not None:
         spinbox.valueChanged.connect(lambda val: callback(val))
