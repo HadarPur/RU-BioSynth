@@ -8,6 +8,7 @@ from executions.controllers.ui.window_utils import add_button, CircularButton, g
 from executions.controllers.ui.window_utils import add_intro, add_png_logo, add_drop_text_edit, add_text_edit_html, \
     add_spinbox, add_drop_table
 from utils.file_utils import read_codon_freq_file
+from executions.execution_utils import is_valid_dna, is_valid_patterns, is_valid_codon_usage
 
 
 class UploadWindow(QWidget):
@@ -44,20 +45,24 @@ class UploadWindow(QWidget):
         # DNA input
         dna_layout = QVBoxLayout()
         grid_layout.addLayout(dna_layout, 0, 0)
-        self.dna_text_edit = add_drop_text_edit(dna_layout,
-                                                "Upload Target Sequence/Drag&Drop Target Sequence file (.txt)",
-                                                self.dna_file_content)
-        add_button(dna_layout, 'Load Target Sequence', Qt.AlignCenter, self.load_file, (self.dna_text_edit,),
-                   size=(200, 30))
+        self.dna_text_edit = add_drop_text_edit(
+            layout=dna_layout,
+            placeholder="Upload Target Sequence/Drag&Drop Target Sequence file (.txt)",
+            drop_callback=self.load_dna_file_from_file_path
+        )
+
+        add_button(dna_layout, 'Load Target Sequence', Qt.AlignCenter, self.load_dna_file, size=(200, 30))
 
         # Patterns input
         pattern_layout = QVBoxLayout()
         grid_layout.addLayout(pattern_layout, 1, 0)
-        self.patterns_text_edit = add_drop_text_edit(pattern_layout,
-                                                     "Upload Patterns file/Drag&Drop Patterns file (.txt)",
-                                                     self.patterns_file_content)
-        add_button(pattern_layout, 'Load Patterns', Qt.AlignCenter, self.load_file, (self.patterns_text_edit,),
-                   size=(200, 30))
+        self.patterns_text_edit = add_drop_text_edit(
+            layout=pattern_layout,
+            placeholder="Upload Patterns file/Drag&Drop Patterns file (.txt)",
+            drop_callback=self.load_patterns_file_from_file_path
+        )
+
+        add_button(pattern_layout, 'Load Patterns', Qt.AlignCenter, self.load_patterns_file, size=(200, 30))
 
         # Codon Usage File Upload
         codon_usage_layout = QVBoxLayout()
@@ -97,37 +102,86 @@ class UploadWindow(QWidget):
 
         add_button(bottom_layout, 'Next', Qt.AlignRight, self.switch_to_process_callback, self.get_input_data)
 
-        # Restore codon usage table if content exists
+        # Restore content if exists
+        if self.dna_file_content:
+            self.dna_text_edit.setPlainText(self.dna_file_content)
+
+        if self.patterns_file_content:
+            self.patterns_text_edit.setPlainText(self.patterns_file_content)
+
         if self.codon_usage_content:
             self.update_codon_usage_table_from_dict(self.codon_usage_content)
 
     # File loaders
-    def load_file(self, text_edit):
-        file_name, _ = QFileDialog.getOpenFileName(self, "Open File", "", "Text Files (*.txt)")
+    def load_dna_file(self):
+        file_name, _ = QFileDialog.getOpenFileName(self, "Open DNA File", "", "Text Files (*.txt)")
+
         if not file_name:
             return
+
+        self.load_dna_file_from_file_path(file_name)
+
+    def load_dna_file_from_file_path(self, file_path):
         try:
-            with open(file_name, 'r', encoding='utf-8') as file:
+            with open(file_path, 'r', encoding='utf-8') as file:
                 content = file.read()
-                text_edit.setPlainText(content)
         except Exception as e:
             QMessageBox.critical(self, "Error", f"Failed to read file: {e}")
+            return  # Exit if file couldn't be read
+
+        # Validate content after successful read
+        if content and is_valid_dna(content):
+            self.dna_file_content = content
+            self.dna_text_edit.setPlainText(content)
+        else:
+            QMessageBox.critical(self, "Error", "Invalid DNA format in file")
+
+    def load_patterns_file(self):
+        file_name, _ = QFileDialog.getOpenFileName(self, "Open Patterns File", "", "Text Files (*.txt)")
+
+        if not file_name:
+            return
+
+        self.load_patterns_file_from_file_path(file_name)
+
+    def load_patterns_file_from_file_path(self, file_path):
+        try:
+            with open(file_path, 'r', encoding='utf-8') as file:
+                content = file.read()
+        except Exception as e:
+            QMessageBox.critical(self, "Error", f"Failed to read file: {e}")
+            return  # Exit if file couldn't be read
+
+        # Validate content after successful read
+        unwanted_patterns = set(content.split())
+        if content and is_valid_patterns(unwanted_patterns):
+            self.patterns_file_content = content
+            self.patterns_text_edit.setPlainText(content)
+        else:
+            QMessageBox.critical(self, "Error", "Invalid Patterns format in file")
 
     def load_codon_usage_file(self):
         file_name, _ = QFileDialog.getOpenFileName(self, "Open Codon Usage File", "", "Text Files (*.txt)")
+
         if not file_name:
             return
+
         self.load_codon_usage_from_file_path(file_name)
 
     def load_codon_usage_from_file_path(self, file_path):
         try:
             with open(file_path, 'r', encoding='utf-8') as file:
                 content = file.read()
-                raw_lines = content.strip().split('\n')
-                self.codon_usage_content = read_codon_freq_file(raw_lines)
-                self.update_codon_usage_table_from_dict(self.codon_usage_content)
         except Exception as e:
-            QMessageBox.critical(self, "Error", f"Failed to read codon usage file: {e}")
+            QMessageBox.critical(self, "Error", f"Failed to read file: {e}")
+            return
+
+        try:
+            raw_lines = content.strip().split('\n')
+            self.codon_usage_content = read_codon_freq_file(raw_lines)
+            self.update_codon_usage_table_from_dict(self.codon_usage_content)
+        except Exception as e:
+            QMessageBox.critical(self, "Error", f"Invalid codon usage table format in file.")
 
     # Table updater
     def update_codon_usage_table_from_dict(self, codon_usage_content):
@@ -137,17 +191,6 @@ class UploadWindow(QWidget):
             self.codon_usage_table.setItem(row_idx, 1, QTableWidgetItem(str(freq)))
 
         self.codon_usage_table.update_placeholder()
-
-    # Drag and drop handlers
-    def handle_drag_enter(self, event):
-        if event.mimeData().hasUrls():
-            event.acceptProposedAction()
-
-    def handle_drop(self, event):
-        for url in event.mimeData().urls():
-            file_path = url.toLocalFile()
-            if file_path.endswith(".txt"):
-                self.load_codon_usage_from_file_path(file_path)
 
     # Gather input data to move forward
     def get_input_data(self):

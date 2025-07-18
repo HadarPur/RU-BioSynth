@@ -3,6 +3,7 @@ from executions.controllers.command_controller import CommandController
 from executions.execution_utils import is_valid_input
 from utils.file_utils import SequenceReader, PatternReader, CodonUsageReader
 from utils.input_utils import ArgumentParser
+from utils.output_utils import Logger
 
 
 class CLIController:
@@ -18,7 +19,7 @@ class CLIController:
         unwanted_patterns = PatternReader(p_path).read_patterns()
         codon_usage_table = CodonUsageReader(c_path).read_codon_usage()
 
-        if not is_valid_input(seq, unwanted_patterns, codon_usage_table):
+        if not is_valid_input(seq, unwanted_patterns, codon_usage_table, alpha, beta, w):
             return
 
         InputData.dna_sequence = seq

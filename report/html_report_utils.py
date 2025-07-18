@@ -3,12 +3,26 @@ import os
 import jinja2
 
 from data.app_data import InputData, EliminationData, OutputData
-from settings.costs_settings import elimination_process_description, coding_region_cost_description, \
-    non_coding_region_cost_description
+from settings.costs_settings import get_elimination_process_description, get_coding_region_cost_description, \
+    get_non_coding_region_cost_description
 from utils.display_utils import SequenceUtils
 from utils.file_utils import create_dir, resource_path, save_file
 from utils.output_utils import Logger
 
+
+def convert_to_html_list(text: str, ordered=False) -> str:
+    lines = text.strip().split("\n")
+    list_items = []
+    for line in lines:
+        if line.strip().startswith("-"):
+            content = line.strip()[1:].strip()
+            list_items.append(f"<li>{content}</li>")
+        else:
+            list_items.append(f"<p>{line.strip()}</p>")  # treat as paragraph/heading
+    tag = "ol" if ordered else "ul"
+    html = f"<{tag}>\n" + "\n".join(li for li in list_items if li.startswith("<li>")) + f"\n</{tag}>"
+    preamble = "\n".join(li for li in list_items if li.startswith("<p>"))
+    return preamble + "\n" + html
 
 class ReportController:
     def __init__(self, updated_coding_positions):
@@ -58,6 +72,7 @@ class ReportController:
         self.min_cost = "{}".format('{:.10g}'.format(EliminationData.min_cost))
 
     def create_report(self, file_date):
+
         context = { 'today_date': file_date,
                     'input': self.input_seq,
                     'highlight_input': self.highlight_input,
@@ -71,9 +86,9 @@ class ReportController:
                     'chosen_regions': self.chosen_regions,
                     'regions': self.regions,
                     'cost': self.min_cost,
-                    'elimination_process_description': elimination_process_description.replace("\n", "<br>"),
-                    'coding_region_cost_description': coding_region_cost_description.replace("\n", "<br>"),
-                    'non_coding_region_cost_description': non_coding_region_cost_description.replace("\n", "<br>"),
+                    'elimination_process_description': convert_to_html_list(get_elimination_process_description()),
+                    'coding_region_cost_description': convert_to_html_list(get_coding_region_cost_description()),
+                    'non_coding_region_cost_description': convert_to_html_list(get_non_coding_region_cost_description()),
                     'detailed_changes': self.detailed_changes
                     }
 

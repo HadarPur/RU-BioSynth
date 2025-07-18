@@ -44,21 +44,25 @@ class CircularButton(QPushButton):
 
 
 class DropTextEdit(QTextEdit):
-    def __init__(self, parent=None):
+    def __init__(self, parent=None, drop_callback=None):
         super().__init__(parent)
+        self.drop_callback = drop_callback
         self.setAcceptDrops(True)
 
     def dragEnterEvent(self, event):
         if event.mimeData().hasUrls():
             event.acceptProposedAction()
+        else:
+            super().dragEnterEvent(event)
 
     def dropEvent(self, event):
         if event.mimeData().hasUrls():
             file_path = event.mimeData().urls()[0].toLocalFile()
             if file_path.endswith('.txt'):
-                with open(file_path, 'r') as file:
-                    self.setPlainText(file.read())
-                event.acceptProposedAction()
+                if self.drop_callback:
+                    self.drop_callback(file_path)  # Let callback handle reading + setting text
+
+        event.acceptProposedAction()
 
 
 class DropTableWidget(QTableWidget):
@@ -288,12 +292,9 @@ def add_drop_table(layout, placeholder, columns, headers, drop_callback):
     return table
 
 
-def add_drop_text_edit(layout, placeholder, content, wrap=None):
-    text_edit = DropTextEdit()
+def add_drop_text_edit(layout, placeholder, drop_callback, wrap=None):
+    text_edit = DropTextEdit(drop_callback=drop_callback)
     text_edit.setPlaceholderText(placeholder)
-
-    if content:
-        text_edit.setPlainText(content)
 
     if wrap is not None:
         text_edit.setLineWrapMode(wrap)

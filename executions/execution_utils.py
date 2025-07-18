@@ -1,5 +1,5 @@
 from algorithm.eliminate_sequence import EliminationController
-from data.app_data import EliminationData, OutputData
+from data.app_data import EliminationData, OutputData, CostData
 from report.html_report_utils import ReportController
 from utils.display_utils import SequenceUtils
 from utils.output_utils import Logger
@@ -44,7 +44,7 @@ def is_valid_codon_usage(codon_usage):
     return True
 
 
-def is_valid_input(sequence, unwanted_patterns, codon_usage_table):
+def is_valid_input(sequence, unwanted_patterns, codon_usage_table, alpha=CostData.alpha, beta=CostData.beta, w=CostData.w):
     if sequence is None:
         Logger.error("Unfortunately, we couldn't find any sequence file. Please insert one and try again.")
         return False
@@ -79,6 +79,26 @@ def is_valid_input(sequence, unwanted_patterns, codon_usage_table):
 
     if not is_valid_codon_usage(codon_usage_table):
         Logger.error(f"The codon_usage_table:\n{codon_usage_table}\n\nis not valid, please check and try again later.")
+        return False
+
+    if not (isinstance(alpha, (int, float)) and alpha > 0):
+        Logger.error(f"Invalid alpha value: α = {alpha}. Must be a positive number.")
+        return False
+
+    if not (isinstance(beta, (int, float)) and beta > 0):
+        Logger.error(f"Invalid beta value: β = {beta}. Must be a positive number.")
+        return False
+
+    if not (isinstance(w, (int, float)) and w > 0):
+        Logger.error(f"Invalid w value: w = {w}. Must be a positive number.")
+        return False
+
+    if alpha >= beta:
+        Logger.error(f"Biological constraint violated: alpha (α = {alpha}) must be less than beta (β = {beta}).")
+        return False
+
+    if beta > w:
+        Logger.error(f"Cost hierarchy violated: beta (β = {beta}) must be significantly smaller than w (w = {w}).")
         return False
 
     return True

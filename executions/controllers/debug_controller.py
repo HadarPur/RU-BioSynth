@@ -9,10 +9,13 @@ from settings.sequence_settings import S
 class DebugController:
     @staticmethod
     def execute():
-        if is_valid_input(S, P, C):
+        if is_valid_input(S, P, C, alpha=2, beta=4, w=140):
             InputData.dna_sequence = S
             InputData.unwanted_patterns = P
             CostData.codon_usage = C
+            CostData.alpha = 2
+            CostData.beta = 4
+            CostData.w = 140
 
             controller = CommandController()
             controller.run()
