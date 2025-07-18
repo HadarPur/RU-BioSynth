@@ -91,6 +91,7 @@ class DropTableWidget(QTableWidget):
 class FloatingScrollIndicator(QPushButton):
     def __init__(self, parent=None, scroll_area=None, direction="bottom"):
         super().__init__("▼", parent)
+        self.animation = None
         self.scroll_area = scroll_area
         self.direction = direction
 
@@ -119,7 +120,7 @@ class FloatingScrollIndicator(QPushButton):
         else:
             self.hide()
 
-    def scroll(self):
+    def scroll(self, **kwargs):
         bar = self.scroll_area.verticalScrollBar()
         start_value = bar.value()
         if self.direction == "top":

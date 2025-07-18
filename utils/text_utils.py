@@ -27,3 +27,4 @@ def format_text_bold_for_output(text):
         return f"<b>{text}</b>"
     else:
         Logger.error("Invalid output format. Supported formats: 'TERMINAL' and 'GUI'.")
+        return ""

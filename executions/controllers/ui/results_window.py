@@ -227,4 +227,4 @@ class ResultsWindow(QWidget):
                 report_path = self.report.download_report(save_path)
                 self.update_status(f"Report saved as: {report_path}")
             except Exception as e:
-                self.update_status("Failed to save report")
+                self.update_status(f"Failed to save report with error: {e}")

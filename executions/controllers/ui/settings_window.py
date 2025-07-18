@@ -13,6 +13,7 @@ from utils.dna_utils import DNAUtils
 class SettingsWindow(QWidget):
     def __init__(self, switch_to_eliminate_callback, back_to_upload_callback):
         super().__init__()
+        self.floating_btn = None
         self.switch_to_eliminate_callback = switch_to_eliminate_callback
 
         self.scroll_area = None

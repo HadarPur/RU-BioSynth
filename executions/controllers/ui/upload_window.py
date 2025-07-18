@@ -180,7 +180,7 @@ class UploadWindow(QWidget):
             raw_lines = content.strip().split('\n')
             self.codon_usage_content = read_codon_freq_file(raw_lines)
             self.update_codon_usage_table_from_dict(self.codon_usage_content)
-        except Exception as e:
+        except Exception:
             QMessageBox.critical(self, "Error", f"Invalid codon usage table format in file.")
 
     # Table updater
