@@ -47,7 +47,7 @@ def is_valid_codon_usage(codon_usage):
 def is_valid_input(sequence, unwanted_patterns, codon_usage_table, alpha=CostData.alpha, beta=CostData.beta,
                    w=CostData.w):
     if sequence is None:
-        Logger.error(f"Invalid target sequence format in file.")
+        Logger.error(f"Target Sequence file is missing.")
         return False
 
     if len(sequence) == 0:
@@ -59,7 +59,7 @@ def is_valid_input(sequence, unwanted_patterns, codon_usage_table, alpha=CostDat
         return False
 
     if unwanted_patterns is None:
-        Logger.error(f"Invalid unwanted patterns format in file.")
+        Logger.error(f"Unwanted Patterns file is missing.")
         return False
 
     if len(unwanted_patterns) == 0:
@@ -71,7 +71,7 @@ def is_valid_input(sequence, unwanted_patterns, codon_usage_table, alpha=CostDat
         return False
 
     if codon_usage_table is None:
-        Logger.error(f"Invalid codon usage table format in file.")
+        Logger.error(f"Codon Usage file is missing.")
         return False
 
     if len(codon_usage_table) == 0:
