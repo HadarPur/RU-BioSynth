@@ -28,6 +28,7 @@ def get_terminal_usage():
            "\t\t • Fully overlapping ORFs – the first valid ORF is retained; the rest are discarded.\n" \
            "\t\t • Partially overlapping ORFs – considered ambiguous; the program halts execution with an error message.\n"
 
+
 class ArgumentParser:
     def __init__(self):
         self.gui = False

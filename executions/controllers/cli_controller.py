@@ -3,7 +3,6 @@ from executions.controllers.command_controller import CommandController
 from executions.execution_utils import is_valid_input
 from utils.file_utils import SequenceReader, PatternReader, CodonUsageReader
 from utils.input_utils import ArgumentParser
-from utils.output_utils import Logger
 
 
 class CLIController:

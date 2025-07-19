@@ -44,7 +44,8 @@ def is_valid_codon_usage(codon_usage):
     return True
 
 
-def is_valid_input(sequence, unwanted_patterns, codon_usage_table, alpha=CostData.alpha, beta=CostData.beta, w=CostData.w):
+def is_valid_input(sequence, unwanted_patterns, codon_usage_table, alpha=CostData.alpha, beta=CostData.beta,
+                   w=CostData.w):
     if sequence is None:
         Logger.error(f"Invalid target sequence format in file.")
         return False

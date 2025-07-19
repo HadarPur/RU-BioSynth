@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 
-import os
 import argparse
+import os
+
 
 def extract_codons(input_path):
     codon_count = 0
@@ -24,6 +25,7 @@ def extract_codons(input_path):
         print(f"✅ Success: 64 codons written to {output_path}")
     else:
         print(f"⚠️ Warning: Only {codon_count} codons written to {output_path} (expected 64)")
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Convert Kazusa codon usage table to BioSynth format.")

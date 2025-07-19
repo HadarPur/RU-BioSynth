@@ -146,6 +146,7 @@ class FloatingScrollIndicator(QPushButton):
         y = self.parent().height() - self.height() - margin
         self.move(int(x), int(y))
 
+
 def get_info_usage():
     return f"{format_text_bold_for_output('Information:')}\n" \
            "The elimination program in the GUI runs automatically once initiated by the user.\n" \

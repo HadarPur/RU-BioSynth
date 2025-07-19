@@ -5,7 +5,7 @@ class DNAUtils:
     @staticmethod
     def find_overlapping_regions(dna_sequence):
         start_codon = 'ATG'
-        stop_codons = { 'TAA', 'TAG', 'TGA' }
+        stop_codons = {'TAA', 'TAG', 'TGA'}
         coding_regions = []
         sequence_length = len(dna_sequence)
 
@@ -68,7 +68,7 @@ class DNAUtils:
         Returns:
             dict: A dictionary where keys are coding region numbers (as strings) and values are the corresponding sequences.
         """
-        coding_regions_list = { }
+        coding_regions_list = {}
 
         for region_counter, (start, end) in enumerate(coding_indexes, start=1):
             # Extract the sequence for the current coding region
@@ -135,7 +135,7 @@ class DNAUtils:
                 - coding_region_indexes: list of tuples indicating start and end of each coding region
         """
         start_codon = "ATG"
-        stop_codons = { "TAA", "TAG", "TGA" }
+        stop_codons = {"TAA", "TAG", "TGA"}
 
         N = len(seq)
         codon_positions = [0] * N  # Initialize all positions as non-coding (0)

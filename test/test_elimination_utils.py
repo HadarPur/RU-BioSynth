@@ -2,7 +2,6 @@ import unittest
 from unittest.mock import patch
 
 from algorithm.eliminate_sequence import EliminationController
-from data.app_data import InputData
 from utils.text_utils import set_output_format, OutputFormat
 
 

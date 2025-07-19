@@ -91,7 +91,7 @@ class TestCalculateCost(unittest.TestCase):
                            self.beta, self.w)
 
     def test_invalid_codon_usage(self):
-        invalid_codon_usage = { "TAC": -0.1 }  # Invalid probability
+        invalid_codon_usage = {"TAC": -0.1}  # Invalid probability
         with self.assertRaises(ValueError):
             calculate_cost(self.target_sequence, self.coding_positions, invalid_codon_usage, 8, "", "A", self.alpha,
                            self.beta, self.w)

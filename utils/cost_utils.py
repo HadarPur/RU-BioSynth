@@ -98,12 +98,12 @@ def calculate_cost(target_sequence, coding_positions, codon_usage, i, v, sigma, 
             return changes, beta
 
     # Coding region positions 1 and 2
-    elif codon_pos in { 1, 2 }:
+    elif codon_pos in {1, 2}:
         # Cost is always 0 for positions 1 and 2
         return ("", ""), 0.0
 
     # Coding region, position 3
-    elif codon_pos in { -3, 3 }:  # At 3rd position of codon
+    elif codon_pos in {-3, 3}:  # At 3rd position of codon
         # Retrieve the current codon and construct the proposed codon
         target_codon = AminoAcidConfig.get_last3(target_sequence, i)
         last2_bases = AminoAcidConfig.get_last2(v)
@@ -135,7 +135,7 @@ class EliminationScorerConfig:
         Initializes a DNASequenceAnalyzer object.
         Sets up the DNA alphabet containing the characters 'A', 'G', 'T', and 'C'.
         """
-        self.alphabet = { 'A', 'G', 'T', 'C' }
+        self.alphabet = {'A', 'G', 'T', 'C'}
 
     @staticmethod
     def cost_function(target_sequence, coding_positions, codon_usage, alpha, beta, w):

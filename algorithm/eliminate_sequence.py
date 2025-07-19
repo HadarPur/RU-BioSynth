@@ -42,8 +42,8 @@ class EliminationController:
         # Dynamic programming table A, initialized with infinity
         A = defaultdict(lambda: float('inf'))
         # A* table for backtracking (stores the previous state and transition symbol)
-        A_star = { }
-        A_info = { }
+        A_star = {}
+        A_info = {}
 
         # Initialize all bigram states in column 2
         for v in fsm.V:

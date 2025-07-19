@@ -24,6 +24,7 @@ def convert_to_html_list(text: str, ordered=False) -> str:
     preamble = "\n".join(li for li in list_items if li.startswith("<p>"))
     return preamble + "\n" + html
 
+
 class ReportController:
     def __init__(self, updated_coding_positions):
 
@@ -73,24 +74,24 @@ class ReportController:
 
     def create_report(self, file_date):
 
-        context = { 'today_date': file_date,
-                    'input': self.input_seq,
-                    'highlight_input': self.highlight_input,
-                    'highlight_selected': self.highlight_selected,
-                    'optimized_seq': self.optimized_seq,
-                    'index_seq_str': self.index_seq_str,
-                    'marked_input_seq': self.marked_input_seq,
-                    'marked_optimized_seq': self.marked_optimized_seq,
-                    'patterns': self.unwanted_patterns,
-                    'num_of_coding_regions': self.num_of_coding_regions,
-                    'chosen_regions': self.chosen_regions,
-                    'regions': self.regions,
-                    'cost': self.min_cost,
-                    'elimination_process_description': convert_to_html_list(get_elimination_process_description()),
-                    'coding_region_cost_description': convert_to_html_list(get_coding_region_cost_description()),
-                    'non_coding_region_cost_description': convert_to_html_list(get_non_coding_region_cost_description()),
-                    'detailed_changes': self.detailed_changes
-                    }
+        context = {'today_date': file_date,
+                   'input': self.input_seq,
+                   'highlight_input': self.highlight_input,
+                   'highlight_selected': self.highlight_selected,
+                   'optimized_seq': self.optimized_seq,
+                   'index_seq_str': self.index_seq_str,
+                   'marked_input_seq': self.marked_input_seq,
+                   'marked_optimized_seq': self.marked_optimized_seq,
+                   'patterns': self.unwanted_patterns,
+                   'num_of_coding_regions': self.num_of_coding_regions,
+                   'chosen_regions': self.chosen_regions,
+                   'regions': self.regions,
+                   'cost': self.min_cost,
+                   'elimination_process_description': convert_to_html_list(get_elimination_process_description()),
+                   'coding_region_cost_description': convert_to_html_list(get_coding_region_cost_description()),
+                   'non_coding_region_cost_description': convert_to_html_list(get_non_coding_region_cost_description()),
+                   'detailed_changes': self.detailed_changes
+                   }
 
         try:
             # Get the absolute path to the report.html file

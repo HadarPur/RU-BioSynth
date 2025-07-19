@@ -1,13 +1,16 @@
 from data.app_data import CostData
 
+
 def format_cost(value):
     return f"{value:.3f}".rstrip('0').rstrip('.') if isinstance(value, float) else str(value)
+
 
 def get_elimination_process_description():
     return (
         "When considering the costs associated with changing target sequences in both coding and non-coding regions, "
         "different expense structures come into play."
     )
+
 
 def get_coding_region_cost_description():
     return (
@@ -21,6 +24,7 @@ def get_coding_region_cost_description():
         " • If the codon is altered to a stop codon, an infinite cost is applied, reflecting that such substitutions are prohibited."
     )
 
+
 def get_non_coding_region_cost_description():
     return (
         f"In non-coding regions:\n"
@@ -28,4 +32,3 @@ def get_non_coding_region_cost_description():
         f" • If the substitution is a transition (A ↔ G or C ↔ T), a lower cost of ⍺ = {format_cost(CostData.alpha)} is applied.\n"
         f" • If the substitution is a transversion (A,G ↔ C,T), a higher cost of β = {format_cost(CostData.beta)} is applied.\n"
     )
-
