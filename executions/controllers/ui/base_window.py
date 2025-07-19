@@ -8,7 +8,6 @@ from executions.controllers.ui.results_window import ResultsWindow
 from executions.controllers.ui.settings_window import SettingsWindow
 from executions.controllers.ui.upload_window import UploadWindow
 from executions.controllers.ui.window_utils import add_text_edit_html, add_text_edit
-from executions.execution_utils import is_valid_dna, is_valid_patterns, is_valid_codon_usage
 from utils.dna_utils import DNAUtils
 
 
@@ -54,45 +53,16 @@ class BaseWindow(QMainWindow):
         self.stackedLayout.setCurrentWidget(results_window)
 
     def switch_to_process_window(self, dna_sequence, unwanted_patterns, codon_usage):
-        self.dna_file_content = dna_sequence
         if not dna_sequence:
-            QMessageBox.warning(self, "Error", "Target sequence file is missing")
-            return
-
-        if not is_valid_dna(dna_sequence):
-            QMessageBox.warning(self, "Error",
-                                f"The sequence:\n{dna_sequence}\n\nis not valid, please check and try again later.")
+            QMessageBox.warning(self, "Error", "Target Sequence file is missing")
             return
 
         if not unwanted_patterns:
-            QMessageBox.warning(self, "Error", "Patterns file is missing")
-            return
-
-        self.patterns_file_content = unwanted_patterns
-        unwanted_patterns = set(unwanted_patterns.split())
-        if len(unwanted_patterns) == 0:
-            QMessageBox.warning(self, "Error",
-                                "There is an issue with the patterns file, please check and try again later.")
-            return
-
-        if not is_valid_patterns(unwanted_patterns):
-            QMessageBox.warning(self, "Error",
-                                f"The patterns:\n{unwanted_patterns}\n\nare not valid, please check and try again later.")
+            QMessageBox.warning(self, "Error", "Unwanted Patterns file is missing")
             return
 
         if not codon_usage:
             QMessageBox.warning(self, "Error", "Codon Usage file is missing")
-            return
-
-        self.codon_usage_file_content = codon_usage
-        if len(codon_usage) == 0:
-            QMessageBox.warning(self, "Error",
-                                "There is an issue with the codon usage file, please check and try again later.")
-            return
-
-        if not is_valid_codon_usage(codon_usage):
-            QMessageBox.warning(self, "Error",
-                                f"The codon usage:\n{codon_usage}\n\nare not valid, please check and try again later.")
             return
 
         has_overlaps, overlaps = DNAUtils.find_overlapping_regions(dna_sequence)
@@ -101,7 +71,7 @@ class BaseWindow(QMainWindow):
             return
 
         InputData.dna_sequence = dna_sequence
-        InputData.unwanted_patterns = unwanted_patterns
+        InputData.unwanted_patterns = set(unwanted_patterns.split('\n'))
         CostData.codon_usage = codon_usage
 
         process_window = SettingsWindow(self.switch_to_elimination_window, self.show_upload_window)

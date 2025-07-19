@@ -46,39 +46,39 @@ def is_valid_codon_usage(codon_usage):
 
 def is_valid_input(sequence, unwanted_patterns, codon_usage_table, alpha=CostData.alpha, beta=CostData.beta, w=CostData.w):
     if sequence is None:
-        Logger.error("Unfortunately, we couldn't find any sequence file. Please insert one and try again.")
+        Logger.error(f"Invalid target sequence format in file.")
         return False
 
     if len(sequence) == 0:
-        Logger.error("Unfortunately, the sequence file is empty. Please insert fully one and try again.")
+        Logger.error(f"Invalid target sequence format in file.")
         return False
 
     if not is_valid_dna(sequence):
-        Logger.error(f"The sequence:\n{sequence}\n\nis not valid, please check and try again later.")
+        Logger.error(f"Invalid target sequence format in file.")
         return False
 
     if unwanted_patterns is None:
-        Logger.error("Unfortunately, we couldn't find any patterns file. Please insert one and try again.")
+        Logger.error(f"Invalid unwanted patterns format in file.")
         return False
 
     if len(unwanted_patterns) == 0:
-        Logger.error("Unfortunately, the patterns file is empty. Please insert fully one and try again.")
+        Logger.error(f"Invalid unwanted patterns format in file.")
         return False
 
     if not is_valid_patterns(unwanted_patterns):
-        Logger.error(f"The patterns:\n{unwanted_patterns}\n\nare not valid, please check and try again later.")
+        Logger.error(f"Invalid unwanted patterns format in file.")
         return False
 
     if codon_usage_table is None:
-        Logger.error("Unfortunately, we couldn't find any codon usage file. Please insert one and try again.")
+        Logger.error(f"Invalid codon usage table format in file.")
         return False
 
     if len(codon_usage_table) == 0:
-        Logger.error("Unfortunately, the codon usage file is empty. Please insert fully one and try again.")
+        Logger.error(f"Invalid codon usage table format in file.")
         return False
 
     if not is_valid_codon_usage(codon_usage_table):
-        Logger.error(f"The codon_usage_table:\n{codon_usage_table}\n\nis not valid, please check and try again later.")
+        Logger.error(f"Invalid codon usage table format in file.")
         return False
 
     if not (isinstance(alpha, (int, float)) and alpha > 0):

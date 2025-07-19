@@ -3,7 +3,7 @@ from PyQt5.QtWidgets import (QHBoxLayout, QGridLayout, QDialog, QDialogButtonBox
                              QWidget, QMessageBox, QFileDialog, QVBoxLayout,
                              QTableWidgetItem)
 
-from data.app_data import CostData
+from data.app_data import CostData, InputData
 from executions.controllers.ui.window_utils import add_button, CircularButton, get_info_usage
 from executions.controllers.ui.window_utils import add_intro, add_png_logo, add_drop_text_edit, add_text_edit_html, \
     add_spinbox, add_drop_table
@@ -114,7 +114,7 @@ class UploadWindow(QWidget):
 
     # File loaders
     def load_dna_file(self):
-        file_name, _ = QFileDialog.getOpenFileName(self, "Open DNA File", "", "Text Files (*.txt)")
+        file_name, _ = QFileDialog.getOpenFileName(self, "Open Target Sequence File", "", "Text Files (*.txt)")
 
         if not file_name:
             return
@@ -134,10 +134,10 @@ class UploadWindow(QWidget):
             self.dna_file_content = content
             self.dna_text_edit.setPlainText(content)
         else:
-            QMessageBox.critical(self, "Error", "Invalid DNA format in file")
+            QMessageBox.critical(self, "Error", "Invalid target sequence format in file")
 
     def load_patterns_file(self):
-        file_name, _ = QFileDialog.getOpenFileName(self, "Open Patterns File", "", "Text Files (*.txt)")
+        file_name, _ = QFileDialog.getOpenFileName(self, "Open Unwanted Patterns File", "", "Text Files (*.txt)")
 
         if not file_name:
             return
@@ -153,12 +153,12 @@ class UploadWindow(QWidget):
             return  # Exit if file couldn't be read
 
         # Validate content after successful read
-        unwanted_patterns = set(content.split())
+        unwanted_patterns = set(content.split('\n'))
         if content and is_valid_patterns(unwanted_patterns):
             self.patterns_file_content = content
             self.patterns_text_edit.setPlainText(content)
         else:
-            QMessageBox.critical(self, "Error", "Invalid Patterns format in file")
+            QMessageBox.critical(self, "Error", "Invalid unwanted patterns format in file")
 
     def load_codon_usage_file(self):
         file_name, _ = QFileDialog.getOpenFileName(self, "Open Codon Usage File", "", "Text Files (*.txt)")
