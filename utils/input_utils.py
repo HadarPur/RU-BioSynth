@@ -4,7 +4,7 @@ import sys
 from utils.output_utils import Logger
 from utils.text_utils import format_text_bold_for_output
 from utils.text_utils import set_output_format, OutputFormat
-
+from utils.info_utils import get_info_usage, get_elimination_info
 
 def get_terminal_usage():
     return f"\n{format_text_bold_for_output('Usage:')}\n" \
@@ -19,14 +19,9 @@ def get_terminal_usage():
            "\t-a --alpha\tSpecifies the value for transition substitution cost (optional - default is 1.0)\n" \
            "\t-b --beta\tSpecifies the value for transversion substitution cost (optional - default is 2.0)\n" \
            "\t-w --w\t\tSpecifies the value for non-synonymous substitution cost (optional - default is 100.0)\n\n" \
-           f"{format_text_bold_for_output('Info:')}\n" \
-           "\tThe elimination program via terminal is designed to run automatically without any user intervention.\n" \
-           "\tPlease note the following rules enforced by the program:\n" \
-           "\t - Minimum Codon Length: Each coding region must contain at least 5 internal codons " \
-           "(excluding start and stop codons). This ensures only substantial ORFs are analyzed.\n" \
-           "\t - Overlap Resolution Strategy:\n" \
-           "\t\t • Fully overlapping ORFs – the first valid ORF is retained; the rest are discarded.\n" \
-           "\t\t • Partially overlapping ORFs – considered ambiguous; the program halts execution with an error message.\n"
+           f"{format_text_bold_for_output('Information:')}\n" \
+           f"{get_info_usage()}" \
+           f"{get_elimination_info()}"
 
 
 class ArgumentParser:

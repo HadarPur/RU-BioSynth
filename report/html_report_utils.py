@@ -3,7 +3,7 @@ import os
 import jinja2
 
 from data.app_data import InputData, EliminationData, OutputData
-from settings.costs_settings import get_elimination_process_description, get_coding_region_cost_description, \
+from utils.info_utils import get_elimination_process_description, get_coding_region_cost_description, \
     get_non_coding_region_cost_description
 from utils.display_utils import SequenceUtils
 from utils.file_utils import create_dir, resource_path, save_file

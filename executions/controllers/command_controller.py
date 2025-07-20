@@ -35,10 +35,10 @@ class CommandController:
 
         if has_overlaps:
             Logger.error(f"{format_text_bold_for_output('Error Occurred:')}")
-            Logger.error("The input sequence contains overlapping coding regions.")
+            Logger.error("The input sequence contains overlapping ORF's.")
             Logger.space()
             Logger.info(DNAUtils.get_overlapping_regions(InputData.dna_sequence, overlaps))
-            Logger.error("Please ensure the input sequence does not contain overlapping regions.")
+            Logger.error("Please ensure the input sequence does not contain overlapping ORF's.")
             return
 
         Logger.notice(app_icon_text)
@@ -59,7 +59,7 @@ class CommandController:
         highlighted_sequence = ''.join(
             SequenceUtils.highlight_sequences_to_terminal(InputData.dna_sequence, InputData.coding_indexes))
 
-        Logger.debug('Identify the coding regions within the given target sequence and mark them for emphasis:')
+        Logger.debug('Identify the ORF\'s within the given target sequence and mark them for emphasis:')
         Logger.info(highlighted_sequence)
         Logger.space()
 
@@ -68,10 +68,10 @@ class CommandController:
                                                                          InputData.dna_sequence)
         if len(InputData.coding_indexes) > 0:
             Logger.debug(
-                f"The total number of coding regions is {len(InputData.coding_indexes)}, identifies as follows:")
+                f"The total number of ORF's are {len(InputData.coding_indexes)}, identifies as follows:")
             Logger.info('\n'.join(f"[{key}] {value}" for key, value in InputData.coding_regions_list.items()))
         else:
-            Logger.debug("No coding region was identified in the provided target sequence")
+            Logger.debug("No ORF's were identified in the provided target sequence")
 
         # Eliminate unwanted patterns
         eliminate_unwanted_patterns(InputData.dna_sequence, InputData.unwanted_patterns, InputData.coding_positions)

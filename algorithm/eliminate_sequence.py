@@ -2,7 +2,7 @@ from collections import defaultdict
 
 from algorithm.fsm import FSM
 from data.app_data import CostData
-from settings.costs_settings import format_cost, get_elimination_process_description, \
+from utils.info_utils import format_cost, get_elimination_process_description, \
     get_non_coding_region_cost_description, get_coding_region_cost_description
 from utils.cost_utils import EliminationScorerConfig
 from utils.date_utils import format_current_date
@@ -24,8 +24,8 @@ class EliminationController:
 
         # Additional descriptions (placeholders for actual descriptions)
         info += f"\n{format_text_bold_for_output('Elimination Process:')}\n{get_elimination_process_description()}\n"
-        info += f"\n{format_text_bold_for_output('Coding regions:')}\n{get_coding_region_cost_description()}\n"
-        info += f"\n{format_text_bold_for_output('Non-Coding regions:')}\n{get_non_coding_region_cost_description()}\n"
+        info += f"\nNon-Coding regions:\n{get_non_coding_region_cost_description()}\n"
+        info += f"\nCoding regions:\n{get_coding_region_cost_description()}\n"
 
         n = len(target_sequence)
 
@@ -146,11 +146,12 @@ class EliminationController:
         changes_info.reverse()
 
         # Append final information to the info string
-        info += f"{format_text_bold_for_output('_' * 50)}\n"
+        info += f"\n{format_text_bold_for_output('_' * 50)}\n"
         info += f"\n🎉 {format_text_bold_for_output('Congrats!')}\n\n"
         info += "🚀 Elimination Process Completed!\n"
         info += f"📆 {format_current_date()}\n"
         info += f"\n{format_text_bold_for_output('Optimized Sequence:')}\n{''.join(sequence)}\n"
-        info += f"\n{format_text_bold_for_output('Total Cost:')}\n{format_cost(min_cost)}"
+
+        # info += f"\n{format_text_bold_for_output('Total Cost:')}\n{format_cost(min_cost)}"
 
         return info, changes_info, ''.join(sequence), min_cost

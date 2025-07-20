@@ -146,19 +146,6 @@ class FloatingScrollIndicator(QPushButton):
         y = self.parent().height() - self.height() - margin
         self.move(int(x), int(y))
 
-
-def get_info_usage():
-    return f"{format_text_bold_for_output('Information:')}\n" \
-           "The elimination program in the GUI runs automatically once initiated by the user.\n" \
-           "Please note the following rules applied by the program:\n" \
-           "\t - Minimum Codon Length: Each coding region must contain at least 5 internal codons " \
-           "(excluding start and stop codons).\n" \
-           "\t\t This ensures only substantial ORFs are analyzed.\n" \
-           "\t - Overlap Resolution Strategy:\n" \
-           "\t\t • Fully overlapping ORFs – the first valid ORF is retained; the rest are discarded.\n" \
-           "\t\t • Partially overlapping ORFs – considered ambiguous; the program halts execution with an error message.\n"
-
-
 def add_intro(layout, row=0, column=0):
     # --- Top full-width intro ---
     intro_text = (
@@ -183,9 +170,9 @@ def add_intro(layout, row=0, column=0):
     # --- Right column: Optional costs ---
     optional_costs_text = (
         "Optional substitution costs:\n"
-        "• Transitions (default: 1.0)\n"
-        "• Transversions (default: 2.0)\n"
-        "• Non-synonymous changes (default: 100.0)"
+        "• Transitions substitutions in non-coding regions (default: 1.0)\n"
+        "• Transversions substitutions in non-coding regions (default: 2.0)\n"
+        "• Non-synonymous substitutions in coding regions (default: 100.0)"
     )
     optional_label = QLabel(optional_costs_text)
     optional_label.setWordWrap(True)

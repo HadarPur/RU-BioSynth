@@ -17,6 +17,7 @@ class InputData:
 
 class CostData:
     codon_usage = None
+    codon_usage_filename = None
 
     alpha = 1.0
     beta = 2.0

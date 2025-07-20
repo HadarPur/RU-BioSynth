@@ -40,7 +40,7 @@ class FileDataReader:
         """
         Initializes a FileDataReader object.
 
-        :param: file_path: Path to the file to be read.
+        :param file_path: Path to the file to be read.
         """
         self.file_path = file_path
 
@@ -52,7 +52,6 @@ class FileDataReader:
         """
         with open(self.file_path, 'r') as file:
             return file.readlines()
-
 
 # Inherit from FileDataReader to read sequences from a file.
 class SequenceReader(FileDataReader):
@@ -109,6 +108,14 @@ class CodonUsageReader(FileDataReader):
 
         raw_lines = self.read_lines()
         return read_codon_freq_file(raw_lines)
+
+    def get_filename(self):
+        """
+        Returns the name of the file (excluding the path).
+
+        :return: Filename as a string.
+        """
+        return os.path.basename(self.file_path)
 
 
 def create_dir(directory):

@@ -4,12 +4,12 @@ from PyQt5.QtWidgets import (QHBoxLayout, QGridLayout, QDialog, QDialogButtonBox
                              QTableWidgetItem)
 
 from data.app_data import CostData
-from executions.controllers.ui.window_utils import add_button, CircularButton, get_info_usage
+from executions.controllers.ui.window_utils import add_button, CircularButton
 from executions.controllers.ui.window_utils import add_intro, add_png_logo, add_drop_text_edit, add_text_edit_html, \
     add_spinbox, add_drop_table
 from executions.execution_utils import is_valid_dna, is_valid_patterns
 from utils.file_utils import read_codon_freq_file
-
+from utils.info_utils import get_info_usage, get_elimination_info
 
 class UploadWindow(QWidget):
     def __init__(self, switch_to_process_callback, dna_file_content=None, patterns_file_content=None,
@@ -202,10 +202,10 @@ class UploadWindow(QWidget):
 
     # Info window
     def show_info(self):
-        info_text = get_info_usage().replace("\n", "<br><br>").replace("\t", "&nbsp;&nbsp;&nbsp;")
-
+        info_text = get_info_usage().replace("\n", "<br>").replace("\t", "&nbsp;&nbsp;&nbsp;")
+        info_text += get_elimination_info().replace("\n", "<br>").replace("\t", "&nbsp;&nbsp;&nbsp;")
         dialog = QDialog(self)
-        dialog.setWindowTitle('Info')
+        dialog.setWindowTitle('Information')
         dialog.setFixedSize(1000, 400)
         dialog.setWindowFlags(Qt.Window | Qt.WindowStaysOnTopHint | Qt.WindowCloseButtonHint)
         dialog.setWindowModality(Qt.NonModal)

@@ -17,6 +17,7 @@ class CLIController:
         seq = SequenceReader(s_path).read_sequence()
         unwanted_patterns = PatternReader(p_path).read_patterns()
         codon_usage_table = CodonUsageReader(c_path).read_codon_usage()
+        codon_usage_file_name = CodonUsageReader(c_path).get_filename()
 
         if not is_valid_input(seq, unwanted_patterns, codon_usage_table, alpha, beta, w):
             return
@@ -24,6 +25,7 @@ class CLIController:
         InputData.dna_sequence = seq
         InputData.unwanted_patterns = unwanted_patterns
         CostData.codon_usage = codon_usage_table
+        CostData.codon_usage_filename = codon_usage_file_name
 
         # optional values
         if alpha is not None:

@@ -113,7 +113,7 @@ class SettingsWindow(QWidget):
 
         if len(InputData.coding_regions_list) > 0:
             label_html = f"""
-                <p>The total number of coding regions is {len(InputData.coding_regions_list)}</p>
+                <p>The total number of ORF's are {len(InputData.coding_regions_list)}</p>
             """
 
             label.setText(label_html)
@@ -122,7 +122,7 @@ class SettingsWindow(QWidget):
                 self.prompt_coding_regions_decision(content_layout)
         else:
             label_html = f"""
-                <p>No coding region was identified in the provided target sequence</p>
+                <p>No ORF's were identified in the provided target sequence</p>
             """
 
             label.setText(label_html)
