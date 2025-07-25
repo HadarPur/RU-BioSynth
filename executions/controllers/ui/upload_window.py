@@ -10,6 +10,7 @@ from executions.controllers.ui.window_utils import add_intro, add_png_logo, add_
 from executions.execution_utils import is_valid_dna, is_valid_patterns
 from utils.file_utils import read_codon_freq_file
 from utils.info_utils import get_info_usage, get_elimination_info
+from PyQt5.QtWidgets import QDialog, QVBoxLayout, QTextEdit, QDialogButtonBox, QTabWidget
 
 class UploadWindow(QWidget):
     def __init__(self, switch_to_process_callback, dna_file_content=None, patterns_file_content=None,
@@ -200,10 +201,10 @@ class UploadWindow(QWidget):
             self.codon_usage_content
         )
 
-    # Info window
     def show_info(self):
-        info_text = get_info_usage().replace("\n", "<br>").replace("\t", "&nbsp;&nbsp;&nbsp;")
-        info_text += get_elimination_info().replace("\n", "<br>").replace("\t", "&nbsp;&nbsp;&nbsp;")
+        usage_text = get_info_usage().replace("\n", "<br>").replace("\t", "&nbsp;&nbsp;&nbsp;")
+        elimination_text = get_elimination_info().replace("\n", "<br>").replace("\t", "&nbsp;&nbsp;&nbsp;")
+
         dialog = QDialog(self)
         dialog.setWindowTitle('Information')
         dialog.setFixedSize(1000, 400)
@@ -211,8 +212,15 @@ class UploadWindow(QWidget):
         dialog.setWindowModality(Qt.NonModal)
 
         layout = QVBoxLayout()
-        text_edit = add_text_edit_html(layout, "", info_text)
-        text_edit.setStyleSheet("""
+
+        # Create tab widget
+        tabs = QTabWidget()
+
+        # First tab - Usage info
+        usage_tab = QTextEdit()
+        usage_tab.setReadOnly(True)
+        usage_tab.setHtml(usage_text)
+        usage_tab.setStyleSheet("""
             QTextEdit {
                 background-color: transparent;
                 font-size: 15px;
@@ -220,6 +228,23 @@ class UploadWindow(QWidget):
                 padding: 2px;
             }
         """)
+        tabs.addTab(usage_tab, "ORFs Criteria")
+
+        # Second tab - Elimination info
+        elimination_tab = QTextEdit()
+        elimination_tab.setReadOnly(True)
+        elimination_tab.setHtml(elimination_text)
+        elimination_tab.setStyleSheet("""
+            QTextEdit {
+                background-color: transparent;
+                font-size: 15px;
+                line-height: 5px;
+                padding: 2px;
+            }
+        """)
+        tabs.addTab(elimination_tab, "Substitution Costs")
+
+        layout.addWidget(tabs)
 
         button_box = QDialogButtonBox(QDialogButtonBox.Ok)
         button_box.accepted.connect(dialog.accept)

@@ -114,7 +114,7 @@ class BaseWindow(QMainWindow):
         """)
         text_edit.setFixedHeight(200)  # Set fixed height
 
-        content = "Please make sure that the input seq will not contains any overlapping ORF's."
+        content = "Please make sure that the input seq will not contains any overlapping ORFs."
         text_edit = add_text_edit(layout, "", content)
         text_edit.setStyleSheet("""
             QTextEdit {

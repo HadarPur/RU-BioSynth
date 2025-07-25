@@ -46,27 +46,25 @@ class ReportController:
         self.report_filename = None
 
         if self.num_of_coding_regions > 0:
-            self.regions = '''<p><br>The total number of coding regions is ''' + ''.join(
-                f'{self.num_of_coding_regions}') + ''', identifies as follows:</p>
-                                  <p class="scrollable-paragraph horizontal-scroll">''' + '<br>'.join(
+            self.regions = '''<p class="scrollable-paragraph horizontal-scroll">''' + '<br>'.join(
                 f"[{key}] {value}" for key, value in InputData.coding_regions_list.items()) + '''</p>'''
 
             if InputData.excluded_regions_list is not None and len(InputData.excluded_regions_list) > 0:
                 self.chosen_regions = '''<p><br>The specific coding regions that the user wish to exclude from the elimination process are as follows:</p>
                                             <p class="scrollable-paragraph horizontal-scroll">''' + '<br>'.join(
                     f"[{key}] {value}" for key, value in InputData.excluded_regions_list.items()) + '''</p>
-                                      <p>These coding regions will be classified as non-coding areas.</p>'''
+                                      <p>These coding regions will be reclassified as non-coding regions.</p>'''
 
-                self.highlight_selected = '''<p><br>The full sequence after selection is:</p>
+                self.highlight_selected = '''<p><br>The target sequence has been updated based on the selected coding regions:</p>
                                       <p class="scrollable-paragraph">''' + ''.join(
                     SequenceUtils.highlight_sequences_to_html(InputData.dna_sequence,
                                                               InputData.excluded_coding_indexes)) + '''</p>'''
 
             else:
-                self.chosen_regions = '''<p><br>No coding regions were selected for exclusion. Continuing with the current settings.</p>'''
+                self.chosen_regions = '''<p><br>No ORFs were manually selected. All identified ORFs will be treated as coding regions by default.</p>'''
                 self.highlight_selected = ""
         else:
-            self.regions = '''<p><br>No coding region was identified in the provided target sequence</p>'''
+            self.regions = '''<p><br>No ORFs were identified in the provided target sequence</p>'''
             self.chosen_regions = ""
             self.highlight_selected = ""
 

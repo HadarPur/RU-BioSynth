@@ -349,7 +349,7 @@
 
             <a class="title" href="#results">Results</a>
             <a class="section" href="#dna-sequences-difference">DNA Sequences Difference</a>
-            <a class="section" href="#dna-detailed_changes">Detailed Changes</a>
+            <a class="section" href="#dna-detailed_changes">Detailed substitutions relative to the target sequence</a>
             <a class="section" href="#optimized-dna-sequence">Optimized Sequence</a>
         </div>
 
@@ -369,7 +369,7 @@
 
             <div>
                 <h1 id="elimination">DNA Elimination</h1>
-                <p>Identifies in the target sequence the following coding regions:</p>
+                <p>The following ORFs were identified in the target sequence:</p>
                 <p class="scrollable-paragraph">{{highlight_input}}</p>
 
                 {{ regions | safe }}
@@ -383,13 +383,13 @@
             </div>
 
             <div>
-                <h3>Coding regions:</h3>
-                <p>{{coding_region_cost_description}}</p>
+                <h3>Non-Coding regions:</h3>
+                <p>{{non_coding_region_cost_description}}</p>
             </div>
 
             <div>
-                <h3>Non-Coding regions:</h3>
-                <p>{{non_coding_region_cost_description}}</p>
+                <h3>Coding regions:</h3>
+                <p>{{coding_region_cost_description}}</p>
             </div>
 
             <div>
@@ -411,7 +411,7 @@
             </div>
 
             <div>
-                <h2 id="dna-detailed_changes">Detailed Changes:</h2>
+                <h2 id="dna-detailed_changes">Detailed substitutions relative to the target sequence:</h2>
                 <div class="horizontal-scroll">
                     <pre>{{detailed_changes}}</pre>
                 </div>

@@ -88,7 +88,7 @@ class SettingsWindow(QWidget):
             <br>
             <h2>DNA Elimination</h2>
             <h3>Coding Regions:</h3>
-            <p>Identify the coding regions within the given target sequence and mark them for emphasis:
+            <p>The following ORFs were identified in the target sequence:
         """
 
         label = QLabel(label_html)
@@ -113,7 +113,7 @@ class SettingsWindow(QWidget):
 
         if len(InputData.coding_regions_list) > 0:
             label_html = f"""
-                <p>The total number of ORF's are {len(InputData.coding_regions_list)}</p>
+                <p>The total number of ORFs are {len(InputData.coding_regions_list)}</p>
             """
 
             label.setText(label_html)
@@ -122,7 +122,7 @@ class SettingsWindow(QWidget):
                 self.prompt_coding_regions_decision(content_layout)
         else:
             label_html = f"""
-                <p>No ORF's were identified in the provided target sequence</p>
+                <p>No ORFs were identified in the provided target sequence</p>
             """
 
             label.setText(label_html)
@@ -150,7 +150,7 @@ class SettingsWindow(QWidget):
         container_widget.setLayout(prompt_layout)
         layout.addWidget(container_widget, alignment=Qt.AlignTop)
 
-        question_label = QLabel("Do you want to proceed with all coding regions?")
+        question_label = QLabel("Would you like to proceed with all detected ORFs as coding regions?")
         prompt_layout.addWidget(question_label)
 
         # Create the 'Yes' button

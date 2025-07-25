@@ -1,6 +1,6 @@
 from data.app_data import InputData, CostData, OutputData
 from executions.controllers.command_controller import CommandController
-from executions.execution_utils import is_valid_input
+from executions.execution_utils import is_valid_input, is_valid_cost
 from utils.file_utils import SequenceReader, PatternReader, CodonUsageReader
 from utils.input_utils import ArgumentParser
 
@@ -19,7 +19,7 @@ class CLIController:
         codon_usage_table = CodonUsageReader(c_path).read_codon_usage()
         codon_usage_file_name = CodonUsageReader(c_path).get_filename()
 
-        if not is_valid_input(seq, unwanted_patterns, codon_usage_table, alpha, beta, w):
+        if not is_valid_input(seq, unwanted_patterns, codon_usage_table):
             return
 
         InputData.dna_sequence = seq
@@ -36,6 +36,9 @@ class CLIController:
 
         if w is not None:
             CostData.w = w
+
+        if not is_valid_cost(CostData.alpha, CostData.beta, CostData.w):
+            return
 
         if o_path is not None:
             OutputData.output_path = o_path

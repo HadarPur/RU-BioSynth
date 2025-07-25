@@ -115,7 +115,10 @@ class FloatingScrollIndicator(QPushButton):
         self.clicked.connect(self.scroll)
 
     def on_scroll(self, value):
-        if value < 80:
+        scrollbar = self.scroll_area.verticalScrollBar()
+        if scrollbar.maximum() == 0:
+            self.hide()
+        elif value < scrollbar.maximum() - 10:
             self.show()
         else:
             self.hide()

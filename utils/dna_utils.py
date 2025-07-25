@@ -48,7 +48,7 @@ class DNAUtils:
             overlap_end = min(end1, end2)
             overlap_region = dna_sequence[overlap_start:overlap_end + 1]
 
-            info += f"\nOverlap between ORF's ({start1}, {end1}) and ({start2}, {end2}):\n\n"
+            info += f"\nOverlap between ORFs ({start1}, {end1}) and ({start2}, {end2}):\n\n"
             info += " " * start1 + dna_sequence[start1:end1 + 1] + "\n"
             info += " " * overlap_start + '|' * len(overlap_region) + "\n"
             info += " " * start2 + dna_sequence[start2:end2 + 1] + "\n"

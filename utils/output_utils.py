@@ -5,6 +5,7 @@ class Logger:
         "INFO": "\033[0m",  # default color
         "DEBUG": "\033[92m",  # Green
         "NOTICE": "\033[96m",  # Cyan
+        "CRITICAL": "\033[95m",  # Magenta
         "ENDC": "\033[0m",  # Reset to default color
     }
 
@@ -15,7 +16,7 @@ class Logger:
 
     @staticmethod
     def error(message):
-        Logger.log(message, "ERROR")
+        Logger.log("ERROR: " + message, "ERROR")
 
     @staticmethod
     def warning(message):
@@ -32,6 +33,10 @@ class Logger:
     @staticmethod
     def notice(message):
         Logger.log(message, "NOTICE")
+
+    @staticmethod
+    def critical(message):
+        Logger.log(message, "CRITICAL")
 
     @staticmethod
     def space():

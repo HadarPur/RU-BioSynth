@@ -9,20 +9,23 @@ from utils.info_utils import get_info_usage, get_elimination_info
 def get_terminal_usage():
     return f"\n{format_text_bold_for_output('Usage:')}\n" \
            "\t$ python ./BioSynth.py -s <seq_file_path> -p <pattern_file_path> -o <output_path_dir> -c <codon_usage_file> [-g] [-a <alpha>] [-b <beta>] [-w <w>]\n\n" \
-           "\tThis application is designed for the elimination of unwanted patterns from synthetic DNA sequences.\n\n" \
-           f"{format_text_bold_for_output('Options:')}\n" \
+           "\tThis application is designed for the elimination of unwanted patterns from synthetic DNA sequences.\n\n"
+
+def get_terminal_options():
+    return f"{format_text_bold_for_output('Options:')}\n" \
            "\t-g --gui\tOption to run the program via user interface. If using this option, there is no need to specify any -s, -p, or -o options.\n" \
            "\t-s --s_path\tSpecifies the sequence file path (mandatory)\n" \
            "\t-p --p_path\tSpecifies the unwanted patterns file path (mandatory)\n" \
-           "\t-c --c_path\tSpecifies the codon usage table file path (mandatory). This parameter allows the program to prioritize codon usage based on the provided table.\n\n" \
+           "\t-c --c_path\tSpecifies the codon usage table file path (mandatory). This parameter allows the program to prioritize codon usage based on the provided table.\n" \
            "\t-o --o_path\tSpecifies the output directory path (optional - default is the downloads directory)\n" \
            "\t-a --alpha\tSpecifies the value for transition substitution cost (optional - default is 1.0)\n" \
            "\t-b --beta\tSpecifies the value for transversion substitution cost (optional - default is 2.0)\n" \
-           "\t-w --w\t\tSpecifies the value for non-synonymous substitution cost (optional - default is 100.0)\n\n" \
-           f"{format_text_bold_for_output('Information:')}\n" \
-           f"{get_info_usage()}" \
-           f"{get_elimination_info()}"
+           "\t-w --w\t\tSpecifies the value for non-synonymous substitution cost (optional - default is 100.0)\n\n"
 
+def get_terminal_information():
+    return f"{format_text_bold_for_output('Information:')}\n" \
+           f"{get_info_usage()}\n" \
+           f"{get_elimination_info()}"
 
 class ArgumentParser:
     def __init__(self):
@@ -52,14 +55,18 @@ class ArgumentParser:
                                         "w="])
         except getopt.GetoptError as err:
             set_output_format(OutputFormat.TERMINAL)
-            Logger.error(err)
-            Logger.info(get_terminal_usage())
+            Logger.error(
+                f"The specified argument is not valid: {err}. "
+                f"For assistance, please use the help option '--help' or '-h' to review the accepted parameters."
+            )
             sys.exit(2)
 
         for opt, arg in opts:
             if opt in ("-h", "--help"):
                 set_output_format(OutputFormat.TERMINAL)
                 Logger.info(get_terminal_usage())
+                Logger.info(get_terminal_options())
+                Logger.info(get_terminal_information())
                 sys.exit(1)
             elif opt in ("-g", "--gui"):
                 self.gui = True

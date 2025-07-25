@@ -50,7 +50,7 @@ class TestEliminationController(unittest.TestCase):
         self.assertEqual(new_seq, "AAAAAA")
         self.assertEqual(cost, 0.0)
         self.assertIsNone(changes)
-        self.assertIn("No unwanted patterns", result_info)
+        self.assertIn("No invalid patterns identified", result_info)
 
     def test_patterns_eliminated(self):
         info, changes, new_seq, cost = EliminationController.eliminate(
@@ -79,7 +79,7 @@ class TestEliminationController(unittest.TestCase):
         self.assertEqual(new_seq, "")
         self.assertEqual(cost, 0.0)
         self.assertIsNone(changes)
-        self.assertIn("No unwanted patterns", info)
+        self.assertIn("No invalid patterns identified", info)
 
     def test_empty_patterns(self):
         info, changes, new_seq, cost = EliminationController.eliminate(

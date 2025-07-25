@@ -35,10 +35,10 @@ class CommandController:
 
         if has_overlaps:
             Logger.error(f"{format_text_bold_for_output('Error Occurred:')}")
-            Logger.error("The input sequence contains overlapping ORF's.")
+            Logger.error("The input sequence contains overlapping ORFs.")
             Logger.space()
             Logger.info(DNAUtils.get_overlapping_regions(InputData.dna_sequence, overlaps))
-            Logger.error("Please ensure the input sequence does not contain overlapping ORF's.")
+            Logger.error("Please ensure the input sequence does not contain overlapping ORFs.")
             return
 
         Logger.notice(app_icon_text)
@@ -49,29 +49,26 @@ class CommandController:
         Logger.space()
 
         # Print the list of unwanted patterns
-        Logger.debug(f"{format_text_bold_for_output('Pattern list:')}")
+        Logger.debug(f"{format_text_bold_for_output('Unwanted patterns:')}")
         Logger.info(f"{SequenceUtils.get_patterns(InputData.unwanted_patterns)}")
         Logger.space()
 
         # Extract coding regions
         InputData.coding_positions, InputData.coding_indexes = DNAUtils.get_coding_and_non_coding_regions_positions(
             InputData.dna_sequence)
-        highlighted_sequence = ''.join(
-            SequenceUtils.highlight_sequences_to_terminal(InputData.dna_sequence, InputData.coding_indexes))
 
-        Logger.debug('Identify the ORF\'s within the given target sequence and mark them for emphasis:')
-        Logger.info(highlighted_sequence)
-        Logger.space()
+        Logger.debug('The following ORFs were identified in the target sequence:')
 
         # Handle elimination of coding regions if the user chooses to
         InputData.coding_regions_list = DNAUtils.get_coding_regions_list(InputData.coding_indexes,
                                                                          InputData.dna_sequence)
+
         if len(InputData.coding_indexes) > 0:
-            Logger.debug(
-                f"The total number of ORF's are {len(InputData.coding_indexes)}, identifies as follows:")
             Logger.info('\n'.join(f"[{key}] {value}" for key, value in InputData.coding_regions_list.items()))
+            Logger.critical(
+                '\nAll ORFs are assumed to be coding regions. If you wish to exclude some ORFs, then please use the GUI.')
         else:
-            Logger.debug("No ORF's were identified in the provided target sequence")
+            Logger.critical("No ORFs were identified in the provided target sequence")
 
         # Eliminate unwanted patterns
         eliminate_unwanted_patterns(InputData.dna_sequence, InputData.unwanted_patterns, InputData.coding_positions)
@@ -80,12 +77,12 @@ class CommandController:
         Logger.info(EliminationData.info)
         Logger.notice(format_text_bold_for_output('\n' + '_' * 100 + '\n'))
 
-        Logger.debug(format_text_bold_for_output('Optimized Sequence'))
+        Logger.debug(format_text_bold_for_output('Optimized Sequence:'))
         Logger.info(OutputData.optimized_sequence)
         Logger.space()
 
         changes = '\n'.join(EliminationData.detailed_changes) if EliminationData.detailed_changes else None
-        Logger.debug(format_text_bold_for_output('Detailed Changes:'))
+        Logger.debug(format_text_bold_for_output('Detailed substitutions relative to the target sequence:'))
         Logger.info(f"{changes}")
         Logger.space()
 

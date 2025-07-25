@@ -13,17 +13,16 @@ class EliminationController:
     @staticmethod
     def eliminate(target_sequence, unwanted_patterns, coding_positions):
         # Initialize information string for the elimination process
-        info = f"{format_text_bold_for_output('Starting Elimination Process...')}\n"
-        info += f"\n{format_text_bold_for_output('Target Sequence:')}\n{target_sequence}\n"
+        info = f"{format_text_bold_for_output('Target Sequence:')}\n{target_sequence}\n"
         info += f"\n{format_text_bold_for_output('Unwanted Patterns:')}\n{', '.join(sorted(unwanted_patterns))}\n"
 
         # Check if unwanted patterns exist
         if not any(x in target_sequence for x in unwanted_patterns):
-            info += "\nNo unwanted patterns found - returning the original sequence."
+            info += "\nNo invalid patterns identified — the original sequence will be retained."
             return info, None, target_sequence, 0.0  # Return unchanged sequence
 
         # Additional descriptions (placeholders for actual descriptions)
-        info += f"\n{format_text_bold_for_output('Elimination Process:')}\n{get_elimination_process_description()}\n"
+        info += f"\n{format_text_bold_for_output(get_elimination_process_description())}\n"
         info += f"\nNon-Coding regions:\n{get_non_coding_region_cost_description()}\n"
         info += f"\nCoding regions:\n{get_coding_region_cost_description()}\n"
 
@@ -147,11 +146,7 @@ class EliminationController:
 
         # Append final information to the info string
         info += f"\n{format_text_bold_for_output('_' * 50)}\n"
-        info += f"\n🎉 {format_text_bold_for_output('Congrats!')}\n\n"
-        info += "🚀 Elimination Process Completed!\n"
-        info += f"📆 {format_current_date()}\n"
-        info += f"\n{format_text_bold_for_output('Optimized Sequence:')}\n{''.join(sequence)}\n"
-
-        # info += f"\n{format_text_bold_for_output('Total Cost:')}\n{format_cost(min_cost)}"
+        info += "\n🚀 Elimination Process Completed!\n"
+        info += f"📆 {format_current_date()}"
 
         return info, changes_info, ''.join(sequence), min_cost
