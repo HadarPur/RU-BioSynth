@@ -54,6 +54,7 @@ class SettingsWindow(QWidget):
             QTextEdit {
                 background-color: transparent;
                 border: 1px solid lightgray;
+                margin-right: 25px;
             }
         """)
 
@@ -70,14 +71,14 @@ class SettingsWindow(QWidget):
             QTextEdit {
                 background-color: transparent;
                 border: 1px solid lightgray;
+                margin-right: 25px;
             }
         """)
 
         # Extract coding regions
         InputData.coding_positions, InputData.coding_indexes = DNAUtils.get_coding_and_non_coding_regions_positions(
             InputData.dna_sequence)
-        highlighted_sequence = ''.join(
-            SequenceUtils.highlight_sequences_to_html(InputData.dna_sequence, InputData.coding_indexes))
+        highlighted_sequence = SequenceUtils.highlight_sequences_to_html(InputData.dna_sequence, InputData.coding_indexes)
 
         # Handle elimination of coding regions if the user chooses to
         InputData.coding_regions_list = DNAUtils.get_coding_regions_list(InputData.coding_indexes,
@@ -86,7 +87,7 @@ class SettingsWindow(QWidget):
         # Adding formatted text to QLabel
         label_html = f"""
             <br>
-            <h2>DNA Elimination</h2>
+            <h2>Elimination Setting</h2>
             <h3>Coding Regions:</h3>
             <p>The following ORFs were identified in the target sequence:
         """
@@ -94,16 +95,13 @@ class SettingsWindow(QWidget):
         label = QLabel(label_html)
         content_layout.addWidget(label)
 
-        label_html = f'''
-        <p style="word-wrap: break-word;">{highlighted_sequence}</p>
-        '''
-
-        text_edit = add_text_edit_html(content_layout, "", label_html)
+        text_edit = add_text_edit_html(content_layout, "", highlighted_sequence)
         adjust_text_edit_height(text_edit)
         text_edit.setStyleSheet("""
             QTextEdit {
                 background-color: transparent;
                 border: 1px solid lightgray;
+                margin-right: 25px;
             }
         """)
 
@@ -113,7 +111,7 @@ class SettingsWindow(QWidget):
 
         if len(InputData.coding_regions_list) > 0:
             label_html = f"""
-                <p>The total number of ORFs are {len(InputData.coding_regions_list)}</p>
+                <p>A total of {len(InputData.coding_regions_list)} ORFs have been identified.</p>
             """
 
             label.setText(label_html)
@@ -135,7 +133,9 @@ class SettingsWindow(QWidget):
 
         # Add floating button
         self.floating_btn = FloatingScrollIndicator(parent=self, scroll_area=self.scroll_area)
-        self.floating_btn.on_scroll(self.scroll_area.verticalScrollBar().value())
+        self.scroll_area.verticalScrollBar().rangeChanged.connect(
+            lambda min_val, max_val: self.floating_btn.on_scroll(self.scroll_area.verticalScrollBar().value())
+        )
 
     def resizeEvent(self, event):
         self.floating_btn.raise_()  # Bring to front
@@ -188,7 +188,7 @@ class SettingsWindow(QWidget):
             lambda: self.switch_to_eliminate_callback(InputData.excluded_coding_positions))
         self.next_button.setEnabled(True)
 
-        label = QLabel(f"\nSelected regions to exclude:")
+        label = QLabel(f"\nDesignated ORFs for Exclusion:")
         layout.addWidget(label, alignment=Qt.AlignTop)
 
         # Create a new QVBoxLayout for the content of this section
@@ -220,15 +220,14 @@ class SettingsWindow(QWidget):
 
         # Adding formatted text to QLabel
         label_html = '''
-        <p>The full sequence after selection is:
+        <p>The modified target sequence, reflecting your selections, is shown below:
         </p>'''
 
         label = QLabel(label_html)
         layout.addWidget(label)
 
         # Adding formatted text to QLabel
-        label_html = f'''
-        <p>{SequenceUtils.highlight_sequences_to_html(InputData.dna_sequence, InputData.excluded_coding_indexes)}</p>'''
+        label_html = SequenceUtils.highlight_sequences_to_html(InputData.dna_sequence, InputData.excluded_coding_indexes)
         text_edit = add_text_edit_html(layout, "", label_html)
         adjust_text_edit_height(text_edit)
         text_edit.setStyleSheet("""
@@ -256,7 +255,7 @@ class RegionSelector(QWidget):
         parent_layout = QVBoxLayout(parent_widget)  # Assuming parent_widget already has a QVBoxLayout
 
         # Create the instructions label and add it to the parent layout
-        instructions_label = QLabel("Please check the regions you want to exclude:")
+        instructions_label = QLabel("Please review and select the ORFs you wish to exclude:")
         parent_layout.addWidget(instructions_label, alignment=Qt.AlignTop)
 
         # Create a new QVBoxLayout for the content of this section
@@ -308,8 +307,8 @@ class RegionSelector(QWidget):
 
     def handle_coding_region_checkboxes(self):
         InputData.excluded_regions_list = dict()
-        InputData.excluded_coding_positions = InputData.coding_positions
-        InputData.excluded_coding_indexes = InputData.coding_indexes
+        InputData.excluded_coding_positions = InputData.coding_positions.copy()  # Create a copy to avoid modifying the original
+        InputData.excluded_coding_indexes = InputData.coding_indexes.copy()  # Create a copy to avoid modifying the original
 
         # Implementation of the exclusion logic
         for index, (checkbox, region) in enumerate(self.checkboxes):

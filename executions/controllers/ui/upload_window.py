@@ -125,7 +125,7 @@ class UploadWindow(QWidget):
     def load_dna_file_from_file_path(self, file_path):
         try:
             with open(file_path, 'r', encoding='utf-8') as file:
-                content = file.read()
+                content = file.read().rstrip('\n')
         except Exception as e:
             QMessageBox.critical(self, "Error", f"Failed to read file: {e}")
             return  # Exit if file couldn't be read
@@ -148,7 +148,7 @@ class UploadWindow(QWidget):
     def load_patterns_file_from_file_path(self, file_path):
         try:
             with open(file_path, 'r', encoding='utf-8') as file:
-                content = file.read()
+                content = file.read().rstrip('\n')
         except Exception as e:
             QMessageBox.critical(self, "Error", f"Failed to read file: {e}")
             return  # Exit if file couldn't be read
@@ -172,7 +172,7 @@ class UploadWindow(QWidget):
     def load_codon_usage_from_file_path(self, file_path):
         try:
             with open(file_path, 'r', encoding='utf-8') as file:
-                content = file.read()
+                content = file.read().rstrip('\n')
         except Exception as e:
             QMessageBox.critical(self, "Error", f"Failed to read file: {e}")
             return

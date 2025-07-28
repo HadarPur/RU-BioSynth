@@ -34,8 +34,7 @@ class CommandController:
         has_overlaps, overlaps = DNAUtils.find_overlapping_regions(InputData.dna_sequence)
 
         if has_overlaps:
-            Logger.error(f"{format_text_bold_for_output('Error Occurred:')}")
-            Logger.error("The input sequence contains overlapping ORFs.")
+            Logger.error("The target sequence contains ORFs that share overlapping nucleotide regions:")
             Logger.space()
             Logger.info(DNAUtils.get_overlapping_regions(InputData.dna_sequence, overlaps))
             Logger.error("Please ensure the input sequence does not contain overlapping ORFs.")
@@ -73,9 +72,9 @@ class CommandController:
         # Eliminate unwanted patterns
         eliminate_unwanted_patterns(InputData.dna_sequence, InputData.unwanted_patterns, InputData.coding_positions)
 
-        Logger.notice(format_text_bold_for_output('\n' + '_' * 100 + '\n'))
+        Logger.notice(format_text_bold_for_output('\n' + '_' * 90 + '\n'))
         Logger.info(EliminationData.info)
-        Logger.notice(format_text_bold_for_output('\n' + '_' * 100 + '\n'))
+        Logger.notice(format_text_bold_for_output('\n' + '_' * 90 + '\n'))
 
         Logger.debug(format_text_bold_for_output('Optimized Sequence:'))
         Logger.info(OutputData.optimized_sequence)
@@ -91,6 +90,8 @@ class CommandController:
         # Save the results
         report = ReportController(InputData.coding_positions)
 
+        Logger.critical("Preparing files for export...\n")
+
         report.create_report(file_date)
         path = report.download_report(OutputData.output_path)
         Logger.notice(path)
@@ -99,3 +100,7 @@ class CommandController:
         path = save_file(OutputData.optimized_sequence, filename, OutputData.output_path)
         Logger.notice(path)
         Logger.space()
+
+        Logger.critical("All files were exported successfully.")
+        Logger.space()
+

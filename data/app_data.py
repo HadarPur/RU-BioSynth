@@ -30,7 +30,6 @@ class EliminationData:
     detailed_changes = None
     min_cost = None
 
-
 class OutputData:
     output_path = Path.home() / 'Downloads'
     optimized_sequence = None

@@ -36,9 +36,11 @@ class DNAUtils:
         return len(overlaps) > 0, overlaps
 
     @staticmethod
-    def get_overlapping_regions(dna_sequence, overlaps):
-        info = f"Target Sequence:\n{dna_sequence}\n"
+    def get_overlapping_regions(dna_sequence, overlaps, flank=10):
+        info = f"Target Sequence Length: {len(dna_sequence)}\n"
+
         for (start1, end1), (start2, end2) in overlaps:
+            # Convert to 0-based indexing
             start1 -= 1
             end1 -= 1
             start2 -= 1
@@ -46,13 +48,31 @@ class DNAUtils:
 
             overlap_start = max(start1, start2)
             overlap_end = min(end1, end2)
-            overlap_region = dna_sequence[overlap_start:overlap_end + 1]
 
-            info += f"\nOverlap between ORFs ({start1}, {end1}) and ({start2}, {end2}):\n\n"
-            info += " " * start1 + dna_sequence[start1:end1 + 1] + "\n"
-            info += " " * overlap_start + '|' * len(overlap_region) + "\n"
-            info += " " * start2 + dna_sequence[start2:end2 + 1] + "\n"
-            info += f"\nOverlapping ORF: {overlap_region}\n"
+            if overlap_start > overlap_end:
+                continue  # No real overlap, skip
+
+            overlap_region = dna_sequence[overlap_start:overlap_end + 1]
+            overlap_len = len(overlap_region)
+
+            # Extract context
+            left_flank = max(0, overlap_start - flank)
+            right_flank = min(len(dna_sequence), overlap_end + flank + 1)
+
+            context_seq = dna_sequence[left_flank:right_flank]
+            pointer_line = (
+                    " " * (overlap_start - left_flank)
+                    + "^" * overlap_len
+            )
+
+            info += (
+                f"\nOverlap between ORFs ({start1 + 1}–{end1 + 1}) and ({start2 + 1}–{end2 + 1})\n"
+                f"Shared Region:   {overlap_region}\n"
+                f"                 ↑ overlap of {overlap_len} bp at positions {overlap_start + 1}–{overlap_end + 1}\n"
+                f"\nContext:\n"
+                f"{context_seq}\n"
+                f"{pointer_line}\n"
+            )
 
         return info
 
@@ -75,52 +95,6 @@ class DNAUtils:
             coding_regions_list[str(region_counter)] = seq[start:end]
 
         return coding_regions_list
-
-    # @staticmethod
-    # def get_coding_and_non_coding_regions_positions(seq):
-    #     """
-    #     Identifies coding regions in the DNA sequence and precomputes an array of codon positions.
-    #
-    #     Args:
-    #         seq (str): The DNA sequence to analyze.
-    #
-    #     Returns:
-    #         list: An array where each index represents the codon position (1, 2, 3) for coding regions,
-    #               and 0 for non-coding regions.
-    #     """
-    #     start_codon = "ATG"
-    #     stop_codons = { "TAA", "TAG", "TGA" }
-    #
-    #     N = len(seq)
-    #     codon_positions = [0] * N  # Initialize all positions as non-coding (0)
-    #     coding_region_indexes = []
-    #
-    #     i = 0  # Pointer to traverse the sequence
-    #
-    #     while i < len(seq) - 2:
-    #         if seq[i:i + 3] == start_codon:
-    #             # Search for the nearest stop codon in the same reading frame
-    #             for j in range(i + 3, len(seq) - 2, 3):
-    #                 if seq[j:j + 3] in stop_codons:
-    #                     start_idx = i
-    #                     end_idx = j + 3  # Include the stop codon
-    #
-    #                     # Check if this is a valid coding region
-    #                     if end_idx - start_idx >= min_coding_region_length:
-    #                         # Assign codon positions for this coding region
-    #                         for k in range(start_idx, end_idx):
-    #                             codon_positions[k] = ((k - start_idx) % 3) + 1
-    #
-    #                         coding_region_indexes.append((start_idx, end_idx))
-    #                     i = end_idx  # Move the pointer past the coding region
-    #                     break
-    #             else:
-    #                 # No valid stop codon; treat the rest as non-coding
-    #                 break
-    #         else:
-    #             i += 1
-    #
-    #     return codon_positions, coding_region_indexes
 
     @staticmethod
     def get_coding_and_non_coding_regions_positions(seq):

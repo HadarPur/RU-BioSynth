@@ -1,4 +1,8 @@
+import textwrap
+
 class Logger:
+    MAX_WIDTH = 90  # <-- set max characters per line
+
     COLORS = {
         "ERROR": "\033[91m",  # Red
         "WARNING": "\033[93m",  # Yellow
@@ -12,7 +16,8 @@ class Logger:
     @staticmethod
     def log(message, level="INFO"):
         color = Logger.COLORS.get(level, Logger.COLORS["ENDC"])
-        print(f"{color}{message}{Logger.COLORS['ENDC']}")
+        wrapped_message = Logger.get_formated_text(message)
+        print(f"{color}{wrapped_message}{Logger.COLORS['ENDC']}")
 
     @staticmethod
     def error(message):
@@ -41,3 +46,15 @@ class Logger:
     @staticmethod
     def space():
         Logger.log('', "INFO")
+
+    @staticmethod
+    def get_formated_text(text):
+        # Respect line structure
+        lines = str(text).splitlines()
+        wrapped_lines = [
+            textwrap.fill(line, width=Logger.MAX_WIDTH, replace_whitespace=False)
+            for line in lines
+        ]
+        wrapped_message = "\n".join(wrapped_lines)
+
+        return wrapped_message

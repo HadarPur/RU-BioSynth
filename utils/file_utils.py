@@ -4,6 +4,8 @@ import shutil
 import sys
 from pathlib import Path
 
+from utils.output_utils import Logger
+
 
 def read_codon_freq_file(raw_lines, convert_to_dna=True):
     """
@@ -143,6 +145,7 @@ def save_file(output, filename, path=None):
 
         # Replace colons with underscores in the filename
         filename = re.sub(':', '_', filename)
+        base_name = filename.split('-')[0].strip()
 
         # Create the directory if it doesn't exist
         create_dir(output_path)
@@ -152,16 +155,16 @@ def save_file(output, filename, path=None):
         with open(output_file_path, 'w', encoding='utf-8') as file:
             file.write(output)
 
-        return f"File saved successfully at: {output_file_path}"
+        return f"* {base_name} has been saved to:\n  {output_file_path}\n"
 
     except FileNotFoundError:
-        return "Error: File not found."
+        return "An error occurred while saving the file - File not found."
     except PermissionError:
-        return "Error: Permission denied."
+        return "An error occurred while saving the file - Permission denied."
     except IsADirectoryError:
-        return "Error: The specified path is a directory, not a file."
+        return "An error occurred while saving the file - the specified path is a directory, not a file."
     except Exception as e:
-        return f"An error occurred: {e}"
+        return f"An error occurred while saving the file - {e}"
 
 
 def resource_path(relative_path):

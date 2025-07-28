@@ -140,45 +140,37 @@ class SequenceUtils:
         return index_seq, marked_seq1, marked_seq2
 
     @staticmethod
-    def highlight_sequences_to_html(seq, coding_indexes):
-        """
-        Converts a DNA sequence to HTML markup with highlighted coding regions.
+    def highlight_sequences_to_html(seq, coding_indexes, line_length=96):
+        if coding_indexes is None:
+            return "coding_indexes in None"
 
-        Parameters:
-            seq (str): The full DNA sequence.
-            coding_indexes (list of tuples): List of (start, end) tuples representing coding regions.
+        base_colors = [''] * len(seq)
+        color_palette = [
+            "#b03a48", "#3e8e41", "#3b5ca5", "#a563a3", "#2c7c7a", "#b87e2c",
+            "#6c4f8b", "#497d4a", "#5d6d7e", "#805d3a", "#5e4b56", "#375c4c"
+        ]
 
-        Returns:
-            str: HTML markup with highlighted coding regions.
-        """
+        for i, (start, end) in enumerate(coding_indexes):
+            color = color_palette[i % len(color_palette)]
+            for j in range(start, end):
+                base_colors[j] = color
 
-        html_output = ""
-        color_counter = 0
+        html_lines = []
+        for i in range(0, len(seq), line_length):
+            line = ""
+            for j in range(i, min(i + line_length, len(seq))):
+                base = seq[j]
+                color = base_colors[j]
 
-        # Define a list of colors for coding regions
-        colors = ['#FF0000', '#00FF00', '#0000FF', '#FF00FF', '#00FFFF', '#FFA500']
+                if color:
+                    line += f'<span style="color: {color};">{base}</span>'
+                else:
+                    line += base
 
-        last_end = 0  # Track the end of the last processed region
+            html_lines.append(line)
 
-        for start, end in coding_indexes:
-            # Add non-coding region before the current coding region
-            if last_end < start:
-                html_output += seq[last_end:start]
-
-            # Add coding region with highlighted color
-            coding_sequence = seq[start:end]
-            spaced_triplets = ' '.join(coding_sequence[i:i + 3] for i in range(0, len(coding_sequence), 3))
-            color = colors[color_counter % len(colors)]
-            color_counter += 1
-            html_output += f'<span style="color: {color};">&nbsp;&nbsp;{spaced_triplets}&nbsp;&nbsp;</span>'
-
-            last_end = end
-
-        # Add any remaining non-coding region after the last coding region
-        if last_end < len(seq):
-            html_output += seq[last_end:]
-
-        return html_output
+        # Use a monospaced font in the HTML <pre> element directly
+        return f"<pre>{'<br>'.join(html_lines)}</pre>"
 
     @staticmethod
     def highlight_sequences_to_terminal(seq, coding_indexes):

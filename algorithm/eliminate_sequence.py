@@ -109,7 +109,7 @@ class EliminationController:
             # Record the change that actually occurred
             if cost_f > 0.0:
                 changes_info.append(
-                    f"Position {i:<10}\t{changes[0]:<8}->{changes[1]:>8}\t\tCost: {cost_f:.2f}"
+                    f"Position {str(i).ljust(6)}  {changes[0].ljust(6)} ->      {changes[1].ljust(6)}   Cost: {cost_f:.2f}"
                 )
 
             path.append((i, current_state))
@@ -129,14 +129,14 @@ class EliminationController:
             if current_state[1] != original_1:
                 changes, cost_f = initial_cost_function(2, current_state[1])
                 changes_info.append(
-                    f"Position {2:<10}\t{changes[0]:<8}->{changes[1]:>8}\t\tCost: {cost_f:.2f}"
+                    f"Position {str(2).ljust(6)}  {changes[0].ljust(6)} ->      {changes[1].ljust(6)}   Cost: {cost_f:.2f}"
                 )
 
         if coding_positions[0] == 0:
             if current_state[0] != original_0:
                 changes, cost_f = initial_cost_function(1, current_state[0])
                 changes_info.append(
-                    f"Position {1:<10}\t{changes[0]:<8}->{changes[1]:>8}\t\tCost: {cost_f:.2f}"
+                    f"Position {str(1).ljust(6)}  {changes[0].ljust(6)} ->      {changes[1].ljust(6)}   Cost: {cost_f:.2f}"
                 )
 
         # Reverse the sequence and changes info for correct order

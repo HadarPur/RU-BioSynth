@@ -5,6 +5,7 @@ import webview
 from PyQt5.QtCore import Qt, QTimer
 from PyQt5.QtWidgets import QApplication, QFileDialog, QLabel, QPushButton, QWidget, QVBoxLayout
 from PyQt5.QtWidgets import QHBoxLayout, QSizePolicy, QSpacerItem, QDialog, QTextEdit, QDialogButtonBox
+from PyQt5.QtGui import QFont
 
 from data.app_data import InputData, OutputData, EliminationData
 from executions.controllers.ui.window_utils import add_button, add_code_block, add_text_edit_html, CircularButton
@@ -190,7 +191,13 @@ class ResultsWindow(QWidget):
 
         text_edit = QTextEdit()
         text_edit.setReadOnly(True)
+
+        font = QFont("Consolas")  # or "Consolas", "Monaco", etc.
+        font.setStyleHint(QFont.Monospace)
+        font.setPointSize(10)
+        text_edit.setFont(font)
         text_edit.setPlainText(info_text)
+
         layout.addWidget(text_edit)
 
         button_box = QDialogButtonBox(QDialogButtonBox.Ok)

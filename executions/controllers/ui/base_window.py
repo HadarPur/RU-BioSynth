@@ -97,7 +97,7 @@ class BaseWindow(QMainWindow):
 
         layout = QVBoxLayout()
 
-        content = "The input sequence contains overlapping coding regions:"
+        content = "The target sequence contains ORFs that share overlapping nucleotide regions:"
         text_edit = add_text_edit(layout, "", content)
         text_edit.setStyleSheet("""
             QTextEdit {

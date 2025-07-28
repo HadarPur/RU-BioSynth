@@ -4,6 +4,9 @@ from PyQt5.QtWidgets import QWidget, QVBoxLayout, QTextBrowser, QSizePolicy
 from data.app_data import InputData, EliminationData
 from executions.controllers.ui.window_utils import FloatingScrollIndicator, add_button
 from executions.execution_utils import eliminate_unwanted_patterns
+import textwrap
+
+from utils.output_utils import Logger
 
 
 class EliminationWindow(QWidget):
@@ -36,10 +39,10 @@ class EliminationWindow(QWidget):
 
         eliminate_unwanted_patterns(InputData.dna_sequence, InputData.unwanted_patterns, self.updated_coding_positions)
 
-        info = EliminationData.info.replace("\n", "<br>")
+        wrapped_info = Logger.get_formated_text(EliminationData.info).replace("\n", "<br>")
         html = f"""
-            <h2>Elimination Process:</h2>
-            <div style="word-break: break-all;">{info}</div>
+            <h2>Elimination Process</h2>
+            <div style="font-family: 'Consolas', monospace; margin-right: 25px;">{wrapped_info}</div>
         """
 
         text_browser = QTextBrowser()

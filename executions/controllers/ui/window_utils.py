@@ -2,7 +2,8 @@ import os
 
 from PyQt5.QtCore import Qt, QPropertyAnimation, QEasingCurve
 from PyQt5.QtGui import QPainterPath, QRegion
-from PyQt5.QtGui import QPixmap
+from PyQt5.QtGui import QPixmap, QFont
+
 from PyQt5.QtWidgets import QFileDialog, QTextEdit, QPlainTextEdit, QToolBar, QDoubleSpinBox, QScrollArea, QWidget
 from PyQt5.QtWidgets import QFrame, QPushButton, QVBoxLayout, QApplication, QLabel, QHBoxLayout, QSizePolicy, \
     QTableWidget, QHeaderView
@@ -300,7 +301,6 @@ def add_drop_text_edit(layout, placeholder, drop_callback, wrap=None):
 
     return text_edit
 
-
 def add_text_edit(layout, placeholder, content, wrap=None):
     text_edit = QTextEdit()
     text_edit.setPlaceholderText(placeholder)
@@ -308,21 +308,25 @@ def add_text_edit(layout, placeholder, content, wrap=None):
     if content:
         text_edit.setPlainText(content)
 
-    text_edit.setReadOnly(True)
-    text_edit.setTextInteractionFlags(Qt.NoTextInteraction)  # Disable text selection
+    # Use monospaced font
+    font = QFont("Consolas")  # or "Consolas", "Monaco", etc.
+    font.setStyleHint(QFont.Monospace)
+    font.setPointSize(10)
+    text_edit.setFont(font)
 
+    text_edit.setReadOnly(True)
+    text_edit.setTextInteractionFlags(Qt.NoTextInteraction)
+    text_edit.viewport().setCursor(Qt.ArrowCursor)
+
+    # Keep wrapping for multi-line display
     if wrap is not None:
         text_edit.setLineWrapMode(wrap)
     else:
-        text_edit.setLineWrapMode(QTextEdit.WidgetWidth)  # Default wrap mode
-
-    # Set the cursor shape to the default pointer cursor for the viewport
-    text_edit.viewport().setCursor(Qt.ArrowCursor)
+        text_edit.setLineWrapMode(QTextEdit.WidgetWidth)  # Default: wrap to widget width
 
     layout.addWidget(text_edit)
 
     return text_edit
-
 
 def adjust_text_edit_height(text_edit):
     text_edit.document().setTextWidth(text_edit.viewport().width())
@@ -347,7 +351,6 @@ def adjust_scroll_area_height(scroll_area):
     # Set the fixed height of the scroll area
     scroll_area.setFixedHeight(new_height + 10)  # Additional 10 pixels padding
 
-
 def add_text_edit_html(layout, placeholder, content):
     text_edit = QTextEdit()
     text_edit.setPlaceholderText(placeholder)
@@ -360,15 +363,19 @@ def add_text_edit_html(layout, placeholder, content):
             background-color: transparent;
         }
     """)
-    text_edit.setReadOnly(True)
-    text_edit.setTextInteractionFlags(Qt.NoTextInteraction)  # Disable text selection
 
-    # Set the cursor shape to the default pointer cursor for the viewport
+    font = QFont("Consolas")
+    font.setStyleHint(QFont.Monospace)
+    font.setPointSize(10)
+    text_edit.setFont(font)
+
+    text_edit.setReadOnly(True)
+    text_edit.setTextInteractionFlags(Qt.NoTextInteraction)
     text_edit.viewport().setCursor(Qt.ArrowCursor)
 
     layout.addWidget(text_edit)
-
     return text_edit
+
 
 
 def add_code_block(parent_layout, text, file_date, update_status):
