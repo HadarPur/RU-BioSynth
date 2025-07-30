@@ -3,7 +3,7 @@ from PyQt5.QtWidgets import (QHBoxLayout, QGridLayout, QDialog, QDialogButtonBox
                              QWidget, QMessageBox, QFileDialog, QVBoxLayout,
                              QTableWidgetItem)
 
-from data.app_data import CostData
+from data.app_data import InputData, CostData
 from executions.controllers.ui.window_utils import add_button, CircularButton
 from executions.controllers.ui.window_utils import add_intro, add_png_logo, add_drop_text_edit, add_text_edit_html, \
     add_spinbox, add_drop_table
@@ -24,6 +24,8 @@ class UploadWindow(QWidget):
         self.dna_text_edit = None
         self.patterns_text_edit = None
         self.codon_usage_table = None
+
+        InputData.reset()
 
         self.init_ui()
 

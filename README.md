@@ -94,14 +94,23 @@ To operate the application, the user must provide the following **three input te
 
 To execute the elimination tool from the Terminal, please use the following command:
 
-```bash
-python3 ./BioSynth.py -s <seq_file_path> -p <pattern_file_path> -c <codon_usage_file_path>
+```
+python3 ./BioSynth.py -s <seq_file_path> -p <pattern_file_path> -c <codon_usage_file_path> -a <transition_substitution_cost> -b <transversion_substitution_cost> -w <non_synonymous_substitution_cost>
 ```
 
 For example:
 
 ```
-python3 ./BioSynth.py -s ./files/no_coding/s_file_no_coding.txt -p ./files/no_coding/p_file_no_coding.txt -c ./files/no_coding/biosynth_codon_usage.txt
+python3 ./BioSynth.py -s ./files/no_coding/s_file_no_coding.txt -p ./files/no_coding/p_file_no_coding.txt -c ./files/no_coding/biosynth_codon_usage.txt -a 1.02 -b 1.98 -w 99.96
+```
+
+Or:
+
+```
+python3 ./BioSynth.py --s_path ./files/no_coding/s_file_no_coding.txt \
+--p_path ./files/no_coding/p_file_no_coding.txt \
+--c_path ./files/no_coding/biosynth_codon_usage.txt \
+--alpha 1.02 --beta 1.98 --w 99.96
 ```
 
 ## Execute GUI Program

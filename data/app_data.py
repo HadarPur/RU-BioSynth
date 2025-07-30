@@ -14,6 +14,17 @@ class InputData:
     excluded_coding_positions = None
     excluded_regions_list = None
 
+    @staticmethod
+    def reset():
+        InputData.dna_sequence = None
+        InputData.unwanted_patterns = None
+        InputData.coding_indexes = None
+        InputData.coding_positions = None
+        InputData.coding_regions_list = None
+        InputData.excluded_coding_indexes = None
+        InputData.excluded_coding_positions = None
+        InputData.excluded_regions_list = None
+
 
 class CostData:
     codon_usage = None

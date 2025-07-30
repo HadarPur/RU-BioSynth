@@ -16,6 +16,7 @@ class BioSynthApp:
 
             parser = ArgumentParser()
             gui, _, _, _, _, _, _, _ = parser.parse_args(args)
+
             if gui:
                 set_output_format(OutputFormat.GUI)
                 GUIController().execute()

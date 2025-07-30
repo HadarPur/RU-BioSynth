@@ -16,12 +16,16 @@ class DebugController:
         InputData.unwanted_patterns = P
         CostData.codon_usage = C
 
-        if not is_valid_cost(alpha=2, beta=4, w=140):
+        alpha = 1.02
+        beta = 1.98
+        w = 99.96
+
+        if not is_valid_cost(alpha=alpha, beta=beta, w=w):
             return
 
-        CostData.alpha = 2
-        CostData.beta = 4
-        CostData.w = 140
+        CostData.alpha = alpha
+        CostData.beta = beta
+        CostData.w = w
 
         controller = CommandController()
         controller.run()

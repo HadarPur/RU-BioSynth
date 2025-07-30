@@ -20,6 +20,11 @@ class Logger:
         print(f"{color}{wrapped_message}{Logger.COLORS['ENDC']}")
 
     @staticmethod
+    def help(message, level="INFO"):
+        color = Logger.COLORS.get(level, Logger.COLORS["ENDC"])
+        print(f"{color}{message}{Logger.COLORS['ENDC']}")
+
+    @staticmethod
     def error(message):
         Logger.log("ERROR: " + message, "ERROR")
 

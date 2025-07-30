@@ -64,9 +64,9 @@ class ArgumentParser:
         for opt, arg in opts:
             if opt in ("-h", "--help"):
                 set_output_format(OutputFormat.TERMINAL)
-                Logger.info(get_terminal_usage())
-                Logger.info(get_terminal_options())
-                Logger.info(get_terminal_information())
+                Logger.help(get_terminal_usage())
+                Logger.help(get_terminal_options())
+                Logger.help(get_terminal_information())
                 sys.exit(1)
             elif opt in ("-g", "--gui"):
                 self.gui = True
