@@ -42,7 +42,7 @@ class EliminationWindow(QWidget):
         wrapped_info = Logger.get_formated_text(EliminationData.info).replace("\n", "<br>")
         html = f"""
             <h2>Elimination Process</h2>
-            <div style="font-family: 'Consolas', monospace; margin-right: 25px;">{wrapped_info}</div>
+            <div style="margin-right: 25px;">{wrapped_info}</div>
         """
 
         text_browser = QTextBrowser()

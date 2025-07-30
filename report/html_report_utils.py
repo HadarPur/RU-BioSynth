@@ -39,7 +39,8 @@ class ReportController:
         self.input_seq = InputData.dna_sequence
         self.highlight_input = SequenceUtils.highlight_sequences_to_html(
             InputData.dna_sequence,
-            InputData.coding_indexes
+            InputData.coding_indexes,
+            line_length=85
         )
 
         # Store optimized DNA sequence from backend
@@ -63,11 +64,10 @@ class ReportController:
         self.report_filename = None
 
         # Highlight regions excluded from optimization
-        self.highlight_selected = ''.join(
-            SequenceUtils.highlight_sequences_to_html(
+        self.highlight_selected = SequenceUtils.highlight_sequences_to_html(
                 InputData.dna_sequence,
-                InputData.excluded_coding_indexes
-            )
+                InputData.excluded_coding_indexes,
+                line_length=85
         )
 
         # Format cost with good numerical precision

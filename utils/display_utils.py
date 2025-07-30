@@ -140,7 +140,7 @@ class SequenceUtils:
         return index_seq, marked_seq1, marked_seq2
 
     @staticmethod
-    def highlight_sequences_to_html(seq, coding_indexes, line_length=96):
+    def highlight_sequences_to_html(seq, coding_indexes, line_length=96, returnBr=False):
         if coding_indexes is None:
             return "coding_indexes in None"
 
@@ -169,8 +169,7 @@ class SequenceUtils:
 
             html_lines.append(line)
 
-        # Use a monospaced font in the HTML <pre> element directly
-        return f"<pre>{'<br>'.join(html_lines)}</pre>"
+        return '<br>'.join(html_lines) if returnBr else ''.join(html_lines)
 
     @staticmethod
     def highlight_sequences_to_terminal(seq, coding_indexes):

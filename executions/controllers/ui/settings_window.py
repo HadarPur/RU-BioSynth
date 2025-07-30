@@ -78,7 +78,7 @@ class SettingsWindow(QWidget):
         # Extract coding regions
         InputData.coding_positions, InputData.coding_indexes = DNAUtils.get_coding_and_non_coding_regions_positions(
             InputData.dna_sequence)
-        highlighted_sequence = SequenceUtils.highlight_sequences_to_html(InputData.dna_sequence, InputData.coding_indexes)
+        highlighted_sequence = f"<pre>{SequenceUtils.highlight_sequences_to_html(InputData.dna_sequence, InputData.coding_indexes, line_length=96, returnBr=True)}</pre>"
 
         # Handle elimination of coding regions if the user chooses to
         InputData.coding_regions_list = DNAUtils.get_coding_regions_list(InputData.coding_indexes,
@@ -227,7 +227,8 @@ class SettingsWindow(QWidget):
         layout.addWidget(label)
 
         # Adding formatted text to QLabel
-        label_html = SequenceUtils.highlight_sequences_to_html(InputData.dna_sequence, InputData.excluded_coding_indexes)
+        label_html = f"<pre>{SequenceUtils.highlight_sequences_to_html(InputData.dna_sequence, InputData.excluded_coding_indexes, line_length=96, returnBr=True)}</pre>"
+
         text_edit = add_text_edit_html(layout, "", label_html)
         adjust_text_edit_height(text_edit)
         text_edit.setStyleSheet("""
@@ -289,13 +290,13 @@ class RegionSelector(QWidget):
     def submit_exclusions(self, layout):
         checked_indices = [index for index, (checkbox, region) in enumerate(self.checkboxes) if checkbox.isChecked()]
         if len(checked_indices) <= 0:
-            QMessageBox.question(self.parentWidget(), 'Error',
+            QMessageBox.question(self, 'Error',
                                  'You need to choose one coding region at least to continue',
                                  QMessageBox.Ok)
             return
 
         # Prompt the user for confirmation
-        reply = QMessageBox.question(self.parentWidget(), 'Confirm',
+        reply = QMessageBox.question(self, 'Confirm',
                                      'Do you want to eliminate selected coding regions?',
                                      QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
 

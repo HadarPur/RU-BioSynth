@@ -308,9 +308,7 @@ def add_text_edit(layout, placeholder, content, wrap=None):
     if content:
         text_edit.setPlainText(content)
 
-    # Use monospaced font
-    font = QFont("Consolas")  # or "Consolas", "Monaco", etc.
-    font.setStyleHint(QFont.Monospace)
+    font = QFont("Menlo")  # or "Courier New" / "Monaco"
     font.setPointSize(10)
     text_edit.setFont(font)
 
@@ -364,8 +362,7 @@ def add_text_edit_html(layout, placeholder, content):
         }
     """)
 
-    font = QFont("Consolas")
-    font.setStyleHint(QFont.Monospace)
+    font = QFont("Menlo")  # or "Courier New" / "Monaco"
     font.setPointSize(10)
     text_edit.setFont(font)
 

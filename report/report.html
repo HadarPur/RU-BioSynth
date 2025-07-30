@@ -143,13 +143,27 @@
         .right-col {
             flex: 1;
             padding: 20px;
-            max-width: 75%; /* ✅ Prevent overflow */
+            min-width: 0; /* ✅ Allow shrinking below content width */
             margin-right: 20px;
         }
+
 
         .scrollable-paragraph {
             max-height: 200px;
             overflow-y: auto;
+            font-family: monospace;
+            white-space: pre-wrap;
+            word-break: break-word;
+            padding: 0;               /* Remove internal padding */
+            margin: 0;                /* Remove external margin */
+            list-style-position: inside; /* Optional: numbers inside the block */
+        }
+
+        .scrollable-paragraph li {
+            margin: 0;                /* Remove spacing between items */
+            padding: 0;               /* Remove internal li padding */
+            line-height: 0;         /* Optional: tighter or looser lines */
+            font-size: 16px;
         }
 
         .horizontal-scroll {
@@ -158,6 +172,17 @@
             height: fit-content;
             max-width: 100%;
         }
+
+        .highlight-block {
+            font-family: monospace;
+            font-size: 16px;
+            line-height: 24px;
+            white-space: normal;        /* ✅ allow wrapping */
+            word-break: break-word;     /* ✅ break long spans */
+            overflow-y: auto;
+            max-height: 250px;          /* ✅ vertical scroll */
+        }
+
 
         /* Scrollbar style */
         ::-webkit-scrollbar {
@@ -198,7 +223,8 @@
 
             .right-col {
                 margin: 0;
-                width: 100%;
+                width: 95%;
+                max-width: 95%; /* ✅ Force full width on small screens */
             }
 
             .navbar .row.content {
@@ -293,10 +319,6 @@
                 font-size: 14px;
             }
 
-            div {
-                page-break-inside: avoid;
-            }
-
             .scrollable-paragraph {
                 max-height: 100%;
             }
@@ -380,22 +402,24 @@
 
                 {% if num_of_coding_regions > 0 %}
                     <p>The following ORFs were identified in the target sequence:</p>
-                    <p class="scrollable-paragraph">{{ highlight_input | safe }}</p>
+                    <div class="highlight-block scrollable-paragraph">
+                        {{ highlight_input | safe }}
+                    </div>
 
                     <p>A total of {{ num_of_coding_regions }} ORFs have been identified:</p>
-                    <ul class="scrollable-paragraph">
-                        {% for key, value in regions_list %}
-                            <li>[{{ key }}] {{ value }}</li>
+                    <ol class="scrollable-paragraph">
+                        {% for key, value in regions_list -%}
+                            <li>{{ value }}</li>
                         {% endfor %}
-                    </ul>
+                    </ol>
 
                         {% if excluded_regions_list and excluded_regions_list|length > 0 %}
                             <p>The specific ORFs that the user wish to exclude from the elimination process are as follows:</p>
-                            <ul class="horizontal-scroll">
-                                {% for key, value in excluded_regions_list %}
-                                    <li>[{{ key }}] {{ value }}</li>
+                            <ol class="horizontal-scroll">
+                                {% for key, value in excluded_regions_list -%}
+                                    <li>{{ value }}</li>
                                 {% endfor %}
-                            </ul>
+                            </ol>
                             <p>These coding regions will be reclassified as non-coding areas.</p>
 
                             <p><br>The target sequence has been updated based on the selected coding regions:</p>

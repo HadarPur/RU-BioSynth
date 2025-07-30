@@ -192,10 +192,10 @@ class ResultsWindow(QWidget):
         text_edit = QTextEdit()
         text_edit.setReadOnly(True)
 
-        font = QFont("Consolas")  # or "Consolas", "Monaco", etc.
-        font.setStyleHint(QFont.Monospace)
+        font = QFont("Menlo")
         font.setPointSize(10)
         text_edit.setFont(font)
+
         text_edit.setPlainText(info_text)
 
         layout.addWidget(text_edit)
