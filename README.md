@@ -90,21 +90,22 @@ To operate the application, the user must provide the following **three input te
    If you wish to get the table from another resource, please make sure to write your own converter script to ensure
    that you are in the right format.
 
-## Execute Terminal Program
+## Executing the Terminal Program
 
-To execute the elimination tool from the Terminal, please use the following command:
+To execute the elimination tool via the terminal, use the following command:
 
 ```
 python3 ./BioSynth.py -s <seq_file_path> -p <pattern_file_path> -c <codon_usage_file_path> -a <transition_substitution_cost> -b <transversion_substitution_cost> -w <non_synonymous_substitution_cost>
 ```
 
-For example:
+### Examples
+For example, you can run the program using short options:
 
 ```
 python3 ./BioSynth.py -s ./files/no_coding/s_file_no_coding.txt -p ./files/no_coding/p_file_no_coding.txt -c ./files/no_coding/biosynth_codon_usage.txt -a 1.02 -b 1.98 -w 99.96
 ```
 
-Or:
+Or, with the full option names:
 
 ```
 python3 ./BioSynth.py --s_path ./files/no_coding/s_file_no_coding.txt \
@@ -113,12 +114,12 @@ python3 ./BioSynth.py --s_path ./files/no_coding/s_file_no_coding.txt \
 --alpha 1.02 --beta 1.98 --w 99.96
 ```
 
-## Execute GUI Program
+## Executing the Graphical User Interface (GUI)
 
-To execute the elimination tool GUI, please use the following command:
+To launch the graphical user interface of the elimination tool, run:
 
 ```
 python3 ./BioSynth.py -g
 ```
 
-Let's get started! :)
+You're all set! 🚀
