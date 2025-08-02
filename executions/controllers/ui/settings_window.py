@@ -87,7 +87,7 @@ class SettingsWindow(QWidget):
         # Adding formatted text to QLabel
         label_html = f"""
             <br>
-            <h2>Elimination Setting</h2>
+            <h2>Elimination</h2>
             <h3>Coding Regions:</h3>
             <p>The following ORFs were identified in the target sequence:
         """

@@ -7,8 +7,8 @@ from data.app_data import InputData, CostData
 from executions.controllers.ui.window_utils import add_button, CircularButton
 from executions.controllers.ui.window_utils import add_intro, add_png_logo, add_drop_text_edit, add_text_edit_html, \
     add_spinbox, add_drop_table
-from executions.execution_utils import is_valid_dna, is_valid_patterns
-from utils.file_utils import read_codon_freq_file
+from executions.execution_utils import is_valid_dna, is_valid_patterns, is_valid_codon_usage
+from utils.file_utils import read_codon_freq_file, CodonUsageReader, PatternReader, SequenceReader
 from utils.info_utils import get_info_usage, get_elimination_info
 from PyQt5.QtWidgets import QDialog, QVBoxLayout, QTextEdit, QDialogButtonBox, QTabWidget
 
@@ -126,8 +126,7 @@ class UploadWindow(QWidget):
 
     def load_dna_file_from_file_path(self, file_path):
         try:
-            with open(file_path, 'r', encoding='utf-8') as file:
-                content = file.read().rstrip('\n')
+            content = SequenceReader(file_path).read_sequence()
         except Exception as e:
             QMessageBox.critical(self, "Error", f"Failed to read file: {e}")
             return  # Exit if file couldn't be read
@@ -149,17 +148,15 @@ class UploadWindow(QWidget):
 
     def load_patterns_file_from_file_path(self, file_path):
         try:
-            with open(file_path, 'r', encoding='utf-8') as file:
-                content = file.read().rstrip('\n')
+            content = PatternReader(file_path).read_patterns()
         except Exception as e:
             QMessageBox.critical(self, "Error", f"Failed to read file: {e}")
             return  # Exit if file couldn't be read
 
         # Validate content after successful read
-        unwanted_patterns = set(content.split('\n'))
-        if content and is_valid_patterns(unwanted_patterns):
+        if content and is_valid_patterns(content):
             self.patterns_file_content = content
-            self.patterns_text_edit.setPlainText(content)
+            self.patterns_text_edit.setPlainText("\n".join(content))
         else:
             QMessageBox.critical(self, "Error", "Invalid unwanted patterns format in file")
 
@@ -173,17 +170,16 @@ class UploadWindow(QWidget):
 
     def load_codon_usage_from_file_path(self, file_path):
         try:
-            with open(file_path, 'r', encoding='utf-8') as file:
-                content = file.read().rstrip('\n')
+            content = CodonUsageReader(file_path).read_codon_usage()
+            CostData.codon_usage_filename = CodonUsageReader(file_path).get_filename()
         except Exception as e:
             QMessageBox.critical(self, "Error", f"Failed to read file: {e}")
             return
 
-        try:
-            raw_lines = content.strip().split('\n')
-            self.codon_usage_content = read_codon_freq_file(raw_lines)
+        if content and is_valid_codon_usage(content):
+            self.codon_usage_content = content
             self.update_codon_usage_table_from_dict(self.codon_usage_content)
-        except Exception:
+        else:
             QMessageBox.critical(self, "Error", f"Invalid codon usage table format in file.")
 
     # Table updater
