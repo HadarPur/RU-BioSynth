@@ -152,6 +152,17 @@
             max-height: 200px;
             overflow-y: auto;
             font-family: monospace;
+            white-space: nowrap;
+            word-break: break-word;
+            padding: 0;               /* Remove internal padding */
+            margin: 0;                /* Remove external margin */
+            list-style-position: inside; /* Optional: numbers inside the block */
+        }
+
+        .pre-scrollable-paragraph {
+            max-height: 200px;
+            overflow-y: auto;
+            font-family: monospace;
             white-space: pre-wrap;
             word-break: break-word;
             padding: 0;               /* Remove internal padding */
@@ -160,6 +171,13 @@
         }
 
         .scrollable-paragraph li {
+            margin: 0;                /* Remove spacing between items */
+            padding: 0;               /* Remove internal li padding */
+            line-height: 0;         /* Optional: tighter or looser lines */
+            font-size: 16px;
+        }
+
+        .pre-scrollable-paragraph li {
             margin: 0;                /* Remove spacing between items */
             padding: 0;               /* Remove internal li padding */
             line-height: 0;         /* Optional: tighter or looser lines */
@@ -322,6 +340,10 @@
                 max-height: 100%;
             }
 
+            .pre-scrollable-paragraph {
+                max-height: 100%;
+            }
+
             .divider {
                 background: none !important;
                 border-top: 4px solid #245076 !important;
@@ -385,7 +407,7 @@
             <div>
                 <h1 id="dna-sequence">Input</h1>
                 <h2>Target Sequence:</h2>
-                <p class="scrollable-paragraph" style="font-family: monospace;">{{input}}</p>
+                <p class="pre-scrollable-paragraph" style="font-family: monospace;">{{input}}</p>
             </div>
 
             <div>
@@ -400,14 +422,14 @@
 
                 {% if num_of_coding_regions > 0 %}
                     <p>The following ORFs were identified in the target sequence:</p>
-                    <div class="highlight-block scrollable-paragraph">
+                    <div class="highlight-block pre-scrollable-paragraph">
                         {{ highlight_input | safe }}
                     </div>
 
                     <p>A total of {{ num_of_coding_regions }} ORFs have been identified:</p>
-                    <ol class="scrollable-paragraph">
+                    <ol class="pre-scrollable-paragraph">
                         {% for key, value in regions_list -%}
-                            <li>{{ value }}</li>
+                            <li value="{{ key }}">{{ value }}</li>
                         {% endfor %}
                     </ol>
 
@@ -415,13 +437,13 @@
                             <p>The specific ORFs that the user wish to exclude from the elimination process are as follows:</p>
                             <ol class="horizontal-scroll">
                                 {% for key, value in excluded_regions_list -%}
-                                    <li>{{ value }}</li>
+                                    <li value="{{ key }}">{{ value }}</li>
                                 {% endfor %}
                             </ol>
                             <p>These coding regions will be reclassified as non-coding areas.</p>
 
                             <p><br>The target sequence has been updated based on the selected coding regions:</p>
-                            <p class="scrollable-paragraph">{{ highlight_selected | safe }}</p>
+                            <p class="pre-scrollable-paragraph">{{ highlight_selected | safe }}</p>
                         {% else %}
                             <p>No ORFs were manually selected. All identified ORFs will be treated as coding regions by default.</p>
                         {% endif %}
@@ -468,7 +490,7 @@
 
             <div>
                 <h2 id="optimized-dna-sequence">Optimized Sequence:</h2>
-                <p class="scrollable-paragraph">{{optimized_seq}}</p>
+                <p class="pre-scrollable-paragraph">{{optimized_seq}}</p>
             </div>
 
         </div>
