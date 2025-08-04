@@ -151,6 +151,7 @@
         .scrollable-paragraph {
             max-height: 200px;
             overflow-y: auto;
+            font-size: 16px;
             font-family: monospace;
             white-space: nowrap;
             word-break: break-word;
@@ -160,8 +161,9 @@
         }
 
         .pre-scrollable-paragraph {
-            max-height: 200px;
+            max-height: 250px;
             overflow-y: auto;
+            font-size: 16px;
             font-family: monospace;
             white-space: pre-wrap;
             word-break: break-word;
@@ -187,6 +189,7 @@
         .horizontal-scroll {
             white-space: nowrap;
             overflow-x: auto;
+            font-size: 16px;
             height: fit-content;
             max-width: 100%;
         }
@@ -427,7 +430,7 @@
                     </div>
 
                     <p>A total of {{ num_of_coding_regions }} ORFs have been identified:</p>
-                    <ol class="pre-scrollable-paragraph">
+                    <ol class="horizontal-scroll">
                         {% for key, value in regions_list -%}
                             <li value="{{ key }}">{{ value }}</li>
                         {% endfor %}
@@ -443,7 +446,7 @@
                             <p>These coding regions will be reclassified as non-coding areas.</p>
 
                             <p><br>The target sequence has been updated based on the selected coding regions:</p>
-                            <p class="pre-scrollable-paragraph">{{ highlight_selected | safe }}</p>
+                            <p class="highlight-block pre-scrollable-paragraph">{{ highlight_selected | safe }}</p>
                         {% else %}
                             <p>No ORFs were manually selected. All identified ORFs will be treated as coding regions by default.</p>
                         {% endif %}
