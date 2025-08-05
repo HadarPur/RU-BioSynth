@@ -7,19 +7,28 @@ import os
 def extract_codons(input_path):
     codon_count = 0
 
-    # Construct output path in the same directory as input file
     input_dir = os.path.dirname(input_path)
     output_path = os.path.join(input_dir, "biosynth_codon_usage.txt")
 
-    with open(input_path, "r") as infile, open(output_path, "w") as outfile:
-        for line in infile:
-            tokens = line.strip().split()
-            for i in range(0, len(tokens), 6):
-                if i + 2 < len(tokens):
-                    codon = tokens[i]
-                    freq = tokens[i + 2]
-                    outfile.write(f"{codon}\t{freq}\n")
-                    codon_count += 1
+    with open(input_path, "r") as infile:
+        raw = infile.read()
+
+    entries = raw.strip().split(")")
+
+    with open(output_path, "w") as outfile:
+        for entry in entries:
+            if not entry.strip():
+                continue  # skip empty chunks
+            parts = entry.strip().split()
+
+            # Ensure valid structure: CODON AA rel abs (count)
+            if len(parts) >= 5:
+                codon = parts[0]
+                rel_freq = parts[2]
+                outfile.write(f"{codon}\t{rel_freq}\n")
+                codon_count += 1
+            else:
+                print(f"❗ Skipped malformed entry: {entry.strip()}")
 
     if codon_count == 64:
         print(f"✅ Success: 64 codons written to {output_path}")
