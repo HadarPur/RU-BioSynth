@@ -90,7 +90,7 @@ To operate the application, the user must provide the following **three input te
    If you wish to get the table from another resource, please make sure to write your own converter script to ensure
    that you are in the right format.
 
-## Executing the Terminal Program
+## Executing the Command Line Interface (CLI)
 
 To execute the elimination tool via the terminal, use the following command:
 
