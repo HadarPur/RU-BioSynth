@@ -108,7 +108,7 @@ class ResultsWindow(QWidget):
         self.middle_layout.addWidget(label)
 
         # Create a report summarizing the processing and save if the user chooses to
-        file_date = datetime.today().strftime("%d %b %Y, %H:%M:%S")
+        file_date = datetime.today().strftime("%d-%b-%Y, %H-%M-%S")
 
         add_code_block(self.middle_layout, OutputData.optimized_sequence, file_date, self.update_status)
 
