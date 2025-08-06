@@ -85,7 +85,7 @@ class CommandController:
         Logger.info(f"{changes}")
         Logger.space()
 
-        file_date = datetime.today().strftime("%d%b%Y,%H:%M:%S")
+        file_date = datetime.today().strftime("%d-%b-%Y_%H-%M-%S")
 
         # Save the results
         report = ReportController(InputData.coding_positions)
