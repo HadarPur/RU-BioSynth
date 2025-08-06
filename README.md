@@ -1,5 +1,30 @@
 # Flexible and comprehensive software app for design of synthetic DNA sequences without unwanted patterns
 
+## Installation
+
+You can obtain the BioSynthApp source code using one of the following methods:
+
+### Option 1: Clone via Git
+
+If you have Git installed, run the following command in your terminal or command prompt to clone the repository:
+
+```
+git clone https://github.com/HadarPur/RU-MScFinalProject-BioSynthApp.git BioSynthApp
+cd BioSynthApp
+```
+
+### Option 2: Manual Download
+
+Alternatively, you can download the source code as a ZIP archive:
+
+1. Visit the GitHub repository: [https://github.com/HadarPur/RU-MScFinalProject-BioSynthApp](https://github.com/HadarPur/RU-MScFinalProject-BioSynthApp)
+
+2. Click the green **Code** button and select **Download ZIP**.
+
+3. Extract the contents of the ZIP file to a folder named `BioSynthApp` (or any folder you prefer).
+
+4. Open your terminal or command prompt and navigate to the extracted folder.
+
 ## Pre-Requisite
 
 Please execute the following command within your working environment:
@@ -107,10 +132,19 @@ python3 ./BioSynth.py -s ./files/no_coding/s_file_no_coding.txt -p ./files/no_co
 
 Or, with the full option names:
 
-```
+```bash
+# macOS/Linux (bash, zsh)
 python3 ./BioSynth.py --s_path ./files/no_coding/s_file_no_coding.txt \
 --p_path ./files/no_coding/p_file_no_coding.txt \
 --c_path ./files/no_coding/biosynth_codon_usage.txt \
+--alpha 1.02 --beta 1.98 --w 99.96
+```
+
+```powershell
+# Windows PowerShell
+python3 ./BioSynth.py --s_path ./files/no_coding/s_file_no_coding.txt `
+--p_path ./files/no_coding/p_file_no_coding.txt `
+--c_path ./files/no_coding/biosynth_codon_usage.txt `
 --alpha 1.02 --beta 1.98 --w 99.96
 ```
 
