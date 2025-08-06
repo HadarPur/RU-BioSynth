@@ -140,14 +140,6 @@ python3 ./BioSynth.py --s_path ./files/no_coding/s_file_no_coding.txt \
 --alpha 1.02 --beta 1.98 --w 99.96
 ```
 
-```powershell
-# Windows PowerShell
-python3 ./BioSynth.py --s_path ./files/no_coding/s_file_no_coding.txt `
---p_path ./files/no_coding/p_file_no_coding.txt `
---c_path ./files/no_coding/biosynth_codon_usage.txt `
---alpha 1.02 --beta 1.98 --w 99.96
-```
-
 ## Executing the Graphical User Interface (GUI)
 
 To launch the graphical user interface of the elimination tool, run:
