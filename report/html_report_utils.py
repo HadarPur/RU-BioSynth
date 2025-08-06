@@ -110,7 +110,7 @@ class ReportController:
             self.report_filename = f"BioSynth Report - {file_date}.html"
             report_local_path = f'output/{self.report_filename}'
 
-            with open(report_local_path, 'w') as file:
+            with open(report_local_path, 'w', encoding="utf-8") as file:
                 file.write(self.output_text)
 
             return report_local_path

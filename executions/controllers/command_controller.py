@@ -85,13 +85,12 @@ class CommandController:
         Logger.info(f"{changes}")
         Logger.space()
 
-        file_date = datetime.today().strftime("%d-%b-%Y_%H-%M-%S")
 
         # Save the results
         report = ReportController(InputData.coding_positions)
 
         Logger.critical("Preparing files for export...\n")
-
+        file_date = datetime.today().strftime("%d-%b-%Y_%H-%M-%S")
         report.create_report(file_date)
         path = report.download_report(OutputData.output_path)
         Logger.notice(path)
