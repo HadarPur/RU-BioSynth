@@ -27,7 +27,27 @@ Alternatively, you can download the source code as a ZIP archive:
 
 ## Pre-Requisite
 
-Please execute the following command within your working environment:
+### Using a Virtual Environment (Recommended)
+
+To avoid dependency conflicts, it is recommended to create and activate a Python virtual environment before installing the required packages.
+
+#### On macOS/Linux:
+
+```bash
+python3 -m venv <venv_name>
+source <venv_name>/bin/activate
+pip install -r requirements.txt
+```
+
+#### On Windows (Command Prompt):
+
+```cmd
+python -m venv <venv_name>
+<venv_name>\Scripts\activate
+pip install -r requirements.txt
+```
+
+If you choose not to use a virtual environment, you can install dependencies globally by running:
 
 ```
 pip3 install -r requirements.txt
