@@ -118,7 +118,7 @@ To operate the application, the user must provide the following **three input te
     3. Run the script from the command line:
 
         ```bash
-        python3 ./convert_kazusa_to_biosynth.py <codon_usage_file_path>
+        python3 ./convert_kazusa_to_biosynth.py <codon_usage_file_path> -o <output_file>
         ```
 
     4. The output file `biosynth_codon_usage.txt` will contain lines like:
@@ -154,9 +154,9 @@ Or, with the full option names:
 
 ```bash
 # macOS/Linux (bash, zsh)
-python3 ./BioSynth.py --s_path ./files/no_coding/s_file_no_coding.txt \
---p_path ./files/no_coding/p_file_no_coding.txt \
---c_path ./files/no_coding/biosynth_codon_usage.txt \
+python3 ./BioSynth.py --target_sequence ./files/no_coding/s_file_no_coding.txt \
+--unwanted_patterns ./files/no_coding/p_file_no_coding.txt \
+--codon_usage ./files/no_coding/biosynth_codon_usage.txt \
 --alpha 1.02 --beta 1.98 --w 99.96
 ```
 

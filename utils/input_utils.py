@@ -14,10 +14,10 @@ def get_terminal_usage():
 def get_terminal_options():
     return f"{format_text_bold_for_output('Options:')}\n" \
            "\t-g --gui\tOption to run the program via user interface. If using this option, there is no need to specify any -s, -p, or -o options.\n" \
-           "\t-s --s_path\tSpecifies the sequence file path (mandatory)\n" \
-           "\t-p --p_path\tSpecifies the unwanted patterns file path (mandatory)\n" \
-           "\t-c --c_path\tSpecifies the codon usage table file path (mandatory). This parameter allows the program to prioritize codon usage based on the provided table.\n" \
-           "\t-o --o_path\tSpecifies the output directory path (optional - default is the downloads directory)\n" \
+           "\t-s --target_sequence\tSpecifies the sequence file path (mandatory)\n" \
+           "\t-p --unwanted_patterns\tSpecifies the unwanted patterns file path (mandatory)\n" \
+           "\t-c --codon_usage\tSpecifies the codon usage table file path (mandatory). This parameter allows the program to prioritize codon usage based on the provided table.\n" \
+           "\t-o --out_dir\tSpecifies the output directory path (optional - default is the downloads directory)\n" \
            "\t-a --alpha\tSpecifies the value for transition substitution cost (optional - default is 1.0)\n" \
            "\t-b --beta\tSpecifies the value for transversion substitution cost (optional - default is 2.0)\n" \
            "\t-w --w\t\tSpecifies the value for non-synonymous substitution cost (optional - default is 100.0)\n\n"
@@ -51,7 +51,7 @@ class ArgumentParser:
         """
         try:
             opts, args = getopt.getopt(argv, "hs:p:c:o:ga:b:w:",
-                                       ["help", "s_path=", "p_path=", "c_path=", "o_path=", "gui", "alpha=", "beta=",
+                                       ["help", "target_sequence=", "unwanted_patterns=", "codon_usage=", "out_dir=", "gui", "alpha=", "beta=",
                                         "w="])
         except getopt.GetoptError as err:
             set_output_format(OutputFormat.TERMINAL)
@@ -71,11 +71,11 @@ class ArgumentParser:
             elif opt in ("-g", "--gui"):
                 self.gui = True
                 break
-            elif opt in ("-s", "--s_path"):
+            elif opt in ("-s", "--target_sequence"):
                 self.s_path = arg
-            elif opt in ("-p", "--p_path"):
+            elif opt in ("-p", "--unwanted_patterns"):
                 self.p_path = arg
-            elif opt in ("-c", "--c_path"):
+            elif opt in ("-c", "--codon_usage"):
                 self.c_path = arg
             elif opt in ("-a", "--alpha"):
                 self.alpha = float(arg)  # Ensure alpha is treated as a float
@@ -83,7 +83,7 @@ class ArgumentParser:
                 self.beta = float(arg)  # Ensure beta is treated as a float
             elif opt in ("-w", "--w"):
                 self.w = float(arg)  # Ensure w is treated as a float
-            elif opt in ("-o", "--o_path"):
+            elif opt in ("-o", "--out_dir"):
                 self.o_path = arg
 
         return self.gui, self.s_path, self.p_path, self.c_path, self.o_path, self.alpha, self.beta, self.w

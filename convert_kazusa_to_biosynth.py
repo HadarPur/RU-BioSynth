@@ -4,11 +4,13 @@ import argparse
 import os
 
 
-def extract_codons(input_path):
+def extract_codons(input_path, output_path=None):
     codon_count = 0
 
-    input_dir = os.path.dirname(input_path)
-    output_path = os.path.join(input_dir, "biosynth_codon_usage.txt")
+    # If no output path given, use default in the same directory as input
+    if output_path is None:
+        input_dir = os.path.dirname(input_path)
+        output_path = os.path.join(input_dir, "biosynth_codon_usage.txt")
 
     with open(input_path, "r") as infile:
         raw = infile.read()
@@ -39,6 +41,11 @@ def extract_codons(input_path):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Convert Kazusa codon usage table to BioSynth format.")
     parser.add_argument("input_file", help="Path to the input codon usage file from Kazusa")
+    parser.add_argument(
+        "-o", "--output_file",
+        help="Optional path/name for the output file (default: biosynth_codon_usage.txt in input directory)",
+        default=None
+    )
 
     args = parser.parse_args()
-    extract_codons(args.input_file)
+    extract_codons(args.input_file, args.output_file)
