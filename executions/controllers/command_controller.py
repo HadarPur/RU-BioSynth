@@ -57,18 +57,17 @@ class CommandController:
         InputData.coding_positions, InputData.coding_indexes = DNAUtils.get_coding_and_non_coding_regions_positions(
             InputData.dna_sequence)
 
-        Logger.debug('The following ORFs were identified in the target sequence:')
-
         # Handle elimination of coding regions if the user chooses to
         InputData.coding_regions_list = DNAUtils.get_coding_regions_list(InputData.coding_indexes,
                                                                          InputData.dna_sequence)
 
         if len(InputData.coding_indexes) > 0:
+            Logger.debug('The following ORFs were identified in the target sequence:')
             Logger.info('\n'.join(f"[{key}] {value}" for key, value in InputData.coding_regions_list.items()))
             Logger.critical(
                 '\nAll ORFs are assumed to be coding regions. If you wish to exclude some ORFs, then please use the GUI.')
         else:
-            Logger.critical("No ORFs were identified in the provided target sequence")
+            Logger.critical("No ORFs were identified in the provided target sequence.")
 
         # Eliminate unwanted patterns
         eliminate_unwanted_patterns(InputData.dna_sequence, InputData.unwanted_patterns, InputData.coding_positions)

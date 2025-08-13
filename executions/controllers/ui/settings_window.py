@@ -85,12 +85,21 @@ class SettingsWindow(QWidget):
                                                                          InputData.dna_sequence)
 
         # Adding formatted text to QLabel
-        label_html = f"""
-            <br>
-            <h2>Elimination</h2>
-            <h3>Coding Regions:</h3>
-            <p>The following ORFs were identified in the target sequence:
-        """
+        label_html = None
+
+        if len(InputData.coding_regions_list) > 0:
+            label_html = f"""
+                <br>
+                <h2>Elimination</h2>
+                <h3>Coding Regions:</h3>
+                <p>The following ORFs were identified in the target sequence:
+            """
+        else:
+            label_html = f"""
+                <br>
+                <h2>Elimination</h2>
+                <h3>Coding Regions:</h3>
+            """
 
         label = QLabel(label_html)
         content_layout.addWidget(label)
