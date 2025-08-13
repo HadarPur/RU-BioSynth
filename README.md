@@ -9,7 +9,7 @@ You can obtain the BioSynth source code using one of the following methods:
 If you have Git installed, run the following command in your terminal or command prompt to clone the repository:
 
 ```
-git clone https://github.com/HadarPur/RU-BioSynt.git BioSynth
+git clone https://github.com/HadarPur/RU-BioSynth.git BioSynth
 cd BioSynth
 ```
 
