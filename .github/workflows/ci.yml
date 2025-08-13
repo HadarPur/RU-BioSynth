@@ -2,7 +2,7 @@ name: Python CI
 
 on:
   push:
-    branches: [ main ]  # or your main branch name
+    branches: [ main ]
   pull_request:
     branches: [ main ]
 
@@ -17,15 +17,32 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: "3.11"  # or whatever version you need
+          python-version: "3.11"
 
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-          pip install pytest  # install pytest if not in requirements
+          pip install pytest
 
       - name: Run tests
         run: |
           export PYTHONPATH="${PYTHONPATH}:$(pwd)"
           pytest test/ --maxfail=5 --disable-warnings -q
+
+      # Notify on success
+      - name: Notify on success
+        if: success()
+        run: |
+          curl -X POST -H 'Content-type: application/json' \
+          --data '{"text":"✅ Python CI passed on branch: $GITHUB_REF"}' \
+          ${{ secrets.SLACK_WEBHOOK_URL }}
+
+      # Notify on failure
+      - name: Notify on failure
+        if: failure()
+        run: |
+          curl -X POST -H 'Content-type: application/json' \
+          --data '{"text":"❌ Python CI failed on branch: $GITHUB_REF"}' \
+          ${{ secrets.SLACK_WEBHOOK_URL }}
+
