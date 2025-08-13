@@ -29,20 +29,3 @@ jobs:
         run: |
           export PYTHONPATH="${PYTHONPATH}:$(pwd)"
           pytest test/ --maxfail=5 --disable-warnings -q
-
-      # Notify on success
-      - name: Notify on success
-        if: success()
-        run: |
-          curl -X POST -H 'Content-type: application/json' \
-          --data '{"text":"✅ Python CI passed on branch: $GITHUB_REF"}' \
-          ${{ secrets.SLACK_WEBHOOK_URL }}
-
-      # Notify on failure
-      - name: Notify on failure
-        if: failure()
-        run: |
-          curl -X POST -H 'Content-type: application/json' \
-          --data '{"text":"❌ Python CI failed on branch: $GITHUB_REF"}' \
-          ${{ secrets.SLACK_WEBHOOK_URL }}
-
