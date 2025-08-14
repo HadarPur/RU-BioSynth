@@ -6,6 +6,16 @@ from biosynth.utils.text_utils import format_text_bold_for_output
 from biosynth.utils.text_utils import set_output_format, OutputFormat
 from biosynth.utils.info_utils import get_info_usage, get_elimination_info
 
+try:
+    from importlib.metadata import version as package_version
+    VERSION = package_version("biosynth")
+except ImportError:
+    # importlib.metadata not available (older Python)
+    VERSION = "1.0.0-local"
+except Exception:
+    # fallback if the package isn't installed yet
+    VERSION = "1.0.0-local"
+
 def get_terminal_usage():
     return f"\n{format_text_bold_for_output('Usage:')}\n" \
            "\t$ python ./BioSynth.py -s <seq_file_path> -p <pattern_file_path> -o <output_path_dir> -c <codon_usage_file> [-g] [-a <alpha>] [-b <beta>] [-w <w>]\n\n" \
@@ -50,9 +60,9 @@ class ArgumentParser:
             tuple: A tuple containing the paths to the patterns file and sequence file, and a flag for GUI.
         """
         try:
-            opts, args = getopt.getopt(argv, "hs:p:c:o:ga:b:w:",
-                                       ["help", "target_sequence=", "unwanted_patterns=", "codon_usage=", "out_dir=", "gui", "alpha=", "beta=",
-                                        "w="])
+            opts, args = getopt.getopt(argv, "hs:p:c:o:ga:b:w:v",
+                                       ["help", "target_sequence=", "unwanted_patterns=", "codon_usage=", "out_dir=",
+                                        "gui", "alpha=", "beta=", "w=", "version"])
         except getopt.GetoptError as err:
             set_output_format(OutputFormat.TERMINAL)
             Logger.error(
@@ -68,6 +78,10 @@ class ArgumentParser:
                 Logger.help(get_terminal_options())
                 Logger.help(get_terminal_information())
                 sys.exit(1)
+            elif opt in ("-v", "--version"):
+                set_output_format(OutputFormat.TERMINAL)
+                Logger.info(f"BioSynth version {VERSION}")
+                sys.exit(0)
             elif opt in ("-g", "--gui"):
                 self.gui = True
                 break
@@ -85,5 +99,6 @@ class ArgumentParser:
                 self.w = float(arg)  # Ensure w is treated as a float
             elif opt in ("-o", "--out_dir"):
                 self.o_path = arg
+
 
         return self.gui, self.s_path, self.p_path, self.c_path, self.o_path, self.alpha, self.beta, self.w

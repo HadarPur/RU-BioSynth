@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "biosynth"
 version = "1.0.0"
-description = "A bioinformatics tool for DNA sequence optimization"
+description = "BioSynth eliminates unwanted patterns from DNA sequences using a biologically-informed cost model and efficient algorithms. It implements a finite state machine with two-base memory and a dynamic programming approach to generate minimum-cost sequences while preserving protein function, accounting for codon usage bias, and avoiding unwanted patterns. Supports both GUI and CLI for flexible synthetic DNA design."
 authors = ["Hadar Pur <hadarpur13@gmail.com>"]
 readme = "README.md"
 packages = [{include = "biosynth"}]
