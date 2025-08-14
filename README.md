@@ -1,56 +1,35 @@
 # Flexible and comprehensive software app for design of synthetic DNA sequences without unwanted patterns
 
+BioSynth is a software application for designing synthetic DNA sequences while eliminating unwanted patterns and considering codon usage bias.
+
 ## Installation
 
-You can obtain the BioSynth source code using one of the following methods:
-
-### Option 1: Clone via Git
-
-If you have Git installed, run the following command in your terminal or command prompt to clone the repository:
+Install BioSynth directly from PyPI:
 
 ```
-git clone https://github.com/HadarPur/RU-BioSynth.git BioSynth
-cd BioSynth
+pip install biosynth
 ```
 
-### Option 2: Manual Download
-
-Alternatively, you can download the source code as a ZIP archive:
-
-1. Visit the GitHub repository: [https://github.com/HadarPur/RU-BioSynth](https://github.com/HadarPur/RU-BioSynth)
-
-2. Click the green **Code** button and select **Download ZIP**.
-
-3. Extract the contents of the ZIP file to a folder named `BioSynth` (or any folder you prefer).
-
-4. Open your terminal or command prompt and navigate to the extracted folder.
-
-## Pre-Requisite
+This will automatically install all required dependencies.
 
 ### Using a Virtual Environment (Recommended)
 
-To avoid dependency conflicts, it is recommended to create and activate a Python virtual environment before installing the required packages.
+To avoid conflicts, create a Python virtual environment before installation:
 
-#### On macOS/Linux:
+#### macOS/Linux:
 
 ```bash
-python3 -m venv <venv_name>
-source <venv_name>/bin/activate
-pip install -r requirements.txt
+    python3 -m venv biosynth_venv
+    source biosynth_venv/bin/activate
+    pip install biosynth
 ```
 
-#### On Windows (Command Prompt):
+#### Windows (Command Prompt):
 
 ```cmd
-python -m venv <venv_name>
-<venv_name>\Scripts\activate
-pip install -r requirements.txt
-```
-
-If you choose not to use a virtual environment, you can install dependencies globally by running:
-
-```
-pip3 install -r requirements.txt
+    python -m venv biosynth_venv
+    biosynth_venv\Scripts\activate
+    pip install biosynth
 ```
 
 ## Pre Processing
@@ -109,8 +88,7 @@ To operate the application, the user must provide the following **three input te
 
    ### Step 2: Convert to BioSynth Format
 
-    1. Make sure you have the local script named `convert_kazusa_to_biosynth.py`. It should be under the BioSynth
-       directory.
+    1. Download local script named `convert_kazusa_to_biosynth.py` from the BioSynth repository: https://github.com/HadarPur/RU-BioSynth/blob/main/convert_kazusa_to_biosynth.py
 
     2. This script reads the codon usage file you just created and outputs a two-column text file in the format required
        by the BioSynth app: each line should contain a codon followed by its usage frequency, separated by whitespace.
@@ -118,9 +96,10 @@ To operate the application, the user must provide the following **three input te
     3. Run the script from the command line:
 
         ```bash
-        python3 ./convert_kazusa_to_biosynth.py <codon_usage_file_path> -o <output_file>
+        cd /path/to/script_directory
+        python ./convert_kazusa_to_biosynth.py <codon_usage_file_path> -o <output_file>
         ```
-
+      
     4. The output file `biosynth_codon_usage.txt` will contain lines like:
 
         ```
@@ -140,21 +119,21 @@ To operate the application, the user must provide the following **three input te
 To execute the elimination tool via the terminal, use the following command:
 
 ```
-python3 ./BioSynth.py -s <seq_file_path> -p <pattern_file_path> -c <codon_usage_file_path> -a <transition_substitution_cost> -b <transversion_substitution_cost> -w <non_synonymous_substitution_cost>
+biosynth -s <seq_file> -p <pattern_file> -c <codon_usage_file> -a <alpha> -b <beta> -w <w>
 ```
 
 ### Examples
 For example, you can run the program using short options:
 
 ```
-python3 ./BioSynth.py -s ./files/no_coding/s_file_no_coding.txt -p ./files/no_coding/p_file_no_coding.txt -c ./files/no_coding/biosynth_codon_usage.txt -a 1.02 -b 1.98 -w 99.96
+biosynth -s ./files/no_coding/s_file_no_coding.txt -p ./files/no_coding/p_file_no_coding.txt -c ./files/no_coding/biosynth_codon_usage.txt -a 1.02 -b 1.98 -w 99.96
 ```
 
 Or, with the full option names:
 
 ```bash
 # macOS/Linux (bash, zsh)
-python3 ./BioSynth.py --target_sequence ./files/no_coding/s_file_no_coding.txt \
+biosynth --target_sequence ./files/no_coding/s_file_no_coding.txt \
 --unwanted_patterns ./files/no_coding/p_file_no_coding.txt \
 --codon_usage ./files/no_coding/biosynth_codon_usage.txt \
 --alpha 1.02 --beta 1.98 --w 99.96
@@ -165,7 +144,7 @@ python3 ./BioSynth.py --target_sequence ./files/no_coding/s_file_no_coding.txt \
 To launch the graphical user interface of the elimination tool, run:
 
 ```
-python3 ./BioSynth.py -g
+biosynth -g
 ```
 
 You're all set! 🚀
