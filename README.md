@@ -1,3 +1,6 @@
+[![Build Status](https://github.com/HadarPur/RU-BioSynth/actions/workflows/ci.yml/badge.svg)](https://github.com/hadarpur/RU-BioSynth/actions)
+[![License](http://img.shields.io/:license-apache-blue.svg)](https://github.com/HadarPur/RU-BioSynth/blob/main/LICENSE)
+
 # Flexible and comprehensive software app for design of synthetic DNA sequences without unwanted patterns
 
 BioSynth is a software application for designing synthetic DNA sequences while eliminating unwanted patterns and considering codon usage bias.

@@ -5,6 +5,8 @@ description = "BioSynth eliminates unwanted patterns from DNA sequences using a 
 authors = ["Hadar Pur <hadarpur13@gmail.com>"]
 readme = "README.md"
 packages = [{include = "biosynth"}]
+license = "Apache-2.0"
+include = ["LICENSE"]
 
 [tool.poetry.scripts]
 biosynth = "biosynth.__main__:main"
