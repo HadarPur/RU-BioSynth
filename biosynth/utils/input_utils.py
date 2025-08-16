@@ -8,7 +8,7 @@ from biosynth.utils.info_utils import get_info_usage, get_elimination_info
 
 try:
     from importlib.metadata import version as package_version
-    VERSION = package_version("biosynth")
+    VERSION = package_version("biosynth-tool")
 except ImportError:
     # importlib.metadata not available (older Python)
     VERSION = "1.0.0-local"
@@ -18,7 +18,7 @@ except Exception:
 
 def get_terminal_usage():
     return f"\n{format_text_bold_for_output('Usage:')}\n" \
-           "\t$ python ./BioSynth.py -s <seq_file_path> -p <pattern_file_path> -o <output_path_dir> -c <codon_usage_file> [-g] [-a <alpha>] [-b <beta>] [-w <w>]\n\n" \
+           "\t$ biosynth -s <seq_file_path> -p <pattern_file_path> -o <output_path_dir> -c <codon_usage_file> [-g] [-a <alpha>] [-b <beta>] [-w <w>]\n\n" \
            "\tThis application is designed for the elimination of unwanted patterns from synthetic DNA sequences.\n\n"
 
 def get_terminal_options():
