@@ -1,4 +1,6 @@
 [![Build Status](https://github.com/HadarPur/RU-BioSynth/actions/workflows/ci.yml/badge.svg)](https://github.com/hadarpur/RU-BioSynth/actions)
+[![Latest Release](https://img.shields.io/pypi/v/biosynth-tool.svg)](https://pypi.org/project/biosynth-tool/)
+[![Python Version](https://img.shields.io/pypi/pyversions/biosynth-tool.svg)](https://www.python.org/)
 [![License](http://img.shields.io/:license-apache-blue.svg)](https://github.com/HadarPur/RU-BioSynth/blob/main/LICENSE)
 
 # Flexible and comprehensive software app for design of synthetic DNA sequences without unwanted patterns
@@ -10,7 +12,7 @@ BioSynth is a software application for designing synthetic DNA sequences while e
 Install BioSynth directly from PyPI:
 
 ```
-pip install biosynth
+pip install biosynth-tool
 ```
 
 This will automatically install all required dependencies.
@@ -24,7 +26,7 @@ To avoid conflicts, create a Python virtual environment before installation:
 ```bash
     python3 -m venv biosynth_venv
     source biosynth_venv/bin/activate
-    pip install biosynth
+    pip install biosynth-tool
 ```
 
 #### Windows (Command Prompt):
@@ -32,7 +34,7 @@ To avoid conflicts, create a Python virtual environment before installation:
 ```cmd
     python -m venv biosynth_venv
     biosynth_venv\Scripts\activate
-    pip install biosynth
+    pip install biosynth-tool
 ```
 
 ## Pre Processing
