@@ -23,14 +23,14 @@ def get_terminal_usage():
 
 def get_terminal_options():
     return f"{format_text_bold_for_output('Options:')}\n" \
-           "\t-g --gui\tOption to run the program via user interface. If using this option, there is no need to specify any -s, -p, or -o options.\n" \
-           "\t-s --target_sequence\tSpecifies the sequence file path (mandatory)\n" \
-           "\t-p --unwanted_patterns\tSpecifies the unwanted patterns file path (mandatory)\n" \
-           "\t-c --codon_usage\tSpecifies the codon usage table file path (mandatory). This parameter allows the program to prioritize codon usage based on the provided table.\n" \
-           "\t-o --out_dir\tSpecifies the output directory path (optional - default is the downloads directory)\n" \
-           "\t-a --alpha\tSpecifies the value for transition substitution cost (optional - default is 1.0)\n" \
-           "\t-b --beta\tSpecifies the value for transversion substitution cost (optional - default is 2.0)\n" \
-           "\t-w --w\t\tSpecifies the value for non-synonymous substitution cost (optional - default is 100.0)\n\n"
+           "\t-g --gui                  Option to run the program via user interface. If using this option, there is no need to specify any -s, -p, or -o options.\n" \
+           "\t-s --target_sequence      Specifies the sequence file path (mandatory)\n" \
+           "\t-p --unwanted_patterns    Specifies the unwanted patterns file path (mandatory)\n" \
+           "\t-c --codon_usage          Specifies the codon usage table file path (mandatory). This parameter allows the program to prioritize codon usage based on the provided table.\n" \
+           "\t-o --out_dir              Specifies the output directory path (optional - default is the downloads directory)\n" \
+           "\t-a --alpha                Specifies the value for transition substitution cost (optional - default is 1.0)\n" \
+           "\t-b --beta                 Specifies the value for transversion substitution cost (optional - default is 2.0)\n" \
+           "\t-w --w                    Specifies the value for non-synonymous substitution cost (optional - default is 100.0)\n\n"
 
 def get_terminal_information():
     return f"{format_text_bold_for_output('Information:')}\n" \
