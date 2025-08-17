@@ -28,17 +28,17 @@ To avoid conflicts, create a Python virtual environment before installation:
 #### macOS/Linux:
 
 ```bash
-    python3 -m venv biosynth_venv
-    source biosynth_venv/bin/activate
-    pip install biosynth-tool
+python3 -m venv biosynth_venv
+source biosynth_venv/bin/activate
+pip install biosynth-tool
 ```
 
 #### Windows (Command Prompt):
 
 ```cmd
-    python -m venv biosynth_venv
-    biosynth_venv\Scripts\activate
-    pip install biosynth-tool
+ python -m venv biosynth_venv
+ biosynth_venv\Scripts\activate
+ pip install biosynth-tool
 ```
 
 ## Pre Processing
@@ -143,9 +143,9 @@ Or, with the full option names:
 ```bash
 # macOS/Linux (bash, zsh)
 biosynth --target_sequence ./files/no_coding/s_file_no_coding.txt \
---unwanted_patterns ./files/no_coding/p_file_no_coding.txt \
---codon_usage ./files/no_coding/biosynth_codon_usage.txt \
---alpha 1.02 --beta 1.98 --w 99.96
+          --unwanted_patterns ./files/no_coding/p_file_no_coding.txt \
+          --codon_usage ./files/no_coding/biosynth_codon_usage.txt \
+          --alpha 1.02 --beta 1.98 --w 99.96
 ```
 
 ## Executing the Graphical User Interface (GUI)
