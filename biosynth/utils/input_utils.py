@@ -30,7 +30,7 @@ def get_terminal_options():
            "\t-o --out_dir              Specifies the output directory path (optional - default is the downloads directory)\n" \
            "\t-a --alpha                Specifies the value for transition substitution cost (optional - default is 1.0)\n" \
            "\t-b --beta                 Specifies the value for transversion substitution cost (optional - default is 2.0)\n" \
-           "\t-w --w                    Specifies the value for non-synonymous substitution cost (optional - default is 100.0)\n\n"
+           "\t-w --non_synonymous_w     Specifies the value for non-synonymous substitution cost (optional - default is 100.0)\n\n"
 
 def get_terminal_information():
     return f"{format_text_bold_for_output('Information:')}\n" \
@@ -62,7 +62,7 @@ class ArgumentParser:
         try:
             opts, args = getopt.getopt(argv, "hs:p:c:o:ga:b:w:v",
                                        ["help", "target_sequence=", "unwanted_patterns=", "codon_usage=", "out_dir=",
-                                        "gui", "alpha=", "beta=", "w=", "version"])
+                                        "gui", "alpha=", "beta=", "non_synonymous_w=", "version"])
         except getopt.GetoptError as err:
             set_output_format(OutputFormat.TERMINAL)
             Logger.error(
@@ -95,7 +95,7 @@ class ArgumentParser:
                 self.alpha = float(arg)  # Ensure alpha is treated as a float
             elif opt in ("-b", "--beta"):
                 self.beta = float(arg)  # Ensure beta is treated as a float
-            elif opt in ("-w", "--w"):
+            elif opt in ("-w", "--non_synonymous_w"):
                 self.w = float(arg)  # Ensure w is treated as a float
             elif opt in ("-o", "--out_dir"):
                 self.o_path = arg

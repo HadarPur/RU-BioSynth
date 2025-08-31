@@ -13,14 +13,14 @@ class TestCommandLineParser(unittest.TestCase):
     def test_parse_args(self):
         # Simulate command-line arguments
         sys.argv = ["test.py", "-p", "files/mult_coding/p_file.txt", "-s", "files/mult_coding/s_file.txt", "-c",
-                    "files/codon_usage_table/codon_usage.txt", "-a", "2.0", "-b", "3.0", "-w", "200.0"]
+                    "files/codon_usage_table/kazuza_chloroplast.txt", "-a", "2.0", "-b", "3.0", "-w", "200.0"]
 
         gui, s_file, p_file, c_file, o_file, alpha, beta, w = self.parser.parse_args(sys.argv[1:])
 
         # Check if parsing arguments works correctly
         self.assertEqual((gui, s_file, p_file, c_file, o_file, alpha, beta, w),
                          (False, "files/mult_coding/s_file.txt", "files/mult_coding/p_file.txt",
-                          "files/codon_usage_table/codon_usage.txt", None, 2.0, 3.0, 200.0))
+                          "files/codon_usage_table/kazuza_chloroplast.txt", None, 2.0, 3.0, 200.0))
 
     @patch('sys.stderr', new_callable=StringIO)
     def assert_stderr(self, expected_output, mock_stderr):

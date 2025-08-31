@@ -109,7 +109,7 @@ To operate the application, the user must provide the following **three input te
         python ./convert_kazusa_to_biosynth.py <codon_usage_file_path> -o <output_file>
         ```
       
-    4. The output file `biosynth_codon_usage.txt` will contain lines like:
+    4. The output file will consist of lines in the following form:
 
         ```
         TAC 0.56
@@ -135,17 +135,19 @@ biosynth -s <seq_file> -p <pattern_file> -c <codon_usage_file> -a <alpha> -b <be
 For example, you can run the program using short options:
 
 ```
-biosynth -s ./files/no_coding/s_file_no_coding.txt -p ./files/no_coding/p_file_no_coding.txt -c ./files/no_coding/biosynth_codon_usage.txt -a 1.02 -b 1.98 -w 99.96
+biosynth -s s_file_no_coding.txt -p p_file_no_coding.txt -c biosynth_codon_usage.txt -a 1.02 -b 1.98 -w 99.96
 ```
 
 Or, with the full option names:
 
 ```bash
 # macOS/Linux (bash, zsh)
-biosynth --target_sequence ./files/no_coding/s_file_no_coding.txt \
-          --unwanted_patterns ./files/no_coding/p_file_no_coding.txt \
-          --codon_usage ./files/no_coding/biosynth_codon_usage.txt \
-          --alpha 1.02 --beta 1.98 --w 99.96
+biosynth --target_sequence s_file_no_coding.txt \
+         --unwanted_patterns p_file_no_coding.txt \
+         --codon_usage codon_usage_chloroplast.txt \
+         --alpha 1.02 \
+         --beta 1.98 \
+         --non_synonymous_w 99.96
 ```
 
 ## Executing the Graphical User Interface (GUI)

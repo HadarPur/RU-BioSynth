@@ -1,2 +1,4 @@
-TACA
-TATA
+TGA
+TGG
+CGA
+TAA
