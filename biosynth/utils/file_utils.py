@@ -11,7 +11,7 @@ def read_codon_freq_file(raw_lines, convert_to_dna=True):
     """
     Reads a codon-frequency file with 2 columns: codon and frequency.
 
-    :param raw_lines: Path to file (e.g., biosynth_codon_usage.txt)
+    :param raw_lines: Path to file (e.g., codon_usage_chloroplast.txt)
     :param convert_to_dna: If True, replaces 'U' with 'T' in codons (RNA to DNA).
     :return: Dictionary {codon: frequency}
     """
