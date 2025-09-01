@@ -10,30 +10,44 @@ from biosynth.utils.output_utils import Logger
 def read_codon_freq_file(raw_lines, convert_to_dna=True):
     """
     Reads a codon-frequency file with 2 columns: codon and frequency.
+    Example of valid line: ATG 0.02
 
-    :param raw_lines: Path to file (e.g., codon_usage_chloroplast.txt)
+    :param raw_lines: Iterable of lines (e.g., file.readlines()).
     :param convert_to_dna: If True, replaces 'U' with 'T' in codons (RNA to DNA).
     :return: Dictionary {codon: frequency}
     """
     codon_usage = {}
 
-    for line in raw_lines:
+    for line_num, line in enumerate(raw_lines, start=1):
         line = line.strip()
+        if not line:
+            continue  # allow blank lines
+
         parts = line.split()
         if len(parts) != 2:
-            raise ValueError(f"Invalid line format: {line}")
+            Logger.error(f"Invalid format in codon usage file at line {line_num}: '{line}'. "
+                         "Expected format: CODON FREQUENCY (e.g., ACG 0.02)")
+            sys.exit(2)
 
         codon = parts[0].upper()
         if convert_to_dna:
-            codon = codon.replace('U', 'T')
+            codon = codon.replace("U", "T")
+
+        # Validate codon: must be exactly 3 chars, only A/T/C/G
+        if len(codon) != 3 or any(base not in "ATCGU" for base in codon):
+            Logger.error(f"Invalid codon '{codon}' at line {line_num}. Must be 3 letters A/T/C/G (or U before conversion).")
+            sys.exit(2)
+
         try:
             freq = float(parts[1])
         except ValueError:
-            raise ValueError(f"Invalid frequency value: {parts[1]} in line: {line}")
+            Logger.error(f"Invalid frequency value '{parts[1]}' for codon '{codon}' at line {line_num}. Must be a float.")
+            sys.exit(2)
 
         codon_usage[codon] = freq
 
     return codon_usage
+
 
 
 # Define a base class for reading data from a file.
@@ -52,8 +66,13 @@ class FileDataReader:
 
         :return: A list containing the lines read from the file.
         """
-        with open(self.file_path, 'r') as file:
-            return file.readlines()
+        try:
+            with open(self.file_path, 'r') as file:
+                return file.readlines()
+        except FileNotFoundError:
+            error_msg = f"File not found - {self.file_path}. Please check if the path is correct."
+            Logger.error(error_msg)
+            sys.exit(2)
 
 # Inherit from FileDataReader to read sequences from a file.
 class SequenceReader(FileDataReader):
@@ -65,15 +84,21 @@ class SequenceReader(FileDataReader):
         """
 
         if self.file_path is None:
-            return None
+            Logger.error("Target sequence file path is not set. Cannot proceed without a valid file.")
+            sys.exit(2)
 
-        raw_seq = self.read_lines()
-        for line in raw_seq:
-            if line.isspace():
-                continue
-            return line.strip()
-        return None
+        raw_seq = [line.strip() for line in self.read_lines() if not line.isspace()]
 
+        if len(raw_seq) == 0:
+            Logger.error(f"No valid sequence found in {self.file_path}. File must contain exactly one sequence line.")
+            sys.exit(2)
+
+        if len(raw_seq) > 1:
+            Logger.error(f"Invalid format in {self.file_path}: multiple lines detected. "
+                         "Sequence file must contain exactly one line without line breaks.")
+            sys.exit(2)
+
+        return raw_seq[0]
 
 # Inherit from FileDataReader to read patterns from a file.
 class PatternReader(FileDataReader):
@@ -85,15 +110,28 @@ class PatternReader(FileDataReader):
         """
 
         if self.file_path is None:
-            return None
+            Logger.error("Unwanted patterns file path is not set. Cannot proceed without a valid file.")
+            sys.exit(2)
 
         res = set()
         raw_patterns = self.read_lines()
-        for line in raw_patterns:
+
+        for line_num, line in enumerate(raw_patterns, start=1):
             if line.isspace():
                 continue
-            patterns = line.strip().split(',')
-            res.update(patterns)
+
+            pattern = line.strip()
+
+            # invalid if contains spaces or commas
+            if " " in pattern or "," in pattern:
+                Logger.error(
+                    f"Invalid format in {self.file_path} at line {line_num}: "
+                    f"'{pattern}'. Each pattern must be a single token with no spaces or commas."
+                )
+                sys.exit(2)
+
+            res.add(pattern)
+
         return res
 
 
@@ -105,8 +143,10 @@ class CodonUsageReader(FileDataReader):
 
         :return: A dictionary where keys are codons and values are dictionaries with frequency and epsilon.
         """
+
         if self.file_path is None:
-            return None
+            Logger.error("Codon usage file path is not set. Cannot proceed without a valid file.")
+            sys.exit(2)
 
         raw_lines = self.read_lines()
         return read_codon_freq_file(raw_lines)
@@ -138,10 +178,10 @@ def save_file(output, filename, path=None):
     try:
         # Convert path to Path object if it's not None
         if path:
-            output_path = Path(path) / 'BioSynth Outputs'
+            output_path = Path(path) / 'BioSynth-Outputs'
         else:
             downloads_path = Path.home() / 'Downloads'
-            output_path = downloads_path / 'BioSynth Outputs'
+            output_path = downloads_path / 'BioSynth-Outputs'
 
         # Replace colons with underscores in the filename
         filename = re.sub(':', '_', filename)
@@ -155,7 +195,7 @@ def save_file(output, filename, path=None):
         with open(output_file_path, 'w', encoding='utf-8') as file:
             file.write(output)
 
-        return f"* {base_name} has been saved to:\n  {output_file_path}\n"
+        return f"* {output_file_path}\n"
 
     except FileNotFoundError:
         return "An error occurred while saving the file - File not found."

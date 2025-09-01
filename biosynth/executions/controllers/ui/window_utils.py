@@ -403,9 +403,9 @@ def add_code_block(parent_layout, text, file_date, update_status):
 
 
 def download_file(code_display, file_date, update_status):
-    filename = f'Optimized Sequence - {file_date}.txt'
+    filename = f'Optimized-Sequence_{file_date}.txt'
     text = code_display.toPlainText()
-    path = save_file(text, filename)
+    path = f"The optimized sequence can be found in the following paths: {save_file(text, filename)}"
     update_status(path)
 
 

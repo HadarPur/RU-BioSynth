@@ -24,3 +24,4 @@ class BioSynthApp:
 
         except KeyboardInterrupt:
             Logger.error("\nProgram stopped by the user.")
+            sys.exit(3)

@@ -157,3 +157,20 @@ class AminoAcidConfig:
         """
 
         return (nucleotide1, nucleotide2) in [("A", "G"), ("G", "A"), ("C", "T"), ("T", "C")]
+
+    @staticmethod
+    def codon_mismatch(target_codon, proposed_codon):
+        """
+        Calculate the number of nucleotide differences between two codons.
+
+        Args:
+            target_codon (str): The original codon (3 nucleotides).
+            proposed_codon (str): The new codon to compare with.
+
+        Returns:
+            int: The number of positions where the nucleotides differ.
+        """
+        # Use zip to pair each nucleotide from target and proposed codon
+        # Compare each pair (a, b) and count +1 if they are different
+        # The sum(...) collects the total count of mismatches
+        return sum(1 for a, b in zip(target_codon, proposed_codon) if a != b)

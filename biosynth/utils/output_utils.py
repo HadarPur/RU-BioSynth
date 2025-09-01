@@ -25,8 +25,9 @@ class Logger:
         print(f"{color}{message}{Logger.COLORS['ENDC']}")
 
     @staticmethod
-    def error(message):
-        Logger.log("ERROR: " + message, "ERROR")
+    def error(message, level="ERROR"):
+        color = Logger.COLORS.get(level, Logger.COLORS["ENDC"])
+        print(f"{color}Error: {message}{Logger.COLORS['ENDC']}")
 
     @staticmethod
     def warning(message):

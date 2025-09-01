@@ -29,7 +29,6 @@ def is_valid_codon_usage(codon_usage):
     valid_bases = set('ATCG')
 
     if len(codon_usage) != 64:
-        print(len(codon_usage))
         return False
 
     for codon, freq in codon_usage.items():

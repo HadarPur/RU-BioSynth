@@ -212,7 +212,8 @@ class ResultsWindow(QWidget):
         dialog.show()
 
     def download_report(self):
-        report_path = self.report.download_report()
+        report_path = f"The final report can be found in the following paths: {self.report.download_report()}"
+
         # Update status label when the report is downloaded
         self.update_status(report_path)
 

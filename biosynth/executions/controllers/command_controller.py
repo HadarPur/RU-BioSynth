@@ -31,7 +31,7 @@ class CommandController:
     def run(self):
         if not InputData.dna_sequence:
             Logger.error("The input sequence is empty, please try again")
-            return
+            sys.exit(2)
 
         has_overlaps, overlaps = DNAUtils.find_overlapping_regions(InputData.dna_sequence)
 
@@ -40,7 +40,7 @@ class CommandController:
             Logger.space()
             Logger.info(DNAUtils.get_overlapping_regions(InputData.dna_sequence, overlaps))
             Logger.error("Please ensure the input sequence does not contain overlapping ORFs.")
-            return
+            sys.exit(2)
 
         Logger.notice(app_icon_text)
 
@@ -66,7 +66,7 @@ class CommandController:
             Logger.debug('The following ORFs were identified in the target sequence:')
             Logger.info('\n'.join(f"[{key}] {value}" for key, value in InputData.coding_regions_list.items()))
             Logger.critical(
-                '\nAll ORFs are assumed to be coding regions. If you wish to exclude some ORFs, then please use the GUI.')
+                '\nAll ORFs are assumed to be coding regions because BioSynth was executed using CLI. If you wish to exclude some ORFs, then please use the GUI.')
         else:
             Logger.critical("No ORFs were identified in the provided target sequence.")
 
@@ -89,16 +89,13 @@ class CommandController:
         # Save the results
         report = ReportController(InputData.coding_positions)
 
-        Logger.critical("Preparing files for export...\n")
+        Logger.critical("The final report and optimized sequence can be found in the following paths:\n")
         file_date = datetime.today().strftime("%d-%b-%Y_%H-%M-%S")
         report.create_report(file_date)
         path = report.download_report(OutputData.output_path)
         Logger.notice(path)
 
-        filename = f"Optimized Sequence - {file_date}.txt"
+        filename = f"Optimized-Sequence_{file_date}.txt"
         path = save_file(OutputData.optimized_sequence, filename, OutputData.output_path)
         Logger.notice(path)
-        Logger.space()
-
-        Logger.critical("All files were exported successfully.")
         Logger.space()

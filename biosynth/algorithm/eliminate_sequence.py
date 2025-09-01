@@ -13,16 +13,15 @@ class EliminationController:
     @staticmethod
     def eliminate(target_sequence, unwanted_patterns, coding_positions):
         # Initialize information string for the elimination process
-        info = f"{format_text_bold_for_output('Target Sequence:')}\n{target_sequence}\n"
-        info += f"\n{format_text_bold_for_output('Unwanted Patterns:')}\n{', '.join(sorted(unwanted_patterns))}\n"
+        info = ""
 
         # Check if unwanted patterns exist
         if not any(x in target_sequence for x in unwanted_patterns):
-            info += "\nNo invalid patterns identified — the original sequence will be retained."
+            info += "No invalid patterns identified — the original sequence will be retained."
             return info, None, target_sequence, 0.0  # Return unchanged sequence
 
         # Additional descriptions (placeholders for actual descriptions)
-        info += f"\n{format_text_bold_for_output(get_elimination_process_description())}\n"
+        info += f"{format_text_bold_for_output(get_elimination_process_description())}\n"
         info += f"\nNon-Coding regions:\n{get_non_coding_region_cost_description()}\n"
         info += f"\nCoding regions:\n{get_coding_region_cost_description()}\n"
 

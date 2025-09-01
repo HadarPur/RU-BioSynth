@@ -109,7 +109,7 @@ class ReportController:
 
             # Save report to 'output' folder
             create_dir('output')
-            self.report_filename = f"BioSynth Report - {file_date}.html"
+            self.report_filename = f"BioSynth-Report_{file_date}.html"
             report_local_path = f'output/{self.report_filename}'
 
             with open(report_local_path, 'w', encoding="utf-8") as file:
@@ -119,8 +119,10 @@ class ReportController:
 
         except jinja2.exceptions.TemplateNotFound as e:
             Logger.error(f"Template not found - {e}")
+            sys.exit(2)
         except Exception as e:
             Logger.error(f"{e}")
+            sys.exit(2)
 
         return None
 
