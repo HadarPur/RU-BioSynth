@@ -4,6 +4,7 @@ import os
 import sys
 from pathlib import Path
 from io import StringIO
+from unittest.mock import patch, mock_open
 
 from biosynth.utils.file_utils import (
     read_codon_freq_file, FileDataReader,
@@ -188,9 +189,10 @@ class TestSaveFile(unittest.TestCase):
             self.assertIn("_", result)  # ':' replaced with '_'
 
     def test_save_file_permission_error(self):
-        # Try writing to root path (likely no permission)
-        result = save_file("content", "test.txt", "/root/forbidden_path")
-        self.assertIn("An error occurred while saving the file - File not found", result)
+        with patch("builtins.open", mock_open()) as mocked_open:
+            mocked_open.side_effect = PermissionError("Permission denied")
+            result = save_file("content", "test.txt", "/some/path")
+        self.assertIn("An error occurred while saving the file - Permission denied", result)
 
 
 class TestResourcePath(unittest.TestCase):
