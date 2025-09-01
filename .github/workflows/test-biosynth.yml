@@ -41,7 +41,7 @@ jobs:
             libxcb-util1 \
             libx11-xcb1 \
             libglu1-mesa \
-            qt5-default \
+            qtbase5-dev \
             qtwayland5
 
       - name: Test biosynth CLI
