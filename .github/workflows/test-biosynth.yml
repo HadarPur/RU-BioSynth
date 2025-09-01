@@ -50,3 +50,6 @@ jobs:
             export QT_QPA_PLATFORM=offscreen
           fi
           poetry run biosynth -g
+          # Make sure process exits
+          pkill -f biosynth || true
+
