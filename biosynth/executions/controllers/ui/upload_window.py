@@ -1,6 +1,6 @@
-from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QDialog, QVBoxLayout, QTextEdit, QDialogButtonBox, QTabWidget
-from PyQt5.QtWidgets import (QHBoxLayout, QGridLayout, QWidget, QMessageBox, QFileDialog, QTableWidgetItem)
+from PyQt6.QtCore import Qt
+from PyQt6.QtWidgets import QDialog, QVBoxLayout, QTextEdit, QDialogButtonBox, QTabWidget
+from PyQt6.QtWidgets import (QHBoxLayout, QGridLayout, QWidget, QMessageBox, QFileDialog, QTableWidgetItem)
 
 from biosynth.data.app_data import InputData, CostData
 from biosynth.executions.controllers.ui.window_utils import add_button, CircularButton
@@ -53,7 +53,7 @@ class UploadWindow(QWidget):
             drop_callback=self.load_dna_file_from_file_path
         )
 
-        add_button(dna_layout, 'Load Target Sequence', Qt.AlignCenter, self.load_dna_file, size=(200, 30))
+        add_button(dna_layout, 'Load Target Sequence', Qt.AlignmentFlag.AlignCenter, self.load_dna_file, size=(200, 30))
 
         # Patterns input
         pattern_layout = QVBoxLayout()
@@ -64,7 +64,7 @@ class UploadWindow(QWidget):
             drop_callback=self.load_patterns_file_from_file_path
         )
 
-        add_button(pattern_layout, 'Load Patterns', Qt.AlignCenter, self.load_patterns_file, size=(200, 30))
+        add_button(pattern_layout, 'Load Patterns', Qt.AlignmentFlag.AlignCenter, self.load_patterns_file, size=(200, 30))
 
         # Codon Usage File Upload
         codon_usage_layout = QVBoxLayout()
@@ -77,20 +77,20 @@ class UploadWindow(QWidget):
             drop_callback=self.load_codon_usage_from_file_path
         )
 
-        add_button(codon_usage_layout, 'Load Codon Usage', Qt.AlignCenter, self.load_codon_usage_file, size=(200, 30))
+        add_button(codon_usage_layout, 'Load Codon Usage', Qt.AlignmentFlag.AlignCenter, self.load_codon_usage_file, size=(200, 30))
 
         # Custom Scores
         custom_scores_layout = QVBoxLayout()
         grid_layout.addLayout(custom_scores_layout, 1, 1)
         add_spinbox(custom_scores_layout, default_value=CostData.alpha,
                     callback=lambda val: setattr(CostData, 'alpha', val), args=("Transition substitution cost",),
-                    alignment=Qt.AlignCenter)
+                    alignment=Qt.AlignmentFlag.AlignCenter)
         add_spinbox(custom_scores_layout, default_value=CostData.beta,
                     callback=lambda val: setattr(CostData, 'beta', val), args=("Transversion substitution cost",),
-                    alignment=Qt.AlignCenter)
+                    alignment=Qt.AlignmentFlag.AlignCenter)
         add_spinbox(custom_scores_layout, default_value=CostData.w,
                     callback=lambda val: setattr(CostData, 'w', val), args=("Non-synonymous substitution cost",),
-                    alignment=Qt.AlignCenter)
+                    alignment=Qt.AlignmentFlag.AlignCenter)
         custom_scores_layout.addStretch(1)
 
         # Bottom Buttons
@@ -100,9 +100,9 @@ class UploadWindow(QWidget):
 
         info_button = CircularButton('ⓘ', self)
         info_button.clicked.connect(self.show_info)
-        bottom_layout.addWidget(info_button, alignment=Qt.AlignLeft)
+        bottom_layout.addWidget(info_button, alignment=Qt.AlignmentFlag.AlignLeft)
 
-        add_button(bottom_layout, 'Next', Qt.AlignRight, self.switch_to_process_callback, self.get_input_data)
+        add_button(bottom_layout, 'Next', Qt.AlignmentFlag.AlignRight, self.switch_to_process_callback, self.get_input_data)
 
         # Restore content if exists
         if self.dna_file_content:
@@ -205,8 +205,8 @@ class UploadWindow(QWidget):
         dialog = QDialog(self)
         dialog.setWindowTitle('Information')
         dialog.setFixedSize(1000, 400)
-        dialog.setWindowFlags(Qt.Window | Qt.WindowStaysOnTopHint | Qt.WindowCloseButtonHint)
-        dialog.setWindowModality(Qt.NonModal)
+        dialog.setWindowFlags(Qt.WindowType.Window | Qt.WindowType.WindowStaysOnTopHint | Qt.WindowType.WindowCloseButtonHint)
+        dialog.setWindowModality(Qt.WindowModality.NonModal)
 
         layout = QVBoxLayout()
 
@@ -243,7 +243,7 @@ class UploadWindow(QWidget):
 
         layout.addWidget(tabs)
 
-        button_box = QDialogButtonBox(QDialogButtonBox.Ok)
+        button_box = QDialogButtonBox(QDialogButtonBox.StandardButton.Ok)
         button_box.accepted.connect(dialog.accept)
         layout.addWidget(button_box)
 

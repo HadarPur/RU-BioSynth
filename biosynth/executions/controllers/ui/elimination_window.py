@@ -1,5 +1,5 @@
-from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QWidget, QVBoxLayout, QTextBrowser, QSizePolicy
+from PyQt6.QtCore import Qt
+from PyQt6.QtWidgets import QWidget, QVBoxLayout, QTextBrowser, QSizePolicy
 
 from biosynth.data.app_data import InputData, EliminationData
 from biosynth.executions.controllers.ui.window_utils import FloatingScrollIndicator, add_button
@@ -26,7 +26,7 @@ class EliminationWindow(QWidget):
 
     def init_ui(self, callback):
         layout = QVBoxLayout(self)
-        add_button(layout, 'Back', Qt.AlignLeft, callback)
+        add_button(layout, 'Back', Qt.AlignmentFlag.AlignLeft, callback)
         self.display_info(layout)
 
     def display_info(self, layout):
@@ -54,12 +54,12 @@ class EliminationWindow(QWidget):
         text_browser.setOpenExternalLinks(False)
 
         # Disable the internal scroll bars
-        text_browser.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        text_browser.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
 
-        text_browser.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Preferred)
+        text_browser.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Preferred)
         text_browser.setMinimumHeight(550)
 
-        text_browser.setAlignment(Qt.AlignTop)
+        text_browser.setAlignment(Qt.AlignmentFlag.AlignTop)
 
         # Optionally, force the QTextBrowser to adjust to the content.
         text_browser.document().setTextWidth(text_browser.viewport().width())
@@ -68,7 +68,7 @@ class EliminationWindow(QWidget):
         middle_layout.addWidget(text_browser)
 
         # Add next button to the bottom layout
-        add_button(layout, 'Next', Qt.AlignRight, self.switch_to_results_callback,
+        add_button(layout, 'Next', Qt.AlignmentFlag.AlignRight, self.switch_to_results_callback,
                    lambda: (self.updated_coding_positions,))
 
         # Add floating button

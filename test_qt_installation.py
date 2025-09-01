@@ -23,12 +23,12 @@ def test_qt_installation():
     print(f"  WAYLAND_DISPLAY: {os.environ.get('WAYLAND_DISPLAY', 'Not set')}")
     print(f"  QT_QPA_PLATFORM: {os.environ.get('QT_QPA_PLATFORM', 'Not set')}")
     
-    # Try to import PyQt5
+    # Try to import PyQt6
     try:
-        print("\n=== PyQt5 Import Test ===")
-        from PyQt5.QtWidgets import QApplication
-        from PyQt5.QtCore import QCoreApplication
-        print("✓ PyQt5 imported successfully")
+        print("\n=== PyQt6 Import Test ===")
+        from PyQt6.QtWidgets import QApplication
+        from PyQt6.QtCore import QCoreApplication
+        print("✓ PyQt6 imported successfully")
         
         # Check available platforms
         print("\n=== Available Qt Platforms ===")
@@ -51,9 +51,9 @@ def test_qt_installation():
             print(f"✗ QApplication creation failed: {e}")
             
     except ImportError as e:
-        print(f"✗ PyQt5 import failed: {e}")
-        print("\nTo install PyQt5, run:")
-        print("pip install PyQt5")
+        print(f"✗ PyQt6 import failed: {e}")
+        print("\nTo install PyQt6, run:")
+        print("pip install PyQt6")
         return False
     except Exception as e:
         print(f"✗ Unexpected error: {e}")
@@ -67,7 +67,7 @@ def test_specific_platform(platform_name):
     
     try:
         os.environ['QT_QPA_PLATFORM'] = platform_name
-        from PyQt5.QtWidgets import QApplication
+        from PyQt6.QtWidgets import QApplication
         
         app = QApplication([])
         print(f"✓ Platform '{platform_name}' works")

@@ -1,6 +1,6 @@
-from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QDialog, QDialogButtonBox
-from PyQt5.QtWidgets import QMainWindow, QMessageBox, QStackedWidget, QVBoxLayout
+from PyQt6.QtCore import Qt
+from PyQt6.QtWidgets import QDialog, QDialogButtonBox
+from PyQt6.QtWidgets import QMainWindow, QMessageBox, QStackedWidget, QVBoxLayout
 
 from biosynth.data.app_data import InputData, CostData
 from biosynth.executions.controllers.ui.elimination_window import EliminationWindow
@@ -92,8 +92,8 @@ class BaseWindow(QMainWindow):
         dialog.setFixedSize(1000, 400)
 
         # Set the window flags to make the dialog non-modal and always on top
-        dialog.setWindowFlags(Qt.Window | Qt.WindowStaysOnTopHint | Qt.WindowCloseButtonHint)
-        dialog.setWindowModality(Qt.NonModal)  # Allow interaction with the parent
+        dialog.setWindowFlags(Qt.WindowType.Window | Qt.WindowType.WindowStaysOnTopHint | Qt.WindowType.WindowCloseButtonHint)
+        dialog.setWindowModality(Qt.WindowModality.NonModal)  # Allow interaction with the parent
 
         layout = QVBoxLayout()
 
@@ -122,7 +122,7 @@ class BaseWindow(QMainWindow):
             }
         """)
 
-        button_box = QDialogButtonBox(QDialogButtonBox.Ok)
+        button_box = QDialogButtonBox(QDialogButtonBox.StandardButton.Ok)
         button_box.accepted.connect(dialog.accept)
         layout.addWidget(button_box)
 

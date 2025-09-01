@@ -1,6 +1,6 @@
-from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QSpacerItem, QSizePolicy, QScrollArea
-from PyQt5.QtWidgets import QWidget, QVBoxLayout, QLabel, QCheckBox, QHBoxLayout, QMessageBox
+from PyQt6.QtCore import Qt
+from PyQt6.QtWidgets import QSpacerItem, QSizePolicy, QScrollArea
+from PyQt6.QtWidgets import QWidget, QVBoxLayout, QLabel, QCheckBox, QHBoxLayout, QMessageBox
 
 from biosynth.data.app_data import InputData
 from biosynth.executions.controllers.ui.window_utils import FloatingScrollIndicator, add_button, add_text_edit_html, \
@@ -29,7 +29,7 @@ class SettingsWindow(QWidget):
 
     def init_ui(self, callback):
         layout = QVBoxLayout(self)
-        add_button(layout, 'Back', Qt.AlignLeft, callback, ())
+        add_button(layout, 'Back', Qt.AlignmentFlag.AlignLeft, callback, ())
         self.display_info(layout)
 
     def display_info(self, layout):
@@ -116,7 +116,7 @@ class SettingsWindow(QWidget):
 
         label = QLabel()
         content_layout.addWidget(label)
-        self.next_button = add_button(layout, 'Next', Qt.AlignRight)
+        self.next_button = add_button(layout, 'Next', Qt.AlignmentFlag.AlignRight)
 
         if len(InputData.coding_regions_list) > 0:
             label_html = f"""
@@ -157,19 +157,19 @@ class SettingsWindow(QWidget):
         prompt_layout.setContentsMargins(0, 0, 0, 0)
 
         container_widget.setLayout(prompt_layout)
-        layout.addWidget(container_widget, alignment=Qt.AlignTop)
+        layout.addWidget(container_widget, alignment=Qt.AlignmentFlag.AlignTop)
 
         question_label = QLabel("Would you like to proceed with all detected ORFs as coding regions?")
         prompt_layout.addWidget(question_label)
 
         # Create the 'Yes' button
-        self.yes_button = add_button(prompt_layout, 'Yes', Qt.AlignLeft, self.select_all_regions)
+        self.yes_button = add_button(prompt_layout, 'Yes', Qt.AlignmentFlag.AlignLeft, self.select_all_regions)
 
         # Create the 'No' button
-        self.no_button = add_button(prompt_layout, 'No', Qt.AlignLeft, self.select_regions_to_exclude, (layout,))
+        self.no_button = add_button(prompt_layout, 'No', Qt.AlignmentFlag.AlignLeft, self.select_regions_to_exclude, (layout,))
 
         # Add a spacer to push the buttons to the left
-        spacer = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+        spacer = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
         prompt_layout.addItem(spacer)
 
     def select_all_regions(self):
@@ -186,7 +186,7 @@ class SettingsWindow(QWidget):
             return
 
         container_widget = QWidget()
-        layout.addWidget(container_widget, alignment=Qt.AlignTop)
+        layout.addWidget(container_widget, alignment=Qt.AlignmentFlag.AlignTop)
 
         self.yes_button.setEnabled(False)
         self.region_selector = RegionSelector(container_widget, self.handle_results)
@@ -198,11 +198,11 @@ class SettingsWindow(QWidget):
         self.next_button.setEnabled(True)
 
         label = QLabel(f"\nDesignated ORFs for Exclusion:")
-        layout.addWidget(label, alignment=Qt.AlignTop)
+        layout.addWidget(label, alignment=Qt.AlignmentFlag.AlignTop)
 
         # Create a new QVBoxLayout for the content of this section
         scroll_area = QScrollArea()  # Create a scroll area
-        scroll_area.setAlignment(Qt.AlignTop)
+        scroll_area.setAlignment(Qt.AlignmentFlag.AlignTop)
         scroll_area.setStyleSheet("""
             QWidget {
                 background-color: transparent;
@@ -215,7 +215,7 @@ class SettingsWindow(QWidget):
 
         for key, value in InputData.excluded_regions_list.items():
             exclude = QLabel(f"[{key}]: {value}")
-            exclude_layout.addWidget(exclude, alignment=Qt.AlignTop)
+            exclude_layout.addWidget(exclude, alignment=Qt.AlignmentFlag.AlignTop)
 
         # Set the content widget for the scroll area
         scroll_area.setWidget(scroll_content)
@@ -225,7 +225,7 @@ class SettingsWindow(QWidget):
         layout.addWidget(scroll_area)
 
         label = QLabel(f"\nThese coding regions will be classified as non-coding areas.\n")
-        layout.addWidget(label, alignment=Qt.AlignTop)
+        layout.addWidget(label, alignment=Qt.AlignmentFlag.AlignTop)
 
         # Adding formatted text to QLabel
         label_html = '''
@@ -266,11 +266,11 @@ class RegionSelector(QWidget):
 
         # Create the instructions label and add it to the parent layout
         instructions_label = QLabel("Please review and select the ORFs you wish to exclude:")
-        parent_layout.addWidget(instructions_label, alignment=Qt.AlignTop)
+        parent_layout.addWidget(instructions_label, alignment=Qt.AlignmentFlag.AlignTop)
 
         # Create a new QVBoxLayout for the content of this section
         scroll_area = QScrollArea()  # Create a scroll area
-        scroll_area.setAlignment(Qt.AlignTop)
+        scroll_area.setAlignment(Qt.AlignmentFlag.AlignTop)
         scroll_area.setStyleSheet("""
             QWidget {
                 background-color: transparent;
@@ -283,7 +283,7 @@ class RegionSelector(QWidget):
 
         for index, region in InputData.coding_regions_list.items():
             checkbox = QCheckBox(f"[{index}]: {region}")
-            layout.addWidget(checkbox, alignment=Qt.AlignTop)
+            layout.addWidget(checkbox, alignment=Qt.AlignmentFlag.AlignTop)
             self.checkboxes.append((checkbox, region))
 
         # Set the content widget for the scroll area
@@ -293,23 +293,32 @@ class RegionSelector(QWidget):
         # Add the scroll area to the parent widget
         parent_layout.addWidget(scroll_area)
 
-        self.submit_button = add_button(parent_layout, 'Submit Exclusions', Qt.AlignLeft, self.submit_exclusions,
+        self.submit_button = add_button(parent_layout, 'Submit Exclusions', Qt.AlignmentFlag.AlignLeft, self.submit_exclusions,
                                         (parent_layout,), size=(200, 30))
 
     def submit_exclusions(self, layout):
         checked_indices = [index for index, (checkbox, region) in enumerate(self.checkboxes) if checkbox.isChecked()]
         if len(checked_indices) <= 0:
-            QMessageBox.question(self, 'Error',
-                                 'You need to choose one coding region at least to continue',
-                                 QMessageBox.Ok)
+            # Prompt the user for confirmation
+            msg = QMessageBox(self)
+            msg.setWindowTitle("Error")
+            msg.setText("You need to choose one ORF at least to continue")
+            msg.setIcon(QMessageBox.Icon.Critical)
+            msg.setDefaultButton(QMessageBox.StandardButton.Ok)
+            msg.exec()
             return
 
         # Prompt the user for confirmation
-        reply = QMessageBox.question(self, 'Confirm',
-                                     'Do you want to eliminate selected coding regions?',
-                                     QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+        msg = QMessageBox(self)
+        msg.setWindowTitle("Confirm")
+        msg.setText("Do you want to eliminate selected coding regions?")
+        msg.setIcon(QMessageBox.Icon.Question)
+        msg.setStandardButtons(QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
+        msg.setDefaultButton(QMessageBox.StandardButton.No)
 
-        if reply == QMessageBox.Yes:
+        reply = msg.exec()
+
+        if reply == QMessageBox.StandardButton.Yes:
             self.submit_button.setEnabled(False)
             self.disable_checkboxes()
             self.handle_coding_region_checkboxes()

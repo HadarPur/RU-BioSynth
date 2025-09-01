@@ -1,11 +1,11 @@
 import os
 
-from PyQt5.QtCore import Qt, QPropertyAnimation, QEasingCurve
-from PyQt5.QtGui import QPainterPath, QRegion
-from PyQt5.QtGui import QPixmap, QFont
-from PyQt5.QtWidgets import QFileDialog, QTextEdit, QPlainTextEdit, QToolBar, QDoubleSpinBox, QScrollArea, QWidget
-from PyQt5.QtWidgets import QFrame, QPushButton, QVBoxLayout, QApplication, QLabel, QHBoxLayout, QSizePolicy, \
-    QTableWidget, QHeaderView
+from PyQt6.QtCore import Qt, QPropertyAnimation, QEasingCurve
+from PyQt6.QtGui import QPainterPath, QRegion
+from PyQt6.QtGui import QPixmap, QFont
+from PyQt6.QtWidgets import QFileDialog, QTextEdit, QPlainTextEdit, QToolBar, QDoubleSpinBox, QScrollArea, QWidget
+from PyQt6.QtWidgets import QFrame, QPushButton, QVBoxLayout, QApplication, QLabel, QHBoxLayout, QSizePolicy, \
+    QTableWidget, QHeaderView, QAbstractItemView
 
 from biosynth.utils.file_utils import resource_path, save_file
 
@@ -69,7 +69,7 @@ class DropTableWidget(QTableWidget):
         super().__init__(parent)
         self.drop_callback = drop_callback
         self.setAcceptDrops(True)
-        self.setDragDropMode(QTableWidget.DropOnly)
+        self.setDragDropMode(QAbstractItemView.DragDropMode.DropOnly)
         self.viewport().setAcceptDrops(True)
 
     def dragEnterEvent(self, event):
@@ -136,7 +136,7 @@ class FloatingScrollIndicator(QPushButton):
         self.animation.setDuration(500)  # Duration in milliseconds
         self.animation.setStartValue(start_value)
         self.animation.setEndValue(end_value)
-        self.animation.setEasingCurve(QEasingCurve.OutCubic)
+        self.animation.setEasingCurve(QEasingCurve.Type.OutCubic)
         self.animation.start()
 
     def reposition(self):
@@ -157,7 +157,7 @@ def add_intro(layout, row=0, column=0):
     )
     intro_label = QLabel(intro_text)
     intro_label.setWordWrap(True)
-    intro_label.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Preferred)
+    intro_label.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Preferred)
 
     # --- Left column: Required files ---
     required_files_text = (
@@ -168,7 +168,7 @@ def add_intro(layout, row=0, column=0):
     )
     required_label = QLabel(required_files_text)
     required_label.setWordWrap(True)
-    required_label.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Preferred)
+    required_label.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Preferred)
 
     # --- Right column: Optional costs ---
     optional_costs_text = (
@@ -179,7 +179,7 @@ def add_intro(layout, row=0, column=0):
     )
     optional_label = QLabel(optional_costs_text)
     optional_label.setWordWrap(True)
-    optional_label.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Preferred)
+    optional_label.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Preferred)
 
     # --- Bottom full-width message ---
     bottom_text = (
@@ -188,7 +188,7 @@ def add_intro(layout, row=0, column=0):
     )
     bottom_label = QLabel(bottom_text)
     bottom_label.setWordWrap(True)
-    bottom_label.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Preferred)
+    bottom_label.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Preferred)
 
     # --- Create layouts ---
     mid_layout = QHBoxLayout()
@@ -224,7 +224,7 @@ def add_png_logo(layout, row=0, column=0):
     frame_layout.addWidget(logo)
 
     # Add the frame to the main layout
-    layout.addWidget(frame, row, column, alignment=Qt.AlignTop)
+    layout.addWidget(frame, row, column, alignment=Qt.AlignmentFlag.AlignTop)
 
 
 def add_logo_toolbar(layout):
@@ -244,21 +244,21 @@ def add_logo_toolbar(layout):
     logo_toolbar.addWidget(logo_label)
 
     # Add the toolbar to the main window
-    layout.addToolBar(Qt.TopToolBarArea, logo_toolbar)
+    layout.addToolBar(Qt.ToolBarArea.TopToolBarArea, logo_toolbar)
 
 
 def add_drop_table(layout, placeholder, columns, headers, drop_callback):
     table = DropTableWidget(drop_callback=drop_callback)
     table.setColumnCount(columns)
     table.setHorizontalHeaderLabels(headers)
-    table.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
+    table.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
     layout.addWidget(table)
 
     # Now create placeholder overlay
     placeholder_label = QLabel(placeholder, table.viewport())
-    placeholder_label.setAlignment(Qt.AlignLeft)
+    placeholder_label.setAlignment(Qt.AlignmentFlag.AlignLeft)
     placeholder_label.setStyleSheet("color: gray; font-size: 16px;")
-    placeholder_label.setAttribute(Qt.WA_TransparentForMouseEvents)
+    placeholder_label.setAttribute(Qt.WidgetAttribute.WA_TransparentForMouseEvents)
     placeholder_label.show()
 
     # Attach placeholder label to the table instance
@@ -291,10 +291,11 @@ def add_drop_text_edit(layout, placeholder, drop_callback, wrap=None):
     if wrap is not None:
         text_edit.setLineWrapMode(wrap)
     else:
-        text_edit.setLineWrapMode(QTextEdit.WidgetWidth)  # Default wrap mode
+        text_edit.setLineWrapMode(QTextEdit.LineWrapMode.WidgetWidth)
 
     # Set the cursor shape to the default pointer cursor for the viewport
-    text_edit.viewport().setCursor(Qt.ArrowCursor)
+    text_edit.viewport().setCursor(Qt.CursorShape.ArrowCursor)
+
 
     layout.addWidget(text_edit)
 
@@ -313,14 +314,14 @@ def add_text_edit(layout, placeholder, content, wrap=None):
     text_edit.setFont(font)
 
     text_edit.setReadOnly(True)
-    text_edit.setTextInteractionFlags(Qt.NoTextInteraction)
-    text_edit.viewport().setCursor(Qt.ArrowCursor)
+    text_edit.setTextInteractionFlags(Qt.TextInteractionFlag.NoTextInteraction)
+    text_edit.viewport().setCursor(Qt.CursorShape.ArrowCursor)
 
     # Keep wrapping for multi-line display
     if wrap is not None:
         text_edit.setLineWrapMode(wrap)
     else:
-        text_edit.setLineWrapMode(QTextEdit.WidgetWidth)  # Default: wrap to widget width
+        text_edit.setLineWrapMode(QTextEdit.LineWrapMode.WidgetWidth)
 
     layout.addWidget(text_edit)
 
@@ -369,8 +370,8 @@ def add_text_edit_html(layout, placeholder, content):
     text_edit.setFont(font)
 
     text_edit.setReadOnly(True)
-    text_edit.setTextInteractionFlags(Qt.NoTextInteraction)
-    text_edit.viewport().setCursor(Qt.ArrowCursor)
+    text_edit.setTextInteractionFlags(Qt.TextInteractionFlag.NoTextInteraction)
+    text_edit.viewport().setCursor(Qt.CursorShape.ArrowCursor)
 
     layout.addWidget(text_edit)
     return text_edit
@@ -392,14 +393,14 @@ def add_code_block(parent_layout, text, file_date, update_status):
     button_layout.addStretch(1)  # Push the button to the right
 
     # Download button
-    add_button(button_layout, 'Download', Qt.AlignRight, download_file, (code_display, file_date, update_status,),
+    add_button(button_layout, 'Download', Qt.AlignmentFlag.AlignRight, download_file, (code_display, file_date, update_status,),
                size=(100, 30))
 
     # Save button
-    add_button(button_layout, 'Save as', Qt.AlignRight, save_to_file, (code_display, update_status,), size=(100, 30))
+    add_button(button_layout, 'Save as', Qt.AlignmentFlag.AlignRight, save_to_file, (code_display, update_status,), size=(100, 30))
 
     # Copy button
-    add_button(button_layout, 'Copy', Qt.AlignRight, copy_to_clipboard, (code_display, update_status,))
+    add_button(button_layout, 'Copy', Qt.AlignmentFlag.AlignRight, copy_to_clipboard, (code_display, update_status,))
 
 
 def download_file(code_display, file_date, update_status):
@@ -431,7 +432,7 @@ def add_button(layout, text, alignment=None, callback=None, args=(), size=(60, 3
 
     button = QPushButton(text)
     button.setFixedSize(size[0], size[1])
-    button.setFocusPolicy(Qt.NoFocus)
+    button.setFocusPolicy(Qt.FocusPolicy.NoFocus)
 
     # Check if 'args' is callable or not and connect accordingly
     if callback is not None:
@@ -462,7 +463,7 @@ def add_spinbox(layout, default_value, step=0.01,
     # Optional label based on args[0]
     if args and isinstance(args[0], str):
         label = QLabel(str(args[0]))
-        label.setAlignment(Qt.AlignVCenter | Qt.AlignLeft)
+        label.setAlignment(Qt.AlignmentFlag.AlignVCenter | Qt.AlignmentFlag.AlignLeft)
         bottom_layout.addWidget(label, stretch=4)
 
     spinbox = QDoubleSpinBox()
@@ -471,7 +472,7 @@ def add_spinbox(layout, default_value, step=0.01,
     spinbox.setValue(default_value)
     spinbox.setSingleStep(step)
     spinbox.setFixedSize(size[0], size[1])
-    spinbox.setFocusPolicy(Qt.StrongFocus)
+    spinbox.setFocusPolicy(Qt.FocusPolicy.StrongFocus)
 
     if callback is not None:
         spinbox.valueChanged.connect(lambda val: callback(val))
@@ -491,14 +492,14 @@ def create_scroll_area(parent_layout):
     scroll_area.setFixedHeight(550)  # Set the maximum height for scrolling to begin
     scroll_area.setWidgetResizable(True)  # Ensure the scroll area can resize to its content
     scroll_area.setStyleSheet("QScrollArea { border: none; }")
-    scroll_area.setAlignment(Qt.AlignTop)
+    scroll_area.setAlignment(Qt.AlignmentFlag.AlignTop)
 
-    parent_layout.addWidget(scroll_area, alignment=Qt.AlignTop)
+    parent_layout.addWidget(scroll_area, alignment=Qt.AlignmentFlag.AlignTop)
 
     content_widget = QWidget()
     scroll_area.setWidget(content_widget)
 
     content_layout = QVBoxLayout(content_widget)
-    content_layout.setAlignment(Qt.AlignTop)
+    content_layout.setAlignment(Qt.AlignmentFlag.AlignTop)
 
     return scroll_area, content_widget, content_layout

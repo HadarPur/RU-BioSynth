@@ -2,18 +2,18 @@ import os
 from datetime import datetime
 
 import webview
-from PyQt5 import QtCore
-from PyQt5.QtCore import Qt, QTimer
-from PyQt5.QtGui import QFont
-from PyQt5.QtWidgets import QApplication, QFileDialog, QLabel, QPushButton, QWidget, QVBoxLayout
-from PyQt5.QtWidgets import QHBoxLayout, QSizePolicy, QSpacerItem, QDialog, QTextEdit, QDialogButtonBox
+from PyQt6 import QtCore
+from PyQt6.QtCore import Qt, QTimer
+from PyQt6.QtGui import QFont
+from PyQt6.QtWidgets import QApplication, QFileDialog, QLabel, QPushButton, QWidget, QVBoxLayout
+from PyQt6.QtWidgets import QHBoxLayout, QSizePolicy, QSpacerItem, QDialog, QTextEdit, QDialogButtonBox
 
 from biosynth.data.app_data import InputData, OutputData, EliminationData
 from biosynth.executions.controllers.ui.window_utils import add_button, add_code_block, add_text_edit_html, \
     CircularButton
 from biosynth.executions.execution_utils import mark_non_equal_codons, initialize_report
 
-QtCore.QCoreApplication.setAttribute(QtCore.Qt.AA_ShareOpenGLContexts)
+# QtCore.QCoreApplication.setAttribute(QtCore.Qt.AA_ShareOpenGLContexts)
 
 
 def quit_app():
@@ -46,7 +46,7 @@ class ResultsWindow(QWidget):
         layout = QVBoxLayout(self)
 
         callback_args = (self.updated_coding_positions,)
-        add_button(layout, 'Back', Qt.AlignLeft, callback, callback_args)
+        add_button(layout, 'Back', Qt.AlignmentFlag.AlignLeft, callback, callback_args)
 
         self.display_info(layout)
 
@@ -78,7 +78,7 @@ class ResultsWindow(QWidget):
         # Create the info button
         info_button = CircularButton('ⓘ', self)
         info_button.clicked.connect(self.show_info)
-        info_layout.addWidget(info_button, alignment=Qt.AlignRight)
+        info_layout.addWidget(info_button, alignment=Qt.AlignmentFlag.AlignRight)
 
         # Mark non-equal codons and print the optimized sequence
         index_seq_str, marked_input_seq, marked_optimized_seq = mark_non_equal_codons(InputData.dna_sequence,
@@ -117,7 +117,7 @@ class ResultsWindow(QWidget):
         add_code_block(self.middle_layout, OutputData.optimized_sequence, file_date, self.update_status)
 
         # Spacer to push other widgets to the top
-        layout.addSpacerItem(QSpacerItem(0, 0, QSizePolicy.Minimum, QSizePolicy.Expanding))
+        layout.addSpacerItem(QSpacerItem(0, 0, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding))
 
         self.prompt_report(self.middle_layout, file_date)
 
@@ -133,7 +133,7 @@ class ResultsWindow(QWidget):
         done_button = QPushButton('Done')
         done_button.setFixedSize(60, 30)
         done_button.clicked.connect(lambda: quit_app())  # Connect to quit the application
-        self.bottom_layout.addWidget(done_button, alignment=Qt.AlignRight)
+        self.bottom_layout.addWidget(done_button, alignment=Qt.AlignmentFlag.AlignRight)
 
     def prompt_report(self, layout, file_date):
         self.report = initialize_report(self.updated_coding_positions)
@@ -173,7 +173,7 @@ class ResultsWindow(QWidget):
             prompt_layout.addWidget(show_preview_button)
 
             # Add a spacer to push the buttons to the left
-            spacer = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+            spacer = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
             prompt_layout.addItem(spacer)
 
             # Add the entire horizontal layout to the parent layout
@@ -189,7 +189,7 @@ class ResultsWindow(QWidget):
 
         # Set the window flags to make the dialog non-modal and always on top
         dialog.setWindowFlags(Qt.Window | Qt.WindowStaysOnTopHint | Qt.WindowCloseButtonHint)
-        dialog.setWindowModality(Qt.NonModal)  # Allow interaction with the parent
+        dialog.setWindowModality(Qt.WindowModality.NonModal)  # Allow interaction with the parent
 
         layout = QVBoxLayout()
 
@@ -204,7 +204,7 @@ class ResultsWindow(QWidget):
 
         layout.addWidget(text_edit)
 
-        button_box = QDialogButtonBox(QDialogButtonBox.Ok)
+        button_box = QDialogButtonBox(QDialogButtonBox.StandardButton.Ok)
         button_box.accepted.connect(dialog.accept)
         layout.addWidget(button_box)
 

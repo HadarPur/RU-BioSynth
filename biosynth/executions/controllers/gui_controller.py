@@ -1,13 +1,13 @@
 import os
 import sys
 
-from PyQt5.QtGui import QIcon
-from PyQt5.QtWidgets import QApplication
+from PyQt6.QtGui import QIcon
+from PyQt6.QtWidgets import QApplication
 
 from biosynth.executions.controllers.ui.base_window import BaseWindow
 from biosynth.utils.file_utils import resource_path
 
-sys.stderr = open(os.devnull, 'w')
+# sys.stderr = open(os.devnull, 'w')
 
 
 class GUIController:
@@ -94,4 +94,4 @@ class GUIController:
         icon = QIcon(icon_path)
         app.setWindowIcon(icon)
         app.setStyleSheet(stylesheet)
-        sys.exit(app.exec_())
+        sys.exit(app.exec())
