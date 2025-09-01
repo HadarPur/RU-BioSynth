@@ -1,6 +1,5 @@
 import os
 import sys
-import platform
 
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QApplication
@@ -9,6 +8,7 @@ from biosynth.executions.controllers.ui.base_window import BaseWindow
 from biosynth.utils.file_utils import resource_path
 
 sys.stderr = open(os.devnull, 'w')
+
 
 class GUIController:
     @staticmethod
@@ -88,7 +88,6 @@ class GUIController:
         """
 
         app = QApplication(sys.argv)
-
         ex = BaseWindow()
         ex.show()
         icon_path = resource_path('images/BioSynth.png')
