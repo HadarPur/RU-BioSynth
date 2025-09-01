@@ -50,5 +50,10 @@ jobs:
         run: |
           if [ "$RUNNER_OS" == "Linux" ]; then
             export QT_QPA_PLATFORM=offscreen
+            timeout 30s poetry run biosynth -g
+          elif [ "$RUNNER_OS" == "macOS" ]; then
+            export QT_QPA_PLATFORM=offscreen
+            poetry run biosynth -g
+          elif [ "$RUNNER_OS" == "Windows" ]; then
+            powershell -Command "Start-Process -Wait -FilePath poetry -ArgumentList 'run, biosynth -g'"
           fi
-          timeout 30s QT_QPA_PLATFORM=offscreen poetry run biosynth -g
