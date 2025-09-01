@@ -45,4 +45,8 @@ jobs:
             qtwayland5
 
       - name: Test biosynth CLI
-        run: poetry run biosynth -g
+        run: |
+          if [ "$RUNNER_OS" == "Linux" ]; then
+            export QT_QPA_PLATFORM=offscreen
+          fi
+          poetry run biosynth -g
