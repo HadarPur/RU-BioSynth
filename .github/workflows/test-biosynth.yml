@@ -51,7 +51,4 @@ jobs:
           if [ "$RUNNER_OS" == "Linux" ]; then
             export QT_QPA_PLATFORM=offscreen
           fi
-          poetry run biosynth -g
-          # Make sure process exits
-          pkill -f biosynth || true
-
+          timeout 30s QT_QPA_PLATFORM=offscreen poetry run biosynth -g
