@@ -57,3 +57,4 @@ jobs:
           elif [ "$RUNNER_OS" == "Windows" ]; then
             powershell -Command "Start-Process -Wait -FilePath poetry -ArgumentList 'run, biosynth -g'"
           fi
+
