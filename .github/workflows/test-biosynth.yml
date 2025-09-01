@@ -28,8 +28,12 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -r requirements.txt
+
+      - name: Install Poetry
+        run: pip install poetry
+
+      - name: Install dependencies and package
+        run: poetry install
 
       - name: Test biosynth CLI
-        run: |
-          biosynth -g
+        run: poetry run biosynth -g
