@@ -14,6 +14,7 @@ jobs:
     strategy:
       matrix:
         python-version: ["3.9", "3.10", "3.11", "3.12"]
+      fail-fast: false   # default is true
 
     steps:
       - name: Checkout repository
@@ -24,13 +25,16 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
+      - name: Install Build Tools (MSVC)
+        run: choco install visualstudio2019buildtools --package-parameters "--add Microsoft.VisualStudio.Workload.VCTools --includeRecommended --quiet --norestart"
+
       - name: Install Poetry
         run: pip install poetry
 
-      - name: Install dependencies and package
-        run: poetry install
+      - name: Install dependencies
+        run: poetry install --no-interaction --no-ansi
 
-      - name: BioSynth via Windows
+      - name: Run BioSynth
         run: timeout 30s poetry run biosynth -g
 
 
