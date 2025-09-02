@@ -31,14 +31,14 @@ jobs:
       - name: Install pycparser (required by pythonnet build)
         run: pip install pycparser
 
-      - name: Install MSVC runtime
-        run: choco install -y vcredist140
+      - name: Install PyQt5 and SIP
+        run: pip install pyqt5==5.15.9 pyqt5-sip==12.11.0
 
       - name: Install Poetry
         run: pip install poetry
 
       - name: Install dependencies
-        run: poetry install
+        run: poetry install --no-interaction --no-ansi
 
       - name: Run BioSynth
         run: timeout 30s poetry run biosynth -g
