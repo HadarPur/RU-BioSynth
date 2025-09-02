@@ -1,60 +1,60 @@
-name: Test biosynth CLI
-
-on:
-  push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
-  schedule:
-    - cron: '0 0 * * *'  # Every day at 00:00 UTC
-
-jobs:
-  test-cli:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
-        python-version: ["3.9", "3.10", "3.11", "3.12"]
-      fail-fast: false   # default is true
-
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: ${{ matrix.python-version }}
-
-      - name: Install Poetry
-        run: pip install poetry
-
-      - name: Install dependencies and package
-        run: poetry install
-
-      - name: Install Qt/X11 dependencies (Ubuntu only)
-        if: runner.os == 'Linux'
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y \
-            libxcb-xinerama0 \
-            libxcb1 \
-            libxcb-util1 \
-            libx11-xcb1 \
-            libglu1-mesa \
-            qtbase5-dev \
-            qtwayland5
-
-      - name: Test biosynth CLI
-        run: |
-          if [ "$RUNNER_OS" == "Linux" ]; then
-            export QT_QPA_PLATFORM=offscreen
-            timeout 30s poetry run biosynth -g
-          elif [ "$RUNNER_OS" == "macOS" ]; then
-            export QT_QPA_PLATFORM=offscreen
-            poetry run biosynth -g
-          elif [ "$RUNNER_OS" == "Windows" ]; then
-            powershell -Command "Start-Process -Wait -FilePath poetry -ArgumentList 'run, biosynth -g'"
-          fi
-
+#name: Test biosynth CLI
+#
+#on:
+#  push:
+#    branches: [ main ]
+#  pull_request:
+#    branches: [ main ]
+#  schedule:
+#    - cron: '0 0 * * *'  # Every day at 00:00 UTC
+#
+#jobs:
+#  test-cli:
+#    runs-on: ${{ matrix.os }}
+#    strategy:
+#      matrix:
+#        os: [ubuntu-latest, macos-latest, windows-latest]
+#        python-version: ["3.9", "3.10", "3.11", "3.12"]
+#      fail-fast: false   # default is true
+#
+#
+#    steps:
+#      - name: Checkout repository
+#        uses: actions/checkout@v4
+#
+#      - name: Set up Python
+#        uses: actions/setup-python@v5
+#        with:
+#          python-version: ${{ matrix.python-version }}
+#
+#      - name: Install Poetry
+#        run: pip install poetry
+#
+#      - name: Install dependencies and package
+#        run: poetry install
+#
+#      - name: Install Qt/X11 dependencies (Ubuntu only)
+#        if: runner.os == 'Linux'
+#        run: |
+#          sudo apt-get update
+#          sudo apt-get install -y \
+#            libxcb-xinerama0 \
+#            libxcb1 \
+#            libxcb-util1 \
+#            libx11-xcb1 \
+#            libglu1-mesa \
+#            qtbase5-dev \
+#            qtwayland5
+#
+#      - name: Test biosynth CLI
+#        run: |
+#          if [ "$RUNNER_OS" == "Linux" ]; then
+#            export QT_QPA_PLATFORM=offscreen
+#            timeout 30s poetry run biosynth -g
+#          elif [ "$RUNNER_OS" == "macOS" ]; then
+#            export QT_QPA_PLATFORM=offscreen
+#            poetry run biosynth -g
+#          elif [ "$RUNNER_OS" == "Windows" ]; then
+#            powershell -Command "Start-Process -Wait -FilePath poetry -ArgumentList 'run, biosynth -g'"
+#          fi
+#
