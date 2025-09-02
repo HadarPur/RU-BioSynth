@@ -11,7 +11,7 @@ from biosynth.utils.info_utils import (
     get_coding_region_cost_description,
     get_non_coding_region_cost_description,
 )
-from biosynth.utils.output_utils import Logger
+from biosynth.utils.text_utils import handle_critical_error
 
 
 # Convert plain text with dash-prefixed lines into HTML <ul>/<ol> + paragraphs
@@ -118,11 +118,9 @@ class ReportController:
             return report_local_path
 
         except jinja2.exceptions.TemplateNotFound as e:
-            Logger.error(f"Template not found - {e}")
-            sys.exit(2)
+            handle_critical_error(f"Template not found:\n{e}")
         except Exception as e:
-            Logger.error(f"{e}")
-            sys.exit(2)
+            handle_critical_error(f"Exception has occurred:\n{e}")
 
         return None
 

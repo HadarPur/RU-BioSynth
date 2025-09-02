@@ -5,6 +5,7 @@ import sys
 from pathlib import Path
 
 from biosynth.utils.output_utils import Logger
+from biosynth.utils.text_utils import handle_critical_error
 
 
 def read_codon_freq_file(raw_lines, convert_to_dna=True):
@@ -25,9 +26,8 @@ def read_codon_freq_file(raw_lines, convert_to_dna=True):
 
         parts = line.split()
         if len(parts) != 2:
-            Logger.error(f"Invalid format in codon usage file at line {line_num}: '{line}'. "
+            handle_critical_error(f"Invalid format in codon usage file at line {line_num}: '{line}'. "
                          "Expected format: CODON FREQUENCY (e.g., ACG 0.02)")
-            sys.exit(2)
 
         codon = parts[0].upper()
         if convert_to_dna:
@@ -35,16 +35,13 @@ def read_codon_freq_file(raw_lines, convert_to_dna=True):
 
         # Validate codon: must be exactly 3 chars, only A/T/C/G
         if len(codon) != 3 or any(base not in "ATCGU" for base in codon):
-            Logger.error(f"Invalid codon '{codon}' at line {line_num}. Must be 3 letters A/T/C/G (or U before conversion).")
-            sys.exit(2)
+            handle_critical_error(f"Invalid codon '{codon}' at line {line_num}. Must be 3 letters A/T/C/G (or U before conversion).")
 
         try:
             freq = float(parts[1])
+            codon_usage[codon] = freq
         except ValueError:
-            Logger.error(f"Invalid frequency value '{parts[1]}' for codon '{codon}' at line {line_num}. Must be a float.")
-            sys.exit(2)
-
-        codon_usage[codon] = freq
+            handle_critical_error(f"Invalid frequency value '{parts[1]}' for codon '{codon}' at line {line_num}. Must be a float.")
 
     return codon_usage
 
@@ -70,9 +67,7 @@ class FileDataReader:
             with open(self.file_path, 'r') as file:
                 return file.readlines()
         except FileNotFoundError:
-            error_msg = f"File not found - {self.file_path}. Please check if the path is correct."
-            Logger.error(error_msg)
-            sys.exit(2)
+            handle_critical_error(f"File not found - {self.file_path}.\nPlease check if the path is correct.")
 
 # Inherit from FileDataReader to read sequences from a file.
 class SequenceReader(FileDataReader):
@@ -84,19 +79,16 @@ class SequenceReader(FileDataReader):
         """
 
         if self.file_path is None:
-            Logger.error("Target sequence file path is not set. Cannot proceed without a valid file.")
-            sys.exit(2)
+            handle_critical_error("Target sequence file path is not set. Cannot proceed without a valid file.")
 
         raw_seq = [line.strip() for line in self.read_lines() if not line.isspace()]
 
         if len(raw_seq) == 0:
-            Logger.error(f"No valid sequence found in {self.file_path}. File must contain exactly one sequence line.")
-            sys.exit(2)
+            handle_critical_error(f"No valid sequence found in {self.file_path}.\nFile must contain exactly one sequence line.")
 
         if len(raw_seq) > 1:
-            Logger.error(f"Invalid format in {self.file_path}: multiple lines detected. "
-                         "Sequence file must contain exactly one line without line breaks.")
-            sys.exit(2)
+            handle_critical_error(f"Invalid format in:\n{self.file_path}\nmultiple lines detected.\n"
+                             "Sequence file must contain exactly one line without line breaks.")
 
         return raw_seq[0]
 
@@ -110,8 +102,7 @@ class PatternReader(FileDataReader):
         """
 
         if self.file_path is None:
-            Logger.error("Unwanted patterns file path is not set. Cannot proceed without a valid file.")
-            sys.exit(2)
+            handle_critical_error(f"Unwanted patterns file path is not set. Cannot proceed without a valid file.")
 
         res = set()
         raw_patterns = self.read_lines()
@@ -124,11 +115,8 @@ class PatternReader(FileDataReader):
 
             # invalid if contains spaces or commas
             if " " in pattern or "," in pattern:
-                Logger.error(
-                    f"Invalid format in {self.file_path} at line {line_num}: "
-                    f"'{pattern}'. Each pattern must be a single token with no spaces or commas."
-                )
-                sys.exit(2)
+                handle_critical_error(f"Invalid format in:\n{self.file_path}\nat line {line_num}: "
+                        f"'{pattern}'.\nEach pattern must be a single token with no spaces or commas.")
 
             res.add(pattern)
 
@@ -145,8 +133,7 @@ class CodonUsageReader(FileDataReader):
         """
 
         if self.file_path is None:
-            Logger.error("Codon usage file path is not set. Cannot proceed without a valid file.")
-            sys.exit(2)
+            handle_critical_error(f"Codon usage file path is not set. Cannot proceed without a valid file.")
 
         raw_lines = self.read_lines()
         return read_codon_freq_file(raw_lines)
@@ -195,7 +182,7 @@ def save_file(output, filename, path=None):
         with open(output_file_path, 'w', encoding='utf-8') as file:
             file.write(output)
 
-        return f"* {output_file_path}\n"
+        return f"{output_file_path}\n"
 
     except FileNotFoundError:
         return "An error occurred while saving the file - File not found."
