@@ -33,6 +33,16 @@ source biosynth_venv/bin/activate
 pip install biosynth-tool
 ```
 
+#### Ubuntu:
+
+```bash
+sudo apt-get update
+sudo apt-get install -y libxcb-xinerama0 libxcb1 libxcb-util1 libx11-xcb1 libglu1-mesa qtbase5-dev qtwayland5
+python3 -m venv biosynth_venv
+source biosynth_venv/bin/activate
+pip install biosynth-tool
+```
+
 #### Windows (Command Prompt):
 
 ```cmd
