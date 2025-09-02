@@ -25,8 +25,11 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
-      - name: Install Build Tools (MSVC)
+      - name: Install Build Tools
         run: choco install visualstudio2019buildtools --package-parameters "--add Microsoft.VisualStudio.Workload.VCTools --includeRecommended --quiet --norestart"
+
+      - name: Install pycparser (required by pythonnet build)
+        run: pip install pycparser
 
       - name: Install Poetry
         run: pip install poetry
