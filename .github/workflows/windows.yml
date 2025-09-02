@@ -35,7 +35,9 @@ jobs:
         run: pip install poetry
 
       - name: Install dependencies
-        run: poetry install --no-interaction --no-ansi
+        run: |
+          poetry lock --no-cache --regenerate
+          poetry install --no-interaction --no-ansi
 
       - name: Run BioSynth
         run: timeout 30s poetry run biosynth -g
