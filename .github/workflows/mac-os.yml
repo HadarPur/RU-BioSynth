@@ -32,7 +32,6 @@ jobs:
 
       - name: BioSynth via macOS
         run: |
-          export QT_QPA_PLATFORM=offscreen
           poetry run biosynth -g &
           pid=$!
           sleep 10
