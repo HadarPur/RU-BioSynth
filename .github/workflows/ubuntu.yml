@@ -44,4 +44,4 @@ jobs:
             qtwayland5
 
       - name: BioSynth via Ubuntu
-        run: xvfb-run -a timeout 10s poetry run biosynth -g || true
+        run: xvfb-run -a timeout 30s poetry run biosynth -g || true

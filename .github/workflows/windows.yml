@@ -1,4 +1,4 @@
-name: BioSynth via macOS
+name: BioSynth via Windows
 
 on:
   push:
@@ -9,8 +9,8 @@ on:
     - cron: '0 0 * * *'  # Every day at 00:00 UTC
 
 jobs:
-  test-gui-macos:
-    runs-on: macos-latest
+  test-gui-windows:
+    runs-on: windows-latest
     strategy:
       matrix:
         python-version: ["3.9", "3.10", "3.11", "3.12"]
@@ -30,9 +30,7 @@ jobs:
       - name: Install dependencies and package
         run: poetry install
 
-      - name: BioSynth via macOS
-        run: |
-          poetry run biosynth -g &
-          pid=$!
-          sleep 30
-          kill $pid || true
+      - name: BioSynth via Windows
+        run: timeout 30s poetry run biosynth -g
+
+
