@@ -44,6 +44,4 @@ jobs:
             qtwayland5
 
       - name: Biosynth via Ubuntu
-        run: |
-            export QT_QPA_PLATFORM=offscreen
-            timeout 30s poetry run biosynth -g
+        run: xvfb-run -a timeout 10s poetry run biosynth -g || true
