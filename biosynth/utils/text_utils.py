@@ -43,3 +43,11 @@ def handle_critical_error(message: str):
         sys.exit(2)
     else:
         sys.exit(2)
+
+def get_execution_mode():
+    if output_format == OutputFormat.GUI:
+        return "GUI"
+    elif output_format == OutputFormat.TERMINAL:
+        return "Terminal"
+    else:
+        return "Unknown"

@@ -11,7 +11,7 @@ from biosynth.utils.info_utils import (
     get_coding_region_cost_description,
     get_non_coding_region_cost_description,
 )
-from biosynth.utils.text_utils import handle_critical_error
+from biosynth.utils.text_utils import handle_critical_error, get_execution_mode
 
 
 # Convert plain text with dash-prefixed lines into HTML <ul>/<ol> + paragraphs
@@ -94,7 +94,8 @@ class ReportController:
             'marked_input_seq': self.marked_input_seq,
             'marked_optimized_seq': self.marked_optimized_seq,
             'optimized_seq': self.optimized_seq,
-            'detailed_changes': self.detailed_changes
+            'detailed_changes': self.detailed_changes,
+            'execution_mode' : get_execution_mode()
         }
 
         try:
