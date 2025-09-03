@@ -59,3 +59,17 @@ class TestCommandLineParser(unittest.TestCase):
                     "-o", "/tmp/output"]
         gui, s_file, p_file, c_file, o_file, alpha, beta, w = self.parser.parse_args(sys.argv[1:])
         self.assertEqual(o_file, "/tmp/output")
+
+    @patch('sys.exit')
+    @patch('biosynth.utils.output_utils.Logger.error')
+    def test_invalid_argument(self, mock_logger_error, mock_exit):
+        mock_exit.side_effect = SystemExit  # prevent the function from continuing
+        sys.argv = ["test.py", "-x"]  # Invalid argument
+
+        with self.assertRaises(SystemExit):
+            self.parser.parse_args(sys.argv[1:])
+
+        mock_logger_error.assert_called()  # Logger.error should be called
+        mock_exit.assert_called_with(2)  # sys.exit should be called with 2
+
+

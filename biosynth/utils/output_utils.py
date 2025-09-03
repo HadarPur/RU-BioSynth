@@ -8,7 +8,7 @@ class Logger:
         "WARNING": "\033[93m",  # Yellow
         "INFO": "\033[0m",  # default color
         "DEBUG": "\033[92m",  # Green
-        "NOTICE": "\033[96m",  # Cyan
+        "NOTICE": "\033[36m",  # Cyan
         "CRITICAL": "\033[95m",  # Magenta
         "ENDC": "\033[0m",  # Reset to default color
     }
