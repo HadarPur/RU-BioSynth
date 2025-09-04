@@ -28,8 +28,14 @@ jobs:
       - name: Install Poetry
         run: pip install poetry
 
+      - name: pyqt5 handling
+        run: |
+          poetry remove pyqt5-qt5
+          poetry add pyqt5==5.15.9 pyqt5-sip==12.11.0
+          poetry lock --no-cache --regenerate
+
       - name: Install dependencies
-        run: poetry install --no-root --no-interaction --no-ansi --no-cache
+        run: poetry install
 
       - name: Run BioSynth
         run: poetry run biosynth -g
