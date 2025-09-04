@@ -28,8 +28,11 @@ jobs:
       - name: Install Poetry
         run: pip install poetry
 
+      - name: Install PyQt5 (Windows fix)
+        run: pip install pyqt5==5.15.9 pyqt5-sip==12.11.0
+
       - name: Install dependencies
-        run: poetry install --no-interaction --no-ansi
+        run: poetry install --no-root --no-interaction --no-ansi
 
       - name: Run BioSynth
         run: poetry run biosynth -g
