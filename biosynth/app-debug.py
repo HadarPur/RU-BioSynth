@@ -21,10 +21,14 @@ if __name__ == "__main__":
         delete_dir('output')
 
         # DEBUG
+        set_output_format(OutputFormat.TEST)
         execute_unittests()
+
         time.sleep(2.2)
+
         set_output_format(OutputFormat.TERMINAL)
         DebugController.execute()
 
     except KeyboardInterrupt:
         Logger.error("\nProgram stopped by the user.")
+        sys.exit(3)

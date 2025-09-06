@@ -123,7 +123,7 @@ def calculate_cost(target_sequence, coding_positions, codon_usage, i, v, sigma, 
             return changes, float('inf')
         else:
             # Non-synonymous substitution
-            return changes, w
+            return changes, w + AminoAcidConfig.codon_mismatch(target_codon, proposed_codon)
 
     # Fallback (should not be reached under correct conditions)
     raise ValueError(f"Unexpected codon position value: {codon_pos}")

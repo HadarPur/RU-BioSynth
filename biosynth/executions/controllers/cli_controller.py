@@ -20,7 +20,7 @@ class CLIController:
         codon_usage_file_name = CodonUsageReader(c_path).get_filename()
 
         if not is_valid_input(seq, unwanted_patterns, codon_usage_table):
-            return
+            sys.exit(2)
 
         InputData.dna_sequence = seq
         InputData.unwanted_patterns = unwanted_patterns
@@ -38,7 +38,7 @@ class CLIController:
             CostData.w = w
 
         if not is_valid_cost(CostData.alpha, CostData.beta, CostData.w):
-            return
+            sys.exit(2)
 
         if o_path is not None:
             OutputData.output_path = o_path

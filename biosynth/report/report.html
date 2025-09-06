@@ -448,7 +448,11 @@
                 <p><br>The target sequence has been updated based on the selected coding regions:</p>
                 <p class="highlight-block pre-scrollable-paragraph">{{ highlight_selected | safe }}</p>
                 {% else %}
-                <p>All ORFs are assumed to be coding regions.</p>
+                    {% if execution_mode == 'GUI' %}
+                        <p>All ORFs are assumed to be coding regions since none were selected using GUI.</p>
+                    {% else %}
+                        <p>All ORFs are assumed to be coding regions because BioSynth was executed using CLI.</p>
+                    {% endif %}
                 {% endif %}
 
                 {% else %}

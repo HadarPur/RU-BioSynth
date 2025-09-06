@@ -11,7 +11,7 @@ from biosynth.utils.info_utils import (
     get_coding_region_cost_description,
     get_non_coding_region_cost_description,
 )
-from biosynth.utils.output_utils import Logger
+from biosynth.utils.text_utils import handle_critical_error, get_execution_mode
 
 
 # Convert plain text with dash-prefixed lines into HTML <ul>/<ol> + paragraphs
@@ -94,7 +94,8 @@ class ReportController:
             'marked_input_seq': self.marked_input_seq,
             'marked_optimized_seq': self.marked_optimized_seq,
             'optimized_seq': self.optimized_seq,
-            'detailed_changes': self.detailed_changes
+            'detailed_changes': self.detailed_changes,
+            'execution_mode' : get_execution_mode()
         }
 
         try:
@@ -109,7 +110,7 @@ class ReportController:
 
             # Save report to 'output' folder
             create_dir('output')
-            self.report_filename = f"BioSynth Report - {file_date}.html"
+            self.report_filename = f"BioSynth-Report_{file_date}.html"
             report_local_path = f'output/{self.report_filename}'
 
             with open(report_local_path, 'w', encoding="utf-8") as file:
@@ -118,9 +119,9 @@ class ReportController:
             return report_local_path
 
         except jinja2.exceptions.TemplateNotFound as e:
-            Logger.error(f"Template not found - {e}")
+            handle_critical_error(f"Template not found:\n{e}")
         except Exception as e:
-            Logger.error(f"{e}")
+            handle_critical_error(f"Exception has occurred:\n{e}")
 
         return None
 
