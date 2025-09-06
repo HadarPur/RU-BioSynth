@@ -100,7 +100,7 @@ class ReportController:
 
         try:
             # Load the HTML template using absolute path
-            template_path = resource_path('biosynth/report/report.html')
+            template_path = resource_path('report/report.html')
             template_loader = jinja2.FileSystemLoader(searchpath=os.path.dirname(template_path))
             template_env = jinja2.Environment(loader=template_loader)
             template = template_env.get_template(os.path.basename(template_path))

@@ -3,6 +3,7 @@ import re
 import shutil
 import sys
 from pathlib import Path
+from importlib.resources import files
 
 from biosynth.utils.output_utils import Logger
 from biosynth.utils.text_utils import handle_critical_error
@@ -195,10 +196,15 @@ def save_file(output, filename, path=None):
 
 
 def resource_path(relative_path):
-    """ Get absolute path to resource, works for dev and for PyInstaller """
-    if hasattr(sys, '_MEIPASS'):
-        base_path = getattr(sys, '_MEIPASS', os.path.abspath("."))
+    """Get absolute path to resource, works for dev, pip installs, and PyInstaller."""
+    if hasattr(sys, "_MEIPASS"):
+        # PyInstaller bundle
+        base_path = getattr(sys, "_MEIPASS", os.path.abspath("."))
+        return os.path.join(base_path, relative_path)
     else:
-        base_path = os.path.abspath(".")
-
-    return os.path.join(base_path, relative_path)
+        try:
+            # Use importlib.resources for installed package
+            return str(files("biosynth") / relative_path)
+        except ModuleNotFoundError:
+            # Fallback to dev mode (relative to cwd)
+            return os.path.join(os.path.abspath("."), relative_path)
