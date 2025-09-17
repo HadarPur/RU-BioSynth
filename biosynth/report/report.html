@@ -437,7 +437,7 @@
                 </ol>
 
                 {% if excluded_regions_list and excluded_regions_list|length > 0 %}
-                <p>The specific ORFs that the user wish to exclude from the elimination process are as follows:</p>
+                <p>The specific ORFs that the user designated as non-coding are as follows:</p>
                 <ol class="horizontal-scroll">
                     {% for key, value in excluded_regions_list -%}
                     <li value="{{ key }}">{{ value }}</li>
