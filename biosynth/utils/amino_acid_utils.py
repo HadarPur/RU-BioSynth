@@ -159,7 +159,7 @@ class AminoAcidConfig:
         return (nucleotide1, nucleotide2) in [("A", "G"), ("G", "A"), ("C", "T"), ("T", "C")]
 
     @staticmethod
-    def codon_mismatch(target_codon, proposed_codon):
+    def edit_dist(target_codon, proposed_codon):
         """
         Calculate the number of nucleotide differences between two codons.
 

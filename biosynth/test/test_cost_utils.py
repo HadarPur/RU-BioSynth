@@ -80,7 +80,7 @@ class TestCalculateCost(unittest.TestCase):
         MockAminoAcidConfig.get_last2.return_value = "CG"
         MockAminoAcidConfig.encodes_same_amino_acid.return_value = False
         MockAminoAcidConfig.either_is_stop_codon.return_value = False
-        MockAminoAcidConfig.codon_mismatch.return_value = 2
+        MockAminoAcidConfig.edit_dist.return_value = 2
 
         _, cost = calculate_cost(self.target_sequence, self.coding_positions, self.codon_usage, 8, "CGT", "A",
                                  self.alpha,
