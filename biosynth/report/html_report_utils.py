@@ -36,6 +36,7 @@ def convert_to_html_list(text: str, ordered=False) -> str:
 class ReportController:
     # Controller responsible for constructing and saving the final HTML report
     def __init__(self, updated_coding_positions):
+
         # Save input DNA sequence and visually highlight coding regions
         self.input_seq = InputData.dna_sequence
         self.highlight_input = SequenceUtils.highlight_sequences_to_html(
@@ -72,6 +73,13 @@ class ReportController:
             line_length=85
         )
 
+        self.highlight_optimized_selected = SequenceUtils.highlight_differences_with_coding_html(
+            InputData.dna_sequence,
+            OutputData.optimized_sequence,
+            updated_coding_positions,
+            line_length=85
+        )
+
         # Format cost with good numerical precision
         self.min_cost = f"{EliminationData.min_cost:.10g}"
 
@@ -95,7 +103,8 @@ class ReportController:
             'marked_optimized_seq': self.marked_optimized_seq,
             'optimized_seq': self.optimized_seq,
             'detailed_changes': self.detailed_changes,
-            'execution_mode' : get_execution_mode()
+            'execution_mode' : get_execution_mode(),
+            'highlight_optimized_selected': self.highlight_optimized_selected
         }
 
         try:

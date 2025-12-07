@@ -1,6 +1,5 @@
 import re
 
-
 def get_color_for_coding_region(color_counter):
     colors = ["red", "blue", "green", "orange", "purple"]
     color = colors[color_counter % len(colors)]
@@ -170,6 +169,99 @@ class SequenceUtils:
             html_lines.append(line)
 
         return '<br>'.join(html_lines) if returnBr else ''.join(html_lines)
+
+    @staticmethod
+    def highlight_differences_with_coding_html(
+            input_seq,
+            optimized_seq,
+            coding_positions,
+            line_length=96
+    ):
+        if len(input_seq) != len(optimized_seq):
+            raise ValueError(
+                f"input_seq and optimized_seq must be the same length:\n"
+                f"len(input_seq)={len(input_seq)}, "
+                f"len(optimized_seq)={len(optimized_seq)}"
+            )
+
+        marked_seq2 = []
+        expanded_positions = []
+
+        i = 0
+        marked_index = 0  # index in the expanded (bracketed) string
+
+        while i < len(coding_positions):
+
+            # ===============================
+            # ✅ FULL ORF (CODING REGION)
+            # ===============================
+            if coding_positions[i] != 0:
+                start = i
+                while i < len(coding_positions) and coding_positions[i] != 0:
+                    i += 1
+                end = i
+
+                # ✅ ORF start in expanded string
+                orf_start_marked = marked_index
+
+                for j in range(start, end, 3):
+                    codon_input = input_seq[j:j + 3]
+                    codon_optimized = optimized_seq[j:j + 3]
+
+                    # Safety: partial codon at the end
+                    if len(codon_optimized) < 3:
+                        for k in range(len(codon_optimized)):
+                            ci = codon_input[k]
+                            co = codon_optimized[k]
+                            if ci != co:
+                                marked_seq2.append(f"[{co}]")
+                                marked_index += 3
+                            else:
+                                marked_seq2.append(co)
+                                marked_index += 1
+                        continue
+
+                    if codon_input != codon_optimized:
+                        marked_seq2.append(f"[{codon_optimized}]")
+                        marked_index += 5  # [XYZ]
+                    else:
+                        marked_seq2.append(codon_optimized)
+                        marked_index += 3
+
+                # ✅ ORF end in expanded string
+                orf_end_marked = marked_index
+
+                # ✅ EXACTLY ONE ENTRY PER ORF
+                expanded_positions.append((orf_start_marked, orf_end_marked))
+
+            # ===============================
+            # ✅ NON-CODING REGION
+            # ===============================
+            else:
+                start = i
+                while i < len(coding_positions) and coding_positions[i] == 0:
+                    i += 1
+                end = i
+
+                for j in range(start, end):
+                    char_input = input_seq[j]
+                    char_optimized = optimized_seq[j]
+
+                    if char_input != char_optimized:
+                        marked_seq2.append(f"[{char_optimized}]")
+                        marked_index += 3
+                    else:
+                        marked_seq2.append(char_optimized)
+                        marked_index += 1
+
+        # Final marked optimized sequence
+        marked_optimized = ''.join(marked_seq2)
+
+        return SequenceUtils.highlight_sequences_to_html(
+            marked_optimized,
+            expanded_positions,
+            line_length
+        )
 
     @staticmethod
     def highlight_sequences_to_terminal(seq, coding_indexes):
