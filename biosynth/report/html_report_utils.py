@@ -37,7 +37,6 @@ class ReportController:
     # Controller responsible for constructing and saving the final HTML report
     def __init__(self, updated_coding_positions):
 
-        self.input_seq = InputData.dna_sequence
         # Save input DNA sequence and visually highlight coding regions
         self.input_seq = InputData.dna_sequence
         self.highlight_input = SequenceUtils.highlight_sequences_to_html(
