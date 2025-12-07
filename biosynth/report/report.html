@@ -497,11 +497,7 @@
 
             <div>
                 <h2 id="optimized-dna-sequence">Optimized Sequence:</h2>
-                {% if num_of_coding_regions > 0 %}
                 <p class="highlight-block pre-scrollable-paragraph">{{ highlight_optimized_selected | safe }}</p>
-                {% else %}
-                <p class="pre-scrollable-paragraph">{{optimized_seq | safe}}</p>
-                {% endif %}
             </div>
 
         </div>
