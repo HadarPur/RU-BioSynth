@@ -3,9 +3,7 @@
 [![PyPI - Downloads](https://img.shields.io/pypi/dm/biosynth-tool.svg)](https://pypi.org/project/biosynth-tool/)
 [![License](http://img.shields.io/:license-apache-blue.svg)](https://github.com/HadarPur/RU-BioSynth/blob/main/LICENSE)
 
-
 [![Python Version](https://img.shields.io/pypi/pyversions/biosynth-tool.svg)](https://www.python.org/)
-
 
 # Flexible and comprehensive software app for design of synthetic DNA sequences without unwanted patterns
 
