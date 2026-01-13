@@ -6,7 +6,7 @@ from biosynth.utils.output_utils import Logger
 
 
 def is_valid_dna(sequence):
-    valid_bases = set('ATCG')
+    valid_bases = set('ATCG*')
     return all(base in valid_bases for base in sequence.upper())
 
 

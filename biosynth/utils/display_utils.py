@@ -139,20 +139,29 @@ class SequenceUtils:
         return index_seq, marked_seq1, marked_seq2
 
     @staticmethod
-    def highlight_sequences_to_html(seq, coding_indexes, line_length=96, returnBr=False):
-        if coding_indexes is None:
-            return "coding_indexes in None"
+    def highlight_sequences_to_html(seq, orf_index, line_length=96, returnBr=False):
+        """
+        Highlights a single ORF in an HTML-formatted DNA sequence.
+
+        Args:
+            seq (str): DNA sequence
+            orf_index (tuple[int, int] | None): (start, end) ORF indices (end exclusive)
+            line_length (int): characters per line
+            returnBr (bool): whether to insert <br> between lines
+
+        Returns:
+            str: HTML-formatted sequence
+        """
+        if orf_index is None:
+            return seq
+
+        start, end = orf_index
 
         base_colors = [''] * len(seq)
-        color_palette = [
-            "#b03a48", "#3e8e41", "#3b5ca5", "#a563a3", "#2c7c7a", "#b87e2c",
-            "#6c4f8b", "#497d4a", "#5d6d7e", "#805d3a", "#5e4b56", "#375c4c"
-        ]
+        orf_color = "#b03a48"  # fixed color for single ORF
 
-        for i, (start, end) in enumerate(coding_indexes):
-            color = color_palette[i % len(color_palette)]
-            for j in range(start, end):
-                base_colors[j] = color
+        for j in range(start, end):
+            base_colors[j] = orf_color
 
         html_lines = []
         for i in range(0, len(seq), line_length):
@@ -184,16 +193,16 @@ class SequenceUtils:
                 f"len(optimized_seq)={len(optimized_seq)}"
             )
 
-        marked_seq2 = []
-        expanded_positions = []
+        marked_seq = []
+        expanded_orf = None
 
         i = 0
-        marked_index = 0  # index in the expanded (bracketed) string
+        marked_index = 0  # index in expanded (bracketed) string
 
         while i < len(coding_positions):
 
             # ===============================
-            # ✅ FULL ORF (CODING REGION)
+            # FULL ORF (CODING REGION)
             # ===============================
             if coding_positions[i] != 0:
                 start = i
@@ -201,41 +210,39 @@ class SequenceUtils:
                     i += 1
                 end = i
 
-                # ✅ ORF start in expanded string
+                # ORF start in expanded string
                 orf_start_marked = marked_index
 
                 for j in range(start, end, 3):
                     codon_input = input_seq[j:j + 3]
                     codon_optimized = optimized_seq[j:j + 3]
 
-                    # Safety: partial codon at the end
+                    # Partial codon safety
                     if len(codon_optimized) < 3:
                         for k in range(len(codon_optimized)):
-                            ci = codon_input[k]
-                            co = codon_optimized[k]
-                            if ci != co:
-                                marked_seq2.append(f"[{co}]")
+                            if codon_input[k] != codon_optimized[k]:
+                                marked_seq.append(f"[{codon_optimized[k]}]")
                                 marked_index += 3
                             else:
-                                marked_seq2.append(co)
+                                marked_seq.append(codon_optimized[k])
                                 marked_index += 1
                         continue
 
                     if codon_input != codon_optimized:
-                        marked_seq2.append(f"[{codon_optimized}]")
+                        marked_seq.append(f"[{codon_optimized}]")
                         marked_index += 5  # [XYZ]
                     else:
-                        marked_seq2.append(codon_optimized)
+                        marked_seq.append(codon_optimized)
                         marked_index += 3
 
-                # ✅ ORF end in expanded string
+                # ORF end in expanded string
                 orf_end_marked = marked_index
 
-                # ✅ EXACTLY ONE ENTRY PER ORF
-                expanded_positions.append((orf_start_marked, orf_end_marked))
+                # EXACTLY ONE ORF
+                expanded_orf = (orf_start_marked, orf_end_marked)
 
             # ===============================
-            # ✅ NON-CODING REGION
+            # NON-CODING REGION
             # ===============================
             else:
                 start = i
@@ -244,22 +251,18 @@ class SequenceUtils:
                 end = i
 
                 for j in range(start, end):
-                    char_input = input_seq[j]
-                    char_optimized = optimized_seq[j]
-
-                    if char_input != char_optimized:
-                        marked_seq2.append(f"[{char_optimized}]")
+                    if input_seq[j] != optimized_seq[j]:
+                        marked_seq.append(f"[{optimized_seq[j]}]")
                         marked_index += 3
                     else:
-                        marked_seq2.append(char_optimized)
+                        marked_seq.append(optimized_seq[j])
                         marked_index += 1
 
-        # Final marked optimized sequence
-        marked_optimized = ''.join(marked_seq2)
+        marked_optimized = ''.join(marked_seq)
 
         return SequenceUtils.highlight_sequences_to_html(
             marked_optimized,
-            expanded_positions,
+            expanded_orf,
             line_length
         )
 

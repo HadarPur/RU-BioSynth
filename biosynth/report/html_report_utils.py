@@ -5,6 +5,7 @@ import jinja2
 # Application-specific data and utilities
 from biosynth.data.app_data import InputData, EliminationData, OutputData
 from biosynth.utils.display_utils import SequenceUtils
+from biosynth.utils.dna_utils import DNAUtils
 from biosynth.utils.file_utils import create_dir, resource_path, save_file
 from biosynth.utils.info_utils import (
     get_elimination_process_description,
@@ -35,13 +36,13 @@ def convert_to_html_list(text: str, ordered=False) -> str:
 
 class ReportController:
     # Controller responsible for constructing and saving the final HTML report
-    def __init__(self, updated_coding_positions):
+    def __init__(self):
+        self.input_seq = InputData.cleaned_dna_sequence
 
         # Save input DNA sequence and visually highlight coding regions
-        self.input_seq = InputData.dna_sequence
         self.highlight_input = SequenceUtils.highlight_sequences_to_html(
-            InputData.dna_sequence,
-            InputData.coding_indexes,
+            InputData.cleaned_dna_sequence,
+            InputData.orf_indexes,
             line_length=85
         )
 
@@ -51,14 +52,14 @@ class ReportController:
         # Mark character-level differences between input and optimized sequences
         self.index_seq_str, self.marked_input_seq, self.marked_optimized_seq = \
             SequenceUtils.mark_non_equal_characters(
-                InputData.dna_sequence,
+                InputData.cleaned_dna_sequence,
                 OutputData.optimized_sequence,
-                updated_coding_positions
+                InputData.coding_positions
             )
 
         # Format other user input and results
         self.unwanted_patterns = ', '.join(InputData.unwanted_patterns)
-        self.num_of_coding_regions = len(InputData.coding_indexes)
+        self.orf_idx = "" if InputData.orf_indexes is None else f"{InputData.orf_indexes}"
         self.detailed_changes = '<br>'.join(
             EliminationData.detailed_changes) if EliminationData.detailed_changes else None
 
@@ -66,17 +67,10 @@ class ReportController:
         self.output_text = None
         self.report_filename = None
 
-        # Highlight regions excluded from optimization
-        self.highlight_selected = SequenceUtils.highlight_sequences_to_html(
-            InputData.dna_sequence,
-            InputData.excluded_coding_indexes,
-            line_length=85
-        )
-
         self.highlight_optimized_selected = SequenceUtils.highlight_differences_with_coding_html(
-            InputData.dna_sequence,
+            InputData.cleaned_dna_sequence,
             OutputData.optimized_sequence,
-            updated_coding_positions,
+            InputData.coding_positions,
             line_length=85
         )
 
@@ -90,10 +84,7 @@ class ReportController:
             'input': self.input_seq,
             'patterns': self.unwanted_patterns,
             'highlight_input': self.highlight_input,
-            'highlight_selected': self.highlight_selected,
-            'num_of_coding_regions': self.num_of_coding_regions,
-            'regions_list': (InputData.coding_regions_list or {}).items(),
-            'excluded_regions_list': (InputData.excluded_regions_list or {}).items(),
+            'orf_idx': self.orf_idx,
             'elimination_process_description': convert_to_html_list(get_elimination_process_description()),
             'coding_region_cost_description': convert_to_html_list(get_coding_region_cost_description()),
             'non_coding_region_cost_description': convert_to_html_list(get_non_coding_region_cost_description()),

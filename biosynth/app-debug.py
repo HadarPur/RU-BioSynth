@@ -1,3 +1,4 @@
+import os
 import time
 import unittest
 
@@ -9,7 +10,7 @@ from biosynth.utils.text_utils import OutputFormat, set_output_format
 
 def execute_unittests():
     loader = unittest.TestLoader()
-    start_dir = 'biosynth/test/'
+    start_dir = os.path.join(os.path.dirname(__file__), "test")
     suite = loader.discover(start_dir)
 
     runner = unittest.TextTestRunner()

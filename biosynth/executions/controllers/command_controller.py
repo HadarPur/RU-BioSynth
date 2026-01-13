@@ -29,24 +29,18 @@ app_icon_text = """
 class CommandController:
 
     def run(self):
+        Logger.notice(app_icon_text)
+
         if not InputData.dna_sequence:
             Logger.error("The input sequence is empty, please try again")
             sys.exit(2)
 
-        has_overlaps, overlaps = DNAUtils.find_overlapping_regions(InputData.dna_sequence)
-
-        if has_overlaps:
-            Logger.error("The target sequence contains ORFs that share overlapping nucleotide regions:")
-            Logger.space()
-            Logger.info(DNAUtils.get_overlapping_regions(InputData.dna_sequence, overlaps))
-            Logger.error("Please ensure the input sequence does not contain overlapping ORFs.")
-            sys.exit(2)
-
-        Logger.notice(app_icon_text)
+        # Check for start codon
+        start_codon_identified, InputData.cleaned_dna_sequence = DNAUtils.find_start_codon(InputData.dna_sequence)
 
         # Print the target sequence
         Logger.debug(f"{format_text_bold_for_output('Target sequence:')}")
-        Logger.info(f"{InputData.dna_sequence}")
+        Logger.info(f"{InputData.cleaned_dna_sequence}")
         Logger.space()
 
         # Print the list of unwanted patterns
@@ -55,23 +49,20 @@ class CommandController:
         Logger.space()
 
         # Extract coding regions
-        InputData.coding_positions, InputData.coding_indexes = DNAUtils.get_coding_and_non_coding_regions_positions(
-            InputData.dna_sequence)
+        InputData.coding_positions, InputData.orf_indexes = DNAUtils.get_coding_and_non_coding_regions_positions(
+            InputData.cleaned_dna_sequence, start_codon_identified)
 
         # Handle elimination of coding regions if the user chooses to
-        InputData.coding_regions_list = DNAUtils.get_coding_regions_list(InputData.coding_indexes,
-                                                                         InputData.dna_sequence)
+        InputData.orf_sequence = DNAUtils.get_orf_sequence(InputData.orf_indexes, InputData.cleaned_dna_sequence)
 
-        if len(InputData.coding_indexes) > 0:
-            Logger.debug('The following ORFs were identified in the target sequence:')
-            Logger.info('\n'.join(f"[{key}] {value}" for key, value in InputData.coding_regions_list.items()))
-            Logger.critical(
-                '\nAll ORFs are assumed to be coding regions because BioSynth was executed using CLI. If you wish to exclude some ORFs, then please use the GUI.')
+        if InputData.orf_indexes is not None:
+            Logger.debug('The following ORF was identified in the target sequence:')
+            Logger.info(f"{InputData.orf_indexes}")
         else:
-            Logger.critical("No ORFs were identified in the provided target sequence.")
+            Logger.critical("No ORF was identified in the provided target sequence.")
 
         # Eliminate unwanted patterns
-        eliminate_unwanted_patterns(InputData.dna_sequence, InputData.unwanted_patterns, InputData.coding_positions)
+        eliminate_unwanted_patterns(InputData.cleaned_dna_sequence, InputData.unwanted_patterns, InputData.coding_positions)
 
         Logger.notice(format_text_bold_for_output('\n' + '_' * 90 + '\n'))
         Logger.info(EliminationData.info)
@@ -87,7 +78,7 @@ class CommandController:
         Logger.space()
 
         # Save the results
-        report = ReportController(InputData.coding_positions)
+        report = ReportController()
 
         Logger.critical("The final report and optimized sequence can be found in the following paths:\n")
         file_date = datetime.today().strftime("%d-%b-%Y_%H-%M-%S")

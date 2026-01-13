@@ -4,27 +4,22 @@ from pathlib import Path
 class InputData:
     # Input Data
     dna_sequence = None
+    cleaned_dna_sequence = None
     unwanted_patterns = None
 
-    coding_indexes = None
-    coding_positions = None
-    coding_regions_list = None
+    orf_sequence = None
+    orf_indexes = None
 
-    excluded_coding_indexes = None
-    excluded_coding_positions = None
-    excluded_regions_list = None
+    coding_positions = None
 
     @staticmethod
     def reset():
         InputData.dna_sequence = None
+        InputData.cleaned_dna_sequence = None
         InputData.unwanted_patterns = None
-        InputData.coding_indexes = None
+        InputData.orf_sequence = None
+        InputData.orf_indexes = None
         InputData.coding_positions = None
-        InputData.coding_regions_list = None
-        InputData.excluded_coding_indexes = None
-        InputData.excluded_coding_positions = None
-        InputData.excluded_regions_list = None
-
 
 class CostData:
     codon_usage = None
