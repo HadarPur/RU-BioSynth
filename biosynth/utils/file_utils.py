@@ -2,9 +2,10 @@ import os
 import re
 import shutil
 import sys
+import numpy as np
+
 from pathlib import Path
 from importlib.resources import files
-
 from biosynth.utils.output_utils import Logger
 from biosynth.utils.text_utils import handle_critical_error
 
@@ -44,8 +45,11 @@ def read_codon_freq_file(raw_lines, convert_to_dna=True):
         except ValueError:
             handle_critical_error(f"Invalid frequency value '{parts[1]}' for codon '{codon}' at line {line_num}. Must be a float.")
 
-    return codon_usage
+    # normalized frequencies
+    freq_values = np.fromiter(codon_usage.values(), dtype=float)
+    costs = np.log(freq_values) / np.log(np.min(freq_values))
 
+    return dict(zip(usage_dict.keys(), costs))
 
 
 # Define a base class for reading data from a file.
