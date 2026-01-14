@@ -3,6 +3,7 @@ from biosynth.executions.controllers.command_controller import CommandController
 from biosynth.executions.execution_utils import is_valid_input, is_valid_cost
 from biosynth.utils.file_utils import SequenceReader, PatternReader, CodonUsageReader
 from biosynth.utils.input_utils import ArgumentParser
+from biosynth.utils.cost_utils import normalize_codon_usage
 
 
 class CLIController:
@@ -24,7 +25,7 @@ class CLIController:
 
         InputData.dna_sequence = seq
         InputData.unwanted_patterns = unwanted_patterns
-        CostData.codon_usage = codon_usage_table
+        CostData.codon_usage = normalize_codon_usage(codon_usage_table)
         CostData.codon_usage_filename = codon_usage_file_name
 
         # optional values

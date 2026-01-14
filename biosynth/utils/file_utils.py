@@ -8,7 +8,6 @@ from pathlib import Path
 from importlib.resources import files
 from biosynth.utils.output_utils import Logger
 from biosynth.utils.text_utils import handle_critical_error
-from biosynth.utils.cost_utils import normalize_codon_usage
 
 def read_codon_freq_file(raw_lines, convert_to_dna=True):
     """
@@ -45,7 +44,7 @@ def read_codon_freq_file(raw_lines, convert_to_dna=True):
         except ValueError:
             handle_critical_error(f"Invalid frequency value '{parts[1]}' for codon '{codon}' at line {line_num}. Must be a float.")
 
-    return normalize_codon_usage(codon_usage)
+    return codon_usage
 
 
 # Define a base class for reading data from a file.
