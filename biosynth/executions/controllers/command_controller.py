@@ -89,4 +89,9 @@ class CommandController:
         filename = f"Optimized-Sequence_{file_date}.txt"
         path = save_file(OutputData.optimized_sequence, filename, OutputData.output_path)
         Logger.notice(path)
+
+        filename = f"Changes-Info_{file_date}.txt"
+        detailed_changes = '\n'.join(EliminationData.detailed_changes) if EliminationData.detailed_changes else None
+        path = save_file(detailed_changes, filename, OutputData.output_path)
+        Logger.notice(path)
         Logger.space()
