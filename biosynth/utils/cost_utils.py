@@ -1,6 +1,8 @@
 import numpy as np
 
 from biosynth.utils.amino_acid_utils import AminoAcidConfig
+from biosynth.utils.output_utils import Logger
+
 
 def normalize_codon_usage(codon_usage):
     """
@@ -31,14 +33,12 @@ def normalize_codon_usage(codon_usage):
     if np.any(freq_values <= 0):
         raise ValueError("Codon usage frequencies must be strictly positive")
 
-    min_freq = np.min(freq_values)
+    log_freq = np.log10(freq_values)
+    min_log = np.min(log_freq)
+    max_log = np.max(log_freq)
 
-    # Single-codon edge case: define cost as 1.0
-    if len(freq_values) == 1:
-        codon = next(iter(codon_usage))
-        return {codon: 1.0}
-
-    costs = np.log(freq_values) / np.log(min_freq)
+    # invert if you want least frequent = 1, most frequent = 0
+    costs = 1 - (log_freq - min_log) / (max_log - min_log)
 
     return dict(zip(codon_usage.keys(), costs))
 
@@ -117,8 +117,9 @@ def calculate_cost(target_sequence, coding_positions, codon_usage, i, v, sigma, 
     """
 
     # Validate codon usage
-    if any(freq <= 0 for freq in codon_usage.values()):
-        raise ValueError("Invalid codon usage: probabilities must be positive and normalized.")
+    if any(freq < 0 for freq in codon_usage.values()):
+        Logger.error("Invalid codon usage: probabilities must be positive and normalized.")
+        exit(4)
 
     # Determine coding position of the current index.
     codon_pos = coding_positions[i]  # Non-coding: 0; Coding: ((i - \text{coding\_start}) \mod 3) + 1.
