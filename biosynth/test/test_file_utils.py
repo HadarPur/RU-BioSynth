@@ -16,12 +16,12 @@ class TestReadCodonFreqFile(unittest.TestCase):
     def test_valid_lines_with_dna_conversion(self):
         raw_lines = ["AUG 0.5", "UUU 1.0"]
         result = read_codon_freq_file(raw_lines, convert_to_dna=True)
-        self.assertEqual(result, {"ATG": 0.5, "TTT": 1.0})
+        self.assertEqual(result, {"ATG": 1.0, "TTT": 0.0})
 
     def test_valid_lines_without_conversion(self):
         raw_lines = ["AUG 0.5"]
         result = read_codon_freq_file(raw_lines, convert_to_dna=False)
-        self.assertEqual(result, {"AUG": 0.5})
+        self.assertEqual(result, {"AUG": 1.0})
 
     def test_invalid_format_line(self):
         raw_lines = ["AUG"]  # missing frequency
@@ -134,7 +134,12 @@ class TestCodonUsageReader(unittest.TestCase):
             tmp_path = tmp.name
         reader = CodonUsageReader(tmp_path)
         usage = reader.read_codon_usage()
-        self.assertEqual(usage, {"ATG": 0.5, "TTT": 1.0})
+
+        expected = {
+            "ATG": 1.0,
+            "TTT": 0.0
+        }
+        self.assertEqual(usage, expected)
         os.remove(tmp_path)
 
     def test_read_codon_usage_file_not_set(self):

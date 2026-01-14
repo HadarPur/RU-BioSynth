@@ -2,6 +2,45 @@ import numpy as np
 
 from biosynth.utils.amino_acid_utils import AminoAcidConfig
 
+def normalize_codon_usage(codon_usage):
+    """
+    Normalize codon usage frequencies into log-scaled costs.
+
+    The cost for a codon with frequency f is defined as:
+        cost(f) = log(f) / log(min_frequency)
+
+    This assigns:
+      - cost = 1.0 to the least frequent codon
+      - cost = 0.0 to the most frequent codon
+
+    Parameters
+    ----------
+    codon_usage : dict[str, float]
+        Mapping from codon to raw usage frequency (f > 0).
+
+    Returns
+    -------
+    dict[str, float]
+        Mapping from codon to normalized cost.
+    """
+    if not codon_usage:
+        return {}
+
+    freq_values = np.fromiter(codon_usage.values(), dtype=float)
+
+    if np.any(freq_values <= 0):
+        raise ValueError("Codon usage frequencies must be strictly positive")
+
+    min_freq = np.min(freq_values)
+
+    # Single-codon edge case: define cost as 1.0
+    if len(freq_values) == 1:
+        codon = next(iter(codon_usage))
+        return {codon: 1.0}
+
+    costs = np.log(freq_values) / np.log(min_freq)
+
+    return dict(zip(codon_usage.keys(), costs))
 
 def evaluate_substitution(target_sequence, i, sigma, alpha, beta):
     """
