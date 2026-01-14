@@ -56,8 +56,8 @@ class CommandController:
         InputData.orf_sequence = DNAUtils.get_orf_sequence(InputData.orf_indexes, InputData.cleaned_dna_sequence)
 
         if InputData.orf_indexes is not None:
-            Logger.debug('The following ORF was identified in the target sequence:')
-            Logger.info(f"{InputData.orf_indexes}")
+            Logger.debug('An ORF was identified in the target sequence at positions:')
+            Logger.info(f"{InputData.orf_indexes[0]+1} - {InputData.orf_indexes[1]+1}")
         else:
             Logger.critical("No ORF was identified in the provided target sequence.")
 
