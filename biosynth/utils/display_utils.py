@@ -267,40 +267,32 @@ class SequenceUtils:
         )
 
     @staticmethod
-    def highlight_sequences_to_terminal(seq, coding_indexes):
+    def highlight_sequence_to_terminal(seq, coding_range):
         """
-        Converts DNA sequences to terminal output with highlighted coding regions based on coding index ranges.
+        Converts a DNA sequence to terminal output with a highlighted ORF.
 
         Parameters:
             seq (str): The full DNA sequence.
-            coding_indexes (list of tuples): List of (start, end) tuples representing coding regions.
+            coding_range (tuple): (start, end) tuple representing the ORF (0-based, end-exclusive).
 
         Returns:
-            str: String with terminal escape codes for colorized coding regions.
+            str: String with terminal escape codes for the highlighted ORF.
         """
-        output = ""
-        color_counter = 0
+        start, end = coding_range
 
-        # ANSI color codes for highlighting coding regions
-        colors = ['\033[91m', '\033[92m', '\033[93m', '\033[94m', '\033[95m', '\033[96m']
+        # ANSI color code for highlighting the ORF
+        color = '\033[36m'  # green
+        reset = '\033[0m'
 
-        # Process the sequence by iterating over coding and non-coding regions
-        last_end = 0  # Track the end of the last processed region
-        for start, end in coding_indexes:
-            # Add non-coding region before the current coding region
-            if last_end < start:
-                output += seq[last_end:start]
+        # Non-coding before ORF
+        before_orf = seq[:start]
 
-            # Add coding region with highlighting
-            subsequence = seq[start:end]
-            color = colors[color_counter % len(colors)]
-            color_counter += 1
-            spaced_triplets = " ".join(subsequence[j:j + 3] for j in range(0, len(subsequence), 3))
-            output += f" {color}{spaced_triplets}\033[0m "
-            last_end = end
+        # ORF with triplet spacing
+        orf = seq[start:end]
 
-        # Add any remaining non-coding region after the last coding region
-        if last_end < len(seq):
-            output += seq[last_end:]
+        # Non-coding after ORF
+        after__orf = seq[end:]
+
+        output = f"{before_orf}{color}{orf}{reset}{after__orf}"
 
         return output

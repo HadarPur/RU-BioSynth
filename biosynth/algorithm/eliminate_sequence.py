@@ -6,7 +6,6 @@ from biosynth.utils.info_utils import format_cost, get_elimination_process_descr
     get_non_coding_region_cost_description, get_coding_region_cost_description
 from biosynth.utils.cost_utils import EliminationScorerConfig
 from biosynth.utils.date_utils import format_current_date
-from biosynth.utils.output_utils import Logger
 from biosynth.utils.text_utils import format_text_bold_for_output
 
 

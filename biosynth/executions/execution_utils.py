@@ -121,6 +121,6 @@ def mark_non_equal_codons(input_seq, optimized_seq, coding_positions):
     return index_seq_str, marked_input_seq, marked_optimized_seq
 
 
-def initialize_report(updated_coding_positions):
-    report = ReportController(updated_coding_positions)
+def initialize_report():
+    report = ReportController()
     return report

@@ -59,7 +59,7 @@ class ReportController:
 
         # Format other user input and results
         self.unwanted_patterns = ', '.join(InputData.unwanted_patterns)
-        self.orf_idx = "" if InputData.orf_indexes is None else f"{InputData.orf_indexes[0]+1} - {InputData.orf_indexes[1]+1}"
+        self.orf_idx = "" if InputData.orf_indexes is None else f"{InputData.orf_indexes[0]+1} - {InputData.orf_indexes[1]}"
         self.detailed_changes = '<br>'.join(
             EliminationData.detailed_changes) if EliminationData.detailed_changes else None
 

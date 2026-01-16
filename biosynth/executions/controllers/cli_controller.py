@@ -4,6 +4,7 @@ from biosynth.executions.execution_utils import is_valid_input, is_valid_cost
 from biosynth.utils.file_utils import SequenceReader, PatternReader, CodonUsageReader
 from biosynth.utils.input_utils import ArgumentParser
 from biosynth.utils.cost_utils import normalize_codon_usage
+from biosynth.utils.output_utils import Logger
 
 
 class CLIController:

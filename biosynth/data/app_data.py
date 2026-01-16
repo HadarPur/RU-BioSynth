@@ -7,7 +7,6 @@ class InputData:
     cleaned_dna_sequence = None
     unwanted_patterns = None
 
-    orf_sequence = None
     orf_indexes = None
 
     coding_positions = None
@@ -17,7 +16,6 @@ class InputData:
         InputData.dna_sequence = None
         InputData.cleaned_dna_sequence = None
         InputData.unwanted_patterns = None
-        InputData.orf_sequence = None
         InputData.orf_indexes = None
         InputData.coding_positions = None
 

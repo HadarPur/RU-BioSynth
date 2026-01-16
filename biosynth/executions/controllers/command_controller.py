@@ -38,28 +38,25 @@ class CommandController:
         # Check for start codon
         start_codon_identified, InputData.cleaned_dna_sequence = DNAUtils.find_start_codon(InputData.dna_sequence)
 
-        # Print the target sequence
+        # Extract coding regions
+        InputData.coding_positions, InputData.orf_indexes = DNAUtils.get_coding_and_non_coding_regions_positions(
+            InputData.cleaned_dna_sequence, start_codon_identified)
+
         Logger.debug(f"{format_text_bold_for_output('Target sequence:')}")
-        Logger.info(f"{InputData.cleaned_dna_sequence}")
+
+        if InputData.orf_indexes is not None:
+            Logger.notice(f'An ORF was identified in the target sequence at positions {InputData.orf_indexes[0] + 1} - {InputData.orf_indexes[1]}:')
+            Logger.info(f"{SequenceUtils.highlight_sequence_to_terminal(InputData.cleaned_dna_sequence, InputData.orf_indexes)}")
+        else:
+            Logger.info(f"{InputData.cleaned_dna_sequence}")
+            Logger.critical("No ORF was identified in the provided target sequence.")
+
         Logger.space()
 
         # Print the list of unwanted patterns
         Logger.debug(f"{format_text_bold_for_output('Unwanted patterns:')}")
         Logger.info(f"{SequenceUtils.get_patterns(InputData.unwanted_patterns)}")
         Logger.space()
-
-        # Extract coding regions
-        InputData.coding_positions, InputData.orf_indexes = DNAUtils.get_coding_and_non_coding_regions_positions(
-            InputData.cleaned_dna_sequence, start_codon_identified)
-
-        # Handle elimination of coding regions if the user chooses to
-        InputData.orf_sequence = DNAUtils.get_orf_sequence(InputData.orf_indexes, InputData.cleaned_dna_sequence)
-
-        if InputData.orf_indexes is not None:
-            Logger.debug('An ORF was identified in the target sequence at positions:')
-            Logger.info(f"{InputData.orf_indexes[0]+1} - {InputData.orf_indexes[1]+1}")
-        else:
-            Logger.critical("No ORF was identified in the provided target sequence.")
 
         # Eliminate unwanted patterns
         eliminate_unwanted_patterns(InputData.cleaned_dna_sequence, InputData.unwanted_patterns, InputData.coding_positions)
