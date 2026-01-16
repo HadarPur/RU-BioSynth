@@ -49,7 +49,6 @@ class CommandController:
             Logger.info(f"{SequenceUtils.highlight_sequence_to_terminal(InputData.cleaned_dna_sequence, InputData.orf_indexes)}")
         else:
             Logger.info(f"{InputData.cleaned_dna_sequence}")
-            Logger.critical("No ORF was identified in the provided target sequence.")
 
         Logger.space()
 
