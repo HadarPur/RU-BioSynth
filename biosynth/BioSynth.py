@@ -21,7 +21,9 @@ class BioSynthApp:
             else:
                 set_output_format(OutputFormat.TERMINAL)
                 CLIController(args).execute()
-
+        except Exception as e:
+            Logger.error(e)
+            sys.exit(5)
         except KeyboardInterrupt:
             Logger.error("\nProgram stopped by the user.")
             sys.exit(3)

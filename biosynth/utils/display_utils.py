@@ -152,16 +152,14 @@ class SequenceUtils:
         Returns:
             str: HTML-formatted sequence
         """
-        if orf_index is None:
-            return seq
-
-        start, end = orf_index
-
         base_colors = [''] * len(seq)
-        orf_color = "#b03a48"  # fixed color for single ORF
 
-        for j in range(start, end):
-            base_colors[j] = orf_color
+        if orf_index is not None:
+            start, end = orf_index
+            orf_color = "#b03a48"
+
+            for j in range(start, end):
+                base_colors[j] = orf_color
 
         html_lines = []
         for i in range(0, len(seq), line_length):

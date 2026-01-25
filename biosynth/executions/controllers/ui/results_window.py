@@ -27,7 +27,7 @@ def show_preview_report(report_local_file_path):
 
 
 class ResultsWindow(QWidget):
-    def __init__(self, back_to_elimination_callback, updated_coding_positions):
+    def __init__(self, back_to_elimination_callback):
         super().__init__()
         self.top_layout = None
         self.middle_layout = None
@@ -35,7 +35,6 @@ class ResultsWindow(QWidget):
         self.report = None
         self.status_label = None
 
-        self.updated_coding_positions = updated_coding_positions
         self.init_ui(back_to_elimination_callback)
 
         # Timer for status label
@@ -45,8 +44,7 @@ class ResultsWindow(QWidget):
     def init_ui(self, callback):
         layout = QVBoxLayout(self)
 
-        callback_args = (self.updated_coding_positions,)
-        add_button(layout, 'Back', Qt.AlignLeft, callback, callback_args)
+        add_button(layout, 'Back', Qt.AlignLeft, callback)
 
         self.display_info(layout)
 
@@ -81,9 +79,8 @@ class ResultsWindow(QWidget):
         info_layout.addWidget(info_button, alignment=Qt.AlignRight)
 
         # Mark non-equal codons and print the optimized sequence
-        index_seq_str, marked_input_seq, marked_optimized_seq = mark_non_equal_codons(InputData.dna_sequence,
-                                                                                      OutputData.optimized_sequence,
-                                                                                      self.updated_coding_positions)
+        index_seq_str, marked_input_seq, marked_optimized_seq = mark_non_equal_codons(InputData.cleaned_dna_sequence,
+                                                                                      OutputData.optimized_sequence, InputData.coding_positions)
 
         content = '''<pre>''' + index_seq_str + '''<br></pre>'''
         content += '''<pre>''' + marked_input_seq + '''<br><br>''' + marked_optimized_seq + '''</pre>'''
@@ -136,7 +133,7 @@ class ResultsWindow(QWidget):
         self.bottom_layout.addWidget(done_button, alignment=Qt.AlignRight)
 
     def prompt_report(self, layout, file_date):
-        self.report = initialize_report(self.updated_coding_positions)
+        self.report = initialize_report()
 
         report_local_file_path = self.report.create_report(file_date)
 

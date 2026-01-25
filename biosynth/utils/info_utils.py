@@ -26,13 +26,13 @@ def get_non_coding_region_cost_description():
 
 def get_info_usage():
     lines = [
-        "Note that the open reading frames (ORFs) in the specified target sequence should satisfy the following two requirements:",
-        "• Each ORF must contain at least 5 internal codons (excluding start and stop codons).",
-        "• If two ORFs are overlapping, then one must contain the other. In such a case, the smaller (contained) ORF is not considered",
-        "   as a potential coding region.",
+        "Note that the open reading frame (ORF) in the specified target sequence must satisfy the following requirements:",
+        "• At most one ORF is allowed in the target sequence.",
+        "• The ORF start codon, if present, must be explicitly marked with '*' in the sequence.",
         "",
-        "If the target sequence satisfies these requirements, the program will specify all non-overlapping ORFs, and you should select",
-        "among them the ones that are the actual coding sequences. Otherwise, an error message will indicate the specific violation.",
+        "If a valid ORF is present, the program will identify the marked ORF as a coding region.",
+        "If no ORF is present, the entire target sequence will be treated as a non-coding region.",
+        "Otherwise, an error message will indicate the specific violation.",
     ]
 
     width = max(len(line.expandtabs(4)) for line in lines)

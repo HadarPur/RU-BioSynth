@@ -16,7 +16,6 @@ class TestDataClasses(unittest.TestCase):
         # Set some dummy values
         app_data.InputData.dna_sequence = "ATG"
         app_data.InputData.coding_indexes = [0, 1, 2]
-        app_data.InputData.excluded_regions_list = [(0, 2)]
 
         # Reset
         app_data.InputData.reset()

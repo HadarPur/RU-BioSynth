@@ -36,11 +36,11 @@ class CommandController:
             sys.exit(2)
 
         # Check for start codon
-        start_codon_identified, InputData.cleaned_dna_sequence = DNAUtils.find_start_codon(InputData.dna_sequence)
+        InputData.start_codon_identified, InputData.cleaned_dna_sequence = DNAUtils.find_start_codon(InputData.dna_sequence)
 
         # Extract coding regions
         InputData.coding_positions, InputData.orf_indexes = DNAUtils.get_coding_and_non_coding_regions_positions(
-            InputData.cleaned_dna_sequence, start_codon_identified)
+            InputData.cleaned_dna_sequence, InputData.start_codon_identified)
 
         Logger.debug(f"{format_text_bold_for_output('Target sequence:')}")
 
