@@ -21,6 +21,7 @@ class SettingsWindow(QWidget):
     def init_ui(self, back_callback, next_callback):
         layout = QVBoxLayout(self)
 
+        # Top Layout
         self.add_top_layout(layout, back_callback)
 
         # Middle layout with information
@@ -28,15 +29,6 @@ class SettingsWindow(QWidget):
 
         # Bottom layout
         self.add_bottom_layout(layout, next_callback)
-
-    def add_bottom_layout(self, layout, next_callback):
-        bottom_layout = QHBoxLayout()
-        bottom_layout.setContentsMargins(20, 5, 20, 20)
-        layout.addLayout(bottom_layout)
-
-        next_button = add_button(bottom_layout, 'Next', Qt.AlignRight)
-        next_button.clicked.connect(
-            lambda: next_callback())
 
     def add_top_layout(self, layout, back_callback):
         # Top-level layout
@@ -65,6 +57,15 @@ class SettingsWindow(QWidget):
         scroll_area.verticalScrollBar().rangeChanged.connect(
             lambda min_val, max_val: self.floating_btn.on_scroll(scroll_area.verticalScrollBar().value())
         )
+
+    def add_bottom_layout(self, layout, next_callback):
+        bottom_layout = QHBoxLayout()
+        bottom_layout.setContentsMargins(20, 5, 20, 20)
+        layout.addLayout(bottom_layout)
+
+        next_button = add_button(bottom_layout, 'Next', Qt.AlignRight)
+        next_button.clicked.connect(
+            lambda: next_callback())
 
     def add_target_sequence_layout(self, content_layout):
         label_html = f"""

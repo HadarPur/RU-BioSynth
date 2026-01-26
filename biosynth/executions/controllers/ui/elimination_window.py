@@ -24,20 +24,22 @@ class EliminationWindow(QWidget):
     def init_ui(self, back_callback, next_callback):
         # Top-level layout
         layout = QVBoxLayout(self)
-        add_button(layout, 'Back', Qt.AlignLeft, back_callback)
+
+        # Top Layout
+        self.add_top_layout(layout, back_callback)
 
         # Middle layout with information
-        self.display_middle_layout(layout)
+        self.add_middle_layout(layout)
 
         # Bottom layout
-        bottom_layout = QHBoxLayout()
-        bottom_layout.setContentsMargins(20, 5, 20, 20)
-        layout.addLayout(bottom_layout)
+        self.add_bottom_layout(layout, next_callback)
 
-        # Add next button to the bottom layout
-        add_button(bottom_layout, 'Next', Qt.AlignRight, next_callback)
+    def add_top_layout(self, layout, back_callback):
+        # Top-level layout
+        add_button(layout, 'Back', Qt.AlignLeft, back_callback, ())
+        return layout
 
-    def display_middle_layout(self, layout):
+    def add_middle_layout(self, layout):
         middle_layout = QVBoxLayout()
         middle_layout.setContentsMargins(20, 20, 20, 20)
 
@@ -78,6 +80,15 @@ class EliminationWindow(QWidget):
         # Add floating button
         self.floating_btn = FloatingScrollIndicator(parent=self, scroll_area=text_browser)
         self.floating_btn.on_scroll(text_browser.verticalScrollBar().value())
+
+    def add_bottom_layout(self, layout, next_callback):
+        bottom_layout = QHBoxLayout()
+        bottom_layout.setContentsMargins(20, 5, 20, 20)
+        layout.addLayout(bottom_layout)
+
+        next_button = add_button(bottom_layout, 'Next', Qt.AlignRight)
+        next_button.clicked.connect(
+            lambda: next_callback())
 
     def resizeEvent(self, event):
         self.floating_btn.raise_()  # Bring to front
