@@ -1,5 +1,7 @@
+import os
 import time
 import unittest
+import sys
 
 from biosynth.executions.controllers.debug_controller import DebugController
 from biosynth.utils.file_utils import delete_dir
@@ -9,7 +11,7 @@ from biosynth.utils.text_utils import OutputFormat, set_output_format
 
 def execute_unittests():
     loader = unittest.TestLoader()
-    start_dir = 'biosynth/test/'
+    start_dir = os.path.join(os.path.dirname(__file__), "test")
     suite = loader.discover(start_dir)
 
     runner = unittest.TextTestRunner()
@@ -31,4 +33,4 @@ if __name__ == "__main__":
 
     except KeyboardInterrupt:
         Logger.error("\nProgram stopped by the user.")
-        sys.exit(3)
+        sys.exit(4)

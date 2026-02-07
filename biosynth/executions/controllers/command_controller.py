@@ -1,3 +1,4 @@
+import sys
 from datetime import datetime
 
 from biosynth.data.app_data import InputData, EliminationData, OutputData
@@ -29,24 +30,32 @@ app_icon_text = """
 class CommandController:
 
     def run(self):
-        if not InputData.dna_sequence:
-            Logger.error("The input sequence is empty, please try again")
-            sys.exit(2)
-
-        has_overlaps, overlaps = DNAUtils.find_overlapping_regions(InputData.dna_sequence)
-
-        if has_overlaps:
-            Logger.error("The target sequence contains ORFs that share overlapping nucleotide regions:")
-            Logger.space()
-            Logger.info(DNAUtils.get_overlapping_regions(InputData.dna_sequence, overlaps))
-            Logger.error("Please ensure the input sequence does not contain overlapping ORFs.")
-            sys.exit(2)
-
         Logger.notice(app_icon_text)
 
-        # Print the target sequence
+        if not InputData.dna_sequence:
+            Logger.error("The input sequence is empty, please try again")
+            sys.exit(3)
+
+        try:
+            # Check for start codon
+            InputData.start_codon_identified, InputData.cleaned_dna_sequence = DNAUtils.find_start_codon(InputData.dna_sequence)
+        except ValueError as e:
+            Logger.error(f"Start codon validation failed: {e}")
+            InputData.reset()
+            sys.exit(3)
+
+        # Extract coding regions
+        InputData.coding_positions, InputData.coding_indexes = DNAUtils.get_coding_and_non_coding_regions_positions(
+            InputData.cleaned_dna_sequence, InputData.start_codon_identified)
+
         Logger.debug(f"{format_text_bold_for_output('Target sequence:')}")
-        Logger.info(f"{InputData.dna_sequence}")
+
+        if InputData.coding_indexes is not None:
+            Logger.notice(f'A coding region was identified in the target sequence at positions {InputData.coding_indexes[0] + 1} - {InputData.coding_indexes[1]}:')
+            Logger.info(f"{SequenceUtils.highlight_sequence_to_terminal(InputData.cleaned_dna_sequence, InputData.coding_indexes)}")
+        else:
+            Logger.info(f"{InputData.cleaned_dna_sequence}")
+
         Logger.space()
 
         # Print the list of unwanted patterns
@@ -54,24 +63,8 @@ class CommandController:
         Logger.info(f"{SequenceUtils.get_patterns(InputData.unwanted_patterns)}")
         Logger.space()
 
-        # Extract coding regions
-        InputData.coding_positions, InputData.coding_indexes = DNAUtils.get_coding_and_non_coding_regions_positions(
-            InputData.dna_sequence)
-
-        # Handle elimination of coding regions if the user chooses to
-        InputData.coding_regions_list = DNAUtils.get_coding_regions_list(InputData.coding_indexes,
-                                                                         InputData.dna_sequence)
-
-        if len(InputData.coding_indexes) > 0:
-            Logger.debug('The following ORFs were identified in the target sequence:')
-            Logger.info('\n'.join(f"[{key}] {value}" for key, value in InputData.coding_regions_list.items()))
-            Logger.critical(
-                '\nAll ORFs are assumed to be coding regions because BioSynth was executed using CLI. If you wish to exclude some ORFs, then please use the GUI.')
-        else:
-            Logger.critical("No ORFs were identified in the provided target sequence.")
-
         # Eliminate unwanted patterns
-        eliminate_unwanted_patterns(InputData.dna_sequence, InputData.unwanted_patterns, InputData.coding_positions)
+        eliminate_unwanted_patterns(InputData.cleaned_dna_sequence, InputData.unwanted_patterns, InputData.coding_positions)
 
         Logger.notice(format_text_bold_for_output('\n' + '_' * 90 + '\n'))
         Logger.info(EliminationData.info)
@@ -87,7 +80,7 @@ class CommandController:
         Logger.space()
 
         # Save the results
-        report = ReportController(InputData.coding_positions)
+        report = ReportController()
 
         Logger.critical("The final report and optimized sequence can be found in the following paths:\n")
         file_date = datetime.today().strftime("%d-%b-%Y_%H-%M-%S")
@@ -97,5 +90,10 @@ class CommandController:
 
         filename = f"Optimized-Sequence_{file_date}.txt"
         path = save_file(OutputData.optimized_sequence, filename, OutputData.output_path)
+        Logger.notice(path)
+
+        filename = f"Changes-Info_{file_date}.txt"
+        detailed_changes = '\n'.join(EliminationData.detailed_changes) if EliminationData.detailed_changes else None
+        path = save_file(detailed_changes, filename, OutputData.output_path)
         Logger.notice(path)
         Logger.space()

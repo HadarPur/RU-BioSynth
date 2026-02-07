@@ -1,5 +1,5 @@
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QWidget, QVBoxLayout, QTextBrowser, QSizePolicy
+from PyQt5.QtWidgets import QWidget, QVBoxLayout, QTextBrowser, QSizePolicy, QHBoxLayout
 
 from biosynth.data.app_data import InputData, EliminationData
 from biosynth.executions.controllers.ui.window_utils import FloatingScrollIndicator, add_button
@@ -8,11 +8,8 @@ from biosynth.utils.output_utils import Logger
 
 
 class EliminationWindow(QWidget):
-    def __init__(self, switch_to_results_callback, updated_coding_positions, back_to_processing_callback):
+    def __init__(self, switch_to_results_callback, back_to_processing_callback):
         super().__init__()
-        self.switch_to_results_callback = switch_to_results_callback
-        self.updated_coding_positions = updated_coding_positions
-
         self.top_layout = None
         self.middle_layout = None
         self.bottom_layout = None
@@ -22,20 +19,32 @@ class EliminationWindow(QWidget):
         self.next_button = None
         self.floating_btn = None
 
-        self.init_ui(back_to_processing_callback)
+        self.init_ui(back_to_processing_callback, switch_to_results_callback)
 
-    def init_ui(self, callback):
+    def init_ui(self, back_callback, next_callback):
         layout = QVBoxLayout(self)
-        add_button(layout, 'Back', Qt.AlignLeft, callback)
-        self.display_info(layout)
 
-    def display_info(self, layout):
+        # Top-level layout
+        self.add_top_layout(layout, back_callback)
+
+        # Middle layout with information
+        self.add_middle_layout(layout)
+
+        # Bottom layout
+        self.add_bottom_layout(layout, next_callback)
+
+    def add_top_layout(self, layout, back_callback):
+        # Top-level layout
+        add_button(layout, 'Back', Qt.AlignLeft, back_callback, ())
+        return layout
+
+    def add_middle_layout(self, layout):
         middle_layout = QVBoxLayout()
         middle_layout.setContentsMargins(20, 20, 20, 20)
 
         layout.addLayout(middle_layout)
 
-        eliminate_unwanted_patterns(InputData.dna_sequence, InputData.unwanted_patterns, self.updated_coding_positions)
+        eliminate_unwanted_patterns(InputData.cleaned_dna_sequence, InputData.unwanted_patterns, InputData.coding_positions)
 
         wrapped_info = Logger.get_formated_text(EliminationData.info).replace("\n", "<br>")
         html = f"""
@@ -67,13 +76,18 @@ class EliminationWindow(QWidget):
 
         middle_layout.addWidget(text_browser)
 
-        # Add next button to the bottom layout
-        add_button(layout, 'Next', Qt.AlignRight, self.switch_to_results_callback,
-                   lambda: (self.updated_coding_positions,))
-
         # Add floating button
         self.floating_btn = FloatingScrollIndicator(parent=self, scroll_area=text_browser)
         self.floating_btn.on_scroll(text_browser.verticalScrollBar().value())
+
+    def add_bottom_layout(self, layout, next_callback):
+        bottom_layout = QHBoxLayout()
+        bottom_layout.setContentsMargins(20, 5, 20, 20)
+        layout.addLayout(bottom_layout)
+
+        next_button = add_button(bottom_layout, 'Next', Qt.AlignRight)
+        next_button.clicked.connect(
+            lambda: next_callback())
 
     def resizeEvent(self, event):
         self.floating_btn.raise_()  # Bring to front

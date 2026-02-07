@@ -139,20 +139,27 @@ class SequenceUtils:
         return index_seq, marked_seq1, marked_seq2
 
     @staticmethod
-    def highlight_sequences_to_html(seq, coding_indexes, line_length=96, returnBr=False):
-        if coding_indexes is None:
-            return "coding_indexes in None"
+    def highlight_sequences_to_html(seq, coding_index, line_length=96, returnBr=False):
+        """
+        Highlights a single coding region in an HTML-formatted DNA sequence.
 
+        Args:
+            seq (str): DNA sequence
+            coding_index (tuple[int, int] | None): (start, end) coding region indices (end exclusive)
+            line_length (int): characters per line
+            returnBr (bool): whether to insert <br> between lines
+
+        Returns:
+            str: HTML-formatted sequence
+        """
         base_colors = [''] * len(seq)
-        color_palette = [
-            "#b03a48", "#3e8e41", "#3b5ca5", "#a563a3", "#2c7c7a", "#b87e2c",
-            "#6c4f8b", "#497d4a", "#5d6d7e", "#805d3a", "#5e4b56", "#375c4c"
-        ]
 
-        for i, (start, end) in enumerate(coding_indexes):
-            color = color_palette[i % len(color_palette)]
+        if coding_index is not None:
+            start, end = coding_index
+            coding_color = "#b03a48"
+
             for j in range(start, end):
-                base_colors[j] = color
+                base_colors[j] = coding_color
 
         html_lines = []
         for i in range(0, len(seq), line_length):
@@ -184,16 +191,16 @@ class SequenceUtils:
                 f"len(optimized_seq)={len(optimized_seq)}"
             )
 
-        marked_seq2 = []
-        expanded_positions = []
+        marked_seq = []
+        expanded_coding_region = None
 
         i = 0
-        marked_index = 0  # index in the expanded (bracketed) string
+        marked_index = 0  # index in expanded (bracketed) string
 
         while i < len(coding_positions):
 
             # ===============================
-            # ✅ FULL ORF (CODING REGION)
+            # FULL CODING REGION
             # ===============================
             if coding_positions[i] != 0:
                 start = i
@@ -201,41 +208,39 @@ class SequenceUtils:
                     i += 1
                 end = i
 
-                # ✅ ORF start in expanded string
-                orf_start_marked = marked_index
+                # coding region start in expanded string
+                coding_start_marked = marked_index
 
                 for j in range(start, end, 3):
                     codon_input = input_seq[j:j + 3]
                     codon_optimized = optimized_seq[j:j + 3]
 
-                    # Safety: partial codon at the end
+                    # Partial codon safety
                     if len(codon_optimized) < 3:
                         for k in range(len(codon_optimized)):
-                            ci = codon_input[k]
-                            co = codon_optimized[k]
-                            if ci != co:
-                                marked_seq2.append(f"[{co}]")
+                            if codon_input[k] != codon_optimized[k]:
+                                marked_seq.append(f"[{codon_optimized[k]}]")
                                 marked_index += 3
                             else:
-                                marked_seq2.append(co)
+                                marked_seq.append(codon_optimized[k])
                                 marked_index += 1
                         continue
 
                     if codon_input != codon_optimized:
-                        marked_seq2.append(f"[{codon_optimized}]")
+                        marked_seq.append(f"[{codon_optimized}]")
                         marked_index += 5  # [XYZ]
                     else:
-                        marked_seq2.append(codon_optimized)
+                        marked_seq.append(codon_optimized)
                         marked_index += 3
 
-                # ✅ ORF end in expanded string
-                orf_end_marked = marked_index
+                # coding region end in expanded string
+                coding_end_marked = marked_index
 
-                # ✅ EXACTLY ONE ENTRY PER ORF
-                expanded_positions.append((orf_start_marked, orf_end_marked))
+                # EXACTLY ONE CODING REGION
+                expanded_coding_region = (coding_start_marked, coding_end_marked)
 
             # ===============================
-            # ✅ NON-CODING REGION
+            # NON-CODING REGION
             # ===============================
             else:
                 start = i
@@ -244,60 +249,48 @@ class SequenceUtils:
                 end = i
 
                 for j in range(start, end):
-                    char_input = input_seq[j]
-                    char_optimized = optimized_seq[j]
-
-                    if char_input != char_optimized:
-                        marked_seq2.append(f"[{char_optimized}]")
+                    if input_seq[j] != optimized_seq[j]:
+                        marked_seq.append(f"[{optimized_seq[j]}]")
                         marked_index += 3
                     else:
-                        marked_seq2.append(char_optimized)
+                        marked_seq.append(optimized_seq[j])
                         marked_index += 1
 
-        # Final marked optimized sequence
-        marked_optimized = ''.join(marked_seq2)
+        marked_optimized = ''.join(marked_seq)
 
         return SequenceUtils.highlight_sequences_to_html(
             marked_optimized,
-            expanded_positions,
+            expanded_coding_region,
             line_length
         )
 
     @staticmethod
-    def highlight_sequences_to_terminal(seq, coding_indexes):
+    def highlight_sequence_to_terminal(seq, coding_range):
         """
-        Converts DNA sequences to terminal output with highlighted coding regions based on coding index ranges.
+        Converts a DNA sequence to terminal output with a highlighted coding region.
 
         Parameters:
             seq (str): The full DNA sequence.
-            coding_indexes (list of tuples): List of (start, end) tuples representing coding regions.
+            coding_range (tuple): (start, end) tuple representing the coding region (0-based, end-exclusive).
 
         Returns:
-            str: String with terminal escape codes for colorized coding regions.
+            str: String with terminal escape codes for the highlighted coding region.
         """
-        output = ""
-        color_counter = 0
+        start, end = coding_range
 
-        # ANSI color codes for highlighting coding regions
-        colors = ['\033[91m', '\033[92m', '\033[93m', '\033[94m', '\033[95m', '\033[96m']
+        # ANSI color code for highlighting the coding region
+        color = '\033[36m'  # green
+        reset = '\033[0m'
 
-        # Process the sequence by iterating over coding and non-coding regions
-        last_end = 0  # Track the end of the last processed region
-        for start, end in coding_indexes:
-            # Add non-coding region before the current coding region
-            if last_end < start:
-                output += seq[last_end:start]
+        # Non-coding before coding region
+        before_coding = seq[:start]
 
-            # Add coding region with highlighting
-            subsequence = seq[start:end]
-            color = colors[color_counter % len(colors)]
-            color_counter += 1
-            spaced_triplets = " ".join(subsequence[j:j + 3] for j in range(0, len(subsequence), 3))
-            output += f" {color}{spaced_triplets}\033[0m "
-            last_end = end
+        # coding region with triplet spacing
+        coding_region = seq[start:end]
 
-        # Add any remaining non-coding region after the last coding region
-        if last_end < len(seq):
-            output += seq[last_end:]
+        # Non-coding after coding region
+        after_coding = seq[end:]
+
+        output = f"{before_coding}{color}{coding_region}{reset}{after_coding}"
 
         return output

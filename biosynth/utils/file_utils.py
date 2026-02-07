@@ -2,12 +2,12 @@ import os
 import re
 import shutil
 import sys
+import numpy as np
+
 from pathlib import Path
 from importlib.resources import files
-
 from biosynth.utils.output_utils import Logger
 from biosynth.utils.text_utils import handle_critical_error
-
 
 def read_codon_freq_file(raw_lines, convert_to_dna=True):
     """
@@ -47,7 +47,6 @@ def read_codon_freq_file(raw_lines, convert_to_dna=True):
     return codon_usage
 
 
-
 # Define a base class for reading data from a file.
 class FileDataReader:
     def __init__(self, file_path):
@@ -72,7 +71,7 @@ class FileDataReader:
 
 # Inherit from FileDataReader to read sequences from a file.
 class SequenceReader(FileDataReader):
-    def read_sequence(self):
+    def read_sequence(self, convert_to_dna=True):
         """
         Reads a sequence from the file, removing leading/trailing whitespace.
 
@@ -91,11 +90,15 @@ class SequenceReader(FileDataReader):
             handle_critical_error(f"Invalid format in:\n{self.file_path}\nmultiple lines detected.\n"
                              "Sequence file must contain exactly one line without line breaks.")
 
-        return raw_seq[0]
+        seq = raw_seq[0]
+        if convert_to_dna:
+            seq = seq.replace("U", "T")
+
+        return seq
 
 # Inherit from FileDataReader to read patterns from a file.
 class PatternReader(FileDataReader):
-    def read_patterns(self):
+    def read_patterns(self, convert_to_dna=True):
         """
         Reads patterns from the file, splitting them by commas and adding to a set.
 
@@ -113,6 +116,8 @@ class PatternReader(FileDataReader):
                 continue
 
             pattern = line.strip()
+            if convert_to_dna:
+                pattern = pattern.replace("U", "T")
 
             # invalid if contains spaces or commas
             if " " in pattern or "," in pattern:

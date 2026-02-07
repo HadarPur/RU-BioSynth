@@ -410,54 +410,27 @@
             <div>
                 <h1 id="dna-sequence">Input</h1>
                 <h2>Target Sequence:</h2>
-                <p class="pre-scrollable-paragraph" style="font-family: monospace;">{{input}}</p>
+
+                {% if coding_idx is not none and coding_idx | length > 0 %}
+                    <p>A coding region was identified in the target sequence at positions {{coding_idx}}:</p>
+                    <div class="highlight-block pre-scrollable-paragraph">
+                        {{ highlight_input | safe }}
+                    </div>
+                {% else %}
+                    <p class="pre-scrollable-paragraph" style="font-family: monospace;">{{input}}</p>
+                {% endif %}
+
             </div>
 
             <div>
                 <h2 id="unwanted-patterns">Unwanted Patterns:</h2>
-                <p class="scrollable-paragraph">{{patterns}}</p>
+                <p class="pre-scrollable-paragraph" style="font-family: monospace;">{{patterns}}</p>
             </div>
 
             <div class="divider" style="width:24%; margin:30px 0;"></div>
 
             <div>
                 <h1 id="elimination">Elimination</h1>
-
-                {% if num_of_coding_regions > 0 %}
-                <p>The following ORFs were identified in the target sequence:</p>
-                <div class="highlight-block pre-scrollable-paragraph">
-                    {{ highlight_input | safe }}
-                </div>
-
-                <p>A total of {{ num_of_coding_regions }} ORFs have been identified:</p>
-                <ol class="horizontal-scroll">
-                    {% for key, value in regions_list -%}
-                    <li value="{{ key }}">{{ value }}</li>
-                    {% endfor %}
-                </ol>
-
-                {% if excluded_regions_list and excluded_regions_list|length > 0 %}
-                <p>The specific ORFs that the user designated as non-coding are as follows:</p>
-                <ol class="horizontal-scroll">
-                    {% for key, value in excluded_regions_list -%}
-                    <li value="{{ key }}">{{ value }}</li>
-                    {% endfor %}
-                </ol>
-                <p>These coding regions will be reclassified as non-coding areas.</p>
-
-                <p><br>The target sequence has been updated based on the selected coding regions:</p>
-                <p class="highlight-block pre-scrollable-paragraph">{{ highlight_selected | safe }}</p>
-                {% else %}
-                    {% if execution_mode == 'GUI' %}
-                        <p>All ORFs are assumed to be coding regions since none were selected using GUI.</p>
-                    {% else %}
-                        <p>All ORFs are assumed to be coding regions because BioSynth was executed using CLI.</p>
-                    {% endif %}
-                {% endif %}
-
-                {% else %}
-                <p>No ORFs were identified in the provided target sequence.</p>
-                {% endif %}
             </div>
 
             <div>
@@ -497,7 +470,7 @@
 
             <div>
                 <h2 id="optimized-dna-sequence">Optimized Sequence:</h2>
-                <p class="highlight-block pre-scrollable-paragraph">{{ highlight_optimized_selected | safe }}</p>
+                <p class="highlight-block pre-scrollable-paragraph" style="word-break: break-all; white-space: pre-wrap;">{{ highlight_optimized_selected | safe }}</p>
             </div>
 
         </div>

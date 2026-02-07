@@ -3,7 +3,7 @@ from unittest.mock import patch
 
 import numpy as np
 
-from biosynth.utils.cost_utils import calculate_cost
+from biosynth.utils.cost_utils import normalize_codon_usage, calculate_cost
 
 
 class TestCalculateCost(unittest.TestCase):
@@ -20,6 +20,8 @@ class TestCalculateCost(unittest.TestCase):
             "CTT": 0.1,  # synonymous codon for Leucine
             "TAG": 0.01,  # stop codon
         }
+
+        self.codon_usage = normalize_codon_usage(self.codon_usage)
 
         self.alpha = 1.0
         self.beta = 2.0
@@ -52,7 +54,7 @@ class TestCalculateCost(unittest.TestCase):
         _, cost = calculate_cost(self.target_sequence, self.coding_positions, self.codon_usage, 8, "CTT", "A",
                                  self.alpha,
                                  self.beta, self.w)
-        self.assertAlmostEqual(cost, -np.log10(self.codon_usage["TTA"]))
+        self.assertAlmostEqual(cost, self.codon_usage["TTA"])
 
     @patch("biosynth.utils.amino_acid_utils.AminoAcidConfig")
     def test_stop_codon_formation(self, MockAminoAcidConfig):

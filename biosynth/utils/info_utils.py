@@ -26,13 +26,11 @@ def get_non_coding_region_cost_description():
 
 def get_info_usage():
     lines = [
-        "Note that the open reading frames (ORFs) in the specified target sequence should satisfy the following two requirements:",
-        "• Each ORF must contain at least 5 internal codons (excluding start and stop codons).",
-        "• If two ORFs are overlapping, then one must contain the other. In such a case, the smaller (contained) ORF is not considered",
-        "   as a potential coding region.",
-        "",
-        "If the target sequence satisfies these requirements, the program will specify all non-overlapping ORFs, and you should select",
-        "among them the ones that are the actual coding sequences. Otherwise, an error message will indicate the specific violation.",
+        "Your target sequence should satisfy the following properties:",
+        "• The target sequence must contain at most one asterisk character (*) marking the coding region.",
+        "• The asterisk character should be immediately followed by a start codon, and the coding region continues",
+        "  until the first in-frame stop codon.",
+        "• If the target sequence does not contain an asterisk, then the entire target sequence will be treated as non-coding."
     ]
 
     width = max(len(line.expandtabs(4)) for line in lines)
@@ -55,10 +53,10 @@ def get_elimination_info():
         "Coding regions:",
         "• If the codon remains unchanged, no cost is applied.",
         "• If the codon is modified but still encodes the same amino acid (a synonymous substitution),",
-        "   a small substitution-specific cost is applied: the negative logarithm of the proposed codon's",
-        "   frequency from the user-specified codon usage table.",
+        "  a small substitution-specific cost is applied: the negative logarithm of the proposed codon's",
+        "  frequency from the user-specified codon usage table.",
         "• If the codon is changed to encode a different amino acid (a non-synonymous substitution),",
-        "   a high uniform cost of w is applied.",
+        "  a high uniform cost of w is applied.",
         "",
         "Any substitutions that change the location of a coding region are associated with infinite cost and ",
         "are thus avoided. These include any substitution to the start codon, substitutions that change a non-stop codon",

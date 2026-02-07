@@ -7,32 +7,25 @@ class TestDataClasses(unittest.TestCase):
 
     def test_input_data_defaults(self):
         self.assertIsNone(app_data.InputData.dna_sequence)
+        self.assertIsNone(app_data.InputData.cleaned_dna_sequence)
         self.assertIsNone(app_data.InputData.unwanted_patterns)
         self.assertIsNone(app_data.InputData.coding_indexes)
         self.assertIsNone(app_data.InputData.coding_positions)
-        self.assertIsNone(app_data.InputData.coding_regions_list)
-        self.assertIsNone(app_data.InputData.excluded_coding_indexes)
-        self.assertIsNone(app_data.InputData.excluded_coding_positions)
-        self.assertIsNone(app_data.InputData.excluded_regions_list)
 
     def test_input_data_reset(self):
         # Set some dummy values
         app_data.InputData.dna_sequence = "ATG"
         app_data.InputData.coding_indexes = [0, 1, 2]
-        app_data.InputData.excluded_regions_list = [(0, 2)]
 
         # Reset
         app_data.InputData.reset()
 
         # All fields should be None
         self.assertIsNone(app_data.InputData.dna_sequence)
+        self.assertIsNone(app_data.InputData.cleaned_dna_sequence)
         self.assertIsNone(app_data.InputData.unwanted_patterns)
         self.assertIsNone(app_data.InputData.coding_indexes)
         self.assertIsNone(app_data.InputData.coding_positions)
-        self.assertIsNone(app_data.InputData.coding_regions_list)
-        self.assertIsNone(app_data.InputData.excluded_coding_indexes)
-        self.assertIsNone(app_data.InputData.excluded_coding_positions)
-        self.assertIsNone(app_data.InputData.excluded_regions_list)
 
     def test_cost_data_defaults(self):
         self.assertIsNone(app_data.CostData.codon_usage)

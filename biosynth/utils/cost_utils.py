@@ -1,7 +1,49 @@
 import numpy as np
 
 from biosynth.utils.amino_acid_utils import AminoAcidConfig
+from biosynth.utils.output_utils import Logger
 
+def normalize_codon_usage(codon_usage):
+    """
+    Normalize codon usage frequencies into log-scaled costs.
+
+    The cost for a codon with frequency f is defined as:
+        cost(f) = log(f) / log(min_frequency)
+
+    This assigns:
+      - cost = 1.0 to the least frequent codon
+      - cost = 0.0 to the most frequent codon
+
+    Parameters
+    ----------
+    codon_usage : dict[str, float]
+        Mapping from codon to raw usage frequency (f > 0).
+
+    Returns
+    -------
+    dict[str, float]
+        Mapping from codon to normalized cost.
+    """
+    if not codon_usage:
+        return {}
+
+    freq_values = np.fromiter(codon_usage.values(), dtype=float)
+
+    if np.any(freq_values <= 0):
+        raise ValueError("Codon usage frequencies must be strictly positive")
+
+    log_freq = np.log10(freq_values)
+    min_log = np.min(log_freq)
+    max_log = np.max(log_freq)
+
+    # inverted normalization: [0, 1]
+    norm = 1 - (log_freq - min_log) / (max_log - min_log)
+
+    # rescale to [eps, 1]
+    eps = 0.01
+    costs = eps + (1 - eps) * norm
+
+    return dict(zip(codon_usage.keys(), costs))
 
 def evaluate_substitution(target_sequence, i, sigma, alpha, beta):
     """
@@ -116,7 +158,7 @@ def calculate_cost(target_sequence, coding_positions, codon_usage, i, v, sigma, 
             return changes, 0.0
         elif AminoAcidConfig.encodes_same_amino_acid(proposed_codon, target_codon):
             # Synonymous substitution with a logarithmic penalty based on codon usage
-            return changes, -np.log10(codon_usage[proposed_codon])
+            return changes, codon_usage[proposed_codon]
         elif AminoAcidConfig.is_start_codon(codon_pos) or AminoAcidConfig.either_is_stop_codon(target_codon,
                                                                                                proposed_codon):
             # Penalize stop codon formation

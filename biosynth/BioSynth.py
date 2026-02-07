@@ -1,3 +1,4 @@
+import sys
 from biosynth.executions.controllers.cli_controller import CLIController
 from biosynth.executions.controllers.gui_controller import GUIController
 from biosynth.utils.file_utils import delete_dir
@@ -21,7 +22,9 @@ class BioSynthApp:
             else:
                 set_output_format(OutputFormat.TERMINAL)
                 CLIController(args).execute()
-
+        except Exception as e:
+            Logger.error(e)
+            sys.exit(5)
         except KeyboardInterrupt:
             Logger.error("\nProgram stopped by the user.")
-            sys.exit(3)
+            sys.exit(4)

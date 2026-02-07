@@ -134,7 +134,12 @@ class TestCodonUsageReader(unittest.TestCase):
             tmp_path = tmp.name
         reader = CodonUsageReader(tmp_path)
         usage = reader.read_codon_usage()
-        self.assertEqual(usage, {"ATG": 0.5, "TTT": 1.0})
+
+        expected = {
+            "ATG": 0.5,
+            "TTT": 1.0
+        }
+        self.assertEqual(usage, expected)
         os.remove(tmp_path)
 
     def test_read_codon_usage_file_not_set(self):
