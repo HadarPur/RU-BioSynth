@@ -47,21 +47,22 @@ class TestDNAHighlighter(unittest.TestCase):
 
     def test_get_coding_and_non_coding_regions_start_no_stop(self):
         seq = "AA*ATGCCCCCCCC"  # ATG but no stop codon
-        start_codon_identified, cleaned_seq = DNAUtils.find_start_codon(seq)
 
-        coding_positions, coding_indexes = DNAUtils.get_coding_and_non_coding_regions_positions(
-            cleaned_seq, start_codon_identified)
+        with self.assertRaises(ValueError) as cm:
+            DNAUtils.find_start_codon(seq)
 
-        self.assertTrue(all(pos == 0 for pos in coding_positions))  # All non-coding
-        self.assertEqual(coding_indexes, None)
+        self.assertEqual(
+            str(cm.exception),
+            "No in-frame stop codon found after *ATG"
+        )
 
-    def test_get_coding_and_non_coding_regions_short_coding_region(self):
-        # ATG + TAA only → length 6 < min_coding_region_length
-        seq = "AA*ATGTAA"
-        start_codon_identified, cleaned_seq = DNAUtils.find_start_codon(seq)
+    def test_star_present_but_no_atg_after(self):
+        seq = "AA*CCCCCC"  # '*' present, no ATG after
 
-        coding_positions, coding_indexes = DNAUtils.get_coding_and_non_coding_regions_positions(
-            cleaned_seq, start_codon_identified)
+        with self.assertRaises(ValueError) as cm:
+            DNAUtils.find_start_codon(seq)
 
-        self.assertTrue(all(pos == 0 for pos in coding_positions))  # All non-coding
-        self.assertEqual(coding_indexes, None)
+        self.assertEqual(
+            str(cm.exception),
+            "'*' present but not followed by ATG"
+        )
