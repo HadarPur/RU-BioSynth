@@ -33,20 +33,25 @@ class CommandController:
 
         if not InputData.dna_sequence:
             Logger.error("The input sequence is empty, please try again")
-            sys.exit(2)
+            sys.exit(3)
 
-        # Check for start codon
-        InputData.start_codon_identified, InputData.cleaned_dna_sequence = DNAUtils.find_start_codon(InputData.dna_sequence)
+        try:
+            # Check for start codon
+            InputData.start_codon_identified, InputData.cleaned_dna_sequence = DNAUtils.find_start_codon(InputData.dna_sequence)
+        except ValueError as e:
+            Logger.error(f"Start codon validation failed: {e}")
+            InputData.reset()
+            sys.exit(3)
 
         # Extract coding regions
-        InputData.coding_positions, InputData.orf_indexes = DNAUtils.get_coding_and_non_coding_regions_positions(
+        InputData.coding_positions, InputData.coding_indexes = DNAUtils.get_coding_and_non_coding_regions_positions(
             InputData.cleaned_dna_sequence, InputData.start_codon_identified)
 
         Logger.debug(f"{format_text_bold_for_output('Target sequence:')}")
 
-        if InputData.orf_indexes is not None:
-            Logger.notice(f'An ORF was identified in the target sequence at positions {InputData.orf_indexes[0] + 1} - {InputData.orf_indexes[1]}:')
-            Logger.info(f"{SequenceUtils.highlight_sequence_to_terminal(InputData.cleaned_dna_sequence, InputData.orf_indexes)}")
+        if InputData.coding_indexes is not None:
+            Logger.notice(f'A coding region was identified in the target sequence at positions {InputData.coding_indexes[0] + 1} - {InputData.coding_indexes[1]}:')
+            Logger.info(f"{SequenceUtils.highlight_sequence_to_terminal(InputData.cleaned_dna_sequence, InputData.coding_indexes)}")
         else:
             Logger.info(f"{InputData.cleaned_dna_sequence}")
 

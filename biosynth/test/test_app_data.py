@@ -9,7 +9,7 @@ class TestDataClasses(unittest.TestCase):
         self.assertIsNone(app_data.InputData.dna_sequence)
         self.assertIsNone(app_data.InputData.cleaned_dna_sequence)
         self.assertIsNone(app_data.InputData.unwanted_patterns)
-        self.assertIsNone(app_data.InputData.orf_indexes)
+        self.assertIsNone(app_data.InputData.coding_indexes)
         self.assertIsNone(app_data.InputData.coding_positions)
 
     def test_input_data_reset(self):
@@ -24,7 +24,7 @@ class TestDataClasses(unittest.TestCase):
         self.assertIsNone(app_data.InputData.dna_sequence)
         self.assertIsNone(app_data.InputData.cleaned_dna_sequence)
         self.assertIsNone(app_data.InputData.unwanted_patterns)
-        self.assertIsNone(app_data.InputData.orf_indexes)
+        self.assertIsNone(app_data.InputData.coding_indexes)
         self.assertIsNone(app_data.InputData.coding_positions)
 
     def test_cost_data_defaults(self):

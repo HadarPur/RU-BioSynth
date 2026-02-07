@@ -22,10 +22,9 @@ class EliminationWindow(QWidget):
         self.init_ui(back_to_processing_callback, switch_to_results_callback)
 
     def init_ui(self, back_callback, next_callback):
-        # Top-level layout
         layout = QVBoxLayout(self)
 
-        # Top Layout
+        # Top-level layout
         self.add_top_layout(layout, back_callback)
 
         # Middle layout with information

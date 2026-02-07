@@ -411,8 +411,8 @@
                 <h1 id="dna-sequence">Input</h1>
                 <h2>Target Sequence:</h2>
 
-                {% if orf_idx is not none and orf_idx | length > 0 %}
-                    <p>An ORF was identified in the target sequence at positions {{orf_idx}}:</p>
+                {% if coding_idx is not none and coding_idx | length > 0 %}
+                    <p>A coding region was identified in the target sequence at positions {{coding_idx}}:</p>
                     <div class="highlight-block pre-scrollable-paragraph">
                         {{ highlight_input | safe }}
                     </div>

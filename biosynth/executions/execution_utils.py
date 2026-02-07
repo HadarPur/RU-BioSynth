@@ -6,12 +6,12 @@ from biosynth.utils.output_utils import Logger
 
 
 def is_valid_dna(sequence):
-    valid_bases = set('ATCG*')
+    valid_bases = set('ATCGU*')
     return all(base in valid_bases for base in sequence.upper())
 
 
 def is_valid_patterns(patterns):
-    valid_bases = set('ATCG')
+    valid_bases = set('ATCGU')
     for pattern in patterns:
         if not all(base in valid_bases for base in pattern.upper()):
             return False
@@ -96,12 +96,17 @@ def is_valid_cost(alpha=None, beta=None, w=None):
         Logger.error(f"Invalid w value: w = {w}. Must be a positive number.")
         return False
 
-    if alpha >= beta:
-        Logger.error(f"Biological constraint violated: alpha (α = {alpha}) must be less than beta (β = {beta}).")
+    if not (alpha < beta):
+        Logger.error(f"Biological Constraint violated: α < β required "
+                     f"(α={alpha}, β={beta}).")
         return False
 
-    if beta > w:
-        Logger.error(f"Cost hierarchy violated: beta (β = {beta}) must be significantly smaller than w (w = {w}).")
+    MUCH_LESS_FACTOR = 10  # Define a factor to ensure beta is significantly smaller than w
+    if not (beta * MUCH_LESS_FACTOR < w):
+        Logger.error(
+            f"Constraint violated: β ≪ w required "
+            f"(β={beta}, w={w}, factor={MUCH_LESS_FACTOR})."
+        )
         return False
 
     return True

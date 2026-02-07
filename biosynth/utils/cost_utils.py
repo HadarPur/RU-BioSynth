@@ -1,6 +1,7 @@
 import numpy as np
 
 from biosynth.utils.amino_acid_utils import AminoAcidConfig
+from biosynth.utils.output_utils import Logger
 
 def normalize_codon_usage(codon_usage):
     """
@@ -120,8 +121,7 @@ def calculate_cost(target_sequence, coding_positions, codon_usage, i, v, sigma, 
 
     # Validate codon usage
     if any(freq <= 0 for freq in codon_usage.values()):
-        Logger.error("Invalid codon usage: probabilities must be positive and normalized.")
-        exit(4)
+        raise ValueError("Invalid codon usage: probabilities must be positive and normalized.")
 
     # Determine coding position of the current index.
     codon_pos = coding_positions[i]  # Non-coding: 0; Coding: ((i - \text{coding\_start}) \mod 3) + 1.

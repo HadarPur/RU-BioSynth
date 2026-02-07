@@ -139,13 +139,13 @@ class SequenceUtils:
         return index_seq, marked_seq1, marked_seq2
 
     @staticmethod
-    def highlight_sequences_to_html(seq, orf_index, line_length=96, returnBr=False):
+    def highlight_sequences_to_html(seq, coding_index, line_length=96, returnBr=False):
         """
-        Highlights a single ORF in an HTML-formatted DNA sequence.
+        Highlights a single coding region in an HTML-formatted DNA sequence.
 
         Args:
             seq (str): DNA sequence
-            orf_index (tuple[int, int] | None): (start, end) ORF indices (end exclusive)
+            coding_index (tuple[int, int] | None): (start, end) coding region indices (end exclusive)
             line_length (int): characters per line
             returnBr (bool): whether to insert <br> between lines
 
@@ -154,12 +154,12 @@ class SequenceUtils:
         """
         base_colors = [''] * len(seq)
 
-        if orf_index is not None:
-            start, end = orf_index
-            orf_color = "#b03a48"
+        if coding_index is not None:
+            start, end = coding_index
+            coding_color = "#b03a48"
 
             for j in range(start, end):
-                base_colors[j] = orf_color
+                base_colors[j] = coding_color
 
         html_lines = []
         for i in range(0, len(seq), line_length):
@@ -192,7 +192,7 @@ class SequenceUtils:
             )
 
         marked_seq = []
-        expanded_orf = None
+        expanded_coding_region = None
 
         i = 0
         marked_index = 0  # index in expanded (bracketed) string
@@ -200,7 +200,7 @@ class SequenceUtils:
         while i < len(coding_positions):
 
             # ===============================
-            # FULL ORF (CODING REGION)
+            # FULL CODING REGION
             # ===============================
             if coding_positions[i] != 0:
                 start = i
@@ -208,8 +208,8 @@ class SequenceUtils:
                     i += 1
                 end = i
 
-                # ORF start in expanded string
-                orf_start_marked = marked_index
+                # coding region start in expanded string
+                coding_start_marked = marked_index
 
                 for j in range(start, end, 3):
                     codon_input = input_seq[j:j + 3]
@@ -233,11 +233,11 @@ class SequenceUtils:
                         marked_seq.append(codon_optimized)
                         marked_index += 3
 
-                # ORF end in expanded string
-                orf_end_marked = marked_index
+                # coding region end in expanded string
+                coding_end_marked = marked_index
 
-                # EXACTLY ONE ORF
-                expanded_orf = (orf_start_marked, orf_end_marked)
+                # EXACTLY ONE CODING REGION
+                expanded_coding_region = (coding_start_marked, coding_end_marked)
 
             # ===============================
             # NON-CODING REGION
@@ -260,37 +260,37 @@ class SequenceUtils:
 
         return SequenceUtils.highlight_sequences_to_html(
             marked_optimized,
-            expanded_orf,
+            expanded_coding_region,
             line_length
         )
 
     @staticmethod
     def highlight_sequence_to_terminal(seq, coding_range):
         """
-        Converts a DNA sequence to terminal output with a highlighted ORF.
+        Converts a DNA sequence to terminal output with a highlighted coding region.
 
         Parameters:
             seq (str): The full DNA sequence.
-            coding_range (tuple): (start, end) tuple representing the ORF (0-based, end-exclusive).
+            coding_range (tuple): (start, end) tuple representing the coding region (0-based, end-exclusive).
 
         Returns:
-            str: String with terminal escape codes for the highlighted ORF.
+            str: String with terminal escape codes for the highlighted coding region.
         """
         start, end = coding_range
 
-        # ANSI color code for highlighting the ORF
+        # ANSI color code for highlighting the coding region
         color = '\033[36m'  # green
         reset = '\033[0m'
 
-        # Non-coding before ORF
-        before_orf = seq[:start]
+        # Non-coding before coding region
+        before_coding = seq[:start]
 
-        # ORF with triplet spacing
-        orf = seq[start:end]
+        # coding region with triplet spacing
+        coding_region = seq[start:end]
 
-        # Non-coding after ORF
-        after__orf = seq[end:]
+        # Non-coding after coding region
+        after_coding = seq[end:]
 
-        output = f"{before_orf}{color}{orf}{reset}{after__orf}"
+        output = f"{before_coding}{color}{coding_region}{reset}{after_coding}"
 
         return output

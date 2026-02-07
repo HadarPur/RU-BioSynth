@@ -31,7 +31,7 @@ class TestInfoUtils(unittest.TestCase):
         result = info_utils.get_info_usage()
         lines = result.splitlines()
         self.assertTrue(all(line.startswith("\t") for line in lines))
-        self.assertIn("Note that the open reading frames", result)
+        self.assertIn("Your target sequence should satisfy the following properties", result)
 
     def test_elimination_info_boxed_format(self):
         result = info_utils.get_elimination_info()

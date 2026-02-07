@@ -32,4 +32,4 @@ if __name__ == "__main__":
 
     except KeyboardInterrupt:
         Logger.error("\nProgram stopped by the user.")
-        sys.exit(3)
+        sys.exit(4)

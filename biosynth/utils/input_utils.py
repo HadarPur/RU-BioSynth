@@ -34,7 +34,7 @@ def get_terminal_options():
 
 def get_terminal_information():
     return f"{format_text_bold_for_output('Information:')}\n" \
-           f"{get_info_usage()}\n" \
+           f"{get_info_usage()}\n\n" \
            f"{get_elimination_info()}"
 
 class ArgumentParser:

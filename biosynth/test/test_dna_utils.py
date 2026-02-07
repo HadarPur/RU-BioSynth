@@ -35,7 +35,7 @@ class TestDNAHighlighter(unittest.TestCase):
         self.assertEqual(coding_indexes, expected_coding_indexes)
         self.assertEqual(coding_positions, expected_coding_positions)
 
-    def test_get_coding_and_non_coding_regions_no_orf(self):
+    def test_get_coding_and_non_coding_regions_no_coding_region(self):
         seq = "AAACCCGGGTTT"  # No ATG or stop codons
         start_codon_identified, cleaned_seq = DNAUtils.find_start_codon(seq)
 
@@ -55,7 +55,7 @@ class TestDNAHighlighter(unittest.TestCase):
         self.assertTrue(all(pos == 0 for pos in coding_positions))  # All non-coding
         self.assertEqual(coding_indexes, None)
 
-    def test_get_coding_and_non_coding_regions_short_orf(self):
+    def test_get_coding_and_non_coding_regions_short_coding_region(self):
         # ATG + TAA only → length 6 < min_coding_region_length
         seq = "AA*ATGTAA"
         start_codon_identified, cleaned_seq = DNAUtils.find_start_codon(seq)

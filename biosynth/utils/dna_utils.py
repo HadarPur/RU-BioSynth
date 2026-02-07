@@ -5,46 +5,46 @@ class DNAUtils:
 
     @staticmethod
     def find_start_codon(seq):
-        """
-        Finds a marked start codon (*ATG), returns its position in the
-        cleaned sequence and the cleaned sequence itself.
+        stop_codons = {"TAA", "TAG", "TGA"}
 
-        Parameters:
-            seq (str): DNA sequence containing a marked start codon.
-
-        Returns:
-            tuple:
-                - int: 0-based index of 'A' in ATG in the cleaned sequence,
-                       or -1 if not found
-                - str: sequence with '*' removed
-        """
         idx = seq.find("*ATG")
+
+        if idx == -1:
+            if "*" in seq:
+                raise ValueError("'*' present but not followed by ATG")
+            return None, seq  # no marker at all
+
         cleaned_seq = seq[:idx] + seq[idx + 1:]
 
-        return idx, cleaned_seq
+        # scan in-frame
+        for i in range(idx + 3, len(cleaned_seq), 3):
+            if cleaned_seq[i:i + 3] in stop_codons:
+                return idx, cleaned_seq
+
+        raise ValueError("No in-frame stop codon found after *ATG")
 
     @staticmethod
-    def get_orf_sequence(orf_index, seq):
+    def get_coding_sequence(coding_index, seq):
         """
-        Extracts the ORF sequence from the DNA sequence.
+        Extracts the coding region sequence from the DNA sequence.
 
         Parameters:
-            orf_index (tuple[int, int] | None): (start, end) of the ORF (end exclusive)
+            coding_index (tuple[int, int] | None): (start, end) of the coding region (end exclusive)
             seq (str): DNA sequence (clean, without '*')
 
         Returns:
-            str | None: ORF sequence, or None if no ORF exists
+            str | None: coding region sequence, or None if no coding region exists
         """
-        if orf_index is None:
+        if coding_index is None:
             return None
 
-        start, end = orf_index
+        start, end = coding_index
         return seq[start:end]
 
     @staticmethod
     def get_coding_and_non_coding_regions_positions(clean_seq, atg_index):
         """
-        Computes codon positions and a single ORF defined by a given start codon,
+        Computes codon positions and a single coding region defined by a given start codon,
         subject to a minimum coding region length.
 
         Args:
@@ -54,7 +54,7 @@ class DNAUtils:
         Returns:
             tuple:
                 - codon_positions (list[int])
-                - orf_index (tuple[int, int] | None)
+                - coding_index (tuple[int, int] | None)
                   (start_index, end_index) where end_index is exclusive
         """
         stop_codons = {"TAA", "TAG", "TGA"}
@@ -64,7 +64,7 @@ class DNAUtils:
         start_idx = atg_index
 
         # Validate start codon
-        if start_idx < 0 or clean_seq[start_idx:start_idx + 3] != "ATG":
+        if start_idx is None or clean_seq[start_idx:start_idx + 3] != "ATG":
             return codon_positions, None
 
         stop_idx = None
@@ -73,11 +73,9 @@ class DNAUtils:
         for j in range(start_idx + 3, N - 2, 3):
             if clean_seq[j:j + 3] in stop_codons:
                 candidate_end = j + 3  # exclusive
-                if candidate_end - start_idx >= min_coding_region_length:
-                    stop_idx = candidate_end
-                    break
+                stop_idx = candidate_end
 
-        # No valid ORF satisfying length constraint
+        # No valid coding region satisfying length constraint
         if stop_idx is None:
             return codon_positions, None
 
@@ -91,5 +89,5 @@ class DNAUtils:
             else:
                 codon_positions[k] = codon_phase
 
-        orf_index = (start_idx, stop_idx)
-        return codon_positions, orf_index
+        coding_index = (start_idx, stop_idx)
+        return codon_positions, coding_index

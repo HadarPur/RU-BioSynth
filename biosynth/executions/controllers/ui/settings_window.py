@@ -76,19 +76,19 @@ class SettingsWindow(QWidget):
         content_layout.addWidget(label)
 
         # Extract coding regions
-        InputData.coding_positions, InputData.orf_indexes = DNAUtils.get_coding_and_non_coding_regions_positions(
+        InputData.coding_positions, InputData.coding_indexes = DNAUtils.get_coding_and_non_coding_regions_positions(
             InputData.cleaned_dna_sequence, InputData.start_codon_identified)
 
-        highlighted_sequence = f"<pre>{SequenceUtils.highlight_sequences_to_html(InputData.cleaned_dna_sequence, InputData.orf_indexes, line_length=96, returnBr=True)}</pre>"
-        if InputData.orf_indexes is not None and len(InputData.orf_indexes) > 0:
+        highlighted_sequence = f"<pre>{SequenceUtils.highlight_sequences_to_html(InputData.cleaned_dna_sequence, InputData.coding_indexes, line_length=96, returnBr=True)}</pre>"
+        if InputData.coding_indexes is not None and len(InputData.coding_indexes) > 0:
             label_html = f"""
-                <p>An ORF was identified in the target sequence at positions {InputData.orf_indexes[0] + 1} - {InputData.orf_indexes[1]}:</p>
+                <p>A coding region was identified in the target sequence at positions {InputData.coding_indexes[0] + 1} - {InputData.coding_indexes[1]}:</p>
             """
 
 
         else:
             label_html = f"""
-                <p>No ORFs were identified in the provided target sequence</p>
+                <p>A coding region identified in the provided target sequence</p>
             """
 
         label = QLabel(label_html)

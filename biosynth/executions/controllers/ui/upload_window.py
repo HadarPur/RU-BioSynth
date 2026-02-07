@@ -61,6 +61,7 @@ class UploadWindow(QWidget):
             placeholder="Upload Target Sequence/Drag&Drop Target Sequence file (.txt)",
             drop_callback=self.load_dna_file_from_file_path
         )
+        self.dna_text_edit.textChanged.connect(self.dna_text_edit_changed)
         add_button(dna_layout, 'Load Target Sequence', Qt.AlignCenter, self.load_dna_file, size=(200, 30))
 
         # Patterns input
@@ -71,6 +72,7 @@ class UploadWindow(QWidget):
             placeholder="Upload Patterns file/Drag&Drop Patterns file (.txt)",
             drop_callback=self.load_patterns_file_from_file_path
         )
+        self.patterns_text_edit.textChanged.connect(self.patterns_text_edit_changed)
         add_button(pattern_layout, 'Load Patterns', Qt.AlignCenter, self.load_patterns_file, size=(200, 30))
 
         # Codon Usage File Upload
@@ -83,6 +85,7 @@ class UploadWindow(QWidget):
             headers=["Codon", "Frequency"],
             drop_callback=self.load_codon_usage_from_file_path
         )
+        self.codon_usage_table.itemChanged.connect(self.codon_usage_table_changed)
         add_button(codon_usage_layout, 'Load Codon Usage', Qt.AlignCenter, self.load_codon_usage_file, size=(200, 30))
 
         # Custom Scores
@@ -165,6 +168,10 @@ class UploadWindow(QWidget):
         else:
             QMessageBox.critical(self, "Error", "Invalid target sequence format in file")
 
+    def dna_text_edit_changed(self):
+        content = self.dna_text_edit.toPlainText()
+        UploadData.dna_sequence_content_file = content
+
     def load_patterns_file(self):
         file_name, _ = QFileDialog.getOpenFileName(self, "Open Unwanted Patterns File", "", "Text Files (*.txt)")
 
@@ -186,6 +193,10 @@ class UploadWindow(QWidget):
             self.patterns_text_edit.setPlainText("\n".join(content))
         else:
             QMessageBox.critical(self, "Error", "Invalid unwanted patterns format in file")
+
+    def patterns_text_edit_changed(self):
+        content = self.patterns_text_edit.toPlainText().splitlines()
+        UploadData.unwanted_patterns_content_file = content
 
     def load_codon_usage_file(self):
         file_name, _ = QFileDialog.getOpenFileName(self, "Open Codon Usage File", "", "Text Files (*.txt)")
@@ -218,9 +229,33 @@ class UploadWindow(QWidget):
 
         self.codon_usage_table.update_placeholder()
 
+    def codon_usage_table_changed(self):
+        codon_usage = {}
+
+        rows = self.codon_usage_table.rowCount()
+
+        for row in range(rows):
+            codon_item = self.codon_usage_table.item(row, 0)
+            freq_item = self.codon_usage_table.item(row, 1)
+
+            if codon_item is None or freq_item is None:
+                continue  # skip incomplete rows
+
+            codon = codon_item.text().strip()
+            freq_text = freq_item.text().strip()
+
+            try:
+                freq = float(freq_text)  # or int(freq_text) if appropriate
+            except ValueError:
+                continue  # skip invalid numbers
+
+            codon_usage[codon] = freq
+
+        UploadData.codon_usage_content_file = codon_usage
+
     def show_info(self):
         usage_text = get_info_usage().replace("\n", "<br>").replace("\t", "&nbsp;&nbsp;&nbsp;")
-        elimination_text = get_elimination_info().replace("\n", "<br>").replace("\t", "&nbsp;&nbsp;&nbsp;")
+        elimination_text = get_elimination_info().replace("\n", "<br>").replace("\t", "&nbsp;&nbsp;&nbsp;").replace("  ", "&nbsp;&nbsp;&nbsp;")
 
         dialog = QDialog(self)
         dialog.setWindowTitle('Information')
@@ -245,7 +280,7 @@ class UploadWindow(QWidget):
                 padding: 2px;
             }
         """)
-        tabs.addTab(usage_tab, "ORFs Criteria")
+        tabs.addTab(usage_tab, "Coding Region Criteria")
 
         # Second tab - Elimination info
         elimination_tab = QTextEdit()

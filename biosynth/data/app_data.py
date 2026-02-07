@@ -9,7 +9,7 @@ class InputData:
     unwanted_patterns = None
 
     start_codon_identified = None
-    orf_indexes = None
+    coding_indexes = None
 
     coding_positions = None
 
@@ -18,7 +18,7 @@ class InputData:
         InputData.dna_sequence = None
         InputData.cleaned_dna_sequence = None
         InputData.unwanted_patterns = None
-        InputData.orf_indexes = None
+        InputData.coding_indexes = None
         InputData.coding_positions = None
 
 # Only for gui uploads
