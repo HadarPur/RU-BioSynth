@@ -1,3 +1,4 @@
+import sys
 from biosynth.executions.controllers.cli_controller import CLIController
 from biosynth.executions.controllers.gui_controller import GUIController
 from biosynth.utils.file_utils import delete_dir

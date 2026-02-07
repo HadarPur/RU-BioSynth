@@ -1,3 +1,4 @@
+import sys
 from biosynth.data.app_data import InputData, CostData, OutputData
 from biosynth.executions.controllers.command_controller import CommandController
 from biosynth.executions.execution_utils import is_valid_input, is_valid_cost

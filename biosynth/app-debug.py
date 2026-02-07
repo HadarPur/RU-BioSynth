@@ -1,6 +1,7 @@
 import os
 import time
 import unittest
+import sys
 
 from biosynth.executions.controllers.debug_controller import DebugController
 from biosynth.utils.file_utils import delete_dir
