@@ -1,5 +1,6 @@
 from biosynth.data.app_data import InputData, CostData
 from biosynth.executions.controllers.command_controller import CommandController
+from biosynth.executions.controllers.gui_controller import GUIController
 from biosynth.executions.execution_utils import is_valid_input, is_valid_cost
 from biosynth.settings.codon_usage_settings import C
 from biosynth.settings.pattern_settings import P
@@ -34,5 +35,7 @@ class DebugController:
         CostData.optimized_codon = True
         controller = CommandController()
         controller.run()
+
+        GUIController().execute()
 
         return

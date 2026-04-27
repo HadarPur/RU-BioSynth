@@ -6,7 +6,7 @@ from biorun.parser import next_count
 from biosynth.data.app_data import InputData, UploadData, CostData
 from biosynth.executions.controllers.ui.window_utils import add_button, CircularButton
 from biosynth.executions.controllers.ui.window_utils import add_intro, add_png_logo, add_drop_text_edit, \
-    add_spinbox, add_drop_table
+    add_spinbox, add_drop_table, add_toggle
 from biosynth.executions.execution_utils import is_valid_dna, is_valid_patterns, is_valid_codon_usage
 from biosynth.utils.file_utils import CodonUsageReader, PatternReader, SequenceReader
 from biosynth.utils.info_utils import get_info_usage, get_elimination_info
@@ -22,6 +22,7 @@ class UploadWindow(QWidget):
         self.alpha_spinbox = None
         self.beta_spinbox = None
         self.w_spinbox = None
+        self.optimized_codon_toggle = None
 
         self.init_ui(switch_to_process_callback)
 
@@ -100,6 +101,11 @@ class UploadWindow(QWidget):
         self.w_spinbox = add_spinbox(custom_scores_layout, default_value=CostData.w,
                     callback=lambda val: setattr(CostData, 'w', val), args=("Non-synonymous substitution cost",),
                     alignment=Qt.AlignCenter)
+
+        self.optimized_codon_toggle = add_toggle(custom_scores_layout, default_value=CostData.optimized_codon,
+            callback=lambda val: setattr(CostData, 'optimized_codon', val), args=("Enable non-synonymous codon optimization",),
+            alignment=Qt.AlignCenter)
+
         custom_scores_layout.addStretch(1)
 
     def add_bottom_layout(self, layout, next_callback):
@@ -128,6 +134,8 @@ class UploadWindow(QWidget):
         self.alpha_spinbox.setValue(CostData.alpha)
         self.beta_spinbox.setValue(CostData.beta)
         self.w_spinbox.setValue(CostData.w)
+
+        self.optimized_codon_toggle.setChecked(CostData.optimized_codon)
 
     # Gather input data to move forward
     def get_input_data(self):

@@ -3,12 +3,89 @@ import os
 from PyQt5.QtCore import Qt, QPropertyAnimation, QEasingCurve
 from PyQt5.QtGui import QPainterPath, QRegion
 from PyQt5.QtGui import QPixmap, QFont
-from PyQt5.QtWidgets import QFileDialog, QTextEdit, QPlainTextEdit, QToolBar, QDoubleSpinBox, QScrollArea, QWidget
+from PyQt5.QtWidgets import QFileDialog, QTextEdit, QPlainTextEdit, QToolBar, QDoubleSpinBox, QScrollArea, QWidget, QCheckBox
 from PyQt5.QtWidgets import QFrame, QPushButton, QVBoxLayout, QApplication, QLabel, QHBoxLayout, QSizePolicy, \
     QTableWidget, QHeaderView
+from PyQt5.QtCore import Qt, QSize
 
 from biosynth.utils.file_utils import resource_path, save_file
 
+from PyQt5.QtWidgets import QAbstractButton
+from PyQt5.QtCore import Qt, QRectF, QPropertyAnimation, pyqtProperty
+from PyQt5.QtGui import QPainter, QColor, QBrush
+
+class ToggleSwitch(QAbstractButton):
+    def __init__(self, parent=None, width=50, height=25):
+        super().__init__(parent)
+        self.setCheckable(True)
+        self.setCursor(Qt.PointingHandCursor)
+
+        self._width = width
+        self._height = height
+        self._margin = 3
+
+        self._offset = self._margin
+        self._anim = QPropertyAnimation(self, b"offset", self)
+        self._anim.setDuration(200)
+
+        self.toggled.connect(self._start_transition)
+
+    # ---- Property for animation ----
+    def get_offset(self):
+        return self._offset
+
+    def set_offset(self, value):
+        self._offset = value
+        self.update()
+
+    offset = pyqtProperty(float, get_offset, set_offset)
+
+    # ---- Size hint ----
+    def sizeHint(self):
+        return QSize(self._width, self._height)
+
+    def minimumSizeHint(self):
+        return QSize(self._width, self._height)
+
+    # ---- Animation ----
+    def _start_transition(self, checked):
+        self._anim.stop()
+        if checked:
+            end = self._width - self._height + self._margin
+        else:
+            end = self._margin
+        self._anim.setStartValue(self._offset)
+        self._anim.setEndValue(end)
+        self._anim.start()
+
+    # ---- Painting ----
+    def paintEvent(self, event):
+        radius = self._height / 2
+        knob_radius = radius - self._margin
+
+        painter = QPainter(self)
+        painter.setRenderHint(QPainter.Antialiasing)
+
+        # Background
+        if self.isChecked():
+            bg_color = QColor("#4CAF50")
+        else:
+            bg_color = QColor("#ccc")
+
+        painter.setBrush(QBrush(bg_color))
+        painter.setPen(Qt.NoPen)
+        painter.drawRoundedRect(0, 0, self._width, self._height, radius, radius)
+
+        # Knob
+        painter.setBrush(QBrush(QColor("#fff")))
+        painter.drawEllipse(QRectF(self._offset, self._margin,
+                                   knob_radius * 2, knob_radius * 2))
+
+    # ---- Mouse interaction ----
+    def mouseReleaseEvent(self, event):
+        if event.button() == Qt.LeftButton:
+            self.toggle()  # <-- use built-in behavior
+        event.accept()
 
 class CircularButton(QPushButton):
     def __init__(self, *args, **kwargs):
@@ -479,6 +556,37 @@ def add_spinbox(layout, default_value, step=0.01,
     bottom_layout.addWidget(spinbox, alignment=alignment, stretch=1)
     return spinbox
 
+def add_toggle(layout, default_value=False,
+               alignment=None, callback=None, args=(), size=(50, 25)):
+    """
+    Adds a ToggleSwitch to the given layout with optional callback.
+
+    If args[0] is provided, it is shown as a label before the toggle.
+
+    Returns:
+        ToggleSwitch instance.
+    """
+    bottom_layout = QHBoxLayout()
+    bottom_layout.setContentsMargins(0, 5, 0, 10)
+    layout.addLayout(bottom_layout)
+
+    # Optional label (same logic as spinbox)
+    if args and isinstance(args[0], str):
+        label = QLabel(str(args[0]))
+        label.setAlignment(Qt.AlignVCenter | Qt.AlignLeft)
+        bottom_layout.addWidget(label, stretch=4)
+
+    toggle = ToggleSwitch()
+    toggle.setChecked(default_value)
+    toggle.setFixedSize(size[0], size[1])
+    toggle.setFocusPolicy(Qt.StrongFocus)
+
+    if callback is not None:
+        toggle.toggled.connect(lambda val: callback(val))
+
+    bottom_layout.addWidget(toggle, alignment=alignment, stretch=1)
+
+    return toggle
 
 def copy_to_clipboard(code_display, update_status):
     text = code_display.toPlainText()
