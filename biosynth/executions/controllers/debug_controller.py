@@ -27,6 +27,11 @@ class DebugController:
         CostData.beta = beta
         CostData.w = w
 
+        CostData.optimized_codon = False
+        controller = CommandController()
+        controller.run()
+
+        CostData.optimized_codon = True
         controller = CommandController()
         controller.run()
 

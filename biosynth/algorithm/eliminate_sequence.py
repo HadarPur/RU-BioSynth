@@ -34,7 +34,8 @@ class EliminationController:
                                                                                 CostData.codon_usage,
                                                                                 CostData.alpha,
                                                                                 CostData.beta,
-                                                                                CostData.w)
+                                                                                CostData.w,
+                                                                                CostData.optimized_codon)
         fsm = FSM(unwanted_patterns, elimination_scorer.alphabet)
 
         # Dynamic programming table A, initialized with infinity

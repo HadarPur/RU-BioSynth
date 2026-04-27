@@ -43,6 +43,8 @@ class CostData:
     w = 100.
     stop_codon = float('inf')
 
+    optimized_codon = True
+
     @staticmethod
     def reset():
         CostData.codon_usage = None
@@ -52,6 +54,8 @@ class CostData:
         CostData.beta = 2.0
         CostData.w = 100.
         CostData.stop_codon = float('inf')
+
+        CostData.optimized_codon = True
 
 class EliminationData:
     info = None

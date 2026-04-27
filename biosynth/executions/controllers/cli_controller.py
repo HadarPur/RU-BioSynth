@@ -15,7 +15,7 @@ class CLIController:
     def execute(self):
         parser = ArgumentParser()
 
-        _, s_path, p_path, c_path, o_path, alpha, beta, w = parser.parse_args(self.argv)
+        _, s_path, p_path, c_path, o_path, alpha, beta, w, optimized_codon = parser.parse_args(self.argv)
 
         seq = SequenceReader(s_path).read_sequence()
         unwanted_patterns = PatternReader(p_path).read_patterns()
@@ -42,6 +42,9 @@ class CLIController:
 
         if not is_valid_cost(CostData.alpha, CostData.beta, CostData.w):
             sys.exit(2)
+
+        if optimized_codon is not None:
+            CostData.optimized_codon = optimized_codon
 
         if o_path is not None:
             OutputData.output_path = o_path

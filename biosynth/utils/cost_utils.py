@@ -71,7 +71,7 @@ def evaluate_substitution(target_sequence, i, sigma, alpha, beta):
         return changes, beta
 
 
-def calculate_cost(target_sequence, coding_positions, codon_usage, i, v, sigma, alpha, beta, w):
+def calculate_cost(target_sequence, coding_positions, codon_usage, i, v, sigma, alpha, beta, w, optimized_codon):
     """
     Calculate the substitution cost for a given position in a nucleotide sequence.
 
@@ -97,6 +97,8 @@ def calculate_cost(target_sequence, coding_positions, codon_usage, i, v, sigma, 
         The cost for a transversion substitution in a non-coding region.
     w : float
         The cost for non-synonymous substitutions in coding regions.
+    optimized_codon : bool
+        A flag indicating whether to optimize codon usage without enforcing equality with the target codon.
 
     Returns:
     -------
@@ -153,7 +155,7 @@ def calculate_cost(target_sequence, coding_positions, codon_usage, i, v, sigma, 
 
         changes = target_codon, proposed_codon
         # Evaluate substitution costs
-        if proposed_codon == target_codon:
+        if not optimized_codon and proposed_codon == target_codon:
             # No substitution
             return changes, 0.0
         elif AminoAcidConfig.encodes_same_amino_acid(proposed_codon, target_codon):
@@ -180,7 +182,7 @@ class EliminationScorerConfig:
         self.alphabet = {'A', 'G', 'T', 'C'}
 
     @staticmethod
-    def cost_function(target_sequence, coding_positions, codon_usage, alpha, beta, w):
+    def cost_function(target_sequence, coding_positions, codon_usage, alpha, beta, w, optimized_codon):
         """
         Creates a dynamic cost function based on the given sequence properties and scoring parameters.
 
@@ -191,6 +193,7 @@ class EliminationScorerConfig:
             alpha (float): Cost for transition substitution in non-coding regions.
             beta (float): Cost for transversion substitution in non-coding regions.
             w (float): Cost for non-synonymous substitution in coding regions.
+            optimized_codon (bool): Flag indicating whether to optimize codon usage without enforcing equality with the target codon.
 
         Returns:
             function: A cost function that takes index i, current state v, and proposed symbol σ
@@ -201,6 +204,6 @@ class EliminationScorerConfig:
             return evaluate_substitution(target_sequence, i - 1, sigma, alpha, beta)
 
         def cost_function(i, v, sigma):
-            return calculate_cost(target_sequence, coding_positions, codon_usage, i - 1, v, sigma, alpha, beta, w)
+            return calculate_cost(target_sequence, coding_positions, codon_usage, i - 1, v, sigma, alpha, beta, w, optimized_codon)
 
         return initial_cost_function, cost_function
