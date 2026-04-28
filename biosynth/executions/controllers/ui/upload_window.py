@@ -103,7 +103,7 @@ class UploadWindow(QWidget):
                     alignment=Qt.AlignCenter)
 
         self.optimized_codon_toggle = add_toggle(custom_scores_layout, default_value=CostData.optimized_codon,
-            callback=lambda val: setattr(CostData, 'optimized_codon', val), args=("Enable non-synonymous codon optimization",),
+            callback=lambda val: setattr(CostData, 'optimized_codon', val), args=("Enable codon optimization",),
             alignment=Qt.AlignCenter)
 
         custom_scores_layout.addStretch(1)

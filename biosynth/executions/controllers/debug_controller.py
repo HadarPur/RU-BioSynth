@@ -36,6 +36,4 @@ class DebugController:
         controller = CommandController()
         controller.run()
 
-        GUIController().execute()
-
         return

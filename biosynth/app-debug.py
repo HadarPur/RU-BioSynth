@@ -12,7 +12,7 @@ from biosynth.utils.text_utils import OutputFormat, set_output_format
 def execute_unittests():
     loader = unittest.TestLoader()
     start_dir = os.path.join(os.path.dirname(__file__), "test")
-    suite = loader.discover(start_dir)
+    suite = loader.discover(start_dir, pattern="test*.py")
 
     runner = unittest.TextTestRunner()
     runner.run(suite)
