@@ -33,6 +33,7 @@ class TestDataClasses(unittest.TestCase):
         self.assertEqual(app_data.CostData.alpha, 1.0)
         self.assertEqual(app_data.CostData.beta, 2.0)
         self.assertEqual(app_data.CostData.w, 100.0)
+        self.assertEqual(app_data.CostData.optimized_codon, True)
         self.assertEqual(app_data.CostData.stop_codon, float('inf'))
 
     def test_elimination_data_defaults(self):

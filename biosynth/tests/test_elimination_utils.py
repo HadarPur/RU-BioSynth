@@ -26,17 +26,20 @@ class TestEliminationController(unittest.TestCase):
         self.patcher_alpha = patch("biosynth.data.app_data.CostData.alpha", new=1.0)
         self.patcher_beta = patch("biosynth.data.app_data.CostData.beta", new=2.0)
         self.patcher_w = patch("biosynth.data.app_data.CostData.w", new=5.0)
+        self.patcher_oc = patch("biosynth.data.app_data.CostData.optimized_codon", new=False)
 
         self.patcher_usage.start()
         self.patcher_alpha.start()
         self.patcher_beta.start()
         self.patcher_w.start()
+        self.patcher_oc.start()
 
     def tearDown(self):
         self.patcher_usage.stop()
         self.patcher_alpha.stop()
         self.patcher_beta.stop()
         self.patcher_w.stop()
+        self.patcher_oc.stop()
 
     def test_no_unwanted_patterns(self):
         result_info, changes, new_seq, cost = EliminationController.eliminate(
