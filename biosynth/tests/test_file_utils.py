@@ -171,8 +171,8 @@ class TestFileOperations(unittest.TestCase):
 class TestSaveFile(unittest.TestCase):
     def test_save_file_with_custom_path(self):
         with tempfile.TemporaryDirectory() as tmp:
-            result = save_file("content", "test.txt", tmp)
-            expected_file = Path(tmp) / "BioSynth-Outputs" / "test.txt"
+            result = save_file("content", "tests.txt", tmp)
+            expected_file = Path(tmp) / "BioSynth-Outputs" / "tests.txt"
             self.assertTrue(expected_file.exists())
             self.assertIn(str(expected_file), result)
 
@@ -196,7 +196,7 @@ class TestSaveFile(unittest.TestCase):
     def test_save_file_permission_error(self):
         with patch("builtins.open", mock_open()) as mocked_open:
             mocked_open.side_effect = PermissionError("Permission denied")
-            result = save_file("content", "test.txt", "/some/path")
+            result = save_file("content", "tests.txt", "/some/path")
         self.assertIn("An error occurred while saving the file - Permission denied", result)
 
 

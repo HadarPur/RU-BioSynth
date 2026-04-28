@@ -8,7 +8,7 @@ from biosynth.utils.text_utils import OutputFormat, set_output_format, format_te
 class TestOutputUtils(unittest.TestCase):
 
     def setUp(self):
-        # Reset output_format before each test
+        # Reset output_format before each tests
         text_utils.output_format = OutputFormat.NONE
 
     def test_set_output_format_valid(self):
