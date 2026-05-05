@@ -59,7 +59,7 @@ def evaluate_substitution(target_sequence, i, sigma, alpha, beta):
     Returns:
         tuple: ((original_nucleotide, proposed_nucleotide), substitution_cost)
     """
-    changes = target_sequence[i], sigma
+    changes = (target_sequence[i], sigma)
     if target_sequence[i] == sigma:
         # No substitution
         return changes, 0.0
@@ -130,7 +130,7 @@ def calculate_cost(target_sequence, coding_positions, codon_usage, i, v, sigma, 
 
     # Non-coding region logic
     if codon_pos == 0:
-        changes = target_sequence[i], sigma
+        changes = (target_sequence[i], sigma)
         if target_sequence[i] == sigma:
             # No substitution
             return changes, 0.0
@@ -153,7 +153,7 @@ def calculate_cost(target_sequence, coding_positions, codon_usage, i, v, sigma, 
         last2_bases = AminoAcidConfig.get_last2(v)
         proposed_codon = f'{last2_bases}{sigma}'
 
-        changes = target_codon, proposed_codon
+        changes = (target_codon, proposed_codon)
         # Evaluate substitution costs
         if not optimized_codon and proposed_codon == target_codon:
             # No substitution

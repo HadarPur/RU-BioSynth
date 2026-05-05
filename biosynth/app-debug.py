@@ -8,6 +8,8 @@ from biosynth.utils.file_utils import delete_dir
 from biosynth.utils.output_utils import Logger
 from biosynth.utils.text_utils import OutputFormat, set_output_format
 
+from biosynth.utils.test_utils import TableTestRunner
+
 def execute_unittests():
     loader = unittest.TestLoader()
     start_dir = os.path.join(os.path.dirname(__file__), "tests")
@@ -17,16 +19,16 @@ def execute_unittests():
     print(f"Running {suite.countTestCases()} tests...")
     print(f"{'='*60}\n")
 
-    runner = unittest.TextTestRunner(verbosity=2, stream=sys.stdout)
+    runner = TableTestRunner(verbosity=0, stream=sys.stdout)
     result = runner.run(suite)
 
-    print(f"\n{'='*60}")
+    print(f"\n{'='*20}")
     print(f"Tests run:    {result.testsRun}")
     print(f"Failures:     {len(result.failures)}")
     print(f"Errors:       {len(result.errors)}")
     print(f"Skipped:      {len(result.skipped)}")
     print(f"Success:      {result.wasSuccessful()}")
-    print(f"{'='*60}\n")
+    print(f"{'='*20}\n")
 
     if result.errors:
         print("ERRORS:")

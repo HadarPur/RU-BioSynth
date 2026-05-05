@@ -5,6 +5,7 @@ from biosynth.executions.execution_utils import is_valid_input, is_valid_cost
 from biosynth.settings.codon_usage_settings import C
 from biosynth.settings.pattern_settings import P
 from biosynth.settings.sequence_settings import S
+from biosynth.utils.output_utils import Logger
 
 
 class DebugController:
@@ -28,10 +29,12 @@ class DebugController:
         CostData.beta = beta
         CostData.w = w
 
+        Logger.critical("Starting DebugController execution with optimized_codon = False ...")
         CostData.optimized_codon = False
         controller = CommandController()
         controller.run()
 
+        Logger.critical("Starting DebugController execution with optimized_codon = True ...")
         CostData.optimized_codon = True
         controller = CommandController()
         controller.run()
