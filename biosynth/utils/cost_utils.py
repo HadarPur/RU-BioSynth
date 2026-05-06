@@ -1,49 +1,54 @@
 import numpy as np
 
-from biosynth.utils.amino_acid_utils import AminoAcidConfig
+from biosynth.utils.amino_acid_utils import AminoAcidConfig, GeneticCodeTable
 from biosynth.utils.output_utils import Logger
 
 def normalize_codon_usage(codon_usage):
     """
-    Normalize codon usage frequencies into log-scaled costs.
-
-    The cost for a codon with frequency f is defined as:
-        cost(f) = log(f) / log(min_frequency)
-
-    This assigns:
-      - cost = 1.0 to the least frequent codon
-      - cost = 0.0 to the most frequent codon
-
-    Parameters
-    ----------
-    codon_usage : dict[str, float]
-        Mapping from codon to raw usage frequency (f > 0).
-
-    Returns
-    -------
-    dict[str, float]
-        Mapping from codon to normalized cost.
+    Normalize codon usage frequencies into CAI-aligned log-scaled costs.
     """
     if not codon_usage:
         return {}
 
-    freq_values = np.fromiter(codon_usage.values(), dtype=float)
+    genetic_code = GeneticCodeTable()
 
-    if np.any(freq_values <= 0):
-        raise ValueError("Codon usage frequencies must be strictly positive")
+    # Map each amino acid to its maximum synonymous codon frequency
+    aa_to_max_freq: dict[str, float] = {}
+    for codon, frequency in codon_usage.items():
+        amino_acid = genetic_code.lookup(codon)
+        if amino_acid:
+            aa_to_max_freq[amino_acid] = max(
+                aa_to_max_freq.get(amino_acid, 0.0),
+                frequency
+            )
 
-    log_freq = np.log10(freq_values)
-    min_log = np.min(log_freq)
-    max_log = np.max(log_freq)
+    codon_list = list(codon_usage.keys())
 
-    # inverted normalization: [0, 1]
-    norm = 1 - (log_freq - min_log) / (max_log - min_log)
+    # Raw codon frequencies
+    codon_frequencies = np.fromiter(
+        map(codon_usage.get, codon_list),
+        dtype=float
+    )
 
-    # rescale to [eps, 1]
-    eps = 0.01
-    costs = eps + (1 - eps) * norm
+    # Maximum synonymous frequency per codon
+    max_synonymous_frequencies = np.fromiter(
+        map(lambda c: aa_to_max_freq.get(genetic_code.lookup(c)), codon_list),
+        dtype=float
+    )
 
-    return dict(zip(codon_usage.keys(), costs))
+    # Relative adaptiveness (CAI weight)
+    relative_adaptiveness = codon_frequencies / max_synonymous_frequencies
+
+    # Convert to cost space
+    codon_costs_array = -np.log(relative_adaptiveness)
+
+    # Clean numerical noise
+    codon_costs_array[np.isclose(codon_costs_array, 0.0, atol=1e-9)] = 0.0
+    codon_costs_array = np.round(codon_costs_array, 6)
+
+    codon_costs = dict(zip(codon_list, codon_costs_array))
+
+    return codon_costs
 
 def evaluate_substitution(target_sequence, i, sigma, alpha, beta):
     """
@@ -122,7 +127,7 @@ def calculate_cost(target_sequence, coding_positions, codon_usage, i, v, sigma, 
     """
 
     # Validate codon usage
-    if any(freq <= 0 for freq in codon_usage.values()):
+    if any(freq < 0 for freq in codon_usage.values()):
         raise ValueError("Invalid codon usage: probabilities must be positive and normalized.")
 
     # Determine coding position of the current index.

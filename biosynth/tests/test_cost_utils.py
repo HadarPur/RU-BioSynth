@@ -13,12 +13,25 @@ class TestCalculateCost(unittest.TestCase):
         self.coding_positions = [0, 0, 0, 1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2,
                                  3]  # Adjusted codon positions: 1, 2, 3 for each codon
         self.codon_usage = {
+            # Tyrosine (TAC, TAT)
             "TAC": 0.2,
+            "TAT": 0.8,  # dominant → cost 0
+
+            # Valine (GTA, GTT)
             "GTA": 0.5,
+            "GTT": 0.25,
+
+            # Arginine (CGT, CGC)
             "CGT": 0.1,
+            "CGC": 0.3,
+
+            # Leucine (TTA, CTT)
             "TTA": 0.1,
-            "CTT": 0.1,  # synonymous codon for Leucine
-            "TAG": 0.01,  # stop codon
+            "CTT": 0.05,
+
+            # Stop codons
+            "TAG": 0.01,
+            "TAA": 0.02,
         }
 
         self.codon_usage = normalize_codon_usage(self.codon_usage)
