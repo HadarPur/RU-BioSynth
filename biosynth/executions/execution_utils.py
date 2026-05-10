@@ -114,7 +114,7 @@ def is_valid_cost(alpha=None, beta=None, w=None):
 
 def eliminate_unwanted_patterns(seq, unwanted_patterns, coding_positions):
     # Start elimination
-    EliminationData.info, EliminationData.detailed_changes, OutputData.optimized_sequence, EliminationData.min_cost = EliminationController.eliminate(
+    EliminationData.info, EliminationData.cost_contribution, EliminationData.cost_substitution, OutputData.optimized_sequence, EliminationData.min_cost = EliminationController.eliminate(
         seq, unwanted_patterns, coding_positions)
 
 

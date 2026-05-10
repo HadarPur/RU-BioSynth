@@ -60,7 +60,8 @@ class ReportController:
         # Format other user input and results
         self.unwanted_patterns = ', '.join(InputData.unwanted_patterns)
         self.coding_idx = "" if InputData.coding_indexes is None else f"{InputData.coding_indexes[0] + 1} - {InputData.coding_indexes[1]}"
-        self.detailed_changes = EliminationData.detailed_changes
+        self.cost_contribution = EliminationData.cost_contribution
+        self.cost_substitution = EliminationData.cost_substitution
 
         # These are generated during report creation
         self.output_text = None
@@ -92,7 +93,8 @@ class ReportController:
             'marked_input_seq': self.marked_input_seq,
             'marked_optimized_seq': self.marked_optimized_seq,
             'optimized_seq': self.optimized_seq,
-            'detailed_changes': self.detailed_changes,
+            'cost_contribution': self.cost_contribution,
+            'cost_substitution': self.cost_substitution,
             'execution_mode' : get_execution_mode(),
             'highlight_optimized_selected': self.highlight_optimized_selected
         }

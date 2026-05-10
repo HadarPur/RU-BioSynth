@@ -474,7 +474,8 @@
 
             <a class="title" href="#results">Results</a>
             <a class="section" href="#dna-sequences-difference">DNA Sequences Difference</a>
-            <a class="section" href="#dna-detailed_changes">Detailed substitutions relative to the target sequence</a>
+            <a class="section" href="#dna-cost_contribution">Detailed contributions relative to the target sequence</a>
+            <a class="section" href="#dna-cost_substitution">Detailed substitutions relative to the target sequence</a>
             <a class="section" href="#optimized-dna-sequence">Optimized Sequence</a>
         </div>
 
@@ -534,25 +535,52 @@
             </div>
 
             <div>
-                <h2 id="dna-detailed_changes">Detailed substitutions relative to the target sequence:</h2>
+                <h2 id="dna-cost_contribution">Detailed contributions relative to the target sequence:</h2>
                 <div class="table-container">
                     <table class="changes-table">
                         <thead>
                             <tr>
                                 <th>Position</th>
                                 <th>Original</th>
-                                <th>Modified</th>
+                                <th>Optimized</th>
                                 <th>Cost</th>
                             </tr>
                         </thead>
 
                         <tbody>
-                            {% for change in detailed_changes %}
+                            {% for change in cost_contribution %}
                             <tr>
                                 <td>{{ change.Position }}</td>
                                 <td>{{ change.Original }}</td>
-                                <td>{{ change.Modified }}</td>
-                                <td>{{ "%.2f"|format(change.Cost) }}</td>
+                                <td>{{ change.Optimized }}</td>
+                                <td>{{ change.Cost }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div>
+                <h2 id="dna-cost_substitution">Detailed substitutions relative to the target sequence:</h2>
+                <div class="table-container">
+                    <table class="changes-table">
+                        <thead>
+                            <tr>
+                                <th>Position</th>
+                                <th>Original</th>
+                                <th>Optimized</th>
+                                <th>Cost</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            {% for change in cost_substitution %}
+                            <tr>
+                                <td>{{ change.Position }}</td>
+                                <td>{{ change.Original }}</td>
+                                <td>{{ change.Optimized }}</td>
+                                <td>{{ change.Cost }}</td>
                             </tr>
                             {% endfor %}
                         </tbody>

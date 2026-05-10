@@ -1,5 +1,7 @@
 from pathlib import Path
 
+from biosynth.utils.output_utils import Logger
+
 
 class InputData:
     # Input Data
@@ -59,7 +61,8 @@ class CostData:
 
 class EliminationData:
     info = None
-    detailed_changes = None
+    cost_contribution = None
+    cost_substitution = None
     min_cost = None
 
 

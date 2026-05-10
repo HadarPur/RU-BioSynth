@@ -6,14 +6,14 @@ from PyQt5 import QtCore
 from PyQt5.QtCore import Qt, QTimer
 from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import QApplication, QFileDialog, QLabel, QPushButton, QWidget, QVBoxLayout
-from PyQt5.QtWidgets import QHBoxLayout, QSizePolicy, QSpacerItem, QDialog, QTextEdit, QDialogButtonBox
+from PyQt5.QtWidgets import QHBoxLayout, QSizePolicy, QSpacerItem, QDialog, QTextEdit, QDialogButtonBox, QTabWidget
 from PyQt5.QtWidgets import QHBoxLayout, QLabel, QGraphicsOpacityEffect
 from PyQt5.QtCore import Qt, QTimer, QPropertyAnimation, QEasingCurve
 from PyQt5.QtGui import QFont
 
 from biosynth.data.app_data import InputData, OutputData, EliminationData
 from biosynth.executions.controllers.ui.window_utils import add_button, add_code_block, add_text_edit_html, \
-    CircularButton
+    CircularButton, create_table_from_data
 from biosynth.executions.execution_utils import mark_non_equal_codons, initialize_report
 
 QtCore.QCoreApplication.setAttribute(QtCore.Qt.AA_ShareOpenGLContexts)
@@ -214,32 +214,56 @@ class ResultsWindow(QWidget):
             layout.addLayout(prompt_layout)
 
     def show_info(self):
-        info_text = '\n'.join(EliminationData.detailed_changes) if EliminationData.detailed_changes else None
-
-        # Create a dialog to show detailed information
+        # Create dialog
         dialog = QDialog(self)
         dialog.setWindowTitle('Info')
-        dialog.setFixedSize(1000, 400)
+        dialog.setFixedSize(1000, 500)
 
-        # Set the window flags to make the dialog non-modal and always on top
-        dialog.setWindowFlags(Qt.Window | Qt.WindowStaysOnTopHint | Qt.WindowCloseButtonHint)
-        dialog.setWindowModality(Qt.NonModal)  # Allow interaction with the parent
+        dialog.setWindowFlags(
+            Qt.Window |
+            Qt.WindowStaysOnTopHint |
+            Qt.WindowCloseButtonHint
+        )
+
+        dialog.setWindowModality(Qt.NonModal)
 
         layout = QVBoxLayout()
 
-        text_edit = QTextEdit()
-        text_edit.setReadOnly(True)
+        # Tabs
+        tabs = QTabWidget()
 
-        font = QFont("Menlo")
-        font.setPointSize(10)
-        text_edit.setFont(font)
+        # First tab - cost_contribution
+        contribution_tab = QWidget()
+        contribution_layout = QVBoxLayout()
 
-        text_edit.setPlainText(info_text)
+        contribution_table = create_table_from_data(
+            EliminationData.cost_contribution
+        )
 
-        layout.addWidget(text_edit)
+        contribution_layout.addWidget(contribution_table)
+        contribution_tab.setLayout(contribution_layout)
 
+        # Second tab - cost_substitution
+        substitution_tab = QWidget()
+        substitution_layout = QVBoxLayout()
+
+        substitution_table = create_table_from_data(
+            EliminationData.cost_substitution
+        )
+
+        substitution_layout.addWidget(substitution_table)
+        substitution_tab.setLayout(substitution_layout)
+
+        # Add tabs
+        tabs.addTab(contribution_tab, "Cost Contribution")
+        tabs.addTab(substitution_tab, "Cost Substitution")
+
+        layout.addWidget(tabs)
+
+        # Buttons
         button_box = QDialogButtonBox(QDialogButtonBox.Ok)
         button_box.accepted.connect(dialog.accept)
+
         layout.addWidget(button_box)
 
         dialog.setLayout(layout)

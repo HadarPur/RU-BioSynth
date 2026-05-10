@@ -38,7 +38,8 @@ class TestDataClasses(unittest.TestCase):
 
     def test_elimination_data_defaults(self):
         self.assertIsNone(app_data.EliminationData.info)
-        self.assertIsNone(app_data.EliminationData.detailed_changes)
+        self.assertIsNone(app_data.EliminationData.cost_contribution)
+        self.assertIsNone(app_data.EliminationData.cost_substitution)
         self.assertIsNone(app_data.EliminationData.min_cost)
 
     def test_output_data_defaults(self):

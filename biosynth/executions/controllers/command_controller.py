@@ -76,15 +76,26 @@ class CommandController:
         Logger.space()
 
 
-        detailed_changes_text = tabulate(
-            EliminationData.detailed_changes,
+        detailed_cost_contributions= tabulate(
+            EliminationData.cost_contribution,
             headers="keys",
             tablefmt="fancy_grid",
             colalign=("left", "left", "left", "left")
         )
 
-        Logger.debug(format_text_bold_for_output('Detailed substitutions relative to the target sequence:'))
-        Logger.info(detailed_changes_text)
+        Logger.debug(format_text_bold_for_output('Detailed cost contributions relative to the target sequence:'))
+        Logger.info(detailed_cost_contributions)
+        Logger.space()
+
+        detailed_cost_substitutions = tabulate(
+            EliminationData.cost_substitution,
+            headers="keys",
+            tablefmt="fancy_grid",
+            colalign=("left", "left", "left", "left")
+        )
+
+        Logger.debug(format_text_bold_for_output('Detailed cost substitutions relative to the target sequence:'))
+        Logger.info(detailed_cost_substitutions)
         Logger.space()
 
         # Save the results
@@ -100,7 +111,11 @@ class CommandController:
         path = save_file(OutputData.optimized_sequence, filename, OutputData.output_path)
         Logger.notice(path)
 
-        filename = f"Changes-Info_{file_date}.txt"
-        path = save_file(detailed_changes_text, filename, OutputData.output_path)
+        filename = f"Cost-Contribution_{file_date}.txt"
+        path = save_file(detailed_cost_contributions, filename, OutputData.output_path)
+        Logger.notice(path)
+
+        filename = f"Cost-Substitution_{file_date}.txt"
+        path = save_file(detailed_cost_substitutions, filename, OutputData.output_path)
         Logger.notice(path)
         Logger.space()

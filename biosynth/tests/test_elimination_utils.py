@@ -51,7 +51,7 @@ class TestEliminationController(unittest.TestCase):
         self.assertIn("No invalid patterns identified", result_info)
 
     def test_patterns_eliminated(self):
-        info, changes, new_seq, cost = EliminationController.eliminate(
+        info, cost_contribution, cost_substitution, new_seq, cost = EliminationController.eliminate(
             self.target_sequence,
             self.unwanted_patterns,
             self.coding_positions
@@ -63,7 +63,7 @@ class TestEliminationController(unittest.TestCase):
         self.assertIsInstance(cost, float)
 
     def test_cost_non_negative(self):
-        _, _, _, cost = EliminationController.eliminate(
+        _, _, _, _, cost = EliminationController.eliminate(
             self.target_sequence,
             self.unwanted_patterns,
             self.coding_positions

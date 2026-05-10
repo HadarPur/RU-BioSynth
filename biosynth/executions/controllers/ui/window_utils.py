@@ -5,7 +5,7 @@ from PyQt5.QtGui import QPainterPath, QRegion
 from PyQt5.QtGui import QPixmap, QFont
 from PyQt5.QtWidgets import QFileDialog, QTextEdit, QPlainTextEdit, QToolBar, QDoubleSpinBox, QScrollArea, QWidget, QCheckBox
 from PyQt5.QtWidgets import QFrame, QPushButton, QVBoxLayout, QApplication, QLabel, QHBoxLayout, QSizePolicy, \
-    QTableWidget, QHeaderView
+    QTableWidget, QTableWidgetItem, QHeaderView
 from PyQt5.QtCore import Qt, QSize
 
 from biosynth.utils.file_utils import resource_path, save_file
@@ -610,3 +610,184 @@ def create_scroll_area(parent_layout):
     content_layout.setAlignment(Qt.AlignTop)
 
     return scroll_area, content_widget, content_layout
+
+def create_table_from_data(data):
+    """
+    Create a table widget from:
+    - dict
+    - nested dict
+    - list of dicts
+    """
+
+    table = QTableWidget()
+
+    if not data:
+        table.setRowCount(0)
+        table.setColumnCount(0)
+        return table
+
+    font = QFont("Menlo")
+    font.setPointSize(10)
+    table.setFont(font)
+
+    # =========================
+    # LIST OF DICTS
+    # =========================
+    if isinstance(data, list) and isinstance(data[0], dict):
+
+        headers = list(data[0].keys())
+
+        table.setColumnCount(len(headers))
+        table.setHorizontalHeaderLabels(headers)
+        table.setRowCount(len(data))
+
+        for row, row_data in enumerate(data):
+            for col, header in enumerate(headers):
+                value = row_data.get(header, "")
+                table.setItem(row, col, QTableWidgetItem(str(value)))
+
+    # =========================
+    # DICT
+    # =========================
+    elif isinstance(data, dict):
+
+        first_value = next(iter(data.values()))
+
+        # Nested dict
+        if isinstance(first_value, dict):
+
+            headers = ["Key"] + list(first_value.keys())
+
+            table.setColumnCount(len(headers))
+            table.setHorizontalHeaderLabels(headers)
+            table.setRowCount(len(data))
+
+            for row, (key, values) in enumerate(data.items()):
+                table.setItem(row, 0, QTableWidgetItem(str(key)))
+
+                for col, header in enumerate(headers[1:], start=1):
+                    value = values.get(header, "")
+                    table.setItem(row, col, QTableWidgetItem(str(value)))
+
+        # Simple dict
+        else:
+            headers = ["Key", "Value"]
+
+            table.setColumnCount(2)
+            table.setHorizontalHeaderLabels(headers)
+            table.setRowCount(len(data))
+
+            for row, (key, value) in enumerate(data.items()):
+                table.setItem(row, 0, QTableWidgetItem(str(key)))
+                table.setItem(row, 1, QTableWidgetItem(str(value)))
+
+    # =========================
+    # TABLE SETTINGS
+    # =========================
+
+    table.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
+
+    # Smooth scrolling
+    table.setVerticalScrollMode(QTableWidget.ScrollPerPixel)
+    table.setHorizontalScrollMode(QTableWidget.ScrollPerPixel)
+
+    # Hide row numbers
+    table.verticalHeader().setVisible(False)
+
+    # macOS-like behavior
+    table.setAlternatingRowColors(True)
+    table.setShowGrid(False)
+    table.setSelectionBehavior(QTableWidget.SelectRows)
+    table.setSelectionMode(QTableWidget.SingleSelection)
+    table.setFocusPolicy(Qt.NoFocus)
+
+    # Header sizing
+    table.horizontalHeader().setMinimumHeight(38)
+    table.verticalHeader().setDefaultSectionSize(34)
+
+    # Optional
+    table.setCornerButtonEnabled(False)
+
+    # Nice macOS-like stylesheet
+    table.setStyleSheet("""
+        QTableWidget {
+            background-color: #ffffff;
+            alternate-background-color: #f5f5f7;
+            border: 1px solid #d1d1d6;
+            border-radius: 10px;
+            padding: 4px;
+            color: #1c1c1e;
+            font-size: 13px;
+            selection-background-color: #cfe3ff;
+            selection-color: #000000;
+        }
+
+        QTableWidget::item {
+            padding-left: 10px;
+            padding-right: 10px;
+            border-bottom: 1px solid #ececec;
+        }
+
+        QTableWidget::item:selected {
+            background-color: #dbe9ff;
+            color: #000000;
+        }
+
+        QHeaderView {
+            border: none;
+        }
+
+        QHeaderView::section {
+            background-color: #f2f2f7;
+            color: #3a3a3c;
+            border: none;
+            border-bottom: 1px solid #d1d1d6;
+            padding: 10px;
+            font-weight: 600;
+            font-size: 13px;
+        }
+
+        QScrollBar:vertical {
+            background: transparent;
+            width: 10px;
+            margin: 4px;
+        }
+
+        QScrollBar::handle:vertical {
+            background: #c7c7cc;
+            border-radius: 5px;
+            min-height: 30px;
+        }
+
+        QScrollBar::handle:vertical:hover {
+            background: #a1a1a6;
+        }
+
+        QScrollBar::add-line:vertical,
+        QScrollBar::sub-line:vertical {
+            height: 0px;
+        }
+
+        QScrollBar:horizontal {
+            background: transparent;
+            height: 10px;
+            margin: 4px;
+        }
+
+        QScrollBar::handle:horizontal {
+            background: #c7c7cc;
+            border-radius: 5px;
+            min-width: 30px;
+        }
+
+        QScrollBar::handle:horizontal:hover {
+            background: #a1a1a6;
+        }
+
+        QScrollBar::add-line:horizontal,
+        QScrollBar::sub-line:horizontal {
+            width: 0px;
+        }
+    """)
+
+    return table

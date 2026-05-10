@@ -93,7 +93,8 @@ class EliminationController:
         # Reconstruct the sequence with the minimum cost
         path = []
         sequence = []
-        changes_info = []
+        cost_contribution = []
+        cost_substitution = []
 
         # starting from the end
         current_state = final_state
@@ -106,10 +107,13 @@ class EliminationController:
             prev_state, char = A_star[(i, current_state)]  # Get the previous state and symbol
             (original_codon, modified_codon), cost_f = A_info[(i, current_state)]
 
+            if cost_f > 0:
+                cost_contribution.append(
+                    {"Position": i, "Original": original_codon, "Optimized": modified_codon, "Cost": f"{cost_f:.3f}".rstrip('0').rstrip('.')})
+
             # Record the change that actually occurred
             if original_codon != modified_codon:
-                changes = {"Position": i, "Original": original_codon, "Modified": modified_codon, "Cost": cost_f}
-                changes_info.append(changes)
+                cost_substitution.append({"Position": i, "Original": original_codon, "Optimized": modified_codon, "Cost": f"{cost_f:.3f}".rstrip('0').rstrip('.')})
 
             path.append((i, current_state))
             sequence.append(char)
@@ -125,26 +129,34 @@ class EliminationController:
         original_0, original_1 = target_sequence[0], target_sequence[1]
 
         if coding_positions[1] == 0:
+            (original_base, modified_base), cost_f = initial_cost_function(2, current_state[1])
+
+            if cost_f > 0:
+                cost_contribution.append(
+                    {"Position": 2, "Original": original_base, "Optimized": modified_base, "Cost": f"{cost_f:.3f}".rstrip('0').rstrip('.')})
+
             if current_state[1] != original_1:
-                (original_base, modified_base), cost_f = initial_cost_function(2, current_state[1])
-                changes = {"Position": 2, "Original": original_base, "Modified": modified_base, "Cost": cost_f}
-                changes_info.append(changes)
+                cost_substitution.append({"Position": 2, "Original": original_base, "Optimized": modified_base, "Cost": f"{cost_f:.3f}".rstrip('0').rstrip('.')})
 
         if coding_positions[0] == 0:
+            (original_base, modified_base), cost_f = initial_cost_function(1, current_state[0])
+
+            if cost_f > 0:
+                cost_contribution.append({"Position": 1, "Original": original_base, "Optimized": modified_base, "Cost": f"{cost_f:.3f}".rstrip('0').rstrip('.')})
+
             if current_state[0] != original_0:
-                (original_base, modified_base), cost_f = initial_cost_function(1, current_state[0])
-                changes = {"Position": 1, "Original": original_base, "Modified": modified_base, "Cost": cost_f}
-                changes_info.append(changes)
+                cost_substitution.append({"Position": 1, "Original": original_base, "Optimized": modified_base, "Cost": f"{cost_f:.3f}".rstrip('0').rstrip('.')})
 
 
         # Reverse the sequence and changes info for correct order
         path.reverse()
         sequence.reverse()
-        changes_info.reverse()
+        cost_substitution.reverse()
+        cost_contribution.reverse()
 
         # Append final information to the info string
         info += f"\n{format_text_bold_for_output('_' * 50)}\n"
         info += "\n🚀 Elimination Process Completed!\n"
         info += f"📆 {format_current_date()}"
 
-        return info, changes_info, ''.join(sequence), min_cost
+        return info, cost_contribution, cost_substitution, ''.join(sequence), min_cost
