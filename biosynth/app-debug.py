@@ -2,6 +2,7 @@ import os
 import time
 import unittest
 import sys
+from tabulate import tabulate
 
 from biosynth.executions.controllers.debug_controller import DebugController
 from biosynth.utils.file_utils import delete_dir
@@ -15,25 +16,8 @@ def execute_unittests():
     start_dir = os.path.join(os.path.dirname(__file__), "tests")
     suite = loader.discover(start_dir)
 
-    print(f"\n{'='*60}")
-    print(f"Running {suite.countTestCases()} tests...")
-    print(f"{'='*60}\n")
-
     runner = TableTestRunner(verbosity=0, stream=sys.stdout)
-    result = runner.run(suite)
-
-    print(f"\n{'='*20}")
-    print(f"Tests run:    {result.testsRun}")
-    print(f"Failures:     {len(result.failures)}")
-    print(f"Errors:       {len(result.errors)}")
-    print(f"Skipped:      {len(result.skipped)}")
-    print(f"Success:      {result.wasSuccessful()}")
-    print(f"{'='*20}\n")
-
-    if result.errors:
-        print("ERRORS:")
-        for test, err in result.errors:
-            print(f"  {test}: {err}")
+    runner.run(suite)
 
 if __name__ == "__main__":
     try:

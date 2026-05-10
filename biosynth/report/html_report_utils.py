@@ -60,8 +60,7 @@ class ReportController:
         # Format other user input and results
         self.unwanted_patterns = ', '.join(InputData.unwanted_patterns)
         self.coding_idx = "" if InputData.coding_indexes is None else f"{InputData.coding_indexes[0] + 1} - {InputData.coding_indexes[1]}"
-        self.detailed_changes = '<br>'.join(
-            EliminationData.detailed_changes) if EliminationData.detailed_changes else None
+        self.detailed_changes = EliminationData.detailed_changes
 
         # These are generated during report creation
         self.output_text = None

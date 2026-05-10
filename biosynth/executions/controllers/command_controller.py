@@ -1,5 +1,6 @@
 import sys
 from datetime import datetime
+from tabulate import tabulate
 
 from biosynth.data.app_data import InputData, EliminationData, OutputData
 from biosynth.executions.execution_utils import eliminate_unwanted_patterns
@@ -74,9 +75,16 @@ class CommandController:
         Logger.info(OutputData.optimized_sequence)
         Logger.space()
 
-        changes = '\n'.join(EliminationData.detailed_changes) if EliminationData.detailed_changes else None
+
+        detailed_changes_text = tabulate(
+            EliminationData.detailed_changes,
+            headers="keys",
+            tablefmt="fancy_grid",
+            colalign=("left", "left", "left", "left")
+        )
+
         Logger.debug(format_text_bold_for_output('Detailed substitutions relative to the target sequence:'))
-        Logger.info(f"{changes}")
+        Logger.info(detailed_changes_text)
         Logger.space()
 
         # Save the results
@@ -93,7 +101,6 @@ class CommandController:
         Logger.notice(path)
 
         filename = f"Changes-Info_{file_date}.txt"
-        detailed_changes = '\n'.join(EliminationData.detailed_changes) if EliminationData.detailed_changes else None
-        path = save_file(detailed_changes, filename, OutputData.output_path)
+        path = save_file(detailed_changes_text, filename, OutputData.output_path)
         Logger.notice(path)
         Logger.space()

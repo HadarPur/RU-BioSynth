@@ -7,7 +7,6 @@ from biosynth.settings.pattern_settings import P
 from biosynth.settings.sequence_settings import S
 from biosynth.utils.output_utils import Logger
 
-
 class DebugController:
     @staticmethod
     def execute():
