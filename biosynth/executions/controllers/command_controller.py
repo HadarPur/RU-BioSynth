@@ -69,7 +69,7 @@ class CommandController:
         # counter while the algorithm runs so the terminal doesn't look
         # frozen on long sequences.
         run_with_spinner(
-            "Running elimination algorithm",
+            "Computation in progress. This may take a few moments for long sequences",
             eliminate_unwanted_patterns,
             InputData.cleaned_dna_sequence,
             InputData.unwanted_patterns,

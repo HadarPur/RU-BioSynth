@@ -344,6 +344,11 @@ def create_scroll_area(parent_layout):
     return scroll_area, content_widget, content_layout
 
 
+def make_item(value):
+    item = QTableWidgetItem(str(value))
+    item.setTextAlignment(Qt.AlignCenter)
+    return item
+
 def create_table_from_data(data):
     """Build a QTableWidget from a dict, nested dict, or list of dicts."""
     table = QTableWidget()
@@ -364,7 +369,7 @@ def create_table_from_data(data):
         for row, row_data in enumerate(data):
             for col, header in enumerate(headers):
                 value = row_data.get(header, "")
-                table.setItem(row, col, QTableWidgetItem(str(value)))
+                table.setItem(row, col, make_item(value))
 
     elif isinstance(data, dict):
         first_value = next(iter(data.values()))
@@ -379,7 +384,8 @@ def create_table_from_data(data):
                 table.setItem(row, 0, QTableWidgetItem(str(key)))
                 for col, header in enumerate(headers[1:], start=1):
                     value = values.get(header, "")
-                    table.setItem(row, col, QTableWidgetItem(str(value)))
+                    table.setItem(row, col, make_item(value))
+
         else:
             headers = ["Key", "Value"]
             table.setColumnCount(2)
@@ -388,7 +394,7 @@ def create_table_from_data(data):
 
             for row, (key, value) in enumerate(data.items()):
                 table.setItem(row, 0, QTableWidgetItem(str(key)))
-                table.setItem(row, 1, QTableWidgetItem(str(value)))
+                table.setItem(row, 1, make_item(value))
 
     table.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
     table.setVerticalScrollMode(QTableWidget.ScrollPerPixel)

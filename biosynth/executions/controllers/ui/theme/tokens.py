@@ -187,7 +187,7 @@ class Labels:
     tab_cost_contribution: str = "Cost Contribution"
     tab_cost_substitution: str = "Cost Substitution"
 
-    busy_message: str = "Running elimination algorithm — please wait..."
+    busy_message: str = "Computation in progress.\nThis may take a few moments for long sequences."
     elimination_failed: str = "Elimination failed"
 
 
