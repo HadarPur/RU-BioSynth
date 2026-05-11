@@ -74,6 +74,3 @@ class TestGeneticCodeTable(unittest.TestCase):
     def test_table_has_64_codons(self):
         self.assertEqual(len(codon_to_amino_acid), 64)
 
-
-if __name__ == "__main__":
-    unittest.main()

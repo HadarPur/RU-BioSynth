@@ -188,6 +188,3 @@ class TestHighlightSequenceToTerminal(unittest.TestCase):
         # Reset code present even if no bases were highlighted.
         self.assertIn("\033[0m", out)
 
-
-if __name__ == "__main__":
-    unittest.main()

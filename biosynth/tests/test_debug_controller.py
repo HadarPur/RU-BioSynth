@@ -59,6 +59,3 @@ class TestDebugController(unittest.TestCase):
             DebugController.execute()
         self.MockCommand.assert_not_called()
 
-
-if __name__ == "__main__":
-    unittest.main()

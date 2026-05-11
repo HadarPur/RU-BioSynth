@@ -9,6 +9,7 @@ from biosynth.utils.display_utils import SequenceUtils
 from biosynth.utils.dna_utils import DNAUtils
 from biosynth.utils.file_utils import save_file
 from biosynth.utils.output_utils import Logger
+from biosynth.utils.spinner import run_with_spinner
 from biosynth.utils.text_utils import format_text_bold_for_output
 
 app_icon_text = """
@@ -64,8 +65,16 @@ class CommandController:
         Logger.info(f"{SequenceUtils.get_patterns(InputData.unwanted_patterns)}")
         Logger.space()
 
-        # Eliminate unwanted patterns
-        eliminate_unwanted_patterns(InputData.cleaned_dna_sequence, InputData.unwanted_patterns, InputData.coding_positions)
+        # Eliminate unwanted patterns — show a spinner with elapsed-time
+        # counter while the algorithm runs so the terminal doesn't look
+        # frozen on long sequences.
+        run_with_spinner(
+            "Running elimination algorithm",
+            eliminate_unwanted_patterns,
+            InputData.cleaned_dna_sequence,
+            InputData.unwanted_patterns,
+            InputData.coding_positions,
+        )
 
         Logger.notice(format_text_bold_for_output('\n' + '_' * 90 + '\n'))
         Logger.info(EliminationData.info)

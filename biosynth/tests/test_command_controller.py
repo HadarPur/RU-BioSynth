@@ -91,7 +91,3 @@ class TestCommandController(unittest.TestCase):
                 f.startswith("BioSynth-Report_")
                 for f in os.listdir(outputs_dir)
             ))
-
-
-if __name__ == "__main__":
-    unittest.main()

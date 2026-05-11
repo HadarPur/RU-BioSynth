@@ -108,7 +108,3 @@ class TestCLIController(unittest.TestCase):
             with self.assertRaises(SystemExit) as cm:
                 CLIController(argv).execute()
             self.assertEqual(cm.exception.code, 2)
-
-
-if __name__ == "__main__":
-    unittest.main()

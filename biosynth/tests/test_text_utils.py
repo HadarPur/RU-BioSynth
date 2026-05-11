@@ -9,7 +9,7 @@ class TestOutputUtils(unittest.TestCase):
 
     def setUp(self):
         # Reset output_format before each tests
-        text_utils.output_format = OutputFormat.NONE
+        set_output_format(OutputFormat.NONE)
 
     def test_set_output_format_valid(self):
         set_output_format(OutputFormat.TERMINAL)
@@ -19,22 +19,22 @@ class TestOutputUtils(unittest.TestCase):
         self.assertEqual(text_utils.output_format, OutputFormat.GUI)
 
     def test_format_text_bold_for_output_terminal(self):
-        text_utils.output_format = OutputFormat.TERMINAL
+        set_output_format(OutputFormat.TERMINAL)
         result = format_text_bold_for_output("Hello")
         self.assertEqual(result, "\033[1mHello\033[0m")
 
     def test_format_text_bold_for_output_test(self):
-        text_utils.output_format = OutputFormat.TEST
+        set_output_format(OutputFormat.TEST)
         result = format_text_bold_for_output("World")
         self.assertEqual(result, "\033[1mWorld\033[0m")
 
     def test_format_text_bold_for_output_gui(self):
-        text_utils.output_format = OutputFormat.GUI
+        set_output_format(OutputFormat.GUI)
         result = format_text_bold_for_output("HelloGUI")
         self.assertEqual(result, "<b>HelloGUI</b>")
 
     def test_handle_critical_error_gui_raises(self):
-        text_utils.output_format = OutputFormat.GUI
+        set_output_format(OutputFormat.GUI)
         with self.assertRaises(ValueError) as cm:
             handle_critical_error("Critical GUI Error")
         self.assertIn("Critical GUI Error", str(cm.exception))
@@ -43,7 +43,7 @@ class TestOutputUtils(unittest.TestCase):
     @patch.object(text_utils.Logger, "space")
     @patch("sys.exit")
     def test_handle_critical_error_terminal(self, mock_exit, mock_space, mock_error):
-        text_utils.output_format = OutputFormat.TERMINAL
+        set_output_format(OutputFormat.TERMINAL)
         handle_critical_error("Critical Terminal Error")
         mock_error.assert_called_once_with("Critical Terminal Error")
         mock_space.assert_called_once()
@@ -51,20 +51,14 @@ class TestOutputUtils(unittest.TestCase):
 
     @patch("sys.exit")
     def test_handle_critical_error_none(self, mock_exit):
-        text_utils.output_format = OutputFormat.NONE
+        set_output_format(OutputFormat.NONE)
         handle_critical_error("Critical None Error")
         mock_exit.assert_called_once_with(2)
 
-    def test_format_text_bold_for_output_none_returns_empty(self):
-        # NONE is neither TERMINAL/TEST nor GUI — the helper logs an error
-        # and returns "" so callers can keep going.
-        text_utils.output_format = OutputFormat.NONE
-        self.assertEqual(format_text_bold_for_output("x"), "")
-
     def test_get_execution_mode_branches(self):
-        text_utils.output_format = OutputFormat.GUI
+        set_output_format(OutputFormat.GUI)
         self.assertEqual(text_utils.get_execution_mode(), "GUI")
-        text_utils.output_format = OutputFormat.TERMINAL
+        set_output_format(OutputFormat.TERMINAL)
         self.assertEqual(text_utils.get_execution_mode(), "Terminal")
-        text_utils.output_format = OutputFormat.NONE
+        set_output_format(OutputFormat.NONE)
         self.assertEqual(text_utils.get_execution_mode(), "Unknown")

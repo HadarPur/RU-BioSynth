@@ -23,8 +23,6 @@ if __name__ == "__main__":
     try:
         delete_dir('output')
 
-        # DEBUG
-        set_output_format(OutputFormat.TEST)
         execute_unittests()
 
         time.sleep(2.2)

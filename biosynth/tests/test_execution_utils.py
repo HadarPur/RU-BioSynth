@@ -5,12 +5,13 @@ is_valid_codon_usage / is_valid_cost), the composite is_valid_input
 helper, and the elimination/report orchestration helpers.
 """
 
+import io
 import unittest
 from unittest.mock import patch
 
 from biosynth.data import app_data
 from biosynth.executions import execution_utils as eu
-
+from biosynth.utils.text_utils import OutputFormat, set_output_format
 
 def _full_codon_usage():
     """Return a 64-codon usage dict acceptable to is_valid_codon_usage."""
@@ -83,68 +84,152 @@ class TestIsValidInput(unittest.TestCase):
         self.usage = _full_codon_usage()
 
     def test_happy_path(self):
-        self.assertTrue(eu.is_valid_input("ATGC", {"GGGG"}, self.usage))
+        result = eu.is_valid_input("ATGC", {"GGGG"}, self.usage)
+        self.assertTrue(result)
 
     def test_missing_sequence(self):
-        self.assertFalse(eu.is_valid_input(None, {"GGGG"}, self.usage))
+        with patch("sys.stdout", new=io.StringIO()) as fake_out:
+            result = eu.is_valid_input(None, {"GGGG"}, self.usage)
+            output = fake_out.getvalue()
+
+        self.assertFalse(result)
+        self.assertIn("Target Sequence file is missing.", output)
 
     def test_empty_sequence(self):
-        self.assertFalse(eu.is_valid_input("", {"GGGG"}, self.usage))
+        with patch("sys.stdout", new=io.StringIO()) as fake_out:
+            result = eu.is_valid_input("", {"GGGG"}, self.usage)
+            output = fake_out.getvalue()
+
+        self.assertFalse(result)
+        self.assertIn("Invalid target sequence format in file.", output)
 
     def test_invalid_sequence(self):
-        self.assertFalse(eu.is_valid_input("ATGN", {"GGGG"}, self.usage))
+        with patch("sys.stdout", new=io.StringIO()) as fake_out:
+            result = eu.is_valid_input("ATGN", {"GGGG"}, self.usage)
+            output = fake_out.getvalue()
+
+        self.assertFalse(result)
+        self.assertIn("Invalid target sequence format in file.", output)
 
     def test_missing_patterns(self):
-        self.assertFalse(eu.is_valid_input("ATGC", None, self.usage))
+        with patch("sys.stdout", new=io.StringIO()) as fake_out:
+            result = eu.is_valid_input("ATGC", None, self.usage)
+            output = fake_out.getvalue()
+
+        self.assertFalse(result)
+        self.assertIn("Unwanted Patterns file is missing.", output)
 
     def test_empty_patterns(self):
-        self.assertFalse(eu.is_valid_input("ATGC", set(), self.usage))
+        with patch("sys.stdout", new=io.StringIO()) as fake_out:
+            result = eu.is_valid_input("ATGC", set(), self.usage)
+            output = fake_out.getvalue()
+
+        self.assertFalse(result)
+        self.assertIn("Invalid unwanted patterns format in file.", output)
 
     def test_invalid_patterns(self):
-        self.assertFalse(eu.is_valid_input("ATGC", {"NNN"}, self.usage))
+        with patch("sys.stdout", new=io.StringIO()) as fake_out:
+            result = eu.is_valid_input("ATGC", {"NNN"}, self.usage)
+            output = fake_out.getvalue()
+
+        self.assertFalse(result)
+        self.assertIn("Invalid unwanted patterns format in file.", output)
 
     def test_missing_codon_usage(self):
-        self.assertFalse(eu.is_valid_input("ATGC", {"GGGG"}, None))
+        with patch("sys.stdout", new=io.StringIO()) as fake_out:
+            result = eu.is_valid_input("ATGC", {"GGGG"}, None)
+            output = fake_out.getvalue()
+
+        self.assertFalse(result)
+        self.assertIn("Codon Usage file is missing.", output)
 
     def test_empty_codon_usage(self):
-        self.assertFalse(eu.is_valid_input("ATGC", {"GGGG"}, {}))
+        with patch("sys.stdout", new=io.StringIO()) as fake_out:
+            result = eu.is_valid_input("ATGC", {"GGGG"}, {})
+            output = fake_out.getvalue()
+
+        self.assertFalse(result)
+        self.assertIn("Invalid codon usage table format in file.", output)
 
     def test_invalid_codon_usage(self):
         bad = _full_codon_usage()
         bad.pop("ATG")
         bad["XXX"] = 0.5
-        self.assertFalse(eu.is_valid_input("ATGC", {"GGGG"}, bad))
 
+        with patch("sys.stdout", new=io.StringIO()) as fake_out:
+            result = eu.is_valid_input("ATGC", {"GGGG"}, bad)
+            output = fake_out.getvalue()
+
+        self.assertFalse(result)
+        self.assertIn("Invalid codon usage table format in file.", output)
 
 class TestIsValidCost(unittest.TestCase):
     def test_happy_path(self):
         self.assertTrue(eu.is_valid_cost(alpha=1.0, beta=2.0, w=100.0))
 
     def test_alpha_non_positive(self):
-        self.assertFalse(eu.is_valid_cost(alpha=0, beta=2.0, w=100.0))
+        with patch("sys.stdout", new=io.StringIO()) as fake_out:
+            result = eu.is_valid_cost(alpha=0, beta=2.0, w=100.0)
+            output = fake_out.getvalue()
+
+        self.assertFalse(result)
+        self.assertIn("Invalid alpha value: α = 0. Must be a positive number.", output)
 
     def test_alpha_wrong_type(self):
-        self.assertFalse(eu.is_valid_cost(alpha="x", beta=2.0, w=100.0))
+        with patch("sys.stdout", new=io.StringIO()) as fake_out:
+            result = eu.is_valid_cost(alpha="x", beta=2.0, w=100.0)
+            output = fake_out.getvalue()
+
+        self.assertFalse(result)
+        self.assertIn("Invalid alpha value: α = x. Must be a positive number.", output)
 
     def test_beta_non_positive(self):
-        self.assertFalse(eu.is_valid_cost(alpha=1.0, beta=-1, w=100.0))
+        with patch("sys.stdout", new=io.StringIO()) as fake_out:
+            result = eu.is_valid_cost(alpha=1.0, beta=-1, w=100.0)
+            output = fake_out.getvalue()
+
+        self.assertFalse(result)
+        self.assertIn("Invalid beta value: β = -1. Must be a positive number.", output)
 
     def test_beta_wrong_type(self):
-        self.assertFalse(eu.is_valid_cost(alpha=1.0, beta=None, w=100.0))
+        with patch("sys.stdout", new=io.StringIO()) as fake_out:
+            result = eu.is_valid_cost(alpha=1.0, beta=None, w=100.0)
+            output = fake_out.getvalue()
+
+        self.assertFalse(result)
+        self.assertIn("Invalid beta value: β = None. Must be a positive number.", output)
 
     def test_w_non_positive(self):
-        self.assertFalse(eu.is_valid_cost(alpha=1.0, beta=2.0, w=0))
+        with patch("sys.stdout", new=io.StringIO()) as fake_out:
+            result = eu.is_valid_cost(alpha=1.0, beta=2.0, w=0)
+            output = fake_out.getvalue()
+
+        self.assertFalse(result)
+        self.assertIn("Invalid w value: w = 0. Must be a positive number.", output)
 
     def test_w_wrong_type(self):
-        self.assertFalse(eu.is_valid_cost(alpha=1.0, beta=2.0, w="x"))
+        with patch("sys.stdout", new=io.StringIO()) as fake_out:
+            result = eu.is_valid_cost(alpha=1.0, beta=2.0, w="x")
+            output = fake_out.getvalue()
+
+        self.assertFalse(result)
+        self.assertIn("Invalid w value: w = x. Must be a positive number.", output)
 
     def test_alpha_must_be_less_than_beta(self):
-        self.assertFalse(eu.is_valid_cost(alpha=5.0, beta=2.0, w=100.0))
+        with patch("sys.stdout", new=io.StringIO()) as fake_out:
+            result = eu.is_valid_cost(alpha=5.0, beta=2.0, w=100.0)
+            output = fake_out.getvalue()
+
+        self.assertFalse(result)
+        self.assertIn("Biological Constraint violated: α < β required (α=5.0, β=2.0).", output)
 
     def test_w_must_be_much_greater_than_beta(self):
-        # factor is 10 → 2 * 10 < 25 must hold; w=15 should fail.
-        self.assertFalse(eu.is_valid_cost(alpha=1.0, beta=2.0, w=15.0))
+        with patch("sys.stdout", new=io.StringIO()) as fake_out:
+            result = eu.is_valid_cost(alpha=1.0, beta=2.0, w=15.0)
+            output = fake_out.getvalue()
 
+        self.assertFalse(result)
+        self.assertIn("Constraint violated: β ≪ w required (β=2.0, w=15.0, factor=10).", output)
 
 class TestEliminateUnwantedPatterns(unittest.TestCase):
     """Smoke test: eliminate_unwanted_patterns populates the app_data
@@ -152,6 +237,8 @@ class TestEliminateUnwantedPatterns(unittest.TestCase):
     """
 
     def setUp(self):
+        set_output_format(OutputFormat.TEST)
+
         app_data.EliminationData.info = None
         app_data.EliminationData.cost_contribution = None
         app_data.EliminationData.cost_substitution = None
@@ -205,7 +292,3 @@ class TestInitializeReport(unittest.TestCase):
         # Imported here to avoid a heavy import at module top.
         from biosynth.report.html_report_utils import ReportController
         self.assertIsInstance(controller, ReportController)
-
-
-if __name__ == "__main__":
-    unittest.main()

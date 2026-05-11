@@ -2,9 +2,12 @@ import unittest
 from unittest.mock import patch
 
 from biosynth.algorithm.eliminate_sequence import EliminationController
+from biosynth.utils.text_utils import OutputFormat, set_output_format
 
 class TestEliminationController(unittest.TestCase):
     def setUp(self):
+        set_output_format(OutputFormat.TEST)
+
         # Setup input data
         self.target_sequence = "ATGCTTACGTAG"
         self.unwanted_patterns = {"CGT", "TAG"}

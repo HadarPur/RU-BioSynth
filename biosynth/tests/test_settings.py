@@ -32,7 +32,3 @@ class TestSettingsFixtures(unittest.TestCase):
     def test_sequence_is_non_empty_string(self):
         self.assertIsInstance(S, str)
         self.assertGreater(len(S), 0)
-
-
-if __name__ == "__main__":
-    unittest.main()

@@ -1,9 +1,12 @@
 """Tests for biosynth.report.html_report_utils."""
 
 import os
+import io
 import tempfile
 import unittest
 import unittest.mock
+from unittest.mock import patch
+from jinja2 import Template
 
 from biosynth.data import app_data
 from biosynth.report.html_report_utils import (
@@ -11,7 +14,7 @@ from biosynth.report.html_report_utils import (
     convert_to_html_list,
 )
 from biosynth.utils.text_utils import OutputFormat, set_output_format
-
+import biosynth.report.html_report_utils as mod
 
 class TestConvertToHtmlList(unittest.TestCase):
     def test_dash_items_become_ul(self):
@@ -104,21 +107,24 @@ class TestReportController(unittest.TestCase):
         # Patch resource_path so jinja2 cannot find the template — the
         # except branch calls handle_critical_error which raises SystemExit
         # under TERMINAL output.
-        import biosynth.report.html_report_utils as mod
 
         ctrl = ReportController()
-        with unittest.mock.patch.object(
-            mod, "resource_path", return_value="/no/such/dir/missing.html"
-        ):
-            with self.assertRaises(SystemExit):
-                ctrl.create_report(file_date="01-Jan-1970_00-00-00")
+
+        with patch("sys.stdout", new=io.StringIO()) as fake_out:
+            with patch.object(
+                    mod, "resource_path", return_value="/no/such/dir/missing.html"
+            ):
+                with self.assertRaises(SystemExit):
+                    ctrl.create_report(file_date="01-Jan-1970_00-00-00")
+
+            output = fake_out.getvalue()
+
+        self.assertIn("Template not found", output)
 
     def test_create_report_generic_exception_returns_none(self):
         # If render raises a non-TemplateNotFound exception and the critical
         # handler is stubbed out (i.e. doesn't exit), create_report falls
         # through and returns None.
-        import biosynth.report.html_report_utils as mod
-        from jinja2 import Template
 
         ctrl = ReportController()
         boom = unittest.mock.patch.object(
@@ -130,6 +136,3 @@ class TestReportController(unittest.TestCase):
                 ctrl.create_report(file_date="01-Jan-1970_00-00-00")
             )
 
-
-if __name__ == "__main__":
-    unittest.main()
