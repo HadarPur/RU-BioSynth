@@ -24,11 +24,14 @@ class BaseWindow(QMainWindow):
 
     def init_ui(self):
         self.setWindowTitle(TITLES.app)
+        # Initial size = the design's "default" dimensions. The same values
+        # also act as a hard minimum so the user can grow the window but
+        # cannot shrink it below the design baseline.
         self.setGeometry(
             SIZES.window_x, SIZES.window_y,
             SIZES.window_width, SIZES.window_height,
         )
-        self.setFixedSize(self.size())
+        self.setMinimumSize(SIZES.window_width, SIZES.window_height)
         self.setCentralWidget(self.stackedLayout)
         self.show_upload_window()
 

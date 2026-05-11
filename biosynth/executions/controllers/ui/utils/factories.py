@@ -328,12 +328,14 @@ def add_toggle(layout, default_value=False,
 
 def create_scroll_area(parent_layout):
     scroll_area = QScrollArea()
-    scroll_area.setFixedHeight(SIZES.scroll_area_height)
+    # Minimum (not fixed) so the area grows when the window is resized.
+    scroll_area.setMinimumHeight(SIZES.scroll_area_height)
+    scroll_area.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
     scroll_area.setWidgetResizable(True)
     scroll_area.setStyleSheet(scroll_area_borderless_qss())
     scroll_area.setAlignment(Qt.AlignTop)
 
-    parent_layout.addWidget(scroll_area, alignment=Qt.AlignTop)
+    parent_layout.addWidget(scroll_area)
 
     content_widget = QWidget()
     scroll_area.setWidget(content_widget)
