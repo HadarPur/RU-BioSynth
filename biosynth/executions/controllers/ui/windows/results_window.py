@@ -26,8 +26,12 @@ from biosynth.executions.controllers.ui.theme import (
     status_label_qss,
     transparent_text_edit_qss,
 )
-from biosynth.executions.controllers.ui.utils import add_code_block, add_text_edit_html
-from biosynth.executions.controllers.ui.widgets import CircularButton
+from biosynth.executions.controllers.ui.utils import (
+    add_code_block,
+    add_text_edit_html,
+    create_table_from_data,
+)
+from biosynth.executions.controllers.ui.widgets import CircularButton, InfoDialog
 from biosynth.executions.controllers.ui.windows.wizard_page import WizardPage
 from biosynth.executions.execution_utils import initialize_report, mark_non_equal_codons
 
@@ -155,9 +159,6 @@ class ResultsWindow(WizardPage):
         layout.addLayout(prompt_layout)
 
     def show_info(self):
-        from biosynth.executions.controllers.ui.utils import create_table_from_data
-        from biosynth.executions.controllers.ui.widgets import InfoDialog
-
         contribution_table = create_table_from_data(EliminationData.cost_contribution)
         substitution_table = create_table_from_data(EliminationData.cost_substitution)
 

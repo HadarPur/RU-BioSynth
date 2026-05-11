@@ -66,3 +66,29 @@ class TestDNAHighlighter(unittest.TestCase):
             str(cm.exception),
             "'*' present but not followed by ATG"
         )
+
+    def test_get_coding_sequence_returns_substring(self):
+        seq = "AAAATGCCCAAA"
+        # (3, 9) → "ATGCCC"
+        self.assertEqual(DNAUtils.get_coding_sequence((3, 9), seq), "ATGCCC")
+
+    def test_get_coding_sequence_returns_none_when_index_is_none(self):
+        self.assertIsNone(DNAUtils.get_coding_sequence(None, "ATG"))
+
+    def test_get_coding_regions_returns_none_when_atg_missing(self):
+        # When the start_codon index is None, the method short-circuits and
+        # returns (all-zero positions, None).
+        positions, idx = DNAUtils.get_coding_and_non_coding_regions_positions(
+            "ATGCCC", None
+        )
+        self.assertEqual(positions, [0] * 6)
+        self.assertIsNone(idx)
+
+    def test_get_coding_regions_no_in_frame_stop_returns_none(self):
+        # Called directly (bypassing find_start_codon) with an ATG index but
+        # a sequence that has no in-frame stop codon — exercises the
+        # 'stop_idx is None' early return.
+        seq = "ATGCCCAAA"  # ATG at 0, no in-frame stop
+        positions, idx = DNAUtils.get_coding_and_non_coding_regions_positions(seq, 0)
+        self.assertEqual(positions, [0] * 9)
+        self.assertIsNone(idx)

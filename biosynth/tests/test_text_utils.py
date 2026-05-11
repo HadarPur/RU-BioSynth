@@ -54,3 +54,17 @@ class TestOutputUtils(unittest.TestCase):
         text_utils.output_format = OutputFormat.NONE
         handle_critical_error("Critical None Error")
         mock_exit.assert_called_once_with(2)
+
+    def test_format_text_bold_for_output_none_returns_empty(self):
+        # NONE is neither TERMINAL/TEST nor GUI — the helper logs an error
+        # and returns "" so callers can keep going.
+        text_utils.output_format = OutputFormat.NONE
+        self.assertEqual(format_text_bold_for_output("x"), "")
+
+    def test_get_execution_mode_branches(self):
+        text_utils.output_format = OutputFormat.GUI
+        self.assertEqual(text_utils.get_execution_mode(), "GUI")
+        text_utils.output_format = OutputFormat.TERMINAL
+        self.assertEqual(text_utils.get_execution_mode(), "Terminal")
+        text_utils.output_format = OutputFormat.NONE
+        self.assertEqual(text_utils.get_execution_mode(), "Unknown")

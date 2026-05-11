@@ -63,5 +63,31 @@ class TestDataClasses(unittest.TestCase):
         self.assertGreaterEqual(app_data.CostData.w, 0)
         self.assertTrue(app_data.CostData.stop_codon == float('inf'))
 
+    def test_upload_data_reset_clears_all_fields(self):
+        app_data.UploadData.dna_sequence_content_file = "ATG"
+        app_data.UploadData.unwanted_patterns_content_file = ["GGG"]
+        app_data.UploadData.codon_usage_content_file = {"ATG": 1.0}
+        app_data.UploadData.reset()
+        self.assertIsNone(app_data.UploadData.dna_sequence_content_file)
+        self.assertIsNone(app_data.UploadData.unwanted_patterns_content_file)
+        self.assertIsNone(app_data.UploadData.codon_usage_content_file)
+
+    def test_cost_data_reset_restores_defaults(self):
+        app_data.CostData.codon_usage = {"ATG": 1.0}
+        app_data.CostData.codon_usage_filename = "table.txt"
+        app_data.CostData.alpha = 99.0
+        app_data.CostData.beta = 100.0
+        app_data.CostData.w = 9999.0
+        app_data.CostData.stop_codon = 1
+        app_data.CostData.optimized_codon = False
+        app_data.CostData.reset()
+        self.assertIsNone(app_data.CostData.codon_usage)
+        self.assertIsNone(app_data.CostData.codon_usage_filename)
+        self.assertEqual(app_data.CostData.alpha, 1.0)
+        self.assertEqual(app_data.CostData.beta, 2.0)
+        self.assertEqual(app_data.CostData.w, 100.0)
+        self.assertEqual(app_data.CostData.stop_codon, float('inf'))
+        self.assertTrue(app_data.CostData.optimized_codon)
+
 
 

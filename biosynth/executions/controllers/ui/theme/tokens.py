@@ -195,7 +195,7 @@ class Labels:
 class Titles:
     app: str = "🧬 BioSynth App"
     info_dialog: str = "Information"
-    results_info_dialog: str = "Info"
+    results_info_dialog: str = "Cost Information"
     preview_window: str = "Preview Report"
     busy_dialog: str = "Please wait"
 

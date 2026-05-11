@@ -17,6 +17,7 @@ from PyQt5.QtWidgets import QHBoxLayout, QVBoxLayout, QWidget
 
 from biosynth.executions.controllers.ui.theme import LABELS, MARGINS
 from biosynth.executions.controllers.ui.utils import add_button
+from biosynth.executions.controllers.ui.widgets import FloatingScrollIndicator
 
 
 class WizardPage(QWidget):
@@ -53,8 +54,6 @@ class WizardPage(QWidget):
         self.next_button.clicked.connect(lambda: self._next_callback())
 
     def attach_floating_indicator(self, scroll_target):
-        from biosynth.executions.controllers.ui.widgets import FloatingScrollIndicator
-
         self.floating_btn = FloatingScrollIndicator(parent=self, scroll_area=scroll_target)
         scrollbar = scroll_target.verticalScrollBar()
         scrollbar.rangeChanged.connect(

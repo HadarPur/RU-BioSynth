@@ -26,6 +26,7 @@ from PyQt5.QtWidgets import (
 )
 
 from biosynth.executions.controllers.ui.theme import (
+    FONTS,
     LABELS,
     MARGINS,
     SIZES,
@@ -39,7 +40,11 @@ from biosynth.executions.controllers.ui.utils.file_actions import (
     download_file,
     save_to_file,
 )
-from biosynth.executions.controllers.ui.widgets import DropTableWidget, DropTextEdit
+from biosynth.executions.controllers.ui.widgets import (
+    DropTableWidget,
+    DropTextEdit,
+    ToggleSwitch,
+)
 from biosynth.utils.file_utils import resource_path
 
 
@@ -169,7 +174,6 @@ def add_drop_text_edit(layout, placeholder, drop_callback, wrap=None):
 
 
 def _code_font():
-    from biosynth.executions.controllers.ui.theme import FONTS
     font = QFont(FONTS.code_family)
     font.setPointSize(FONTS.code_point_size)
     return font
@@ -300,8 +304,6 @@ def add_spinbox(layout, default_value, step=0.01,
 
 def add_toggle(layout, default_value=False,
                alignment=None, callback=None, args=(), size=None):
-    from biosynth.executions.controllers.ui.widgets import ToggleSwitch
-
     bottom_layout = QHBoxLayout()
     bottom_layout.setContentsMargins(*MARGINS.spinbox_row)
     layout.addLayout(bottom_layout)
