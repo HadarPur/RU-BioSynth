@@ -6,13 +6,23 @@ package — adjust the theme tokens or QSS factories there to retheme.
 
 from PyQt5.QtCore import (
     QEasingCurve,
+    QEvent,
     QPropertyAnimation,
     QRectF,
     QSize,
     Qt,
     pyqtProperty,
 )
-from PyQt5.QtGui import QBrush, QColor, QPainter, QPainterPath, QRegion
+from PyQt5.QtGui import (
+    QBrush,
+    QColor,
+    QFont,
+    QPainter,
+    QPainterPath,
+    QRegion,
+    QTextCharFormat,
+    QTextCursor,
+)
 from PyQt5.QtWidgets import (
     QAbstractButton,
     QPushButton,
@@ -111,7 +121,55 @@ class DropTextEdit(QTextEdit):
     def __init__(self, parent=None, drop_callback=None):
         super().__init__(parent)
         self.drop_callback = drop_callback
+        self._content_font = None  # preferred font for typed/loaded text
         self.setAcceptDrops(True)
+
+    def set_content_font(self, font: QFont) -> None:
+        """Set the font used to render entered (typed/dropped/pasted)
+        content, independent of the widget's own font.
+
+        Qt draws the placeholder text using the widget font, but the
+        document content uses the document's default font and the
+        cursor's current char format. Storing the preference here lets
+        us reapply it whenever a ``FontChange`` event fires — most
+        notably when ``app.setStyleSheet(...)`` is applied AFTER the
+        widget has been built — so the content font isn't overwritten
+        by QSS-driven widget styling.
+        """
+        self._content_font = QFont(font)
+        self._apply_content_font()
+
+    def _apply_content_font(self) -> None:
+        if self._content_font is None:
+            return
+        # 1. Default font of the QTextDocument: used by ``setPlainText``,
+        #    ``setHtml`` (when no inline format is set), and as the
+        #    fallback for new text.
+        self.document().setDefaultFont(self._content_font)
+        # 2. Current cursor char format: used by direct typing.
+        fmt = QTextCharFormat()
+        fmt.setFont(self._content_font)
+        self.setCurrentCharFormat(fmt)
+        # 3. Any existing content needs to be reformatted explicitly —
+        #    changing defaultFont does not retroactively alter the
+        #    per-character formats already in the document.
+        if self.toPlainText():
+            cursor = self.textCursor()
+            saved_pos = cursor.position()
+            cursor.beginEditBlock()
+            cursor.select(QTextCursor.Document)
+            cursor.mergeCharFormat(fmt)
+            cursor.clearSelection()
+            cursor.setPosition(saved_pos)
+            cursor.endEditBlock()
+
+    def changeEvent(self, event):
+        # When QSS sets a font property on this widget, Qt fires
+        # FontChange and QTextEdit propagates the new widget font onto
+        # the document — clobbering our content font. Reapply.
+        super().changeEvent(event)
+        if event.type() == QEvent.FontChange:
+            self._apply_content_font()
 
     def dragEnterEvent(self, event):
         if event.mimeData().hasUrls():

@@ -135,6 +135,9 @@ def add_drop_table(layout, placeholder, columns, headers, drop_callback):
     table = DropTableWidget(drop_callback=drop_callback)
     table.setColumnCount(columns)
     table.setHorizontalHeaderLabels(headers)
+    # Match the body-text size used everywhere else in the UI. Without
+    # this, cells fall back to Qt's default UI font which is smaller.
+    table.setFont(_code_font())
     table.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
     layout.addWidget(table)
 
@@ -167,6 +170,13 @@ def add_drop_table(layout, placeholder, columns, headers, drop_callback):
 def add_drop_text_edit(layout, placeholder, drop_callback, wrap=None):
     text_edit = DropTextEdit(drop_callback=drop_callback)
     text_edit.setPlaceholderText(placeholder)
+    # ``set_content_font`` stores the preference on the widget and
+    # re-applies it on every ``FontChange`` — so even when QSS is
+    # applied later and forces a widget-font update (which Qt would
+    # otherwise propagate onto the document), the entered content
+    # keeps rendering in Menlo. The placeholder uses the widget font,
+    # so it continues to use the regular UI font from the QSS.
+    text_edit.set_content_font(_code_font())
     text_edit.setLineWrapMode(wrap if wrap is not None else QTextEdit.WidgetWidth)
     text_edit.viewport().setCursor(Qt.ArrowCursor)
     layout.addWidget(text_edit)
@@ -175,7 +185,10 @@ def add_drop_text_edit(layout, placeholder, drop_callback, wrap=None):
 
 def _code_font():
     font = QFont(FONTS.code_family)
-    font.setPointSize(FONTS.code_point_size)
+    # Pixel size (matches QSS px-based font sizes 1:1) instead of point
+    # size, so monospace text renders at the same visual size as the rest
+    # of the UI's body text.
+    font.setPixelSize(FONTS.body_px)
     return font
 
 
@@ -215,11 +228,19 @@ def adjust_scroll_area_height(scroll_area):
 def add_text_edit_html(layout, placeholder, content):
     text_edit = QTextEdit()
     text_edit.setPlaceholderText(placeholder)
+
+    # Apply font and document-level CSS BEFORE setHtml so the HTML parses
+    # with the right base. Qt's default <pre>/<p> rendering applies its
+    # own font-size, which would otherwise shrink the text below body_px.
+    text_edit.setFont(_code_font())
+    text_edit.setStyleSheet(text_edit_transparent_only_qss())
+    text_edit.document().setDefaultStyleSheet(
+        f"pre {{ font-size: {FONTS.body_px}px; margin: 0; }} "
+        f"p {{ font-size: {FONTS.body_px}px; margin: 0; }}"
+    )
     if content:
         text_edit.setHtml(content)
 
-    text_edit.setStyleSheet(text_edit_transparent_only_qss())
-    text_edit.setFont(_code_font())
     text_edit.setReadOnly(True)
     text_edit.setTextInteractionFlags(Qt.NoTextInteraction)
     text_edit.viewport().setCursor(Qt.ArrowCursor)
@@ -233,6 +254,9 @@ def add_code_block(parent_layout, text, file_date, update_status):
     parent_layout.addLayout(layout)
 
     code_display = QPlainTextEdit(text)
+    # Same monospace font + body_px size as every other "code" view, so
+    # the optimized-sequence display matches the rest of the UI.
+    code_display.setFont(_code_font())
     code_display.setReadOnly(True)
     layout.addWidget(code_display)
 

@@ -17,7 +17,9 @@ from biosynth.utils.dna_utils import DNAUtils
 
 def _monospace_font():
     font = QFont(FONTS.code_family)
-    font.setPointSize(FONTS.code_point_size)
+    # Pixel size to match the QSS body font size 1:1 so the sequence
+    # display renders at the same visual size as the rest of the UI.
+    font.setPixelSize(FONTS.body_px)
     return font
 
 
@@ -38,6 +40,12 @@ class _AutoHeightHtmlView(QTextEdit):
         self.setTextInteractionFlags(Qt.NoTextInteraction)
         self.viewport().setCursor(Qt.ArrowCursor)
         self.setStyleSheet(text_edit_transparent_only_qss())
+        # Force <pre>/<p> blocks in the parsed HTML to honour body_px —
+        # Qt's HTML renderer otherwise shrinks <pre> by ~17%.
+        self.document().setDefaultStyleSheet(
+            f"pre {{ font-size: {FONTS.body_px}px; margin: 0; }} "
+            f"p {{ font-size: {FONTS.body_px}px; margin: 0; }}"
+        )
         if html:
             self.setHtml(html)
 

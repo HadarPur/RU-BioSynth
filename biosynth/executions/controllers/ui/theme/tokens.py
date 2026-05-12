@@ -57,17 +57,46 @@ class Colors:
 
 @dataclass(frozen=True)
 class Fonts:
+    """Single-source-of-truth font sizing.
+
+    Every non-header text element in the UI — labels, buttons, text edits,
+    table rows, status pill, placeholder text, info button, monospace code
+    blocks — derives its size from :attr:`body_px`. Change ``body_px``
+    here and the whole UI rescales uniformly.
+
+    Headers (``<h1>`` / ``<h2>`` / ``<h3>`` inside ``QLabel``) keep their
+    own Qt-rendered sizes and are not affected.
+    """
+
     code_family: str = "Menlo"
-    code_point_size: int = 10
 
     body_px: int = 15
     body_line_height_px: int = 5
     body_padding_px: int = 2
 
-    table_px: int = 13
-    status_px: int = 14
-    placeholder_px: int = 16
-    info_button_px: int = 15
+    # The following are read-only aliases of ``body_px`` so existing call
+    # sites that reference table/status/placeholder/info/code sizes all
+    # render at the same size. Aliasing (rather than duplicating values)
+    # keeps "all UI text the same size" a true invariant of the theme.
+    @property
+    def table_px(self) -> int:
+        return self.body_px
+
+    @property
+    def status_px(self) -> int:
+        return self.body_px
+
+    @property
+    def placeholder_px(self) -> int:
+        return self.body_px
+
+    @property
+    def info_button_px(self) -> int:
+        return self.body_px
+
+    @property
+    def code_px(self) -> int:
+        return self.body_px
 
 
 @dataclass(frozen=True)
@@ -121,6 +150,10 @@ class Sizes:
     # Busy dialog
     busy_dialog_w: int = 360
     busy_dialog_h: int = 120
+
+    # Report preview window (pywebview)
+    preview_w: int = 1200
+    preview_h: int = 800
 
     # Table header / rows
     table_header_min_h: int = 38

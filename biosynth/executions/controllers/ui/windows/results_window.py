@@ -1,9 +1,8 @@
 import os
 from datetime import datetime
 
-import webview
-from PyQt5 import QtCore
-from PyQt5.QtCore import QEasingCurve, QPropertyAnimation, Qt, QTimer
+from PyQt5.QtCore import QEasingCurve, QPropertyAnimation, Qt, QTimer, QUrl
+from PyQt5.QtGui import QDesktopServices
 from PyQt5.QtWidgets import (
     QApplication,
     QFileDialog,
@@ -35,23 +34,24 @@ from biosynth.executions.controllers.ui.widgets import CircularButton, InfoDialo
 from biosynth.executions.controllers.ui.windows.wizard_page import WizardPage
 from biosynth.executions.execution_utils import initialize_report, mark_non_equal_codons
 
-QtCore.QCoreApplication.setAttribute(QtCore.Qt.AA_ShareOpenGLContexts)
-
 
 def quit_app():
     QApplication.instance().quit()
 
 
 def show_preview_report(report_local_file_path):
+    """Open the rendered HTML report in the user's default browser.
+
+    Previously this used pywebview's embedded WKWebView window, but on
+    macOS that crashes with ``zsh: trace trap`` a few seconds after
+    opening: pywebview's ``start()`` enters a Cocoa main-thread event
+    loop while Qt's own event loop is already running on the same
+    thread, and the two loops conflict. Delegating to the system browser
+    via ``QDesktopServices`` is reliable and gives the user a full
+    browser experience (find, print, zoom) for free.
+    """
     file_path = os.path.abspath(report_local_file_path)
-    webview.create_window(
-        TITLES.preview_window,
-        url=f'file://{file_path}',
-        width=1200,
-        height=800,
-        resizable=False,
-    )
-    webview.start()
+    QDesktopServices.openUrl(QUrl.fromLocalFile(file_path))
 
 
 class ResultsWindow(WizardPage):

@@ -5,6 +5,9 @@ Replaces the inline `QDialog` builders that were duplicated in
 
     InfoDialog.from_html(parent, title, tabs=[(name, html), ...])
     InfoDialog.from_widgets(parent, title, tabs=[(name, widget), ...])
+
+The dialog opens at its design dimensions, which also serve as its
+minimum size — the user can drag it larger but not below the baseline.
 """
 
 from PyQt5.QtCore import Qt
@@ -24,12 +27,16 @@ class InfoDialog(QDialog):
     def __init__(self, parent=None, title=None, fixed_size=None):
         super().__init__(parent)
         self.setWindowTitle(title or TITLES.info_dialog)
+        # ``fixed_size`` keeps the old API but now means "initial / minimum
+        # size" — the dialog is resizable from there upwards.
         w, h = fixed_size or (SIZES.info_dialog_w, SIZES.info_dialog_h_short)
-        self.setFixedSize(w, h)
+        self.resize(w, h)
+        self.setMinimumSize(w, h)
         self.setWindowFlags(
             Qt.Window | Qt.WindowStaysOnTopHint | Qt.WindowCloseButtonHint
         )
         self.setWindowModality(Qt.NonModal)
+        self.setSizeGripEnabled(True)
 
         self._layout = QVBoxLayout()
         self._tabs = QTabWidget()
