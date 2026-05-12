@@ -127,3 +127,27 @@ class TestCalculateFSM(unittest.TestCase):
         for key, expected_value in expected_transitions.items():
             if fsm.f[key] != expected_value:
                 self.fail(f"FSM transition mismatches:\n{(key, expected_value)}")
+
+    def test_dead_state_propagation_through_failure_function(self):
+        """Construct an FSM where a non-trivial prefix's failure state lands
+        on a dead transition, exercising the branch ``f[g[v], s] is None``
+        in ``kmp_based_fsm_bigram``.
+        """
+        from biosynth.algorithm.fsm import FSM, kmp_based_fsm_bigram
+
+        # 'AAA' creates the dead transition ('AA', 'A') -> None.
+        # 'AT' makes ('A', 'T') -> None, which is the failure-function entry
+        # consulted while processing state 'AA' under symbol 'T'.
+        sigma = {"A", "T", "C", "G"}
+        patterns = {"AAA", "AT"}
+        states, f, g = kmp_based_fsm_bigram(patterns, sigma)
+
+        # Every (state, symbol) entry must resolve in the transition map.
+        for state in states:
+            for s in sigma:
+                self.assertIn((state, s), f)
+
+        # The FSM constructor wraps this without error.
+        fsm = FSM(patterns, sigma)
+        self.assertEqual(fsm.sigma, sigma)
+        self.assertEqual(fsm.unwanted_patterns, patterns)

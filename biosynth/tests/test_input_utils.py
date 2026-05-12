@@ -296,3 +296,80 @@ class TestCommandLineParser(unittest.TestCase):
             self.parser.parse_args(sys.argv[1:])
         error_message = mock_logger_error.call_args[0][0]
         self.assertIn("--help", error_message)
+
+    def test_version_constant_resolved(self):
+        # VERSION resolves to either the installed package version string or
+        # the local fallback. Either way it should be a non-empty string.
+        self.assertIsInstance(VERSION, str)
+        self.assertTrue(VERSION)
+
+    def test_version_falls_back_when_metadata_missing(self):
+        """If importlib.metadata.version raises, the module sets VERSION to
+        the local fallback. We reload the module under a patched ``version``
+        to exercise that path.
+        """
+        import importlib
+
+        import biosynth.utils.input_utils as input_utils_mod
+
+        original_module = input_utils_mod
+        with patch("importlib.metadata.version", side_effect=Exception("boom")):
+            importlib.reload(input_utils_mod)
+            self.assertEqual(input_utils_mod.VERSION, "1.0.0-local")
+        # Restore real version for downstream tests.
+        importlib.reload(original_module)
+
+    def test_version_resolved_via_package_metadata(self):
+        """Reload input_utils with importlib.metadata.version returning a
+        real value so the happy-path try-block executes line-by-line.
+        """
+        import importlib
+
+        import biosynth.utils.input_utils as input_utils_mod
+
+        original_module = input_utils_mod
+        with patch("importlib.metadata.version", return_value="9.9.9-test"):
+            importlib.reload(input_utils_mod)
+            self.assertEqual(input_utils_mod.VERSION, "9.9.9-test")
+        # Restore real version for downstream tests.
+        importlib.reload(original_module)
+
+    def test_version_falls_back_on_importerror(self):
+        """If ``importlib.metadata`` is unavailable, the ``except ImportError``
+        branch in input_utils sets VERSION to the local fallback.
+        """
+        import importlib
+
+        import biosynth.utils.input_utils as input_utils_mod
+
+        original_metadata = sys.modules.get("importlib.metadata")
+        try:
+            # Poison the module so the ``from importlib.metadata import ...``
+            # statement raises ImportError on reload.
+            sys.modules["importlib.metadata"] = None
+            importlib.reload(input_utils_mod)
+            self.assertEqual(input_utils_mod.VERSION, "1.0.0-local")
+        finally:
+            if original_metadata is not None:
+                sys.modules["importlib.metadata"] = original_metadata
+            else:
+                sys.modules.pop("importlib.metadata", None)
+            importlib.reload(input_utils_mod)
+
+    @patch("sys.exit")
+    @patch("biosynth.utils.output_utils.Logger.info")
+    def test_version_flag_prints_and_exits(self, mock_info, mock_exit):
+        mock_exit.side_effect = SystemExit
+        with self.assertRaises(SystemExit):
+            self.parser.parse_args(["-v"])
+        mock_info.assert_called_once()
+        mock_exit.assert_called_with(0)
+
+    @patch("sys.exit")
+    @patch("biosynth.utils.output_utils.Logger.help")
+    def test_help_flag_prints_and_exits(self, mock_help, mock_exit):
+        mock_exit.side_effect = SystemExit
+        with self.assertRaises(SystemExit):
+            self.parser.parse_args(["-h"])
+        self.assertGreaterEqual(mock_help.call_count, 2)  # help text + info
+        mock_exit.assert_called_with(1)

@@ -154,3 +154,24 @@ class TestCalculateCost(unittest.TestCase):
 
         self.assertNotEqual(cost_true, 0.0)
         self.assertEqual(cost_false, 0.0)
+
+
+class TestNormalizeAndEdgeCases(unittest.TestCase):
+    def test_normalize_codon_usage_empty_returns_empty(self):
+        self.assertEqual(normalize_codon_usage({}), {})
+
+    def test_normalize_codon_usage_none_returns_empty(self):
+        self.assertEqual(normalize_codon_usage(None), {})
+
+    def test_calculate_cost_unexpected_codon_pos_raises(self):
+        # An out-of-range codon_pos (e.g. 99) shouldn't happen in normal use
+        # but the function defensively raises ValueError.
+        with self.assertRaises(ValueError):
+            calculate_cost(
+                target_sequence="ATG",
+                coding_positions=[99, 0, 0],
+                codon_usage={"ATG": 0.0},
+                i=0, v="AT", sigma="G",
+                alpha=1.0, beta=2.0, w=100.0,
+                optimized_codon=False,
+            )

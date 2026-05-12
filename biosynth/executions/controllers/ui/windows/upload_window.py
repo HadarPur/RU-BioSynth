@@ -1,15 +1,33 @@
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QDialog, QVBoxLayout, QTextEdit, QDialogButtonBox, QTabWidget
-from PyQt5.QtWidgets import (QHBoxLayout, QGridLayout, QWidget, QMessageBox, QFileDialog, QTableWidgetItem)
-from biorun.parser import next_count
+from PyQt5.QtWidgets import (
+    QFileDialog,
+    QGridLayout,
+    QHBoxLayout,
+    QMessageBox,
+    QTableWidgetItem,
+    QVBoxLayout,
+    QWidget,
+)
 
-from biosynth.data.app_data import InputData, UploadData, CostData
-from biosynth.executions.controllers.ui.window_utils import add_button, CircularButton
-from biosynth.executions.controllers.ui.window_utils import add_intro, add_png_logo, add_drop_text_edit, \
-    add_spinbox, add_drop_table, add_toggle
-from biosynth.executions.execution_utils import is_valid_dna, is_valid_patterns, is_valid_codon_usage
+from biosynth.data.app_data import CostData, UploadData
+from biosynth.executions.controllers.ui.theme import LABELS, MARGINS, SIZES, TITLES
+from biosynth.executions.controllers.ui.utils import (
+    add_button,
+    add_drop_table,
+    add_drop_text_edit,
+    add_intro,
+    add_png_logo,
+    add_spinbox,
+    add_toggle,
+)
+from biosynth.executions.controllers.ui.widgets import CircularButton, InfoDialog
+from biosynth.executions.execution_utils import (
+    is_valid_codon_usage,
+    is_valid_dna,
+    is_valid_patterns,
+)
 from biosynth.utils.file_utils import CodonUsageReader, PatternReader, SequenceReader
-from biosynth.utils.info_utils import get_info_usage, get_elimination_info
+from biosynth.utils.info_utils import get_elimination_info, get_info_usage
 
 
 class UploadWindow(QWidget):
@@ -29,21 +47,14 @@ class UploadWindow(QWidget):
     def init_ui(self, next_callback):
         layout = QVBoxLayout(self)
 
-        # Top Layout (Intro & Logo)
         self.add_top_layout(layout)
-
-        # Middel layout - Main Inputs Grid
         self.add_middle_layout(layout)
-
-        # Bottom layout - Info & Next Button
         self.add_bottom_layout(layout, next_callback)
-
-        # Restore content if exists
         self.restore_content()
 
     def add_top_layout(self, layout):
         top_layout = QGridLayout()
-        top_layout.setContentsMargins(20, 20, 20, 5)
+        top_layout.setContentsMargins(*MARGINS.page_top_compact)
         layout.addLayout(top_layout)
 
         add_intro(top_layout, 0, 0)
@@ -51,7 +62,7 @@ class UploadWindow(QWidget):
 
     def add_middle_layout(self, layout):
         grid_layout = QGridLayout()
-        grid_layout.setContentsMargins(20, 5, 20, 20)
+        grid_layout.setContentsMargins(*MARGINS.page_top_bottom)
         layout.addLayout(grid_layout)
 
         # DNA input
@@ -59,69 +70,83 @@ class UploadWindow(QWidget):
         grid_layout.addLayout(dna_layout, 0, 0)
         self.dna_text_edit = add_drop_text_edit(
             layout=dna_layout,
-            placeholder="Upload Target Sequence/Drag&Drop Target Sequence file (.txt)",
-            drop_callback=self.load_dna_file_from_file_path
+            placeholder=LABELS.placeholder_target_sequence,
+            drop_callback=self.load_dna_file_from_file_path,
         )
         self.dna_text_edit.textChanged.connect(self.dna_text_edit_changed)
-        add_button(dna_layout, 'Load Target Sequence', Qt.AlignCenter, self.load_dna_file, size=(200, 30))
+        add_button(
+            dna_layout, LABELS.load_target_sequence, Qt.AlignCenter, self.load_dna_file,
+            size=(SIZES.button_xlarge_w, SIZES.button_h),
+        )
 
         # Patterns input
         pattern_layout = QVBoxLayout()
         grid_layout.addLayout(pattern_layout, 1, 0)
         self.patterns_text_edit = add_drop_text_edit(
             layout=pattern_layout,
-            placeholder="Upload Patterns file/Drag&Drop Patterns file (.txt)",
-            drop_callback=self.load_patterns_file_from_file_path
+            placeholder=LABELS.placeholder_patterns,
+            drop_callback=self.load_patterns_file_from_file_path,
         )
         self.patterns_text_edit.textChanged.connect(self.patterns_text_edit_changed)
-        add_button(pattern_layout, 'Load Patterns', Qt.AlignCenter, self.load_patterns_file, size=(200, 30))
+        add_button(
+            pattern_layout, LABELS.load_patterns, Qt.AlignCenter, self.load_patterns_file,
+            size=(SIZES.button_xlarge_w, SIZES.button_h),
+        )
 
         # Codon Usage File Upload
         codon_usage_layout = QVBoxLayout()
         grid_layout.addLayout(codon_usage_layout, 0, 1)
         self.codon_usage_table = add_drop_table(
             layout=codon_usage_layout,
-            placeholder="Upload Codon Usage file/Drag&Drop Codon Usage file (.txt)",
+            placeholder=LABELS.placeholder_codon_usage,
             columns=2,
-            headers=["Codon", "Frequency"],
-            drop_callback=self.load_codon_usage_from_file_path
+            headers=list(LABELS.codon_columns),
+            drop_callback=self.load_codon_usage_from_file_path,
         )
         self.codon_usage_table.itemChanged.connect(self.codon_usage_table_changed)
-        add_button(codon_usage_layout, 'Load Codon Usage', Qt.AlignCenter, self.load_codon_usage_file, size=(200, 30))
+        add_button(
+            codon_usage_layout, LABELS.load_codon_usage, Qt.AlignCenter, self.load_codon_usage_file,
+            size=(SIZES.button_xlarge_w, SIZES.button_h),
+        )
 
         # Custom Scores
         custom_scores_layout = QVBoxLayout()
         grid_layout.addLayout(custom_scores_layout, 1, 1)
-        self.alpha_spinbox = add_spinbox(custom_scores_layout, default_value=CostData.alpha,
-                    callback=lambda val: setattr(CostData, 'alpha', val), args=("Transition substitution cost",),
-                    alignment=Qt.AlignCenter)
-        self.beta_spinbox = add_spinbox(custom_scores_layout, default_value=CostData.beta,
-                    callback=lambda val: setattr(CostData, 'beta', val), args=("Transversion substitution cost",),
-                    alignment=Qt.AlignCenter)
-        self.w_spinbox = add_spinbox(custom_scores_layout, default_value=CostData.w,
-                    callback=lambda val: setattr(CostData, 'w', val), args=("Non-synonymous substitution cost",),
-                    alignment=Qt.AlignCenter)
-
-        self.optimized_codon_toggle = add_toggle(custom_scores_layout, default_value=CostData.optimized_codon,
-            callback=lambda val: setattr(CostData, 'optimized_codon', val), args=("Enable codon optimization",),
-            alignment=Qt.AlignCenter)
+        self.alpha_spinbox = add_spinbox(
+            custom_scores_layout, default_value=CostData.alpha,
+            callback=lambda val: setattr(CostData, 'alpha', val),
+            args=(LABELS.spin_alpha,), alignment=Qt.AlignCenter,
+        )
+        self.beta_spinbox = add_spinbox(
+            custom_scores_layout, default_value=CostData.beta,
+            callback=lambda val: setattr(CostData, 'beta', val),
+            args=(LABELS.spin_beta,), alignment=Qt.AlignCenter,
+        )
+        self.w_spinbox = add_spinbox(
+            custom_scores_layout, default_value=CostData.w,
+            callback=lambda val: setattr(CostData, 'w', val),
+            args=(LABELS.spin_w,), alignment=Qt.AlignCenter,
+        )
+        self.optimized_codon_toggle = add_toggle(
+            custom_scores_layout, default_value=CostData.optimized_codon,
+            callback=lambda val: setattr(CostData, 'optimized_codon', val),
+            args=(LABELS.toggle_optimized_codon,), alignment=Qt.AlignCenter,
+        )
 
         custom_scores_layout.addStretch(1)
 
     def add_bottom_layout(self, layout, next_callback):
         bottom_layout = QHBoxLayout()
-        bottom_layout.setContentsMargins(20, 5, 20, 20)
+        bottom_layout.setContentsMargins(*MARGINS.page_top_bottom)
         layout.addLayout(bottom_layout)
 
-        info_button = CircularButton('ⓘ', self)
+        info_button = CircularButton(LABELS.info_glyph, self)
         info_button.clicked.connect(self.show_info)
-
         bottom_layout.addWidget(info_button, alignment=Qt.AlignLeft)
         bottom_layout.addStretch(1)
-        add_button(bottom_layout, 'Reset', Qt.AlignRight, self.reset)
-        add_button(bottom_layout, 'Next', Qt.AlignRight, next_callback, self.get_input_data)
+        add_button(bottom_layout, LABELS.reset, Qt.AlignRight, self.reset)
+        add_button(bottom_layout, LABELS.next, Qt.AlignRight, next_callback, self.get_input_data)
 
-    # Reset all fields
     def reset(self):
         UploadData.reset()
         CostData.reset()
@@ -137,7 +162,6 @@ class UploadWindow(QWidget):
 
         self.optimized_codon_toggle.setChecked(CostData.optimized_codon)
 
-    # Gather input data to move forward
     def get_input_data(self):
         return (
             UploadData.dna_sequence_content_file,
@@ -149,17 +173,18 @@ class UploadWindow(QWidget):
         if UploadData.dna_sequence_content_file:
             self.dna_text_edit.setPlainText(UploadData.dna_sequence_content_file)
         if UploadData.unwanted_patterns_content_file:
-            self.patterns_text_edit.setPlainText("\n".join(UploadData.unwanted_patterns_content_file))
+            self.patterns_text_edit.setPlainText(
+                "\n".join(UploadData.unwanted_patterns_content_file)
+            )
         if UploadData.codon_usage_content_file:
             self.update_codon_usage_table_from_dict(UploadData.codon_usage_content_file)
 
-    # File loaders
     def load_dna_file(self):
-        file_name, _ = QFileDialog.getOpenFileName(self, "Open Target Sequence File", "", "Text Files (*.txt)")
-
+        file_name, _ = QFileDialog.getOpenFileName(
+            self, "Open Target Sequence File", "", "Text Files (*.txt)"
+        )
         if not file_name:
             return
-
         self.load_dna_file_from_file_path(file_name)
 
     def load_dna_file_from_file_path(self, file_path):
@@ -167,9 +192,8 @@ class UploadWindow(QWidget):
             content = SequenceReader(file_path).read_sequence()
         except Exception as e:
             QMessageBox.critical(self, "Error", f"Failed to read file: {e}")
-            return  # Exit if file couldn't be read
+            return
 
-        # Validate content after successful read
         if content and is_valid_dna(content):
             UploadData.dna_sequence_content_file = content
             self.dna_text_edit.setPlainText(content)
@@ -177,15 +201,14 @@ class UploadWindow(QWidget):
             QMessageBox.critical(self, "Error", "Invalid target sequence format in file")
 
     def dna_text_edit_changed(self):
-        content = self.dna_text_edit.toPlainText()
-        UploadData.dna_sequence_content_file = content
+        UploadData.dna_sequence_content_file = self.dna_text_edit.toPlainText()
 
     def load_patterns_file(self):
-        file_name, _ = QFileDialog.getOpenFileName(self, "Open Unwanted Patterns File", "", "Text Files (*.txt)")
-
+        file_name, _ = QFileDialog.getOpenFileName(
+            self, "Open Unwanted Patterns File", "", "Text Files (*.txt)"
+        )
         if not file_name:
             return
-
         self.load_patterns_file_from_file_path(file_name)
 
     def load_patterns_file_from_file_path(self, file_path):
@@ -193,9 +216,8 @@ class UploadWindow(QWidget):
             content = PatternReader(file_path).read_patterns()
         except Exception as e:
             QMessageBox.critical(self, "Error", f"Failed to read file: {e}")
-            return  # Exit if file couldn't be read
+            return
 
-        # Validate content after successful read
         if content and is_valid_patterns(content):
             UploadData.unwanted_patterns_content_file = content
             self.patterns_text_edit.setPlainText("\n".join(content))
@@ -207,11 +229,11 @@ class UploadWindow(QWidget):
         UploadData.unwanted_patterns_content_file = content
 
     def load_codon_usage_file(self):
-        file_name, _ = QFileDialog.getOpenFileName(self, "Open Codon Usage File", "", "Text Files (*.txt)")
-
+        file_name, _ = QFileDialog.getOpenFileName(
+            self, "Open Codon Usage File", "", "Text Files (*.txt)"
+        )
         if not file_name:
             return
-
         self.load_codon_usage_from_file_path(file_name)
 
     def load_codon_usage_from_file_path(self, file_path):
@@ -226,89 +248,51 @@ class UploadWindow(QWidget):
             UploadData.codon_usage_content_file = content
             self.update_codon_usage_table_from_dict(content)
         else:
-            QMessageBox.critical(self, "Error", f"Invalid codon usage table format in file.")
+            QMessageBox.critical(self, "Error", "Invalid codon usage table format in file.")
 
-    # Table updater
     def update_codon_usage_table_from_dict(self, codon_usage_content):
         self.codon_usage_table.setRowCount(len(codon_usage_content))
         for row_idx, (codon, freq) in enumerate(codon_usage_content.items()):
             self.codon_usage_table.setItem(row_idx, 0, QTableWidgetItem(codon))
             self.codon_usage_table.setItem(row_idx, 1, QTableWidgetItem(str(freq)))
-
         self.codon_usage_table.update_placeholder()
 
     def codon_usage_table_changed(self):
         codon_usage = {}
-
-        rows = self.codon_usage_table.rowCount()
-
-        for row in range(rows):
+        for row in range(self.codon_usage_table.rowCount()):
             codon_item = self.codon_usage_table.item(row, 0)
             freq_item = self.codon_usage_table.item(row, 1)
-
             if codon_item is None or freq_item is None:
-                continue  # skip incomplete rows
-
+                continue
             codon = codon_item.text().strip()
             freq_text = freq_item.text().strip()
-
             try:
-                freq = float(freq_text)  # or int(freq_text) if appropriate
+                codon_usage[codon] = float(freq_text)
             except ValueError:
-                continue  # skip invalid numbers
-
-            codon_usage[codon] = freq
+                continue
 
         UploadData.codon_usage_content_file = codon_usage
 
     def show_info(self):
-        usage_text = get_info_usage().replace("\n", "<br>").replace("\t", "&nbsp;&nbsp;&nbsp;")
-        elimination_text = get_elimination_info().replace("\n", "<br>").replace("\t", "&nbsp;&nbsp;&nbsp;").replace("  ", "&nbsp;&nbsp;&nbsp;")
+        usage_text = (
+            get_info_usage()
+            .replace("\n", "<br>")
+            .replace("\t", "&nbsp;&nbsp;&nbsp;")
+        )
+        elimination_text = (
+            get_elimination_info()
+            .replace("\n", "<br>")
+            .replace("\t", "&nbsp;&nbsp;&nbsp;")
+            .replace("  ", "&nbsp;&nbsp;&nbsp;")
+        )
 
-        dialog = QDialog(self)
-        dialog.setWindowTitle('Information')
-        dialog.setFixedSize(1000, 400)
-        dialog.setWindowFlags(Qt.Window | Qt.WindowStaysOnTopHint | Qt.WindowCloseButtonHint)
-        dialog.setWindowModality(Qt.NonModal)
-
-        layout = QVBoxLayout()
-
-        # Create tab widget
-        tabs = QTabWidget()
-
-        # First tab - Usage info
-        usage_tab = QTextEdit()
-        usage_tab.setReadOnly(True)
-        usage_tab.setHtml(usage_text)
-        usage_tab.setStyleSheet("""
-            QTextEdit {
-                background-color: transparent;
-                font-size: 15px;
-                line-height: 5px;
-                padding: 2px;
-            }
-        """)
-        tabs.addTab(usage_tab, "Coding Region Criteria")
-
-        # Second tab - Elimination info
-        elimination_tab = QTextEdit()
-        elimination_tab.setReadOnly(True)
-        elimination_tab.setHtml(elimination_text)
-        elimination_tab.setStyleSheet("""
-            QTextEdit {
-                background-color: transparent;
-                font-size: 15px;
-                line-height: 5px;
-                padding: 2px;
-            }
-        """)
-        tabs.addTab(elimination_tab, "Substitution Costs")
-
-        layout.addWidget(tabs)
-
-        button_box = QDialogButtonBox(QDialogButtonBox.Ok)
-        button_box.accepted.connect(dialog.accept)
-        layout.addWidget(button_box)
-
-        dialog.setLayout(layout)
+        dialog = InfoDialog.from_html(
+            parent=self,
+            title=TITLES.info_dialog,
+            tabs=[
+                (LABELS.tab_coding_region, usage_text),
+                (LABELS.tab_substitution_costs, elimination_text),
+            ],
+            fixed_size=(SIZES.info_dialog_w, SIZES.info_dialog_h_short),
+        )
         dialog.show()

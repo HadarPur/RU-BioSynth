@@ -1,13 +1,11 @@
-"""Backwards-compatibility shim.
+"""Helper utilities for the BioSynth GUI.
 
-Original ``window_utils`` was split first into ``widgets``, ``factories``,
-and ``file_actions`` modules, then reorganized into ``widgets/``,
-``utils/``, ``theme/``, and ``windows/`` subpackages. Existing imports
-such as ``from ...window_utils import add_button`` keep working through
-these re-exports.
+- :mod:`factories` — layout-builder helpers (add_button, add_spinbox, ...).
+- :mod:`file_actions` — download/save-as/copy callbacks wired to buttons.
+- :mod:`validation` — GUI-side input validation with QMessageBox feedback.
 """
 
-from biosynth.executions.controllers.ui.utils import (
+from biosynth.executions.controllers.ui.utils.factories import (
     add_button,
     add_code_block,
     add_drop_table,
@@ -21,26 +19,20 @@ from biosynth.executions.controllers.ui.utils import (
     add_toggle,
     adjust_scroll_area_height,
     adjust_text_edit_height,
-    copy_to_clipboard,
     create_scroll_area,
     create_table_from_data,
+)
+from biosynth.executions.controllers.ui.utils.file_actions import (
+    copy_to_clipboard,
     download_file,
     save_to_file,
 )
-from biosynth.executions.controllers.ui.widgets import (
-    CircularButton,
-    DropTableWidget,
-    DropTextEdit,
-    FloatingScrollIndicator,
-    ToggleSwitch,
-)
+from biosynth.executions.controllers.ui.utils.validation import GuiValidator
+from biosynth.executions.controllers.ui.utils.workers import EliminationWorker
 
 __all__ = [
-    "CircularButton",
-    "DropTableWidget",
-    "DropTextEdit",
-    "FloatingScrollIndicator",
-    "ToggleSwitch",
+    "EliminationWorker",
+    "GuiValidator",
     "add_button",
     "add_code_block",
     "add_drop_table",

@@ -93,7 +93,11 @@ class TableTestRunner(unittest.TextTestRunner):
                 short_details
             ])
 
-        Logger.debug("\nUNIT TEST RESULTS")
+        Logger.space()
+        Logger.info("===================================================================")
+        Logger.info("========================= UNITEST RESULTS =========================")
+        Logger.info("===================================================================")
+        Logger.space()
 
         print(tabulate(
             table_rows,
@@ -113,7 +117,12 @@ class TableTestRunner(unittest.TextTestRunner):
             ["Success", result.wasSuccessful()],
         ]
 
-        Logger.debug("\nSUMMARY")
+        Logger.space()
+        Logger.info("===================================================================")
+        Logger.info("========================= UNITEST SUMMARY =========================")
+        Logger.info("===================================================================")
+        Logger.space()
+
         Logger.info(tabulate(
             summary,
             headers=["Metric", "Value"],

@@ -2,9 +2,12 @@ import unittest
 from unittest.mock import patch
 
 from biosynth.algorithm.eliminate_sequence import EliminationController
+from biosynth.utils.text_utils import OutputFormat, set_output_format
 
 class TestEliminationController(unittest.TestCase):
     def setUp(self):
+        set_output_format(OutputFormat.TEST)
+
         # Setup input data
         self.target_sequence = "ATGCTTACGTAG"
         self.unwanted_patterns = {"CGT", "TAG"}
@@ -117,3 +120,119 @@ class TestEliminationController(unittest.TestCase):
         self.assertIsNone(new_seq)
         self.assertEqual(cost, float("inf"))
         self.assertIn("No valid sequence", info)
+
+    def test_substitution_forced_at_initial_bigram(self):
+        """If every continuation from the input's initial bigram is blocked
+        by patterns, the DP must alter one of the first two bases.
+
+        This particular pattern set ties at the very first position of the
+        bigram, exercising the position-1 substitution-recording branches.
+        """
+        target_sequence = "TTA"
+        # Block every transition out of state 'TT' (sigma A/T/G/C).
+        unwanted_patterns = {"TTA", "TTT", "TTG", "TTC"}
+        coding_positions = [0, 0, 0]
+        info, cost_contribution, cost_substitution, new_seq, cost = (
+            EliminationController.eliminate(
+                target_sequence, unwanted_patterns, coding_positions
+            )
+        )
+        for p in unwanted_patterns:
+            self.assertNotIn(p, new_seq)
+        # At least one substitution must land at the very start
+        # (position 1 or 2 in 1-indexed terms used by the recorder).
+        starting_positions = {
+            entry["Position"] for entry in (cost_substitution or [])
+            if entry.get("Position") in (1, 2)
+        }
+        self.assertTrue(
+            starting_positions,
+            f"Expected a substitution at position 1 or 2; got {cost_substitution}",
+        )
+
+    def test_substitution_forced_at_first_position_only(self):
+        """A configuration where the cheapest escape route requires
+        substituting the FIRST base of the initial bigram, exercising the
+        position-1 (current_state[0] != original_0) recording branches.
+
+        Patterns:
+          - 'AG?' (×4) blocks every transition out of state 'AG'.
+          - 'AAT' additionally blocks the alternative of substituting only
+            position 2 via the 'A' → 'A' / 'G' → 'A' route through state
+            'AA' followed by the original T.
+        Together these make an A → G transition at position 1 (cost α) the
+        unique cheapest path.
+        """
+        target_sequence = "AGT"
+        unwanted_patterns = {"AGT", "AGA", "AGC", "AGG", "AAT"}
+        coding_positions = [0, 0, 0]
+        info, cost_contribution, cost_substitution, new_seq, cost = (
+            EliminationController.eliminate(
+                target_sequence, unwanted_patterns, coding_positions
+            )
+        )
+        for p in unwanted_patterns:
+            self.assertNotIn(p, new_seq)
+        positions = {
+            entry["Position"] for entry in (cost_substitution or [])
+            if entry.get("Position") in (1, 2)
+        }
+        # Position 1 should appear among the recorded substitutions.
+        self.assertIn(
+            1, positions,
+            f"Expected a substitution at position 1; got {cost_substitution}",
+        )
+
+    def test_substitution_forced_at_second_position_only(self):
+        """A configuration where the cheapest escape route requires
+        substituting the SECOND base of the initial bigram, exercising the
+        position-2 (current_state[1] != original_1) recording branch.
+
+        Patterns:
+          - '?TT' (×4) forbids every transition into '?T' followed by 'T'.
+          - 'TTC' additionally forbids the alternative of substituting only
+            the final base (T → C at position 3 via u='TT').
+        These together make the uniquely cheapest path a T → C transition
+        at position 2, so the optimized sequence at column 2 is 'TC'.
+        """
+        target_sequence = "TTT"
+        unwanted_patterns = {"TTT", "ATT", "CTT", "GTT", "TTC"}
+        coding_positions = [0, 0, 0]
+        info, cost_contribution, cost_substitution, new_seq, cost = (
+            EliminationController.eliminate(
+                target_sequence, unwanted_patterns, coding_positions
+            )
+        )
+        for p in unwanted_patterns:
+            self.assertNotIn(p, new_seq)
+        positions = {
+            entry["Position"] for entry in (cost_substitution or [])
+            if entry.get("Position") in (1, 2)
+        }
+        # Position 2 should appear among the recorded substitutions.
+        self.assertIn(
+            2, positions,
+            f"Expected a substitution at position 2; got {cost_substitution}",
+        )
+
+    def test_substitution_at_first_positions_non_coding(self):
+        """A non-coding sequence where the unwanted pattern straddles
+        positions 0/1/2 forces edits at the start.
+
+        Exercises the backtrack-reconstruction branches that fire only when
+        ``coding_positions[0] == 0`` or ``coding_positions[1] == 0``.
+        """
+        target_sequence = "TAGTAC"
+        unwanted_patterns = {"TAGTAC"}
+        coding_positions = [0] * 6
+        info, cost_contribution, cost_substitution, new_seq, cost = (
+            EliminationController.eliminate(
+                target_sequence, unwanted_patterns, coding_positions
+            )
+        )
+        self.assertNotIn("TAGTAC", new_seq)
+        # At least one substitution should be recorded somewhere.
+        self.assertTrue(cost_substitution or cost_contribution)
+        # The substitution cost should be finite and >= 0.
+        self.assertGreaterEqual(cost, 0.0)
+        self.assertLess(cost, float("inf"))

@@ -127,6 +127,16 @@ class TestPatternReader(unittest.TestCase):
         self.assertEqual(patterns, {"AAA", "CCC", "GGG", "TTT"})
         os.remove(tmp_path)
 
+    def test_read_patterns_skips_blank_lines(self):
+        with tempfile.NamedTemporaryFile(mode='w+', delete=False) as tmp:
+            tmp.write("AAA\n\n   \nCCC\n")
+            tmp_path = tmp.name
+        try:
+            patterns = PatternReader(tmp_path).read_patterns()
+            self.assertEqual(patterns, {"AAA", "CCC"})
+        finally:
+            os.remove(tmp_path)
+
 class TestCodonUsageReader(unittest.TestCase):
     def test_read_codon_usage_success(self):
         with tempfile.NamedTemporaryFile(mode='w+', delete=False) as tmp:
@@ -211,3 +221,53 @@ class TestResourcePath(unittest.TestCase):
         path = resource_path("file.txt")
         self.assertEqual(path, "/tmp/fake_meipass/file.txt")
         del sys._MEIPASS
+
+    def test_resource_path_fallback_when_package_missing(self):
+        # If files() raises ModuleNotFoundError the function falls back to a
+        # cwd-relative path. We patch importlib.resources.files to simulate.
+        from biosynth.utils import file_utils
+        with patch.object(file_utils, "files", side_effect=ModuleNotFoundError):
+            path = file_utils.resource_path("foo.txt")
+        self.assertTrue(path.endswith("foo.txt"))
+
+
+class TestReadCodonFreqEmptyLines(unittest.TestCase):
+    def test_blank_lines_are_skipped(self):
+        result = read_codon_freq_file(["", "ATG 0.2", "   ", "TTT 0.3"])
+        self.assertEqual(result, {"ATG": 0.2, "TTT": 0.3})
+
+
+class TestFileDataReaderErrors(unittest.TestCase):
+    def test_read_lines_file_not_found(self):
+        reader = FileDataReader("/no/such/file/foobar.txt")
+        with self.assertRaises(SystemExit) as cm:
+            reader.read_lines()
+        self.assertEqual(cm.exception.code, 2)
+
+
+class TestSaveFileErrorPaths(unittest.TestCase):
+    def test_save_file_file_not_found_error(self):
+        with patch("builtins.open", mock_open()) as mocked_open:
+            mocked_open.side_effect = FileNotFoundError("missing")
+            result = save_file("content", "x.txt", "/some/path")
+        self.assertIn("File not found", result)
+
+    def test_save_file_is_a_directory_error(self):
+        with patch("builtins.open", mock_open()) as mocked_open:
+            mocked_open.side_effect = IsADirectoryError("is dir")
+            result = save_file("content", "x.txt", "/some/path")
+        self.assertIn("directory, not a file", result)
+
+    def test_save_file_unexpected_exception(self):
+        with patch("builtins.open", mock_open()) as mocked_open:
+            mocked_open.side_effect = OSError("disk full")
+            result = save_file("content", "x.txt", "/some/path")
+        self.assertIn("disk full", result)
+
+
+class TestDeleteDirError(unittest.TestCase):
+    def test_delete_dir_missing_path_reports_error(self):
+        result = delete_dir("/no/such/directory/exists/here")
+        # Returns an error string instead of raising.
+        self.assertIsNotNone(result)
+        self.assertIn("failed", result.lower())
