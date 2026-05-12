@@ -1,4 +1,4 @@
-"""Tests for biosynth.report.html_report_utils."""
+"""Tests for biosynth.report.report_controller."""
 
 import os
 import io
@@ -9,12 +9,12 @@ from unittest.mock import patch
 from jinja2 import Template
 
 from biosynth.data import app_data
-from biosynth.report.html_report_utils import (
+from biosynth.report.report_controller import (
     ReportController,
     convert_to_html_list,
 )
 from biosynth.utils.text_utils import OutputFormat, set_output_format
-import biosynth.report.html_report_utils as mod
+import biosynth.report.report_controller as mod
 
 class TestConvertToHtmlList(unittest.TestCase):
     def test_dash_items_become_ul(self):

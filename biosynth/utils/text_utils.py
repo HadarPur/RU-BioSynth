@@ -1,7 +1,7 @@
 
 import sys
 from enum import Enum
-from biosynth.utils.output_utils import Logger
+from biosynth.utils.logger import Logger
 
 
 class OutputFormat(Enum):

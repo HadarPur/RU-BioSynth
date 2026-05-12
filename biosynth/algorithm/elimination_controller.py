@@ -11,7 +11,35 @@ from biosynth.utils.text_utils import format_text_bold_for_output
 
 class EliminationController:
     @staticmethod
-    def eliminate(target_sequence, unwanted_patterns, coding_positions):
+    def eliminate(
+        target_sequence,
+        unwanted_patterns,
+        coding_positions,
+        *,
+        codon_usage=None,
+        alpha=None,
+        beta=None,
+        w=None,
+        optimized_codon=None,
+    ):
+        """Run the FSM + DP elimination.
+
+        Cost parameters can be supplied explicitly as keyword arguments
+        (used by the agent pipeline) or left ``None`` to fall back to
+        the module-level ``CostData`` globals (used by the legacy CLI/
+        GUI paths). This dual access lets agents thread state through
+        typed messages without touching the existing callers.
+        """
+        # Resolve cost parameters: explicit kwargs win, otherwise fall
+        # back to the module globals that the CLI/GUI configure.
+        codon_usage = codon_usage if codon_usage is not None else CostData.codon_usage
+        alpha = alpha if alpha is not None else CostData.alpha
+        beta = beta if beta is not None else CostData.beta
+        w = w if w is not None else CostData.w
+        optimized_codon = (
+            optimized_codon if optimized_codon is not None else CostData.optimized_codon
+        )
+
         # Initialize information string for the elimination process
         info = ""
 
@@ -29,13 +57,15 @@ class EliminationController:
 
         # Initialize utility and FSM classes
         elimination_scorer = EliminationScorerConfig()
-        initial_cost_function, cost_function = elimination_scorer.cost_function(target_sequence,
-                                                                                coding_positions,
-                                                                                CostData.codon_usage,
-                                                                                CostData.alpha,
-                                                                                CostData.beta,
-                                                                                CostData.w,
-                                                                                CostData.optimized_codon)
+        initial_cost_function, cost_function = elimination_scorer.cost_function(
+            target_sequence,
+            coding_positions,
+            codon_usage,
+            alpha,
+            beta,
+            w,
+            optimized_codon,
+        )
         fsm = FSM(unwanted_patterns, elimination_scorer.alphabet)
 
         # Dynamic programming table A, initialized with infinity

@@ -290,5 +290,5 @@ class TestInitializeReport(unittest.TestCase):
 
         controller = eu.initialize_report()
         # Imported here to avoid a heavy import at module top.
-        from biosynth.report.html_report_utils import ReportController
+        from biosynth.report.report_controller import ReportController
         self.assertIsInstance(controller, ReportController)

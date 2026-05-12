@@ -6,7 +6,7 @@ import numpy as np
 
 from pathlib import Path
 from importlib.resources import files
-from biosynth.utils.output_utils import Logger
+from biosynth.utils.logger import Logger
 from biosynth.utils.text_utils import handle_critical_error
 
 def read_codon_freq_file(raw_lines, convert_to_dna=True):

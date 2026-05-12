@@ -28,7 +28,7 @@ from biosynth.executions.controllers.ui.utils.file_actions import (
     save_to_file,
 )
 from biosynth.executions.controllers.ui.utils.validation import GuiValidator
-from biosynth.executions.controllers.ui.utils.workers import EliminationWorker
+from biosynth.executions.controllers.ui.utils.elimination_worker import EliminationWorker
 
 __all__ = [
     "EliminationWorker",

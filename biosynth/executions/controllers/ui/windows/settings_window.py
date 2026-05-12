@@ -11,7 +11,7 @@ from biosynth.executions.controllers.ui.theme import (
 )
 from biosynth.executions.controllers.ui.utils import create_scroll_area
 from biosynth.executions.controllers.ui.windows.wizard_page import WizardPage
-from biosynth.utils.display_utils import SequenceUtils
+from biosynth.utils.sequence_display import SequenceUtils
 from biosynth.utils.dna_utils import DNAUtils
 
 

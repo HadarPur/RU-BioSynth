@@ -1,8 +1,8 @@
-"""Tests for biosynth.utils.display_utils."""
+"""Tests for biosynth.utils.sequence_display."""
 
 import unittest
 
-from biosynth.utils.display_utils import SequenceUtils, get_color_for_coding_region
+from biosynth.utils.sequence_display import SequenceUtils, get_color_for_coding_region
 
 
 class TestGetColorForCodingRegion(unittest.TestCase):

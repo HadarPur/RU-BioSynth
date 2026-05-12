@@ -5,7 +5,7 @@ from biosynth.executions.execution_utils import is_valid_input, is_valid_cost
 from biosynth.settings.codon_usage_settings import C
 from biosynth.settings.pattern_settings import P
 from biosynth.settings.sequence_settings import S
-from biosynth.utils.output_utils import Logger
+from biosynth.utils.logger import Logger
 
 class DebugController:
     @staticmethod

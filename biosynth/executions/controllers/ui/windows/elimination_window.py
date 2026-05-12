@@ -4,7 +4,7 @@ from PyQt5.QtWidgets import QSizePolicy, QTextBrowser, QVBoxLayout
 from biosynth.data.app_data import EliminationData
 from biosynth.executions.controllers.ui.theme import MARGINS, SIZES, transparent_text_edit_qss
 from biosynth.executions.controllers.ui.windows.wizard_page import WizardPage
-from biosynth.utils.output_utils import Logger
+from biosynth.utils.logger import Logger
 
 
 class EliminationWindow(WizardPage):

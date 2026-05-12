@@ -1,8 +1,8 @@
-from biosynth.algorithm.eliminate_sequence import EliminationController
+from biosynth.algorithm.elimination_controller import EliminationController
 from biosynth.data.app_data import EliminationData, OutputData
-from biosynth.report.html_report_utils import ReportController
-from biosynth.utils.display_utils import SequenceUtils
-from biosynth.utils.output_utils import Logger
+from biosynth.report.report_controller import ReportController
+from biosynth.utils.sequence_display import SequenceUtils
+from biosynth.utils.logger import Logger
 
 
 def is_valid_dna(sequence):

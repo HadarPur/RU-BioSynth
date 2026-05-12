@@ -4,7 +4,7 @@ Entry point for running biosynth as a module: python -m biosynth
 
 import sys
 
-from biosynth.BioSynth import BioSynthApp
+from biosynth.app import BioSynthApp
 
 
 def main():

@@ -2,8 +2,8 @@ import sys
 from biosynth.executions.controllers.cli_controller import CLIController
 from biosynth.executions.controllers.gui_controller import GUIController
 from biosynth.utils.file_utils import delete_dir
-from biosynth.utils.input_utils import ArgumentParser
-from biosynth.utils.output_utils import Logger
+from biosynth.utils.argument_parser import ArgumentParser
+from biosynth.utils.logger import Logger
 from biosynth.utils.text_utils import OutputFormat, set_output_format
 
 

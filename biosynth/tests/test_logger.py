@@ -1,7 +1,7 @@
 import unittest
 from io import StringIO
 import sys
-from biosynth.utils.output_utils import Logger
+from biosynth.utils.logger import Logger
 
 class TestLogger(unittest.TestCase):
 

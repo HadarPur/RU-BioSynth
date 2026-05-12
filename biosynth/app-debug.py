@@ -6,10 +6,10 @@ from tabulate import tabulate
 
 from biosynth.executions.controllers.debug_controller import DebugController
 from biosynth.utils.file_utils import delete_dir
-from biosynth.utils.output_utils import Logger
+from biosynth.utils.logger import Logger
 from biosynth.utils.text_utils import OutputFormat, set_output_format
 
-from biosynth.utils.test_utils import TableTestRunner
+from biosynth.utils.table_test_runner import TableTestRunner
 
 def execute_unittests():
     loader = unittest.TestLoader()

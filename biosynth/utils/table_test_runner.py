@@ -3,7 +3,7 @@ import time
 import unittest
 import sys
 from tabulate import tabulate
-from biosynth.utils.output_utils import Logger
+from biosynth.utils.logger import Logger
 
 
 # =========================

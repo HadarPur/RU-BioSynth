@@ -1,7 +1,7 @@
 import numpy as np
 
 from biosynth.utils.amino_acid_utils import AminoAcidConfig, GeneticCodeTable
-from biosynth.utils.output_utils import Logger
+from biosynth.utils.logger import Logger
 
 def normalize_codon_usage(codon_usage):
     """
