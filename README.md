@@ -169,3 +169,9 @@ biosynth -g
 ```
 
 You're all set! 🚀
+
+## Architecture
+
+For an in-depth tour of BioSynth's internals — the FSM + DP algorithmic
+core, the five-stage agent pipeline, the GUI architecture, application
+state flow, and extension points — see [ARCHITECTURE.md](ARCHITECTURE.md).
