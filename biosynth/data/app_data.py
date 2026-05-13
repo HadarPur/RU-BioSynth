@@ -9,6 +9,7 @@ class InputData:
     cleaned_dna_sequence = None
 
     unwanted_patterns = None
+    unwanted_patterns_occurrences = None
 
     start_codon_identified = None
     coding_indexes = None
@@ -20,6 +21,7 @@ class InputData:
         InputData.dna_sequence = None
         InputData.cleaned_dna_sequence = None
         InputData.unwanted_patterns = None
+        InputData.unwanted_patterns_occurrences = None
         InputData.coding_indexes = None
         InputData.coding_positions = None
 

@@ -53,7 +53,7 @@ class CommandController:
         Logger.debug(f"{format_text_bold_for_output('Target sequence:')}")
 
         if InputData.coding_indexes is not None:
-            Logger.notice(f'A coding region was identified in the target sequence at positions {InputData.coding_indexes[0] + 1} - {InputData.coding_indexes[1]}:')
+            Logger.info(f'A coding region was identified in the target sequence at positions {InputData.coding_indexes[0] + 1} - {InputData.coding_indexes[1]}:')
             Logger.info(f"{SequenceUtils.highlight_sequence_to_terminal(InputData.cleaned_dna_sequence, InputData.coding_indexes)}")
         else:
             Logger.info(f"{InputData.cleaned_dna_sequence}")
@@ -64,6 +64,34 @@ class CommandController:
         Logger.debug(f"{format_text_bold_for_output('Unwanted patterns:')}")
         Logger.info(f"{SequenceUtils.get_patterns(InputData.unwanted_patterns)}")
         Logger.space()
+
+        if InputData.unwanted_patterns:
+            InputData.unwanted_patterns_occurrences = SequenceUtils.get_pattern_occurrences(
+                    InputData.cleaned_dna_sequence, InputData.unwanted_patterns)
+
+            per_line = 6
+            rows_for_print = [
+                {
+                    "Pattern": row["Pattern"],
+                    "Count": row["Count"],
+                    "Positions": ",\n".join(
+                        ", ".join(row["Positions"][i:i + per_line])
+                        for i in range(0, len(row["Positions"]), per_line)
+                    ) if row["Positions"] else "—",
+                }
+                for row in InputData.unwanted_patterns_occurrences
+            ]
+
+            pattern_occurrences = tabulate(
+                rows_for_print,
+                headers="keys",
+                tablefmt="fancy_grid",
+                colalign=("left", "left", "left"),
+            )
+
+            Logger.debug(format_text_bold_for_output('Unwanted pattern occurrences in the target sequence:'))
+            Logger.info(pattern_occurrences)
+            Logger.space()
 
         # Eliminate unwanted patterns — show a spinner with elapsed-time
         # counter while the algorithm runs so the terminal doesn't look

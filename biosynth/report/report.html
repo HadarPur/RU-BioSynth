@@ -230,6 +230,69 @@
             width: 100%;
         }
 
+        .pattern-table {
+            width: 100%;
+            border-collapse: collapse;
+            table-layout: fixed;
+        }
+
+        .pattern-table th,
+        .pattern-table td {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+            text-align: left;
+            word-break: break-word;
+        }
+
+        .pattern-table th:nth-child(1),
+        .pattern-table td:nth-child(1) {
+            width: 15%;
+        }
+
+        .pattern-table th:nth-child(2),
+        .pattern-table td:nth-child(2) {
+            width: 10%;
+        }
+
+        .pattern-table th:nth-child(3),
+        .pattern-table td:nth-child(3) {
+            width: 75%;
+        }
+
+        .pattern-table thead th {
+            position: sticky;
+            top: 0;
+            background: white;
+            z-index: 2;
+            box-shadow: inset 0 -3px 0 #245076;
+        }
+
+        .pattern-table tbody tr:nth-child(even) {
+            background-color: #fafafa;
+        }
+
+        .pos-range {
+            display: inline-block;
+            padding: 1px 6px;
+            margin: 2px 2px;
+            border: 1px solid #245076;
+            border-radius: 4px;
+            color: #245076;
+            font-family: monospace;
+            cursor: pointer;
+        }
+
+        .pos-range:hover {
+            background: #245076;
+            color: #fff;
+            text-decoration: none;
+        }
+
+        .base.hi {
+            background: #ffe066;
+            border-radius: 2px;
+        }
+
         .changes-table {
             width: 100%;
             border-collapse: collapse;
@@ -464,6 +527,7 @@
             <a class="title" href="#">Input</a>
             <a class="section" href="#dna-sequence">Target Sequence</a>
             <a class="section" href="#unwanted-patterns">Unwanted Patterns</a>
+            <a class="section" href="#unwanted-pattern-occurrences">Unwanted Pattern Occurrences</a>
 
             <div class="divider"></div>
 
@@ -499,6 +563,43 @@
                 <h2 id="unwanted-patterns">Unwanted Patterns:</h2>
                 <p class="pre-scrollable-paragraph" style="font-family: monospace;">{{patterns}}</p>
             </div>
+
+            {% if unwanted_patterns_occurrences %}
+            <div>
+                <h2 id="unwanted-pattern-occurrences">Unwanted Pattern Occurrences in the Target Sequence:</h2>
+                <div class="table-container">
+                    <table class="pattern-table">
+                        <thead>
+                            <tr>
+                                <th>Pattern</th>
+                                <th>Count</th>
+                                <th>Positions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for row in unwanted_patterns_occurrences %}
+                            <tr>
+                                <td>{{ row.Pattern }}</td>
+                                <td>{{ row.Count }}</td>
+                                <td>
+                                    {% if row.Positions %}
+                                        {% for token in row.Positions %}
+                                            {% set bounds = token.split('-') %}
+                                            <a href="#dna-sequence" class="pos-range"
+                                               data-start="{{ bounds[0] }}"
+                                               data-end="{{ bounds[1] }}">{{ token }}</a>{% if not loop.last %}, {% endif %}
+                                        {% endfor %}
+                                    {% else %}
+                                        —
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            {% endif %}
 
             <div class="divider" style="width:24%; margin:30px 0;"></div>
 
@@ -597,6 +698,40 @@
 
     </div>
 </div>
+
+<script>
+    (function () {
+        function clearHighlights() {
+            document.querySelectorAll('.base.hi').forEach(function (el) {
+                el.classList.remove('hi');
+            });
+        }
+
+        document.querySelectorAll('.pos-range').forEach(function (link) {
+            link.addEventListener('click', function (event) {
+                var start = parseInt(link.getAttribute('data-start'), 10);
+                var end = parseInt(link.getAttribute('data-end'), 10);
+                if (isNaN(start) || isNaN(end)) return;
+
+                clearHighlights();
+
+                var firstSpan = null;
+                for (var pos = start; pos <= end; pos++) {
+                    var span = document.querySelector('.base[data-pos="' + pos + '"]');
+                    if (span) {
+                        span.classList.add('hi');
+                        if (firstSpan === null) firstSpan = span;
+                    }
+                }
+
+                if (firstSpan) {
+                    event.preventDefault();
+                    firstSpan.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+            });
+        });
+    })();
+</script>
 
 </body>
 </html>

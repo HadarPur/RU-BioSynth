@@ -3,7 +3,7 @@ import re
 
 
 class Logger:
-    MAX_WIDTH = 90  # <-- set max characters per line
+    MAX_WIDTH = 120  # <-- set max characters per line
 
     COLORS = {
         "ERROR": "\033[91m",  # Red

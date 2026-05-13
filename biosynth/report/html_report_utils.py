@@ -43,7 +43,8 @@ class ReportController:
         self.highlight_input = SequenceUtils.highlight_sequences_to_html(
             InputData.cleaned_dna_sequence,
             InputData.coding_indexes,
-            line_length=85
+            line_length=85,
+            addressable=True,
         )
 
         # Store optimized DNA sequence from backend
@@ -59,6 +60,7 @@ class ReportController:
 
         # Format other user input and results
         self.unwanted_patterns = ', '.join(InputData.unwanted_patterns)
+        self.unwanted_patterns_occurrences = InputData.unwanted_patterns_occurrences
         self.coding_idx = "" if InputData.coding_indexes is None else f"{InputData.coding_indexes[0] + 1} - {InputData.coding_indexes[1]}"
         self.cost_contribution = EliminationData.cost_contribution
         self.cost_substitution = EliminationData.cost_substitution
@@ -83,6 +85,7 @@ class ReportController:
             'today_date': file_date,
             'input': self.input_seq,
             'patterns': self.unwanted_patterns,
+            'unwanted_patterns_occurrences': self.unwanted_patterns_occurrences,
             'highlight_input': self.highlight_input,
             'coding_idx': self.coding_idx,
             'elimination_process_description': convert_to_html_list(get_elimination_process_description()),

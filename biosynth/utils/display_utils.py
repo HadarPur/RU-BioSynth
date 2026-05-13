@@ -57,6 +57,40 @@ class SequenceUtils:
         return formatted_patterns
 
     @staticmethod
+    def get_pattern_occurrences(sequence: str, unwanted_patterns: set, per_line: int = 6):
+        """Return per-pattern occurrence rows (overlapping matches, 1-based positions).
+
+        Args:
+            sequence (str): DNA sequence to scan.
+            unwanted_patterns (set): Patterns to locate in the sequence.
+            per_line (int): Number of position ranges per line in the "Positions" cell.
+
+        Returns:
+            list[dict]: Rows with keys "Pattern", "Count", "Positions".
+        """
+        rows = []
+        for pattern in sorted(unwanted_patterns):
+            ranges = []
+            start = 0
+            while True:
+                idx = sequence.find(pattern, start)
+                if idx == -1:
+                    break
+                ranges.append((idx + 1, idx + len(pattern)))
+                start = idx + 1  # overlapping matches
+
+            tokens = []
+            if ranges:
+                tokens = [f"{s}-{e}" for s, e in ranges]
+
+            rows.append({
+                "Pattern": pattern,
+                "Count": len(ranges),
+                "Positions": tokens,
+            })
+        return rows
+
+    @staticmethod
     def split_string_every_n_chars(S: str, n: int):
         """Split a string into chunks of given length.
 
@@ -139,7 +173,7 @@ class SequenceUtils:
         return index_seq, marked_seq1, marked_seq2
 
     @staticmethod
-    def highlight_sequences_to_html(seq, coding_index, line_length=96, returnBr=False):
+    def highlight_sequences_to_html(seq, coding_index, line_length=96, returnBr=False, addressable=False, highlight_ranges=None):
         """
         Highlights a single coding region in an HTML-formatted DNA sequence.
 
@@ -148,11 +182,19 @@ class SequenceUtils:
             coding_index (tuple[int, int] | None): (start, end) coding region indices (end exclusive)
             line_length (int): characters per line
             returnBr (bool): whether to insert <br> between lines
+            addressable (bool): when True, wrap every base in a <span class="base"
+                data-pos="N"> so client-side JS can target individual positions
+                (1-based).
+            highlight_ranges (list[tuple[int, int]] | None): optional list of
+                (start, end) 1-based inclusive ranges to render with a
+                background highlight. Use this for non-JS renderers (e.g. Qt's
+                limited HTML subset) that cannot toggle styles dynamically.
 
         Returns:
             str: HTML-formatted sequence
         """
         base_colors = [''] * len(seq)
+        base_highlight = [False] * len(seq)
 
         if coding_index is not None:
             start, end = coding_index
@@ -161,14 +203,26 @@ class SequenceUtils:
             for j in range(start, end):
                 base_colors[j] = coding_color
 
+        if highlight_ranges:
+            for s, e in highlight_ranges:
+                for j in range(max(0, s - 1), min(len(seq), e)):
+                    base_highlight[j] = True
+
         html_lines = []
         for i in range(0, len(seq), line_length):
             line = ""
             for j in range(i, min(i + line_length, len(seq))):
                 base = seq[j]
                 color = base_colors[j]
+                highlighted = base_highlight[j]
 
-                if color:
+                if addressable:
+                    style = f' style="color: {color};"' if color else ''
+                    line += f'<span class="base" data-pos="{j + 1}"{style}>{base}</span>'
+                elif highlighted:
+                    color_css = f'color: {color}; ' if color else ''
+                    line += f'<span style="{color_css}background: #ffe066;">{base}</span>'
+                elif color:
                     line += f'<span style="color: {color};">{base}</span>'
                 else:
                     line += base
