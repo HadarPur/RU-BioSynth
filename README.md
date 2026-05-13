@@ -11,6 +11,12 @@
 
 BioSynth is a software application for designing synthetic DNA sequences while eliminating unwanted patterns and considering codon usage bias.
 
+## Architecture
+
+For an in-depth tour of BioSynth's internals — the FSM + DP algorithmic
+core, the five-stage agent pipeline, the GUI architecture, application
+state flow, and extension points — see [ARCHITECTURE.md](ARCHITECTURE.md).
+
 ## Installation
 
 Install BioSynth directly from PyPI:
@@ -169,9 +175,3 @@ biosynth -g
 ```
 
 You're all set! 🚀
-
-## Architecture
-
-For an in-depth tour of BioSynth's internals — the FSM + DP algorithmic
-core, the five-stage agent pipeline, the GUI architecture, application
-state flow, and extension points — see [ARCHITECTURE.md](ARCHITECTURE.md).
