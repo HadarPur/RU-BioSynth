@@ -35,12 +35,32 @@ def global_app_qss() -> str:
             font-size: {FONTS.body_px}px;
             line-height: {FONTS.body_line_height_px}px;
             padding: {FONTS.body_padding_px}px;
+            color: #333;
         }}
 
-        QTextEdit {{
+        QLineEdit, QComboBox {{
+            background-color: white;
+            border: 1px solid {COLORS.surface_border};
+            border-radius: 6px;
+            padding: 4px 8px;
+            font-size: {FONTS.body_px}px;
+            selection-background-color: {COLORS.table_selection_bg};
+            selection-color: {COLORS.table_selection_text};
+        }}
+
+        QLineEdit:focus, QComboBox:focus {{
+            border-color: {COLORS.primary};
+        }}
+
+        QTextEdit, QTextBrowser {{
             font-size: {FONTS.body_px}px;
             line-height: {FONTS.body_line_height_px}px;
             padding: {FONTS.body_padding_px}px;
+            background-color: white;
+            border: 1px solid {COLORS.surface_border};
+            border-radius: 8px;
+            selection-background-color: {COLORS.table_selection_bg};
+            selection-color: {COLORS.table_selection_text};
         }}
 
         QScrollArea {{
@@ -51,12 +71,19 @@ def global_app_qss() -> str:
         QScrollBar:vertical {{
             border: none;
             background: {COLORS.scrollbar_track};
-            width: {SIZES.scrollbar_thin}px;
+            width: 4px;
+            margin: 4px 0;
+            border-radius: 2px;
         }}
 
         QScrollBar::handle:vertical {{
-            background: {COLORS.border_medium};
+            background: {COLORS.scrollbar_handle};
             min-height: {SIZES.scrollbar_handle_min}px;
+            border-radius: 2px;
+        }}
+
+        QScrollBar::handle:vertical:hover {{
+            background: {COLORS.scrollbar_handle_hover};
         }}
 
         QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical {{
@@ -66,16 +93,22 @@ def global_app_qss() -> str:
         QScrollBar:horizontal {{
             border: none;
             background: {COLORS.scrollbar_track};
-            height: {SIZES.scrollbar_thick}px;
-            margin: 4px 0 0 0;
+            height: 4px;
+            margin: 0 4px;
+            border-radius: 2px;
         }}
 
         QScrollBar::handle:horizontal {{
-            background: {COLORS.border_medium};
+            background: {COLORS.scrollbar_handle};
             min-width: {SIZES.scrollbar_handle_min}px;
+            border-radius: 2px;
         }}
 
-        QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical {{
+        QScrollBar::handle:horizontal:hover {{
+            background: {COLORS.scrollbar_handle_hover};
+        }}
+
+        QScrollBar::add-line:horizontal, QScrollBar::sub-line:horizontal {{
             width: 0px;
         }}
     """
@@ -104,6 +137,23 @@ def text_edit_transparent_only_qss() -> str:
         QTextEdit {
             background-color: transparent;
         }
+    """
+
+
+def card_text_edit_qss(margin_right_px: int = 0) -> str:
+    """QTextEdit/QTextBrowser/QPlainTextEdit styled to match the table card
+    look — white background, light border, 10px radius. Used for "panel"
+    style text boxes so they match the adjacent tables.
+    """
+    margin_rule = f"margin-right: {margin_right_px}px;" if margin_right_px else ""
+    return f"""
+        QTextEdit, QTextBrowser, QPlainTextEdit {{
+            background-color: {COLORS.table_bg};
+            border: 1px solid {COLORS.table_border};
+            border-radius: 10px;
+            padding: 6px 10px;
+            {margin_rule}
+        }}
     """
 
 
@@ -141,10 +191,43 @@ def floating_indicator_qss() -> str:
 def info_dialog_text_qss() -> str:
     return f"""
         QTextEdit {{
-            background-color: transparent;
+            background-color: {COLORS.table_bg};
+            border: 1px solid {COLORS.table_border};
+            border-radius: 10px;
             font-size: {FONTS.body_px}px;
             line-height: {FONTS.body_line_height_px}px;
-            padding: {FONTS.body_padding_px}px;
+            padding: 8px 12px;
+        }}
+    """
+
+
+def info_dialog_tabs_qss() -> str:
+    return f"""
+        QTabWidget::pane {{
+            border: none;
+            background: transparent;
+            top: -1px;
+        }}
+
+        QTabBar::tab {{
+            background: transparent;
+            color: {COLORS.table_text};
+            padding: 4px 10px;
+            min-height: 18px;
+            min-width: 200px;
+            border: none;
+            border-bottom: 2px solid transparent;
+            font-size: {FONTS.body_px}px;
+        }}
+
+        QTabBar::tab:selected {{
+            color: {COLORS.table_header_text};
+            border-bottom: 2px solid {COLORS.primary};
+            font-weight: 600;
+        }}
+
+        QTabBar::tab:hover:!selected {{
+            color: {COLORS.primary_hover};
         }}
     """
 
@@ -203,22 +286,24 @@ def table_qss() -> str:
             background-color: {COLORS.table_header_bg};
             color: {COLORS.table_header_text};
             border: none;
-            border-bottom: 1px solid {COLORS.table_border};
+            border-bottom: 2px solid {COLORS.table_header_bottom_border};
             padding: 10px;
             font-weight: 600;
             font-size: {FONTS.table_px}px;
         }}
 
         QScrollBar:vertical {{
-            background: transparent;
-            width: 10px;
-            margin: 4px;
+            border: none;
+            background: {COLORS.scrollbar_track};
+            width: 4px;
+            margin: 4px 0;
+            border-radius: 2px;
         }}
 
         QScrollBar::handle:vertical {{
             background: {COLORS.scrollbar_handle};
-            border-radius: 5px;
-            min-height: 30px;
+            min-height: {SIZES.scrollbar_handle_min}px;
+            border-radius: 2px;
         }}
 
         QScrollBar::handle:vertical:hover {{
@@ -233,13 +318,13 @@ def table_qss() -> str:
         QScrollBar:horizontal {{
             background: transparent;
             height: 10px;
-            margin: 4px;
+            margin: 0 4px;
         }}
 
         QScrollBar::handle:horizontal {{
             background: {COLORS.scrollbar_handle};
-            border-radius: 5px;
-            min-width: 30px;
+            min-width: {SIZES.scrollbar_handle_min}px;
+            border-radius: 2px;
         }}
 
         QScrollBar::handle:horizontal:hover {{

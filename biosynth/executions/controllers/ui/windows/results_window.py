@@ -17,13 +17,12 @@ from PyQt5.QtWidgets import (
 
 from biosynth.data.app_data import EliminationData, InputData, OutputData
 from biosynth.executions.controllers.ui.theme import (
-    COLORS,
     LABELS,
     MARGINS,
     SIZES,
     TITLES,
+    card_text_edit_qss,
     status_label_qss,
-    transparent_text_edit_qss,
 )
 from biosynth.executions.controllers.ui.utils import (
     add_code_block,
@@ -91,18 +90,13 @@ class ResultsWindow(WizardPage):
             InputData.coding_positions,
         )
 
-        content = f"<pre>{index_seq_str}<br></pre>"
-        content += f"<pre>{marked_input_seq}<br><br>{marked_optimized_seq}</pre>"
-        content = content.replace("\n", "<br>").replace(" ", "&nbsp;")
+        index_block = f"<pre>{index_seq_str}<br></pre>".replace("\n", "<br>").replace(" ", "&nbsp;")
+        seq_block = f"<pre>{marked_input_seq}<br><br>{marked_optimized_seq}</pre>".replace("\n", "<br>").replace(" ", "&nbsp;")
+        index_block = index_block.replace("<pre>", '<pre style="color: lightgray;">', 1)
+        content = index_block + seq_block
 
         text_edit = add_text_edit_html(middle_layout, "", content)
-        text_edit.setStyleSheet(
-            transparent_text_edit_qss(
-                border_color=COLORS.border_medium,
-                padding_px=10,
-                margin_right_px=0,
-            )
-        )
+        text_edit.setStyleSheet(card_text_edit_qss())
         text_edit.setFixedHeight(SIZES.sequence_diff_height)
 
         middle_layout.addWidget(QLabel("<h3>Optimized Sequence:</h3>"))

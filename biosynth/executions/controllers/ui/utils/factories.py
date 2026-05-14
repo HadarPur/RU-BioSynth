@@ -30,6 +30,7 @@ from biosynth.executions.controllers.ui.theme import (
     LABELS,
     MARGINS,
     SIZES,
+    card_text_edit_qss,
     placeholder_label_qss,
     scroll_area_borderless_qss,
     table_qss,
@@ -139,6 +140,17 @@ def add_drop_table(layout, placeholder, columns, headers, drop_callback):
     # this, cells fall back to Qt's default UI font which is smaller.
     table.setFont(_code_font())
     table.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
+    table.setVerticalScrollMode(QTableWidget.ScrollPerPixel)
+    table.setHorizontalScrollMode(QTableWidget.ScrollPerPixel)
+    table.verticalHeader().setVisible(False)
+    table.setAlternatingRowColors(True)
+    table.setShowGrid(False)
+    header = table.horizontalHeader()
+    header.setMinimumHeight(28)
+    header.setMaximumHeight(28)
+    table.verticalHeader().setDefaultSectionSize(SIZES.table_row_default_h)
+    table.setCornerButtonEnabled(False)
+    table.setStyleSheet(table_qss() + " QHeaderView::section { padding: 4px 10px; }")
     layout.addWidget(table)
 
     placeholder_label = QLabel(placeholder, table.viewport())
@@ -258,6 +270,7 @@ def add_code_block(parent_layout, text, file_date, update_status):
     # the optimized-sequence display matches the rest of the UI.
     code_display.setFont(_code_font())
     code_display.setReadOnly(True)
+    code_display.setStyleSheet(card_text_edit_qss())
     layout.addWidget(code_display)
 
     button_layout = QHBoxLayout()

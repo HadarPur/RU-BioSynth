@@ -10,8 +10,15 @@ from dataclasses import dataclass
 
 @dataclass(frozen=True)
 class Colors:
+    # Report-derived palette (primary blue / surfaces / accents)
+    primary: str = "#245076"
+    primary_hover: str = "#2c618f"
+    primary_pressed: str = "#1a3b58"
+    surface_alt: str = "#fafafa"
+    surface_border: str = "#ddd"
+
     # Toggle switch
-    toggle_on: str = "#4CAF50"
+    toggle_on: str = "#245076"
     toggle_off: str = "#ccc"
     toggle_knob: str = "#fff"
 
@@ -27,29 +34,30 @@ class Colors:
     floating_indicator_text: str = "white"
 
     # Generic borders and placeholders
-    border_light: str = "lightgray"
-    border_medium: str = "gray"
-    placeholder_text: str = "gray"
+    border_light: str = "#ddd"
+    border_medium: str = "#245076"
+    placeholder_text: str = "#888"
 
     # Status label
     status_text: str = "#000000"
 
-    # Table palette (macOS-like)
+    # Table palette (matches the report's pattern-table look)
     table_bg: str = "#ffffff"
-    table_alt_row: str = "#f5f5f7"
-    table_border: str = "#d1d1d6"
-    table_text: str = "#1c1c1e"
-    table_item_border: str = "#ececec"
+    table_alt_row: str = "#fafafa"
+    table_border: str = "#ccc"
+    table_text: str = "#333333"
+    table_item_border: str = "#ddd"
     table_selection_bg: str = "#cfe3ff"
     table_selection_item_bg: str = "#dbe9ff"
     table_selection_text: str = "#000000"
-    table_header_bg: str = "#f2f2f7"
-    table_header_text: str = "#3a3a3c"
+    table_header_bg: str = "#ffffff"
+    table_header_text: str = "#000000"
+    table_header_bottom_border: str = "#245076"
 
-    # Scrollbar
-    scrollbar_handle: str = "#c7c7cc"
-    scrollbar_handle_hover: str = "#a1a1a6"
-    scrollbar_track: str = "lightgray"
+    # Scrollbar (report uses a pill-shaped #245076 handle on a light track)
+    scrollbar_handle: str = "#245076"
+    scrollbar_handle_hover: str = "#1a3b58"
+    scrollbar_track: str = "#e8e8e8"
 
     # Scroll area background (global app stylesheet)
     scroll_area_bg: str = "white"
@@ -103,7 +111,7 @@ class Fonts:
 class Sizes:
     # Main window
     window_width: int = 1000
-    window_height: int = 800
+    window_height: int = 950
     window_x: int = 100
     window_y: int = 100
 
@@ -132,6 +140,7 @@ class Sizes:
 
     # Scroll / text areas
     scroll_area_height: int = 550
+    sequence_height: int = 200
     sequence_diff_height: int = 150
     scroll_area_max_inline: int = 150
     scroll_padding: int = 10

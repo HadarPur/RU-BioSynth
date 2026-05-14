@@ -8,9 +8,11 @@ Both are re-exported here so call sites can do::
 """
 
 from biosynth.executions.controllers.ui.theme.styles import (
+    card_text_edit_qss,
     circular_button_qss,
     floating_indicator_qss,
     global_app_qss,
+    info_dialog_tabs_qss,
     info_dialog_text_qss,
     placeholder_label_qss,
     scroll_area_borderless_qss,
@@ -42,9 +44,11 @@ __all__ = [
     "global_app_qss",
     "transparent_text_edit_qss",
     "text_edit_transparent_only_qss",
+    "card_text_edit_qss",
     "circular_button_qss",
     "floating_indicator_qss",
     "info_dialog_text_qss",
+    "info_dialog_tabs_qss",
     "status_label_qss",
     "placeholder_label_qss",
     "scroll_area_borderless_qss",

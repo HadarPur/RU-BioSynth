@@ -20,7 +20,12 @@ from PyQt5.QtWidgets import (
     QWidget,
 )
 
-from biosynth.executions.controllers.ui.theme import SIZES, TITLES, info_dialog_text_qss
+from biosynth.executions.controllers.ui.theme import (
+    SIZES,
+    TITLES,
+    info_dialog_tabs_qss,
+    info_dialog_text_qss,
+)
 
 
 class InfoDialog(QDialog):
@@ -40,6 +45,7 @@ class InfoDialog(QDialog):
 
         self._layout = QVBoxLayout()
         self._tabs = QTabWidget()
+        self._tabs.setStyleSheet(info_dialog_tabs_qss())
         self._layout.addWidget(self._tabs)
 
         button_box = QDialogButtonBox(QDialogButtonBox.Ok)

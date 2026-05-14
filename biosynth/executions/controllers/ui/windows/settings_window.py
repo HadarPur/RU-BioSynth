@@ -1,20 +1,25 @@
-from PyQt5.QtCore import Qt, QTimer
+from PyQt5.QtCore import QPoint, QRect, QSize, Qt, QTimer, pyqtSignal
 from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import (
     QAbstractScrollArea,
     QHeaderView,
     QLabel,
+    QLayout,
+    QSizePolicy,
     QTableWidget,
     QTableWidgetItem,
     QTextEdit,
     QVBoxLayout,
+    QWidget,
 )
 
 from biosynth.data.app_data import InputData
 from biosynth.executions.controllers.ui.theme import (
+    COLORS,
     FONTS,
     MARGINS,
     SIZES,
+    card_text_edit_qss,
     table_qss,
     text_edit_transparent_only_qss,
     transparent_text_edit_qss,
@@ -23,6 +28,111 @@ from biosynth.executions.controllers.ui.utils import create_scroll_area
 from biosynth.executions.controllers.ui.windows.wizard_page import WizardPage
 from biosynth.utils.display_utils import SequenceUtils
 from biosynth.utils.dna_utils import DNAUtils
+
+
+class _FlowLayout(QLayout):
+    """Left-to-right layout that wraps children onto new lines when they
+    overflow the available width — used to lay out position-range chips."""
+
+    def __init__(self, parent=None, margin=0, spacing=4):
+        super().__init__(parent)
+        self.setContentsMargins(margin, margin, margin, margin)
+        self.setSpacing(spacing)
+        self._items = []
+
+    def addItem(self, item):
+        self._items.append(item)
+
+    def count(self):
+        return len(self._items)
+
+    def itemAt(self, index):
+        return self._items[index] if 0 <= index < len(self._items) else None
+
+    def takeAt(self, index):
+        return self._items.pop(index) if 0 <= index < len(self._items) else None
+
+    def expandingDirections(self):
+        return Qt.Orientations(Qt.Orientation(0))
+
+    def hasHeightForWidth(self):
+        return True
+
+    def heightForWidth(self, width):
+        return self._do_layout(QRect(0, 0, width, 0), test_only=True)
+
+    def setGeometry(self, rect):
+        super().setGeometry(rect)
+        self._do_layout(rect, test_only=False)
+
+    def sizeHint(self):
+        return self.minimumSize()
+
+    def minimumSize(self):
+        size = QSize()
+        for item in self._items:
+            size = size.expandedTo(item.minimumSize())
+        m = self.contentsMargins()
+        return size + QSize(m.left() + m.right(), m.top() + m.bottom())
+
+    def _do_layout(self, rect, test_only):
+        x = rect.x()
+        y = rect.y()
+        line_h = 0
+        spacing = self.spacing()
+        for item in self._items:
+            hint = item.sizeHint()
+            next_x = x + hint.width() + spacing
+            if next_x - spacing > rect.right() and line_h > 0:
+                x = rect.x()
+                y = y + line_h + spacing
+                next_x = x + hint.width() + spacing
+                line_h = 0
+            if not test_only:
+                item.setGeometry(QRect(QPoint(x, y), hint))
+            x = next_x
+            line_h = max(line_h, hint.height())
+        return y + line_h - rect.y()
+
+
+class _PositionChip(QLabel):
+    """Clickable pill-shaped range label that mirrors the report's
+    `.pos-range` styling — primary-blue border + text, fills on hover."""
+
+    clicked = pyqtSignal(int, int)
+
+    def __init__(self, token: str, parent=None):
+        super().__init__(token, parent)
+        self._token = token
+        try:
+            start_str, end_str = token.split("-", 1)
+            self._start = int(start_str)
+            self._end = int(end_str)
+        except ValueError:
+            self._start = self._end = None
+        self.setCursor(Qt.PointingHandCursor)
+        self.setAlignment(Qt.AlignCenter)
+        self.setSizePolicy(QSizePolicy.Maximum, QSizePolicy.Maximum)
+        self.setStyleSheet(
+            f"""
+            QLabel {{
+                border: 1px solid {COLORS.primary};
+                border-radius: 4px;
+                color: {COLORS.primary};
+                background-color: white;
+                padding: 1px 6px;
+            }}
+            QLabel:hover {{
+                background-color: {COLORS.primary};
+                color: white;
+            }}
+            """
+        )
+
+    def mousePressEvent(self, event):
+        if event.button() == Qt.LeftButton and self._start is not None:
+            self.clicked.emit(self._start, self._end)
+        super().mousePressEvent(event)
 
 
 def _monospace_font():
@@ -200,17 +310,15 @@ class SettingsWindow(WizardPage):
                 f"positions {InputData.coding_indexes[0] + 1} - "
                 f"{InputData.coding_indexes[1]}:</p>"
             )
-        else:
-            description = "<p>A coding region identified in the provided target sequence</p>"
 
-        content_layout.addWidget(QLabel(description))
+            content_layout.addWidget(QLabel(description))
 
         view = _AutoFitSequenceView(
             InputData.cleaned_dna_sequence,
             InputData.coding_indexes,
-            max_height=SIZES.sequence_diff_height,
+            max_height=SIZES.sequence_height,
         )
-        view.setStyleSheet(transparent_text_edit_qss(margin_right_px=0))
+        view.setStyleSheet(card_text_edit_qss())
         content_layout.addWidget(view)
         self._sequence_view = view
 
@@ -219,7 +327,7 @@ class SettingsWindow(WizardPage):
 
         html = f"<p>{SequenceUtils.get_patterns(InputData.unwanted_patterns)}</p>"
         view = _AutoHeightHtmlView(html)
-        view.setStyleSheet(transparent_text_edit_qss(margin_right_px=0))
+        view.setStyleSheet(card_text_edit_qss())
         content_layout.addWidget(view)
 
     def _add_pattern_occurrences(self, content_layout):
@@ -234,13 +342,14 @@ class SettingsWindow(WizardPage):
             return
 
         content_layout.addWidget(
-            QLabel("<h3>Unwanted Pattern Occurrences in the Target Sequence:</h3>")
+            QLabel("<h3>Unwanted Patterns Occurrences in the Target Sequence:</h3>")
         )
 
         table = QTableWidget()
         table.setFont(_monospace_font())
         table.setColumnCount(3)
         table.setHorizontalHeaderLabels(["Pattern", "Count", "Positions"])
+
         table.setRowCount(len(rows))
 
         left_align = Qt.AlignLeft | Qt.AlignVCenter
@@ -257,24 +366,20 @@ class SettingsWindow(WizardPage):
             count_item.setFlags(count_item.flags() & ~Qt.ItemIsEditable)
             table.setItem(r, 1, count_item)
 
-            if row["Positions"]:
-                links = ", ".join(
-                    f'<a href="hl:{tok}" style="color:#245076; text-decoration:none;">{tok}</a>'
-                    for tok in row["Positions"]
-                )
-            else:
-                links = "—"
+            cell_widget = QWidget()
+            flow = _FlowLayout(cell_widget, margin=6, spacing=4)
+            cell_widget.setLayout(flow)
 
-            label = QLabel(links)
-            label.setTextFormat(Qt.RichText)
-            label.setWordWrap(True)
-            label.setOpenExternalLinks(False)
-            label.setTextInteractionFlags(Qt.LinksAccessibleByMouse | Qt.LinksAccessibleByKeyboard)
-            label.setAlignment(left_align)
-            label.setContentsMargins(10, 4, 10, 4)
-            label.linkActivated.connect(self._on_position_link_activated)
-            table.setCellWidget(r, 2, label)
-            pattern_labels.append((r, label))
+            if row["Positions"]:
+                for tok in row["Positions"]:
+                    chip = _PositionChip(tok)
+                    chip.clicked.connect(self._on_position_chip_clicked)
+                    flow.addWidget(chip)
+            else:
+                flow.addWidget(QLabel("—"))
+
+            table.setCellWidget(r, 2, cell_widget)
+            pattern_labels.append((r, cell_widget))
 
         header = table.horizontalHeader()
         header.setSectionResizeMode(0, QHeaderView.ResizeToContents)
@@ -286,23 +391,24 @@ class SettingsWindow(WizardPage):
         table.verticalHeader().setVisible(False)
         table.setAlternatingRowColors(True)
         table.setShowGrid(False)
-        table.setSelectionBehavior(QTableWidget.SelectRows)
-        table.setSelectionMode(QTableWidget.SingleSelection)
+        table.setSelectionMode(QTableWidget.NoSelection)
         table.setFocusPolicy(Qt.NoFocus)
         table.horizontalHeader().setMinimumHeight(SIZES.table_header_min_h)
         table.verticalHeader().setDefaultSectionSize(SIZES.table_row_default_h)
         table.setCornerButtonEnabled(False)
-        table.setStyleSheet(table_qss())
+        table.setStyleSheet(table_qss() + " QHeaderView::section { padding: 4px 10px; }")
         table.setMinimumHeight(SIZES.scroll_area_max_inline * 2)
 
         def resize_rows():
-            col_w = table.columnWidth(2) - 24  # subtract label content margins
+            col_w = table.columnWidth(2) - 12  # subtract flow margins
             if col_w <= 0:
                 return
-            for row_idx, lbl in pattern_labels:
-                h = lbl.heightForWidth(col_w)
-                if h <= 0:
-                    h = lbl.sizeHint().height()
+            for row_idx, widget in pattern_labels:
+                layout = widget.layout()
+                if layout is not None and layout.hasHeightForWidth():
+                    h = layout.heightForWidth(col_w)
+                else:
+                    h = widget.sizeHint().height()
                 table.setRowHeight(row_idx, max(SIZES.table_row_default_h, h + 12))
 
         header.sectionResized.connect(
@@ -312,13 +418,7 @@ class SettingsWindow(WizardPage):
 
         content_layout.addWidget(table)
 
-    def _on_position_link_activated(self, href: str):
-        if self._sequence_view is None or not href.startswith("hl:"):
-            return
-        try:
-            start_str, end_str = href[3:].split("-", 1)
-            start = int(start_str)
-            end = int(end_str)
-        except ValueError:
+    def _on_position_chip_clicked(self, start: int, end: int):
+        if self._sequence_view is None:
             return
         self._sequence_view.set_highlight_range(start, end)
