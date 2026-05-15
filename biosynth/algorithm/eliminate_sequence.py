@@ -2,7 +2,7 @@ from collections import defaultdict
 
 from biosynth.algorithm.fsm import FSM
 from biosynth.data.app_data import CostData
-from biosynth.utils.info_utils import format_cost, get_elimination_process_description, \
+from biosynth.utils.descriptions import format_cost, get_elimination_process_description, \
     get_non_coding_region_cost_description, get_coding_region_cost_description
 from biosynth.utils.cost_utils import EliminationScorerConfig
 from biosynth.utils.date_utils import format_current_date

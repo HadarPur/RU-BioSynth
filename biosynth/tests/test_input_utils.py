@@ -196,7 +196,7 @@ class TestCommandLineParser(unittest.TestCase):
     # -------------------------------------------------------------------------
 
     @patch('sys.exit')
-    @patch('biosynth.utils.output_utils.Logger.help')
+    @patch('biosynth.utils.logger.Logger.help')
     def test_help_option(self, mock_logger_help, mock_exit):
         mock_exit.side_effect = SystemExit
         sys.argv = ["tests.py", "-h"]
@@ -206,7 +206,7 @@ class TestCommandLineParser(unittest.TestCase):
         self.assertTrue(mock_logger_help.called)
 
     @patch('sys.exit')
-    @patch('biosynth.utils.output_utils.Logger.help')
+    @patch('biosynth.utils.logger.Logger.help')
     def test_help_long_option(self, mock_logger_help, mock_exit):
         mock_exit.side_effect = SystemExit
         sys.argv = ["tests.py", "--help"]
@@ -216,7 +216,7 @@ class TestCommandLineParser(unittest.TestCase):
         self.assertTrue(mock_logger_help.called)
 
     @patch('sys.exit')
-    @patch('biosynth.utils.output_utils.Logger.help')
+    @patch('biosynth.utils.logger.Logger.help')
     def test_help_called_twice(self, mock_logger_help, mock_exit):
         """Logger.help should be called at least twice (format_help + information)."""
         mock_exit.side_effect = SystemExit
@@ -226,7 +226,7 @@ class TestCommandLineParser(unittest.TestCase):
         self.assertGreaterEqual(mock_logger_help.call_count, 2)
 
     @patch('sys.exit')
-    @patch('biosynth.utils.output_utils.Logger.info')
+    @patch('biosynth.utils.logger.Logger.info')
     def test_version_option(self, mock_logger_info, mock_exit):
         mock_exit.side_effect = SystemExit
         sys.argv = ["tests.py", "-v"]
@@ -236,7 +236,7 @@ class TestCommandLineParser(unittest.TestCase):
         mock_logger_info.assert_called_with(f"BioSynth version {VERSION}")
 
     @patch('sys.exit')
-    @patch('biosynth.utils.output_utils.Logger.info')
+    @patch('biosynth.utils.logger.Logger.info')
     def test_version_long_option(self, mock_logger_info, mock_exit):
         mock_exit.side_effect = SystemExit
         sys.argv = ["tests.py", "--version"]
@@ -246,7 +246,7 @@ class TestCommandLineParser(unittest.TestCase):
         mock_logger_info.assert_called_with(f"BioSynth version {VERSION}")
 
     @patch('sys.exit')
-    @patch('biosynth.utils.output_utils.Logger.info')
+    @patch('biosynth.utils.logger.Logger.info')
     def test_version_contains_version_string(self, mock_logger_info, mock_exit):
         mock_exit.side_effect = SystemExit
         sys.argv = ["tests.py", "-v"]
@@ -261,7 +261,7 @@ class TestCommandLineParser(unittest.TestCase):
     # -------------------------------------------------------------------------
 
     @patch('sys.exit')
-    @patch('biosynth.utils.output_utils.Logger.error')
+    @patch('biosynth.utils.logger.Logger.error')
     @patch('argparse.ArgumentParser.error')
     def test_invalid_argument(self, mock_argparse_error, mock_logger_error, mock_exit):
         mock_argparse_error.side_effect = SystemExit
@@ -273,7 +273,7 @@ class TestCommandLineParser(unittest.TestCase):
         mock_exit.assert_called_with(2)
 
     @patch('sys.exit')
-    @patch('biosynth.utils.output_utils.Logger.error')
+    @patch('biosynth.utils.logger.Logger.error')
     @patch('argparse.ArgumentParser.error')
     def test_invalid_long_argument(self, mock_argparse_error, mock_logger_error, mock_exit):
         mock_argparse_error.side_effect = SystemExit
@@ -285,7 +285,7 @@ class TestCommandLineParser(unittest.TestCase):
         mock_exit.assert_called_with(2)
 
     @patch('sys.exit')
-    @patch('biosynth.utils.output_utils.Logger.error')
+    @patch('biosynth.utils.logger.Logger.error')
     @patch('argparse.ArgumentParser.error')
     def test_error_message_contains_guidance(self, mock_argparse_error, mock_logger_error, mock_exit):
         """Logger.error message should mention the help option."""
@@ -357,7 +357,7 @@ class TestCommandLineParser(unittest.TestCase):
             importlib.reload(input_utils_mod)
 
     @patch("sys.exit")
-    @patch("biosynth.utils.output_utils.Logger.info")
+    @patch("biosynth.utils.logger.Logger.info")
     def test_version_flag_prints_and_exits(self, mock_info, mock_exit):
         mock_exit.side_effect = SystemExit
         with self.assertRaises(SystemExit):
@@ -366,7 +366,7 @@ class TestCommandLineParser(unittest.TestCase):
         mock_exit.assert_called_with(0)
 
     @patch("sys.exit")
-    @patch("biosynth.utils.output_utils.Logger.help")
+    @patch("biosynth.utils.logger.Logger.help")
     def test_help_flag_prints_and_exits(self, mock_help, mock_exit):
         mock_exit.side_effect = SystemExit
         with self.assertRaises(SystemExit):

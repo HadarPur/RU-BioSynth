@@ -1,10 +1,10 @@
 import argparse
 import sys
 
-from biosynth.utils.output_utils import Logger
+from biosynth.utils.logger import Logger
 from biosynth.utils.text_utils import format_text_bold_for_output
 from biosynth.utils.text_utils import set_output_format, OutputFormat
-from biosynth.utils.info_utils import get_info_usage, get_elimination_info
+from biosynth.utils.descriptions import get_info_usage, get_elimination_info
 
 try:
     from importlib.metadata import version as package_version

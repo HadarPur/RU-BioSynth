@@ -4,11 +4,11 @@ from tabulate import tabulate
 
 from biosynth.data.app_data import InputData, EliminationData, OutputData
 from biosynth.executions.execution_utils import eliminate_unwanted_patterns
-from biosynth.report.html_report_utils import ReportController
+from biosynth.report.report_builder import ReportBuilder
 from biosynth.utils.display_utils import SequenceUtils
-from biosynth.utils.dna_utils import DNAUtils
+from biosynth.utils.coding_region import CodingRegionLocator
 from biosynth.utils.file_utils import save_file
-from biosynth.utils.output_utils import Logger
+from biosynth.utils.logger import Logger
 from biosynth.utils.spinner import run_with_spinner
 from biosynth.utils.text_utils import format_text_bold_for_output
 
@@ -51,14 +51,14 @@ class CommandController:
 
         try:
             # Check for start codon
-            InputData.start_codon_identified, InputData.cleaned_dna_sequence = DNAUtils.find_start_codon(InputData.dna_sequence)
+            InputData.start_codon_identified, InputData.cleaned_dna_sequence = CodingRegionLocator.find_start_codon(InputData.dna_sequence)
         except ValueError as e:
             Logger.error(f"Start codon validation failed: {e}")
             InputData.reset()
             sys.exit(3)
 
         # Extract coding regions
-        InputData.coding_positions, InputData.coding_indexes = DNAUtils.get_coding_and_non_coding_regions_positions(
+        InputData.coding_positions, InputData.coding_indexes = CodingRegionLocator.get_coding_and_non_coding_regions_positions(
             InputData.cleaned_dna_sequence, InputData.start_codon_identified)
 
         Logger.debug(f"{format_text_bold_for_output('Target sequence:')}")
@@ -147,7 +147,7 @@ class CommandController:
         Logger.space()
 
         # Save the results
-        report = ReportController()
+        report = ReportBuilder()
 
         Logger.critical("The final report and optimized sequence can be found in the following paths:\n")
         file_date = datetime.today().strftime("%d-%b-%Y_%H-%M-%S")

@@ -1,4 +1,4 @@
-"""Tests for biosynth.report.html_report_utils."""
+"""Tests for biosynth.report.report_builder."""
 
 import os
 import io
@@ -9,12 +9,12 @@ from unittest.mock import patch
 from jinja2 import Template
 
 from biosynth.data import app_data
-from biosynth.report.html_report_utils import (
-    ReportController,
+from biosynth.report.report_builder import (
+    ReportBuilder,
     convert_to_html_list,
 )
 from biosynth.utils.text_utils import OutputFormat, set_output_format
-import biosynth.report.html_report_utils as mod
+import biosynth.report.report_builder as mod
 
 class TestConvertToHtmlList(unittest.TestCase):
     def test_dash_items_become_ul(self):
@@ -35,7 +35,7 @@ class TestConvertToHtmlList(unittest.TestCase):
 
 def _seed_app_data():
     """Populate enough InputData / OutputData / EliminationData for
-    ReportController to build successfully.
+    ReportBuilder to build successfully.
     """
     app_data.InputData.cleaned_dna_sequence = "ATGAAATAA"
     app_data.InputData.coding_indexes = (0, 9)
@@ -47,13 +47,13 @@ def _seed_app_data():
     app_data.EliminationData.min_cost = 0.0
 
 
-class TestReportController(unittest.TestCase):
+class TestReportBuilder(unittest.TestCase):
     def setUp(self):
         _seed_app_data()
         set_output_format(OutputFormat.TERMINAL)
 
     def test_construction_populates_fields(self):
-        ctrl = ReportController()
+        ctrl = ReportBuilder()
         self.assertEqual(ctrl.input_seq, "ATGAAATAA")
         self.assertEqual(ctrl.optimized_seq, "ATGAAATAA")
         # Coding range is rendered as "1 - 9".
@@ -66,11 +66,11 @@ class TestReportController(unittest.TestCase):
     def test_no_coding_region_gives_empty_coding_idx(self):
         app_data.InputData.coding_indexes = None
         app_data.InputData.coding_positions = [0] * 9
-        ctrl = ReportController()
+        ctrl = ReportBuilder()
         self.assertEqual(ctrl.coding_idx, "")
 
     def test_create_report_writes_html_and_returns_path(self):
-        ctrl = ReportController()
+        ctrl = ReportBuilder()
         path = ctrl.create_report(file_date="01-Jan-1970_00-00-00")
         self.assertIsNotNone(path)
         self.assertTrue(os.path.exists(path))
@@ -88,7 +88,7 @@ class TestReportController(unittest.TestCase):
         os.remove(path)
 
     def test_download_report_to_custom_dir(self):
-        ctrl = ReportController()
+        ctrl = ReportBuilder()
         ctrl.create_report(file_date="01-Jan-1970_00-00-00")
         with tempfile.TemporaryDirectory() as tmp:
             result = ctrl.download_report(path=tmp)
@@ -108,7 +108,7 @@ class TestReportController(unittest.TestCase):
         # except branch calls handle_critical_error which raises SystemExit
         # under TERMINAL output.
 
-        ctrl = ReportController()
+        ctrl = ReportBuilder()
 
         with patch("sys.stdout", new=io.StringIO()) as fake_out:
             with patch.object(
@@ -126,7 +126,7 @@ class TestReportController(unittest.TestCase):
         # handler is stubbed out (i.e. doesn't exit), create_report falls
         # through and returns None.
 
-        ctrl = ReportController()
+        ctrl = ReportBuilder()
         boom = unittest.mock.patch.object(
             Template, "render", side_effect=RuntimeError("render boom")
         )

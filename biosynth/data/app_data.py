@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from biosynth.utils.output_utils import Logger
+from biosynth.utils.logger import Logger
 
 
 class InputData:

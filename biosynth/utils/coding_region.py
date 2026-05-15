@@ -1,7 +1,7 @@
 min_coding_region_length = 7 * 3  # start_codon_length + stop_codon_length + 5 codons length in the coding area
 
 
-class DNAUtils:
+class CodingRegionLocator:
     """Static helpers for locating coding regions within DNA sequences."""
 
     @staticmethod

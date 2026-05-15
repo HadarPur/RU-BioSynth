@@ -1,8 +1,8 @@
 from biosynth.algorithm.eliminate_sequence import EliminationController
 from biosynth.data.app_data import EliminationData, OutputData
-from biosynth.report.html_report_utils import ReportController
+from biosynth.report.report_builder import ReportBuilder
 from biosynth.utils.display_utils import SequenceUtils
-from biosynth.utils.output_utils import Logger
+from biosynth.utils.logger import Logger
 
 
 def is_valid_dna(sequence):
@@ -154,6 +154,6 @@ def mark_non_equal_codons(input_seq, optimized_seq, coding_positions):
 
 
 def initialize_report():
-    """Construct and return a fresh ``ReportController`` initialized from current app data."""
-    report = ReportController()
+    """Construct and return a fresh ``ReportBuilder`` initialized from current app data."""
+    report = ReportBuilder()
     return report

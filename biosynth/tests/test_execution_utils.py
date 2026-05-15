@@ -277,7 +277,7 @@ class TestMarkNonEqualCodons(unittest.TestCase):
 
 class TestInitializeReport(unittest.TestCase):
     def test_returns_report_controller(self):
-        # ReportController reads InputData / OutputData / EliminationData on
+        # ReportBuilder reads InputData / OutputData / EliminationData on
         # construction, so we populate just enough for it to build cleanly.
         app_data.InputData.cleaned_dna_sequence = "ATG"
         app_data.InputData.coding_indexes = None
@@ -290,5 +290,5 @@ class TestInitializeReport(unittest.TestCase):
 
         controller = eu.initialize_report()
         # Imported here to avoid a heavy import at module top.
-        from biosynth.report.html_report_utils import ReportController
-        self.assertIsInstance(controller, ReportController)
+        from biosynth.report.report_builder import ReportBuilder
+        self.assertIsInstance(controller, ReportBuilder)

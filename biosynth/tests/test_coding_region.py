@@ -2,7 +2,7 @@ import unittest
 
 from Bio.Seq import Seq
 
-from biosynth.utils.dna_utils import DNAUtils
+from biosynth.utils.coding_region import CodingRegionLocator
 
 
 class TestDNAHighlighter(unittest.TestCase):
@@ -14,9 +14,9 @@ class TestDNAHighlighter(unittest.TestCase):
         )
         seq_str = str(seq)
 
-        start_codon_identified, cleaned_seq = DNAUtils.find_start_codon(seq_str)
+        start_codon_identified, cleaned_seq = CodingRegionLocator.find_start_codon(seq_str)
 
-        coding_positions, coding_indexes = DNAUtils.get_coding_and_non_coding_regions_positions(
+        coding_positions, coding_indexes = CodingRegionLocator.get_coding_and_non_coding_regions_positions(
             cleaned_seq, start_codon_identified)
 
 
@@ -37,9 +37,9 @@ class TestDNAHighlighter(unittest.TestCase):
 
     def test_get_coding_and_non_coding_regions_no_coding_region(self):
         seq = "AAACCCGGGTTT"  # No ATG or stop codons
-        start_codon_identified, cleaned_seq = DNAUtils.find_start_codon(seq)
+        start_codon_identified, cleaned_seq = CodingRegionLocator.find_start_codon(seq)
 
-        coding_positions, coding_indexes = DNAUtils.get_coding_and_non_coding_regions_positions(
+        coding_positions, coding_indexes = CodingRegionLocator.get_coding_and_non_coding_regions_positions(
             cleaned_seq, start_codon_identified)
 
         self.assertTrue(all(pos == 0 for pos in coding_positions))
@@ -49,7 +49,7 @@ class TestDNAHighlighter(unittest.TestCase):
         seq = "AA*ATGCCCCCCCC"  # ATG but no stop codon
 
         with self.assertRaises(ValueError) as cm:
-            DNAUtils.find_start_codon(seq)
+            CodingRegionLocator.find_start_codon(seq)
 
         self.assertEqual(
             str(cm.exception),
@@ -60,7 +60,7 @@ class TestDNAHighlighter(unittest.TestCase):
         seq = "AA*CCCCCC"  # '*' present, no ATG after
 
         with self.assertRaises(ValueError) as cm:
-            DNAUtils.find_start_codon(seq)
+            CodingRegionLocator.find_start_codon(seq)
 
         self.assertEqual(
             str(cm.exception),
@@ -70,15 +70,15 @@ class TestDNAHighlighter(unittest.TestCase):
     def test_get_coding_sequence_returns_substring(self):
         seq = "AAAATGCCCAAA"
         # (3, 9) → "ATGCCC"
-        self.assertEqual(DNAUtils.get_coding_sequence((3, 9), seq), "ATGCCC")
+        self.assertEqual(CodingRegionLocator.get_coding_sequence((3, 9), seq), "ATGCCC")
 
     def test_get_coding_sequence_returns_none_when_index_is_none(self):
-        self.assertIsNone(DNAUtils.get_coding_sequence(None, "ATG"))
+        self.assertIsNone(CodingRegionLocator.get_coding_sequence(None, "ATG"))
 
     def test_get_coding_regions_returns_none_when_atg_missing(self):
         # When the start_codon index is None, the method short-circuits and
         # returns (all-zero positions, None).
-        positions, idx = DNAUtils.get_coding_and_non_coding_regions_positions(
+        positions, idx = CodingRegionLocator.get_coding_and_non_coding_regions_positions(
             "ATGCCC", None
         )
         self.assertEqual(positions, [0] * 6)
@@ -89,6 +89,6 @@ class TestDNAHighlighter(unittest.TestCase):
         # a sequence that has no in-frame stop codon — exercises the
         # 'stop_idx is None' early return.
         seq = "ATGCCCAAA"  # ATG at 0, no in-frame stop
-        positions, idx = DNAUtils.get_coding_and_non_coding_regions_positions(seq, 0)
+        positions, idx = CodingRegionLocator.get_coding_and_non_coding_regions_positions(seq, 0)
         self.assertEqual(positions, [0] * 9)
         self.assertIsNone(idx)

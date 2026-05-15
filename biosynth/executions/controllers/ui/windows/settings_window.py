@@ -27,7 +27,7 @@ from biosynth.executions.controllers.ui.theme import (
 from biosynth.executions.controllers.ui.utils import create_scroll_area
 from biosynth.executions.controllers.ui.windows.wizard_page import WizardPage
 from biosynth.utils.display_utils import SequenceUtils
-from biosynth.utils.dna_utils import DNAUtils
+from biosynth.utils.coding_region import CodingRegionLocator
 
 
 class _FlowLayout(QLayout):
@@ -317,7 +317,7 @@ class SettingsWindow(WizardPage):
         content_layout.addWidget(QLabel("<h2>Input</h2><h3>Target Sequence:</h3>"))
 
         InputData.coding_positions, InputData.coding_indexes = (
-            DNAUtils.get_coding_and_non_coding_regions_positions(
+            CodingRegionLocator.get_coding_and_non_coding_regions_positions(
                 InputData.cleaned_dna_sequence, InputData.start_codon_identified
             )
         )

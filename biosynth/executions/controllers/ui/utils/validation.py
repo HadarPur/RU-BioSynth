@@ -12,7 +12,7 @@ from biosynth.executions.execution_utils import (
     is_valid_dna,
     is_valid_patterns,
 )
-from biosynth.utils.dna_utils import DNAUtils
+from biosynth.utils.coding_region import CodingRegionLocator
 
 
 class GuiValidator:
@@ -38,7 +38,7 @@ class GuiValidator:
             self._error("Invalid target sequence format in file")
             return False, None, None
         try:
-            start_codon_identified, cleaned = DNAUtils.find_start_codon(dna_sequence)
+            start_codon_identified, cleaned = CodingRegionLocator.find_start_codon(dna_sequence)
         except ValueError as e:
             self._error(f"Start codon validation failed:\n{e}")
             return False, None, None

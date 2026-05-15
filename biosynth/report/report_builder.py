@@ -5,9 +5,9 @@ import jinja2
 # Application-specific data and utilities
 from biosynth.data.app_data import InputData, EliminationData, OutputData
 from biosynth.utils.display_utils import SequenceUtils
-from biosynth.utils.dna_utils import DNAUtils
+from biosynth.utils.coding_region import CodingRegionLocator
 from biosynth.utils.file_utils import create_dir, resource_path, save_file
-from biosynth.utils.info_utils import (
+from biosynth.utils.descriptions import (
     get_elimination_process_description,
     get_coding_region_cost_description,
     get_non_coding_region_cost_description,
@@ -43,7 +43,7 @@ def convert_to_html_list(text: str, ordered=False) -> str:
     return preamble + "\n" + html
 
 
-class ReportController:
+class ReportBuilder:
     """Builds the final HTML report from app data and writes/exports it to disk."""
 
     # Controller responsible for constructing and saving the final HTML report

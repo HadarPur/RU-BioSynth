@@ -27,7 +27,7 @@ from biosynth.executions.execution_utils import (
     is_valid_patterns,
 )
 from biosynth.utils.file_utils import CodonUsageReader, PatternReader, SequenceReader
-from biosynth.utils.info_utils import get_elimination_info, get_info_usage
+from biosynth.utils.descriptions import get_elimination_info, get_info_usage
 
 
 class UploadWindow(QWidget):
