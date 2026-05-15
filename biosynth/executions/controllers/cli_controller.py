@@ -9,10 +9,21 @@ from biosynth.utils.output_utils import Logger
 
 
 class CLIController:
+    """Command-line entry controller that loads inputs from disk and runs the elimination pipeline."""
+
     def __init__(self, argv):
         self.argv = argv
 
     def execute(self):
+        """Drive the full CLI run end to end.
+
+        Parses CLI arguments, reads the sequence/patterns/codon-usage files,
+        validates inputs and cost parameters, populates the shared
+        ``InputData``/``CostData``/``OutputData`` state (including optional
+        overrides for alpha/beta/w, optimized codon flag, and output path),
+        and finally delegates execution to ``CommandController``. Exits with
+        code 2 on validation failure.
+        """
         parser = ArgumentParser()
 
         _, s_path, p_path, c_path, o_path, alpha, beta, w, optimized_codon = parser.parse_args(self.argv)

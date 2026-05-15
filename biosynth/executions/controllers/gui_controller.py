@@ -12,8 +12,16 @@ sys.stderr = open(os.devnull, 'w')
 
 
 class GUIController:
+    """Controller that boots the PyQt5 GUI application."""
+
     @staticmethod
     def execute():
+        """Launch the Qt application.
+
+        Creates the ``QApplication``, instantiates the main ``BaseWindow``,
+        applies the BioSynth icon and global stylesheet, and enters the Qt
+        event loop. Calls ``sys.exit`` with the loop's return code.
+        """
         app = QApplication(sys.argv)
         ex = BaseWindow()
         ex.show()

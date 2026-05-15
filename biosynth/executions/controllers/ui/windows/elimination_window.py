@@ -21,6 +21,7 @@ class EliminationWindow(WizardPage):
         self.build()
 
     def build_body(self, layout):
+        """Render the elimination log as HTML inside a scrollable text browser."""
         middle_layout = QVBoxLayout()
         middle_layout.setContentsMargins(*MARGINS.page_padded)
         layout.addLayout(middle_layout)

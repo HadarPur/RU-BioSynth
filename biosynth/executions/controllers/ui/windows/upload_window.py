@@ -31,6 +31,8 @@ from biosynth.utils.info_utils import get_elimination_info, get_info_usage
 
 
 class UploadWindow(QWidget):
+    """First wizard page — collects DNA sequence, patterns, codon usage, and costs."""
+
     def __init__(self, switch_to_process_callback):
         super().__init__()
         self.dna_text_edit = None
@@ -45,6 +47,7 @@ class UploadWindow(QWidget):
         self.init_ui(switch_to_process_callback)
 
     def init_ui(self, next_callback):
+        """Assemble the page layout and restore any previously entered content."""
         layout = QVBoxLayout(self)
 
         self.add_top_layout(layout)
@@ -53,6 +56,7 @@ class UploadWindow(QWidget):
         self.restore_content()
 
     def add_top_layout(self, layout):
+        """Add the welcome blurb (left) and the logo (right) to the top row."""
         top_layout = QGridLayout()
         top_layout.setContentsMargins(*MARGINS.page_top_compact)
         layout.addLayout(top_layout)
@@ -61,6 +65,7 @@ class UploadWindow(QWidget):
         add_png_logo(top_layout, 0, 1)
 
     def add_middle_layout(self, layout):
+        """Add the 2x2 grid of upload inputs (DNA, patterns, codon usage, costs)."""
         grid_layout = QGridLayout()
         grid_layout.setContentsMargins(*MARGINS.page_top_bottom)
         layout.addLayout(grid_layout)
@@ -136,6 +141,7 @@ class UploadWindow(QWidget):
         custom_scores_layout.addStretch(1)
 
     def add_bottom_layout(self, layout, next_callback):
+        """Add the bottom bar with the Info, Reset, and Next buttons."""
         bottom_layout = QHBoxLayout()
         bottom_layout.setContentsMargins(*MARGINS.page_top_bottom)
         layout.addLayout(bottom_layout)
@@ -148,6 +154,7 @@ class UploadWindow(QWidget):
         add_button(bottom_layout, LABELS.next, Qt.AlignRight, next_callback, self.get_input_data)
 
     def reset(self):
+        """Clear all uploaded inputs and restore default cost/toggle values."""
         UploadData.reset()
         CostData.reset()
 
@@ -163,6 +170,7 @@ class UploadWindow(QWidget):
         self.optimized_codon_toggle.setChecked(CostData.optimized_codon)
 
     def get_input_data(self):
+        """Return the current ``(dna, patterns, codon_usage)`` tuple from UploadData."""
         return (
             UploadData.dna_sequence_content_file,
             UploadData.unwanted_patterns_content_file,
@@ -170,6 +178,7 @@ class UploadWindow(QWidget):
         )
 
     def restore_content(self):
+        """Repopulate the inputs from any previously cached UploadData values."""
         if UploadData.dna_sequence_content_file:
             self.dna_text_edit.setPlainText(UploadData.dna_sequence_content_file)
         if UploadData.unwanted_patterns_content_file:
@@ -180,6 +189,7 @@ class UploadWindow(QWidget):
             self.update_codon_usage_table_from_dict(UploadData.codon_usage_content_file)
 
     def load_dna_file(self):
+        """Open a file picker to choose a target-sequence ``.txt`` file."""
         file_name, _ = QFileDialog.getOpenFileName(
             self, "Open Target Sequence File", "", "Text Files (*.txt)"
         )
@@ -188,6 +198,7 @@ class UploadWindow(QWidget):
         self.load_dna_file_from_file_path(file_name)
 
     def load_dna_file_from_file_path(self, file_path):
+        """Read and validate a DNA file, then populate the target-sequence editor."""
         try:
             content = SequenceReader(file_path).read_sequence()
         except Exception as e:
@@ -201,9 +212,11 @@ class UploadWindow(QWidget):
             QMessageBox.critical(self, "Error", "Invalid target sequence format in file")
 
     def dna_text_edit_changed(self):
+        """Mirror the DNA text edit's current content back into UploadData."""
         UploadData.dna_sequence_content_file = self.dna_text_edit.toPlainText()
 
     def load_patterns_file(self):
+        """Open a file picker to choose an unwanted-patterns ``.txt`` file."""
         file_name, _ = QFileDialog.getOpenFileName(
             self, "Open Unwanted Patterns File", "", "Text Files (*.txt)"
         )
@@ -212,6 +225,7 @@ class UploadWindow(QWidget):
         self.load_patterns_file_from_file_path(file_name)
 
     def load_patterns_file_from_file_path(self, file_path):
+        """Read and validate a patterns file, then populate the patterns editor."""
         try:
             content = PatternReader(file_path).read_patterns()
         except Exception as e:
@@ -225,10 +239,12 @@ class UploadWindow(QWidget):
             QMessageBox.critical(self, "Error", "Invalid unwanted patterns format in file")
 
     def patterns_text_edit_changed(self):
+        """Mirror the patterns editor's lines back into UploadData."""
         content = self.patterns_text_edit.toPlainText().splitlines()
         UploadData.unwanted_patterns_content_file = content
 
     def load_codon_usage_file(self):
+        """Open a file picker to choose a codon-usage ``.txt`` file."""
         file_name, _ = QFileDialog.getOpenFileName(
             self, "Open Codon Usage File", "", "Text Files (*.txt)"
         )
@@ -237,6 +253,7 @@ class UploadWindow(QWidget):
         self.load_codon_usage_from_file_path(file_name)
 
     def load_codon_usage_from_file_path(self, file_path):
+        """Read and validate a codon-usage file, then fill the codon-usage table."""
         try:
             content = CodonUsageReader(file_path).read_codon_usage()
             CostData.codon_usage_filename = CodonUsageReader(file_path).get_filename()
@@ -251,6 +268,7 @@ class UploadWindow(QWidget):
             QMessageBox.critical(self, "Error", "Invalid codon usage table format in file.")
 
     def update_codon_usage_table_from_dict(self, codon_usage_content):
+        """Replace the codon-usage table's rows from a ``{codon: freq}`` dict."""
         self.codon_usage_table.setRowCount(len(codon_usage_content))
         for row_idx, (codon, freq) in enumerate(codon_usage_content.items()):
             self.codon_usage_table.setItem(row_idx, 0, QTableWidgetItem(codon))
@@ -258,6 +276,7 @@ class UploadWindow(QWidget):
         self.codon_usage_table.update_placeholder()
 
     def codon_usage_table_changed(self):
+        """Sync UploadData with the codon-usage table after a user edit."""
         codon_usage = {}
         for row in range(self.codon_usage_table.rowCount()):
             codon_item = self.codon_usage_table.item(row, 0)
@@ -274,6 +293,7 @@ class UploadWindow(QWidget):
         UploadData.codon_usage_content_file = codon_usage
 
     def show_info(self):
+        """Open the help dialog with coding-region and substitution-cost tabs."""
         usage_text = (
             get_info_usage()
             .replace("\n", "<br>")

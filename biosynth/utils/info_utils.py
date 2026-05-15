@@ -3,15 +3,18 @@ from biosynth.utils.text_utils import format_text_bold_for_output
 
 
 def format_cost(value):
+    """Return ``value`` rendered as a trimmed three-decimal float string, or its ``str()`` otherwise."""
     return f"{value:.3f}".rstrip('0').rstrip('.') if isinstance(value, float) else str(value)
 
 def get_elimination_process_description():
+    """Return the introductory description of the cost parameters used during elimination."""
     return (
         "Sequence optimization assumes the following cost parameters:"
     )
 
 
 def get_coding_region_cost_description():
+    """Return a bullet-list string describing the coding-region cost parameters."""
     return (
         f"• Non-synonymous substitution cost in coding region: w = {format_cost(CostData.w)}\n"
         f"• Synonymous substitution costs determined by codon usage frequencies from: {CostData.codon_usage_filename}"
@@ -19,12 +22,14 @@ def get_coding_region_cost_description():
 
 
 def get_non_coding_region_cost_description():
+    """Return a bullet-list string describing the non-coding-region transition/transversion costs."""
     return (
         f"• Transition substitution in non-coding sites (A ↔ G, C ↔ T): α = {format_cost(CostData.alpha)}\n"
         f"• Transversion substitution in non-coding sites ({{A,G}} ↔ {{C,T}}): β = {format_cost(CostData.beta)}"
     )
 
 def get_info_usage():
+    """Return formatted help text describing the expected target-sequence properties."""
     lines = [
         "Your target sequence should satisfy the following properties:",
         "• The target sequence must contain at most one asterisk character (*) marking the coding region.",
@@ -42,6 +47,7 @@ def get_info_usage():
     return "\n".join(boxed_text)
 
 def get_elimination_info():
+    """Return formatted help text explaining the elimination algorithm's cost scheme."""
     lines = [
         "The cost scheme assumed by the optimization algorithm utilizes the following parameters:",
         "",

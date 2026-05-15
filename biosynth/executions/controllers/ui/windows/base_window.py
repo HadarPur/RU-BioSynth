@@ -13,6 +13,8 @@ from biosynth.utils.cost_utils import normalize_codon_usage
 
 
 class BaseWindow(QMainWindow):
+    """Top-level wizard host that swaps between upload/settings/elimination/results pages."""
+
     def __init__(self):
         super().__init__()
         self.stackedLayout = QStackedWidget()
@@ -23,6 +25,7 @@ class BaseWindow(QMainWindow):
         self.init_ui()
 
     def init_ui(self):
+        """Configure window geometry/limits and show the first wizard page."""
         self.setWindowTitle(TITLES.app)
         # Initial size = the design's "default" dimensions. The same values
         # also act as a hard minimum so the user can grow the window but
@@ -40,19 +43,23 @@ class BaseWindow(QMainWindow):
         self.stackedLayout.setCurrentWidget(widget)
 
     def show_upload_window(self):
+        """Display the file-upload page (step 1)."""
         self._show_page(UploadWindow(self.switch_to_process_window))
 
     def show_process_window(self):
+        """Display the settings/review page (step 2)."""
         self._show_page(
             SettingsWindow(self.switch_to_elimination_window, self.show_upload_window)
         )
 
     def show_elimination_window(self):
+        """Display the elimination-log page (step 3)."""
         self._show_page(
             EliminationWindow(self.switch_to_results_window, self.show_process_window)
         )
 
     def switch_to_results_window(self):
+        """Display the results page (step 4)."""
         self._show_page(ResultsWindow(self.show_elimination_window))
 
     def switch_to_elimination_window(self):
@@ -100,6 +107,11 @@ class BaseWindow(QMainWindow):
         )
 
     def switch_to_process_window(self, dna_sequence, unwanted_patterns, codon_usage):
+        """Validate uploaded inputs and, on success, advance to the settings page.
+
+        On any validation failure the user stays on the upload page with a
+        message box surfaced by :class:`GuiValidator`.
+        """
         ok_seq, start_codon_identified, cleaned_dna_sequence = (
             self.validator.validate_target_sequence(dna_sequence)
         )

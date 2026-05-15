@@ -50,6 +50,11 @@ from biosynth.utils.file_utils import resource_path
 
 
 def add_intro(layout, row=0, column=0):
+    """Insert the welcome/intro QLabels into a QGridLayout cell.
+
+    Returns the four labels (intro, required, optional, bottom) so callers
+    can further style or reposition them.
+    """
     intro_text = (
         "Welcome to the BioSynth App!\n\n"
         "To begin, upload the following files and optionally adjust substitution costs."
@@ -102,6 +107,7 @@ def add_intro(layout, row=0, column=0):
 
 
 def add_png_logo(layout, row=0, column=0):
+    """Add the BioSynth PNG logo as a QLabel inside a framed QGridLayout cell."""
     frame = QFrame()
     frame_layout = QHBoxLayout(frame)
     frame_layout.setContentsMargins(*MARGINS.frame_padding)
@@ -118,6 +124,7 @@ def add_png_logo(layout, row=0, column=0):
 
 
 def add_logo_toolbar(layout):
+    """Attach the BioSynth logo to a QMainWindow's top toolbar area."""
     logo_toolbar = QToolBar()
     logo_toolbar.setMovable(False)
 
@@ -133,6 +140,11 @@ def add_logo_toolbar(layout):
 
 
 def add_drop_table(layout, placeholder, columns, headers, drop_callback):
+    """Create a DropTableWidget configured with headers and a placeholder label.
+
+    The placeholder is shown when the table is empty and hidden as soon as
+    rows are added. ``drop_callback`` receives the dropped file path.
+    """
     table = DropTableWidget(drop_callback=drop_callback)
     table.setColumnCount(columns)
     table.setHorizontalHeaderLabels(headers)
@@ -162,6 +174,7 @@ def add_drop_table(layout, placeholder, columns, headers, drop_callback):
     table.placeholder_label = placeholder_label
 
     def update_placeholder():
+        """Show the placeholder label only while the table has no rows."""
         placeholder_label.setVisible(table.rowCount() == 0)
 
     table.update_placeholder = update_placeholder
@@ -170,6 +183,7 @@ def add_drop_table(layout, placeholder, columns, headers, drop_callback):
     original_resize_event = table.resizeEvent
 
     def new_resize_event(event):
+        """Keep the placeholder overlay sized to the table viewport on resize."""
         placeholder_label.resize(table.viewport().size())
         if original_resize_event:
             original_resize_event(event)
@@ -180,6 +194,11 @@ def add_drop_table(layout, placeholder, columns, headers, drop_callback):
 
 
 def add_drop_text_edit(layout, placeholder, drop_callback, wrap=None):
+    """Create a DropTextEdit using the monospace code font for entered content.
+
+    ``drop_callback`` is invoked with the dropped file path. The placeholder
+    keeps using the UI font while typed/loaded content stays in Menlo.
+    """
     text_edit = DropTextEdit(drop_callback=drop_callback)
     text_edit.setPlaceholderText(placeholder)
     # ``set_content_font`` stores the preference on the widget and
@@ -205,6 +224,11 @@ def _code_font():
 
 
 def add_text_edit(layout, placeholder, content, wrap=None):
+    """Create a read-only QTextEdit with monospace content.
+
+    Used to display pre-formatted plain text (sequences, logs) where the
+    user can scroll but not interact.
+    """
     text_edit = QTextEdit()
     text_edit.setPlaceholderText(placeholder)
     if content:
@@ -221,6 +245,7 @@ def add_text_edit(layout, placeholder, content, wrap=None):
 
 
 def adjust_text_edit_height(text_edit):
+    """Resize a QTextEdit's height to fit its rendered document content."""
     text_edit.document().setTextWidth(text_edit.viewport().width())
     margins = text_edit.contentsMargins()
     height = int(
@@ -230,6 +255,7 @@ def adjust_text_edit_height(text_edit):
 
 
 def adjust_scroll_area_height(scroll_area):
+    """Fit a QScrollArea's height to its inner widget, up to an inline cap."""
     widget = scroll_area.widget()
     widget.adjustSize()
     widget_height = widget.sizeHint().height()
@@ -238,6 +264,11 @@ def adjust_scroll_area_height(scroll_area):
 
 
 def add_text_edit_html(layout, placeholder, content):
+    """Create a read-only QTextEdit that renders ``content`` as HTML.
+
+    Forces ``<pre>``/``<p>`` blocks to honour ``body_px`` so embedded
+    sequences render at the same size as the rest of the UI.
+    """
     text_edit = QTextEdit()
     text_edit.setPlaceholderText(placeholder)
 
@@ -262,6 +293,11 @@ def add_text_edit_html(layout, placeholder, content):
 
 
 def add_code_block(parent_layout, text, file_date, update_status):
+    """Add a read-only code panel with Download/Save-As/Copy buttons below it.
+
+    Used on the results page to display the optimized sequence with the
+    actions wired to ``download_file``/``save_to_file``/``copy_to_clipboard``.
+    """
     layout = QVBoxLayout()
     parent_layout.addLayout(layout)
 
@@ -294,6 +330,11 @@ def add_code_block(parent_layout, text, file_date, update_status):
 
 
 def add_button(layout, text, alignment=None, callback=None, args=(), size=None):
+    """Add a fixed-size QPushButton wired to ``callback(*args)`` on click.
+
+    ``args`` may be a tuple or a callable that returns the tuple at click
+    time so callers can pass live state. Returns the created button.
+    """
     bottom_layout = QHBoxLayout()
     layout.addLayout(bottom_layout)
 
@@ -314,6 +355,11 @@ def add_button(layout, text, alignment=None, callback=None, args=(), size=None):
 
 def add_spinbox(layout, default_value, step=0.01,
                 alignment=None, callback=None, args=(), size=None):
+    """Add a QDoubleSpinBox prefixed by an optional QLabel from ``args[0]``.
+
+    ``callback`` is invoked with the new value on every change. Returns
+    the spinbox.
+    """
     bottom_layout = QHBoxLayout()
     bottom_layout.setContentsMargins(*MARGINS.spinbox_row)
     layout.addLayout(bottom_layout)
@@ -341,6 +387,11 @@ def add_spinbox(layout, default_value, step=0.01,
 
 def add_toggle(layout, default_value=False,
                alignment=None, callback=None, args=(), size=None):
+    """Add a ToggleSwitch prefixed by an optional QLabel from ``args[0]``.
+
+    ``callback`` receives the new bool state on every toggle. Returns the
+    toggle widget.
+    """
     bottom_layout = QHBoxLayout()
     bottom_layout.setContentsMargins(*MARGINS.spinbox_row)
     layout.addLayout(bottom_layout)
@@ -364,6 +415,11 @@ def add_toggle(layout, default_value=False,
 
 
 def create_scroll_area(parent_layout):
+    """Create a top-aligned, resizable QScrollArea with an inner QWidget.
+
+    Returns ``(scroll_area, content_widget, content_layout)`` so callers can
+    add children straight into the inner vertical layout.
+    """
     scroll_area = QScrollArea()
     # Minimum (not fixed) so the area grows when the window is resized.
     scroll_area.setMinimumHeight(SIZES.scroll_area_height)
@@ -384,6 +440,7 @@ def create_scroll_area(parent_layout):
 
 
 def make_item(value):
+    """Build a center-aligned QTableWidgetItem from any value (stringified)."""
     item = QTableWidgetItem(str(value))
     item.setTextAlignment(Qt.AlignCenter)
     return item

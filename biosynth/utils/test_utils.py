@@ -10,19 +10,24 @@ from biosynth.utils.output_utils import Logger
 # RESULT COLLECTOR
 # =========================
 class TableTestResult(unittest.TextTestResult):
+    """Collects unittest results with per-test timing for tabular reporting."""
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.rows = []
 
     def startTest(self, test):
+        """Record the test start timestamp before running the test."""
         super().startTest(test)
         test._start_time = time.time()
 
     def stopTest(self, test):
+        """Compute and store the test duration after it finishes."""
         super().stopTest(test)
         test._duration = time.time() - test._start_time
 
     def addSuccess(self, test):
+        """Append a PASS row with the test's measured duration."""
         super().addSuccess(test)
         self.rows.append((
             test,
@@ -32,6 +37,7 @@ class TableTestResult(unittest.TextTestResult):
         ))
 
     def addFailure(self, test, err):
+        """Append a FAIL row including the formatted exception details."""
         super().addFailure(test, err)
         self.rows.append((
             test,
@@ -41,6 +47,7 @@ class TableTestResult(unittest.TextTestResult):
         ))
 
     def addError(self, test, err):
+        """Append an ERROR row including the formatted exception details."""
         super().addError(test, err)
         self.rows.append((
             test,
@@ -50,6 +57,7 @@ class TableTestResult(unittest.TextTestResult):
         ))
 
     def addSkip(self, test, reason):
+        """Append a SKIPPED row with the provided skip reason."""
         super().addSkip(test, reason)
         self.rows.append((
             test,
@@ -63,6 +71,8 @@ class TableTestResult(unittest.TextTestResult):
 # RUNNER
 # =========================
 class TableTestRunner(unittest.TextTestRunner):
+    """unittest runner that prints results and a summary as formatted tables."""
+
     resultclass = TableTestResult
 
     def _format_test_name(self, test):
@@ -71,6 +81,7 @@ class TableTestRunner(unittest.TextTestRunner):
         return parts[-2], parts[-1]  # class, method
 
     def run(self, test):
+        """Run the test suite and print a results table followed by a summary table."""
         result = super().run(test)
 
         # =========================

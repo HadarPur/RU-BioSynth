@@ -6,11 +6,13 @@ from biosynth.utils.output_utils import Logger
 
 
 def is_valid_dna(sequence):
+    """Return ``True`` if every character in ``sequence`` is one of A/T/C/G/U/* (case-insensitive)."""
     valid_bases = set('ATCGU*')
     return all(base in valid_bases for base in sequence.upper())
 
 
 def is_valid_patterns(patterns):
+    """Return ``True`` if every pattern contains only A/T/C/G/U bases (case-insensitive)."""
     valid_bases = set('ATCGU')
     for pattern in patterns:
         if not all(base in valid_bases for base in pattern.upper()):
@@ -44,6 +46,16 @@ def is_valid_codon_usage(codon_usage):
 
 
 def is_valid_input(sequence, unwanted_patterns, codon_usage_table):
+    """Validate the three primary inputs and log specific errors for any failure.
+
+    Args:
+        sequence: Target DNA sequence string.
+        unwanted_patterns: Iterable of pattern strings to eliminate.
+        codon_usage_table: Codon usage mapping to validate.
+
+    Returns:
+        True if all inputs are present and well-formed, otherwise False.
+    """
     if sequence is None:
         Logger.error(f"Target Sequence file is missing.")
         return False
@@ -84,6 +96,16 @@ def is_valid_input(sequence, unwanted_patterns, codon_usage_table):
 
 
 def is_valid_cost(alpha=None, beta=None, w=None):
+    """Validate cost-function parameters and the biological constraints ``alpha < beta`` and ``beta << w``.
+
+    Args:
+        alpha: Coding-region cost weight; must be a positive number.
+        beta: Pattern-occurrence cost weight; must be a positive number.
+        w: Non-coding-region cost weight; must be a positive number much larger than ``beta``.
+
+    Returns:
+        True if all values are positive and satisfy the required ordering, otherwise False.
+    """
     if not (isinstance(alpha, (int, float)) and alpha > 0):
         Logger.error(f"Invalid alpha value: α = {alpha}. Must be a positive number.")
         return False
@@ -113,13 +135,18 @@ def is_valid_cost(alpha=None, beta=None, w=None):
 
 
 def eliminate_unwanted_patterns(seq, unwanted_patterns, coding_positions):
+    """Run the elimination algorithm and persist its outputs into ``EliminationData`` and ``OutputData``."""
     # Start elimination
     EliminationData.info, EliminationData.cost_contribution, EliminationData.cost_substitution, OutputData.optimized_sequence, EliminationData.min_cost = EliminationController.eliminate(
         seq, unwanted_patterns, coding_positions)
 
 
 def mark_non_equal_codons(input_seq, optimized_seq, coding_positions):
-    # Mark non-equal codons between the original and optimized sequences
+    """Compute a marked diff between input and optimized sequences.
+
+    Returns:
+        Tuple of (index string, marked input sequence, marked optimized sequence).
+    """
     index_seq_str, marked_input_seq, marked_optimized_seq = SequenceUtils.mark_non_equal_characters(input_seq,
                                                                                                     optimized_seq,
                                                                                                     coding_positions)
@@ -127,5 +154,6 @@ def mark_non_equal_codons(input_seq, optimized_seq, coding_positions):
 
 
 def initialize_report():
+    """Construct and return a fresh ``ReportController`` initialized from current app data."""
     report = ReportController()
     return report

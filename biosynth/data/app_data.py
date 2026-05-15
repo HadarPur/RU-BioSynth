@@ -4,6 +4,8 @@ from biosynth.utils.output_utils import Logger
 
 
 class InputData:
+    """Holds the raw and cleaned DNA input, unwanted patterns, and detected coding region metadata."""
+
     # Input Data
     dna_sequence = None
     cleaned_dna_sequence = None
@@ -18,6 +20,7 @@ class InputData:
 
     @staticmethod
     def reset():
+        """Clear all stored input fields back to ``None``."""
         InputData.dna_sequence = None
         InputData.cleaned_dna_sequence = None
         InputData.unwanted_patterns = None
@@ -27,6 +30,8 @@ class InputData:
 
 # Only for gui uploads
 class UploadData:
+    """Holds the raw file contents uploaded through the GUI for sequence, patterns, and codon usage."""
+
     # Uploaded files
     dna_sequence_content_file = None
     unwanted_patterns_content_file = None
@@ -34,11 +39,14 @@ class UploadData:
 
     @staticmethod
     def reset():
+        """Clear all uploaded file contents back to ``None``."""
         UploadData.dna_sequence_content_file = None
         UploadData.unwanted_patterns_content_file = None
         UploadData.codon_usage_content_file = None
 
 class CostData:
+    """Holds the codon usage table and cost-function parameters (alpha, beta, w, stop codon penalty)."""
+
     codon_usage = None
     codon_usage_filename = None
 
@@ -51,6 +59,7 @@ class CostData:
 
     @staticmethod
     def reset():
+        """Restore codon usage and cost-function parameters to their defaults."""
         CostData.codon_usage = None
         CostData.codon_usage_filename = None
 
@@ -62,6 +71,8 @@ class CostData:
         CostData.optimized_codon = True
 
 class EliminationData:
+    """Holds elimination-algorithm outputs: process info, cost contributions, substitutions, and min cost."""
+
     info = None
     cost_contribution = None
     cost_substitution = None
@@ -69,5 +80,7 @@ class EliminationData:
 
 
 class OutputData:
+    """Holds the optimized sequence and the destination path for exported results."""
+
     output_path = Path.home() / 'Downloads'
     optimized_sequence = None

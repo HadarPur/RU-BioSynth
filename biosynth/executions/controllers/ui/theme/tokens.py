@@ -10,6 +10,8 @@ from dataclasses import dataclass
 
 @dataclass(frozen=True)
 class Colors:
+    """Hex color tokens shared by the wizard UI and HTML report."""
+
     # Report-derived palette (primary blue / surfaces / accents)
     primary: str = "#245076"
     primary_hover: str = "#2c618f"
@@ -88,27 +90,34 @@ class Fonts:
     # keeps "all UI text the same size" a true invariant of the theme.
     @property
     def table_px(self) -> int:
+        """Read-only alias of ``body_px`` for table cells and headers."""
         return self.body_px
 
     @property
     def status_px(self) -> int:
+        """Read-only alias of ``body_px`` for the floating status label."""
         return self.body_px
 
     @property
     def placeholder_px(self) -> int:
+        """Read-only alias of ``body_px`` for placeholder labels."""
         return self.body_px
 
     @property
     def info_button_px(self) -> int:
+        """Read-only alias of ``body_px`` for the circular info button glyph."""
         return self.body_px
 
     @property
     def code_px(self) -> int:
+        """Read-only alias of ``body_px`` for monospace code blocks."""
         return self.body_px
 
 
 @dataclass(frozen=True)
 class Sizes:
+    """Pixel dimensions, durations, and margins used to size widgets."""
+
     # Main window
     window_width: int = 1000
     window_height: int = 950
@@ -194,6 +203,8 @@ class Margins:
 
 @dataclass(frozen=True)
 class Labels:
+    """User-facing strings for buttons, placeholders, and tab names."""
+
     back: str = "Back"
     next: str = "Next"
     reset: str = "Reset"
@@ -235,6 +246,8 @@ class Labels:
 
 @dataclass(frozen=True)
 class Titles:
+    """Window and dialog title strings shown in the OS title bar."""
+
     app: str = "🧬 BioSynth App"
     info_dialog: str = "Information"
     results_info_dialog: str = "Cost Information"

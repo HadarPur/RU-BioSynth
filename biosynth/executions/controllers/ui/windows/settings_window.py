@@ -41,34 +41,44 @@ class _FlowLayout(QLayout):
         self._items = []
 
     def addItem(self, item):
+        """Append a QLayoutItem to the flow."""
         self._items.append(item)
 
     def count(self):
+        """Return the number of layout items."""
         return len(self._items)
 
     def itemAt(self, index):
+        """Return the item at ``index`` or ``None`` if out of range."""
         return self._items[index] if 0 <= index < len(self._items) else None
 
     def takeAt(self, index):
+        """Pop and return the item at ``index`` or ``None`` if out of range."""
         return self._items.pop(index) if 0 <= index < len(self._items) else None
 
     def expandingDirections(self):
+        """Report that the layout does not expand in any orientation."""
         return Qt.Orientations(Qt.Orientation(0))
 
     def hasHeightForWidth(self):
+        """Indicate that height depends on width for proper wrapping."""
         return True
 
     def heightForWidth(self, width):
+        """Compute the wrapped layout height needed for the given ``width``."""
         return self._do_layout(QRect(0, 0, width, 0), test_only=True)
 
     def setGeometry(self, rect):
+        """Apply ``rect`` to the layout and reposition all child items."""
         super().setGeometry(rect)
         self._do_layout(rect, test_only=False)
 
     def sizeHint(self):
+        """Return the preferred size — same as the minimum size."""
         return self.minimumSize()
 
     def minimumSize(self):
+        """Return the smallest size that fits any single item plus margins."""
         size = QSize()
         for item in self._items:
             size = size.expandedTo(item.minimumSize())
@@ -130,6 +140,7 @@ class _PositionChip(QLabel):
         )
 
     def mousePressEvent(self, event):
+        """Emit ``clicked(start, end)`` on left-click for a valid range."""
         if event.button() == Qt.LeftButton and self._start is not None:
             self.clicked.emit(self._start, self._end)
         super().mousePressEvent(event)
@@ -172,10 +183,12 @@ class _AutoHeightHtmlView(QTextEdit):
             self.setHtml(html)
 
     def resizeEvent(self, event):
+        """Re-fit the widget height to its content after each resize."""
         super().resizeEvent(event)
         self._adjust_height()
 
     def showEvent(self, event):
+        """Re-fit the widget height to its content when first shown."""
         super().showEvent(event)
         self._adjust_height()
 
@@ -231,6 +244,7 @@ class _AutoFitSequenceView(_AutoHeightHtmlView):
             self._rendering = False
 
     def set_highlight_range(self, start: int, end: int):
+        """Highlight the 1-based ``[start, end]`` window and scroll it into view."""
         self._highlight_range = (start, end)
         self._render()
         self._scroll_to_position(start)
@@ -266,6 +280,7 @@ class _AutoFitSequenceView(_AutoHeightHtmlView):
         )
 
     def resizeEvent(self, event):
+        """Re-render the sequence so wrap matches the new viewport width."""
         # Re-render BEFORE auto-adjusting height so the height reflects
         # the freshly-computed line count.
         QTextEdit.resizeEvent(self, event)
@@ -273,6 +288,8 @@ class _AutoFitSequenceView(_AutoHeightHtmlView):
 
 
 class SettingsWindow(WizardPage):
+    """Second wizard page — previews the parsed inputs before elimination runs."""
+
     def __init__(self, switch_to_eliminate_callback, back_to_upload_callback):
         super().__init__(
             back_callback=back_to_upload_callback,
@@ -281,6 +298,7 @@ class SettingsWindow(WizardPage):
         self.build()
 
     def build_body(self, layout):
+        """Populate the scrollable body with sequence, patterns, and occurrences."""
         middle_layout = QVBoxLayout()
         middle_layout.setContentsMargins(*MARGINS.page_middle)
         layout.addLayout(middle_layout)
@@ -400,6 +418,7 @@ class SettingsWindow(WizardPage):
         table.setMinimumHeight(SIZES.scroll_area_max_inline * 2)
 
         def resize_rows():
+            """Resize each row to fit its wrapped chip flow at the current column width."""
             col_w = table.columnWidth(2) - 12  # subtract flow margins
             if col_w <= 0:
                 return

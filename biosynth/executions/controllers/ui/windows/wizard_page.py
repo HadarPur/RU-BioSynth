@@ -21,6 +21,12 @@ from biosynth.executions.controllers.ui.widgets import FloatingScrollIndicator
 
 
 class WizardPage(QWidget):
+    """Base class for the Settings/Elimination/Results wizard steps.
+
+    Subclasses fill in :meth:`build_body`; the top/bottom navigation bars
+    and the floating scroll indicator are handled by this base.
+    """
+
     def __init__(self, back_callback=None, next_callback=None,
                  next_label=None, back_label=None):
         super().__init__()
@@ -41,12 +47,15 @@ class WizardPage(QWidget):
             self.build_bottom_bar(layout)
 
     def build_top_bar(self, layout):
+        """Add the left-aligned Back button to the page's top row."""
         add_button(layout, self._back_label, Qt.AlignLeft, self._back_callback, ())
 
     def build_body(self, layout):  # pragma: no cover - subclasses override
+        """Populate the page body. Subclasses must override."""
         raise NotImplementedError
 
     def build_bottom_bar(self, layout):
+        """Add the right-aligned Next/Done button to the page's bottom row."""
         bottom_layout = QHBoxLayout()
         bottom_layout.setContentsMargins(*MARGINS.page_top_bottom)
         layout.addLayout(bottom_layout)
@@ -54,6 +63,7 @@ class WizardPage(QWidget):
         self.next_button.clicked.connect(lambda: self._next_callback())
 
     def attach_floating_indicator(self, scroll_target):
+        """Attach a FloatingScrollIndicator anchored to ``scroll_target``."""
         self.floating_btn = FloatingScrollIndicator(parent=self, scroll_area=scroll_target)
         scrollbar = scroll_target.verticalScrollBar()
         scrollbar.rangeChanged.connect(
@@ -62,6 +72,7 @@ class WizardPage(QWidget):
         self.floating_btn.on_scroll(scrollbar.value())
 
     def resizeEvent(self, event):
+        """Keep the floating indicator pinned to the page on every resize."""
         if self.floating_btn is not None:
             self.floating_btn.raise_()
             self.floating_btn.reposition()

@@ -39,6 +39,8 @@ from biosynth.executions.controllers.ui.theme import (
 
 
 class ToggleSwitch(QAbstractButton):
+    """Animated on/off slider toggle button used for boolean settings."""
+
     def __init__(self, parent=None, width=None, height=None):
         super().__init__(parent)
         self.setCheckable(True)
@@ -55,18 +57,22 @@ class ToggleSwitch(QAbstractButton):
         self.toggled.connect(self._start_transition)
 
     def get_offset(self):
+        """Return the current animated x-offset of the knob, in pixels."""
         return self._offset
 
     def set_offset(self, value):
+        """Set the knob's x-offset and trigger a repaint."""
         self._offset = value
         self.update()
 
     offset = pyqtProperty(float, get_offset, set_offset)
 
     def sizeHint(self):
+        """Return the toggle's preferred size from its width/height tokens."""
         return QSize(self._width, self._height)
 
     def minimumSizeHint(self):
+        """Return the toggle's minimum size — same as its preferred size."""
         return QSize(self._width, self._height)
 
     def _start_transition(self, checked):
@@ -80,6 +86,7 @@ class ToggleSwitch(QAbstractButton):
         self._anim.start()
 
     def paintEvent(self, event):
+        """Paint the rounded track and the animated knob."""
         radius = self._height / 2
         knob_radius = radius - self._margin
 
@@ -98,18 +105,22 @@ class ToggleSwitch(QAbstractButton):
         )
 
     def mouseReleaseEvent(self, event):
+        """Toggle the checked state on left-click release."""
         if event.button() == Qt.LeftButton:
             self.toggle()
         event.accept()
 
 
 class CircularButton(QPushButton):
+    """Round push button used for the info-glyph affordance."""
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.setFixedSize(SIZES.circular_btn, SIZES.circular_btn)
         self.setStyleSheet(circular_button_qss())
 
     def paintEvent(self, event):
+        """Clip the button to a circle, then delegate to the default paint."""
         path = QPainterPath()
         path.addEllipse(0, 0, self.width(), self.height())
         region = QRegion(path.toFillPolygon().toPolygon())
@@ -118,6 +129,8 @@ class CircularButton(QPushButton):
 
 
 class DropTextEdit(QTextEdit):
+    """QTextEdit that accepts ``.txt`` drag-and-drop and a separate content font."""
+
     def __init__(self, parent=None, drop_callback=None):
         super().__init__(parent)
         self.drop_callback = drop_callback
@@ -164,6 +177,7 @@ class DropTextEdit(QTextEdit):
             cursor.endEditBlock()
 
     def changeEvent(self, event):
+        """Reapply the content font on ``FontChange`` so QSS can't clobber it."""
         # When QSS sets a font property on this widget, Qt fires
         # FontChange and QTextEdit propagates the new widget font onto
         # the document — clobbering our content font. Reapply.
@@ -172,12 +186,14 @@ class DropTextEdit(QTextEdit):
             self._apply_content_font()
 
     def dragEnterEvent(self, event):
+        """Accept drag events that carry file URLs."""
         if event.mimeData().hasUrls():
             event.acceptProposedAction()
         else:
             super().dragEnterEvent(event)
 
     def dropEvent(self, event):
+        """Invoke ``drop_callback`` with the first dropped ``.txt`` file path."""
         if event.mimeData().hasUrls():
             file_path = event.mimeData().urls()[0].toLocalFile()
             if file_path.endswith('.txt') and self.drop_callback:
@@ -187,6 +203,8 @@ class DropTextEdit(QTextEdit):
 
 
 class DropTableWidget(QTableWidget):
+    """QTableWidget that accepts ``.txt`` drag-and-drop file paths."""
+
     def __init__(self, parent=None, drop_callback=None):
         super().__init__(parent)
         self.drop_callback = drop_callback
@@ -195,12 +213,15 @@ class DropTableWidget(QTableWidget):
         self.viewport().setAcceptDrops(True)
 
     def dragEnterEvent(self, event):
+        """Accept any drag entering the table so the drop indicator shows."""
         event.accept()
 
     def dragMoveEvent(self, event):
+        """Accept ongoing drag movement over the table."""
         event.accept()
 
     def dropEvent(self, event):
+        """Invoke ``drop_callback`` for each dropped ``.txt`` file URL."""
         for url in event.mimeData().urls():
             file_path = url.toLocalFile()
             if file_path.endswith(".txt") and self.drop_callback:
@@ -209,6 +230,8 @@ class DropTableWidget(QTableWidget):
 
 
 class FloatingScrollIndicator(QPushButton):
+    """Pill button anchored over a scroll area that jumps to top/bottom on click."""
+
     def __init__(self, parent=None, scroll_area=None, direction="bottom"):
         super().__init__("▼", parent)
         self.animation = None
@@ -225,6 +248,7 @@ class FloatingScrollIndicator(QPushButton):
         self.clicked.connect(self.scroll)
 
     def on_scroll(self, value):
+        """Show the indicator while there is room to scroll, hide otherwise."""
         scrollbar = self.scroll_area.verticalScrollBar()
         if scrollbar.maximum() == 0:
             self.hide()
@@ -234,6 +258,7 @@ class FloatingScrollIndicator(QPushButton):
             self.hide()
 
     def scroll(self, **kwargs):
+        """Animate the scrollbar to the configured ``direction`` endpoint."""
         bar = self.scroll_area.verticalScrollBar()
         start_value = bar.value()
         if self.direction == "top":
@@ -251,6 +276,7 @@ class FloatingScrollIndicator(QPushButton):
         self.animation.start()
 
     def reposition(self):
+        """Recenter the indicator near the bottom of its parent widget."""
         if not self.parent():
             return
         margin = SIZES.floating_indicator_margin_bottom

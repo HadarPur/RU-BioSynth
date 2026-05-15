@@ -10,8 +10,23 @@ from biosynth.utils.text_utils import format_text_bold_for_output
 
 
 class EliminationController:
+    """Driver for the DP-based elimination of unwanted patterns from a DNA sequence."""
+
     @staticmethod
     def eliminate(target_sequence, unwanted_patterns, coding_positions):
+        """Run the FSM-guided dynamic-programming optimizer that removes ``unwanted_patterns``.
+
+        Args:
+            target_sequence: The input DNA sequence (without the ``*`` marker).
+            unwanted_patterns: Iterable of patterns that must not appear in the result.
+            coding_positions: Per-base codon-phase array (0 for non-coding).
+
+        Returns:
+            A tuple ``(info, cost_contribution, cost_substitution, optimized_seq,
+            min_cost)``. When no patterns are present the original sequence is
+            returned unchanged; when no valid sequence exists ``min_cost`` is
+            ``inf`` and the sequence is ``None``.
+        """
         # Initialize information string for the elimination process
         info = ""
 

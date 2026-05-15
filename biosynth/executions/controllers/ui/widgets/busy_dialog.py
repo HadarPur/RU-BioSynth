@@ -12,6 +12,8 @@ from biosynth.executions.controllers.ui.theme import LABELS, SIZES, TITLES
 
 
 class BusyDialog(QDialog):
+    """Modal please-wait dialog with an indeterminate progress bar."""
+
     def __init__(self, parent=None, message=None, title=None):
         super().__init__(parent)
         self.setWindowTitle(title or TITLES.busy_dialog)

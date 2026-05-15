@@ -8,8 +8,17 @@ from biosynth.utils.text_utils import OutputFormat, set_output_format
 
 
 class BioSynthApp:
+    """Application entry point that dispatches to the CLI or GUI controller."""
+
     @staticmethod
     def execute(args):
+        """Parse arguments and run BioSynth in either GUI or CLI mode.
+
+        Clears the output directory, parses CLI args to detect GUI mode, sets
+        the global output format accordingly, and delegates to the matching
+        controller. Logs errors and exits with a non-zero code on failure or
+        user interrupt.
+        """
         try:
             delete_dir('output')
 

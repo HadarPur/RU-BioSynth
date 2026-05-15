@@ -12,6 +12,7 @@ from biosynth.utils.text_utils import OutputFormat, set_output_format
 from biosynth.utils.test_utils import TableTestRunner
 
 def execute_unittests():
+    """Discover and run all unit tests under the ``tests`` directory using TableTestRunner."""
     loader = unittest.TestLoader()
     start_dir = os.path.join(os.path.dirname(__file__), "tests")
     suite = loader.discover(start_dir)

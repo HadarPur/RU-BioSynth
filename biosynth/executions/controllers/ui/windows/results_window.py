@@ -35,6 +35,7 @@ from biosynth.executions.execution_utils import initialize_report, mark_non_equa
 
 
 def quit_app():
+    """Quit the running QApplication instance."""
     QApplication.instance().quit()
 
 
@@ -54,6 +55,8 @@ def show_preview_report(report_local_file_path):
 
 
 class ResultsWindow(WizardPage):
+    """Final wizard page — shows the optimized sequence and report actions."""
+
     def __init__(self, back_to_elimination_callback):
         super().__init__(
             back_callback=back_to_elimination_callback,
@@ -70,6 +73,7 @@ class ResultsWindow(WizardPage):
         self._init_floating_status(self)
 
     def build_body(self, layout):
+        """Render the sequence diff, optimized-sequence code block, and report row."""
         middle_layout = QVBoxLayout()
         middle_layout.setContentsMargins(*MARGINS.page_padded)
         layout.addLayout(middle_layout)
@@ -153,6 +157,7 @@ class ResultsWindow(WizardPage):
         layout.addLayout(prompt_layout)
 
     def show_info(self):
+        """Open the cost-info dialog with contribution and substitution tabs."""
         contribution_table = create_table_from_data(EliminationData.cost_contribution)
         substitution_table = create_table_from_data(EliminationData.cost_substitution)
 
@@ -168,10 +173,12 @@ class ResultsWindow(WizardPage):
         dialog.show()
 
     def download_report(self):
+        """Save the report to the default Downloads location and update status."""
         report_path = f"Report downloaded to: {self.report.download_report()}"
         self.update_status(report_path)
 
     def update_status(self, message):
+        """Show ``message`` in the floating status label with a fade-in animation."""
         self.status_label.setText(f"{message}")
         self.status_label.setFixedWidth(SIZES.status_label_width)
         self.status_label.adjustSize()
@@ -194,6 +201,7 @@ class ResultsWindow(WizardPage):
         QTimer.singleShot(SIZES.status_visible_ms, self.hide_download_status)
 
     def hide_download_status(self):
+        """Fade the floating status label out and hide it when the animation ends."""
         if self.status_label is None or not self.status_label.isVisible():
             return
 
@@ -206,6 +214,7 @@ class ResultsWindow(WizardPage):
         self.fade_out_animation.start()
 
     def save_as_report(self):
+        """Open a Save-As dialog and write the report HTML to the chosen path."""
         desktop_dir = os.path.join(os.path.expanduser("~"), "Desktop")
         options = QFileDialog.Options()
         save_path, _ = QFileDialog.getSaveFileName(

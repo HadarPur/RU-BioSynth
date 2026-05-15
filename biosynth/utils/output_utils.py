@@ -3,6 +3,8 @@ import re
 
 
 class Logger:
+    """ANSI-colored console logger with level-based prefixes and width-aware wrapping."""
+
     MAX_WIDTH = 120  # <-- set max characters per line
 
     COLORS = {
@@ -17,46 +19,56 @@ class Logger:
 
     @staticmethod
     def log(message, level="INFO"):
+        """Print ``message`` wrapped to ``MAX_WIDTH`` and colored for the given ``level``."""
         color = Logger.COLORS.get(level, Logger.COLORS["ENDC"])
         wrapped_message = Logger.get_formated_text(message)
         print(f"{color}{wrapped_message}{Logger.COLORS['ENDC']}")
 
     @staticmethod
     def help(message, level="INFO"):
+        """Print ``message`` in the color of ``level`` without width wrapping."""
         color = Logger.COLORS.get(level, Logger.COLORS["ENDC"])
         print(f"{color}{message}{Logger.COLORS['ENDC']}")
 
     @staticmethod
     def error(message, level="ERROR"):
+        """Print ``message`` prefixed with ``Error:`` in the error color."""
         color = Logger.COLORS.get(level, Logger.COLORS["ENDC"])
         print(f"{color}Error: {message}{Logger.COLORS['ENDC']}")
 
     @staticmethod
     def warning(message):
+        """Log ``message`` at WARNING level."""
         Logger.log(message, "WARNING")
 
     @staticmethod
     def info(message):
+        """Log ``message`` at INFO level."""
         Logger.log(message, "INFO")
 
     @staticmethod
     def debug(message):
+        """Log ``message`` at DEBUG level."""
         Logger.log(message, "DEBUG")
 
     @staticmethod
     def notice(message):
+        """Log ``message`` at NOTICE level."""
         Logger.log(message, "NOTICE")
 
     @staticmethod
     def critical(message):
+        """Log ``message`` at CRITICAL level."""
         Logger.log(message, "CRITICAL")
 
     @staticmethod
     def space():
+        """Emit a blank line at INFO level."""
         Logger.log('', "INFO")
 
     @staticmethod
     def get_formated_text(text):
+        """Wrap ``text`` to ``MAX_WIDTH``, preserving newlines and ANSI escape codes."""
         # Respect line structure
         lines = str(text).splitlines()
         wrapped_lines = []

@@ -67,6 +67,7 @@ codon_to_amino_acid = {
 
 
 class AminoAcidConfig:
+    """Static helpers operating on codons and amino-acid equivalence."""
 
     @staticmethod
     def get_last2(v):

@@ -30,8 +30,19 @@ app_icon_text = """
 
 
 class CommandController:
+    """Orchestrates the core elimination workflow shared by the CLI and debug entry points."""
 
     def run(self):
+        """Execute the full elimination pipeline against the populated app data.
+
+        Validates the input sequence, detects the start codon and coding
+        regions, logs the target sequence and unwanted-pattern occurrences,
+        runs the elimination algorithm with a progress spinner, prints
+        detailed cost contributions and substitutions, then writes the HTML
+        report and the optimized-sequence/cost text files to the configured
+        output path. Exits with code 3 if the input sequence is missing or
+        start-codon validation fails.
+        """
         Logger.notice(app_icon_text)
 
         if not InputData.dna_sequence:

@@ -29,6 +29,8 @@ from biosynth.executions.controllers.ui.theme import (
 
 
 class InfoDialog(QDialog):
+    """Non-modal tabbed help dialog used by the upload and results pages."""
+
     def __init__(self, parent=None, title=None, fixed_size=None):
         super().__init__(parent)
         self.setWindowTitle(title or TITLES.info_dialog)
@@ -54,6 +56,7 @@ class InfoDialog(QDialog):
         self.setLayout(self._layout)
 
     def add_html_tab(self, name: str, html: str):
+        """Append a tab whose content is an HTML-rendered, read-only QTextEdit."""
         text_edit = QTextEdit()
         text_edit.setReadOnly(True)
         text_edit.setHtml(html)
@@ -62,6 +65,7 @@ class InfoDialog(QDialog):
         return text_edit
 
     def add_widget_tab(self, name: str, widget: QWidget):
+        """Append a tab whose content is an arbitrary QWidget wrapped in a layout."""
         wrapper = QWidget()
         wrapper_layout = QVBoxLayout()
         wrapper_layout.addWidget(widget)
@@ -71,6 +75,7 @@ class InfoDialog(QDialog):
 
     @classmethod
     def from_html(cls, parent, title, tabs, fixed_size=None):
+        """Build a dialog whose tabs are ``(name, html)`` pairs."""
         dialog = cls(parent=parent, title=title, fixed_size=fixed_size)
         for name, html in tabs:
             dialog.add_html_tab(name, html)
@@ -78,6 +83,7 @@ class InfoDialog(QDialog):
 
     @classmethod
     def from_widgets(cls, parent, title, tabs, fixed_size=None):
+        """Build a dialog whose tabs are ``(name, QWidget)`` pairs."""
         dialog = cls(parent=parent, title=title, fixed_size=fixed_size)
         for name, widget in tabs:
             dialog.add_widget_tab(name, widget)

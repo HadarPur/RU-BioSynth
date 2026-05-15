@@ -2,9 +2,21 @@ min_coding_region_length = 7 * 3  # start_codon_length + stop_codon_length + 5 c
 
 
 class DNAUtils:
+    """Static helpers for locating coding regions within DNA sequences."""
 
     @staticmethod
     def find_start_codon(seq):
+        """Locate the ``*ATG`` marker in ``seq`` and return its index and cleaned sequence.
+
+        Returns:
+            tuple ``(index, cleaned_seq)`` where ``index`` is the position of the
+            start codon in the cleaned sequence, or ``(None, seq)`` if no marker
+            is present.
+
+        Raises:
+            ValueError: If ``*`` is not followed by ``ATG`` or no in-frame stop
+                codon follows the start codon.
+        """
         stop_codons = {"TAA", "TAG", "TGA"}
 
         idx = seq.find("*ATG")

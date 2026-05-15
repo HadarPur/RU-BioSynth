@@ -179,6 +179,8 @@ def calculate_cost(target_sequence, coding_positions, codon_usage, i, v, sigma, 
 
 
 class EliminationScorerConfig:
+    """Configuration object holding the DNA alphabet and factory for cost functions."""
+
     def __init__(self):
         """
         Initializes a DNASequenceAnalyzer object.
@@ -206,9 +208,11 @@ class EliminationScorerConfig:
         """
 
         def initial_cost_function(i, sigma):
+            """Return the substitution cost at the start of the sequence for the proposed base ``sigma``."""
             return evaluate_substitution(target_sequence, i - 1, sigma, alpha, beta)
 
         def cost_function(i, v, sigma):
+            """Return the substitution cost for proposing ``sigma`` at position ``i`` given FSM state ``v``."""
             return calculate_cost(target_sequence, coding_positions, codon_usage, i - 1, v, sigma, alpha, beta, w, optimized_codon)
 
         return initial_cost_function, cost_function

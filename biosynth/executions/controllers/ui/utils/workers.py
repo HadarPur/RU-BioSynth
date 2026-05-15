@@ -34,6 +34,11 @@ class EliminationWorker(QObject):
         self._coding_positions = coding_positions
 
     def run(self):
+        """Execute the elimination on the worker thread.
+
+        Emits ``finished`` on success or ``failed`` with the error message
+        if the underlying computation raises.
+        """
         try:
             eliminate_unwanted_patterns(
                 self._sequence, self._patterns, self._coding_positions

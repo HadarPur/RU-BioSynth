@@ -1,6 +1,7 @@
 import re
 
 def get_color_for_coding_region(color_counter):
+    """Return the next color name from a fixed palette along with the incremented counter."""
     colors = ["red", "blue", "green", "orange", "purple"]
     color = colors[color_counter % len(colors)]
     color_counter += 1
@@ -238,6 +239,12 @@ class SequenceUtils:
             coding_positions,
             line_length=96
     ):
+        """Return HTML showing ``optimized_seq`` with substituted bases bracketed and the coding region colored.
+
+        Differences are wrapped per-codon inside the coding region and per-base
+        outside it. The expanded coding span (including added bracket characters)
+        is forwarded to :py:meth:`highlight_sequences_to_html` for coloring.
+        """
         if len(input_seq) != len(optimized_seq):
             raise ValueError(
                 f"input_seq and optimized_seq must be the same length:\n"

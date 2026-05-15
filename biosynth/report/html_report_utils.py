@@ -17,6 +17,15 @@ from biosynth.utils.text_utils import handle_critical_error, get_execution_mode
 
 # Convert plain text with dash-prefixed lines into HTML <ul>/<ol> + paragraphs
 def convert_to_html_list(text: str, ordered=False) -> str:
+    """Convert dash-prefixed text into an HTML list with non-list lines rendered as paragraphs.
+
+    Args:
+        text: Source text where lines starting with ``-`` become list items.
+        ordered: When True emit ``<ol>``, otherwise ``<ul>``.
+
+    Returns:
+        HTML string containing the paragraph preamble followed by the list element.
+    """
     lines = text.strip().split("\n")
     list_items = []
 
@@ -35,6 +44,8 @@ def convert_to_html_list(text: str, ordered=False) -> str:
 
 
 class ReportController:
+    """Builds the final HTML report from app data and writes/exports it to disk."""
+
     # Controller responsible for constructing and saving the final HTML report
     def __init__(self):
         self.input_seq = InputData.cleaned_dna_sequence
@@ -80,6 +91,14 @@ class ReportController:
         self.min_cost = f"{EliminationData.min_cost:.10g}"
 
     def create_report(self, file_date):
+        """Render the HTML report from the Jinja2 template and save it under ``output/``.
+
+        Args:
+            file_date: Timestamp string embedded in the report and used in its filename.
+
+        Returns:
+            Local path to the rendered HTML report, or ``None`` if rendering failed.
+        """
         # Build the context dictionary to render the Jinja2 HTML template
         context = {
             'today_date': file_date,
@@ -130,5 +149,6 @@ class ReportController:
         return None
 
     def download_report(self, path=None):
+        """Save the rendered report to ``path`` (or the default location) and return the saved path."""
         # Allow external module (e.g., UI) to download/export the report
         return save_file(self.output_text, self.report_filename, path)

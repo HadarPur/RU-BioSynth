@@ -45,6 +45,7 @@ class GuiValidator:
         return True, start_codon_identified, cleaned
 
     def validate_unwanted_patterns(self, unwanted_patterns) -> bool:
+        """Return True if the patterns list is present, non-empty, and well-formed."""
         if unwanted_patterns is None:
             self._error("Unwanted patterns file is missing")
             return False
@@ -57,6 +58,7 @@ class GuiValidator:
         return True
 
     def validate_codon_usage(self, codon_usage) -> bool:
+        """Return True if the codon-usage table is present, non-empty, and valid."""
         if codon_usage is None:
             self._error("Codon usage file is missing")
             return False
@@ -69,6 +71,7 @@ class GuiValidator:
         return True
 
     def validate_cost(self, alpha, beta, w) -> bool:
+        """Return True iff α, β, w are positive numbers with α < β and β ≪ w."""
         if not (isinstance(alpha, (int, float)) and alpha > 0):
             self._error(f"Invalid alpha value: α = {alpha}. Must be a positive number.")
             return False

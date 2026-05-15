@@ -60,6 +60,7 @@ def run_with_spinner(message, fn, *args, stream=None, **kwargs):
     box = {}
 
     def worker():
+        """Execute ``fn`` and capture its result or exception in ``box``."""
         try:
             box["value"] = fn(*args, **kwargs)
         except BaseException as exc:  # noqa: BLE001 - re-raised below

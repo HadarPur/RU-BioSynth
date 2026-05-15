@@ -49,6 +49,8 @@ def read_codon_freq_file(raw_lines, convert_to_dna=True):
 
 # Define a base class for reading data from a file.
 class FileDataReader:
+    """Base class that opens a file path and yields its raw lines."""
+
     def __init__(self, file_path):
         """
         Initializes a FileDataReader object.
@@ -71,6 +73,8 @@ class FileDataReader:
 
 # Inherit from FileDataReader to read sequences from a file.
 class SequenceReader(FileDataReader):
+    """Reads a single-line DNA/RNA sequence from a file."""
+
     def read_sequence(self, convert_to_dna=True):
         """
         Reads a sequence from the file, removing leading/trailing whitespace.
@@ -98,6 +102,8 @@ class SequenceReader(FileDataReader):
 
 # Inherit from FileDataReader to read patterns from a file.
 class PatternReader(FileDataReader):
+    """Reads unwanted-pattern tokens from a file into a set."""
+
     def read_patterns(self, convert_to_dna=True):
         """
         Reads patterns from the file, splitting them by commas and adding to a set.
@@ -131,6 +137,8 @@ class PatternReader(FileDataReader):
 
 # Inherit from FileDataReader to read the codon usage table from a file.
 class CodonUsageReader(FileDataReader):
+    """Reads a codon usage table file and exposes parsing helpers."""
+
     def read_codon_usage(self):
         """
         Reads the codon usage table from the file and parses it into a dictionary.
@@ -154,6 +162,7 @@ class CodonUsageReader(FileDataReader):
 
 
 def create_dir(directory):
+    """Create ``directory`` (including parents), returning an error message on failure."""
     try:
         os.makedirs(directory, exist_ok=True)
     except OSError as error:
@@ -161,6 +170,7 @@ def create_dir(directory):
 
 
 def delete_dir(directory):
+    """Recursively remove ``directory``, returning an error message on failure."""
     try:
         shutil.rmtree(directory)
     except OSError as error:
@@ -168,6 +178,16 @@ def delete_dir(directory):
 
 
 def save_file(output, filename, path=None):
+    """Write ``output`` to ``filename`` under a ``BioSynth-Outputs`` directory.
+
+    Args:
+        output: Text content to write.
+        filename: Target filename; colons are replaced with underscores.
+        path: Optional parent directory; defaults to the user's Downloads folder.
+
+    Returns:
+        The written file path on success, or an error message string on failure.
+    """
     try:
         # Convert path to Path object if it's not None
         if path:

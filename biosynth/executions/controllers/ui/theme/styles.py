@@ -158,6 +158,7 @@ def card_text_edit_qss(margin_right_px: int = 0) -> str:
 
 
 def circular_button_qss() -> str:
+    """Round QPushButton styled as the muted info-glyph button."""
     return f"""
         QPushButton {{
             border: 2px solid transparent;
@@ -177,6 +178,7 @@ def circular_button_qss() -> str:
 
 
 def floating_indicator_qss() -> str:
+    """Pill-shaped QPushButton used as the floating scroll-to-bottom chip."""
     return f"""
         QPushButton {{
             background-color: {COLORS.floating_indicator_bg};
@@ -189,6 +191,7 @@ def floating_indicator_qss() -> str:
 
 
 def info_dialog_text_qss() -> str:
+    """QTextEdit inside the info dialog — card-style HTML help text."""
     return f"""
         QTextEdit {{
             background-color: {COLORS.table_bg};
@@ -202,6 +205,7 @@ def info_dialog_text_qss() -> str:
 
 
 def info_dialog_tabs_qss() -> str:
+    """QTabWidget/QTabBar styled as borderless tabs with a primary underline."""
     return f"""
         QTabWidget::pane {{
             border: none;
@@ -233,6 +237,7 @@ def info_dialog_tabs_qss() -> str:
 
 
 def status_label_qss() -> str:
+    """Floating QLabel used to show transient status/toast messages."""
     return f"""
         QLabel {{
             color: {COLORS.status_text};
@@ -246,14 +251,17 @@ def status_label_qss() -> str:
 
 
 def placeholder_label_qss() -> str:
+    """Inline QLabel style for empty-state placeholder text inside tables."""
     return f"color: {COLORS.placeholder_text}; font-size: {FONTS.placeholder_px}px;"
 
 
 def scroll_area_borderless_qss() -> str:
+    """QScrollArea with no frame border, for embedding inside cards."""
     return "QScrollArea { border: none; }"
 
 
 def table_qss() -> str:
+    """QTableWidget styled to match the HTML report's pattern-table look."""
     return f"""
         QTableWidget {{
             background-color: {COLORS.table_bg};

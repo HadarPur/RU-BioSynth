@@ -16,6 +16,7 @@ except Exception:
 
 
 def get_terminal_information():
+    """Return the bolded usage and elimination information block for terminal display."""
     return f"{format_text_bold_for_output('Information:')}\n" \
            f"{get_info_usage()}\n\n" \
            f"{get_elimination_info()}"
@@ -39,6 +40,8 @@ class CompactHelpFormatter(argparse.HelpFormatter):
 
 
 class ArgumentParser:
+    """Command-line argument parser for the BioSynth elimination tool."""
+
     def __init__(self):
         self.parser = argparse.ArgumentParser(
             prog="biosynth",
