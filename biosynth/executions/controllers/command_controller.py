@@ -3,6 +3,7 @@ from datetime import datetime
 from tabulate import tabulate
 
 from biosynth.data.app_data import InputData, EliminationData, OutputData
+from biosynth.executions.controllers.ui.theme import HEADINGS
 from biosynth.executions.execution_utils import eliminate_unwanted_patterns
 from biosynth.report.report_builder import ReportBuilder
 from biosynth.utils.display_utils import SequenceUtils
@@ -61,10 +62,15 @@ class CommandController:
         InputData.coding_positions, InputData.coding_indexes = CodingRegionLocator.get_coding_and_non_coding_regions_positions(
             InputData.cleaned_dna_sequence, InputData.start_codon_identified)
 
-        Logger.debug(f"{format_text_bold_for_output('Target sequence:')}")
+        Logger.debug(f"{format_text_bold_for_output(HEADINGS.target_sequence + ':')}")
 
         if InputData.coding_indexes is not None:
-            Logger.info(f'A coding region was identified in the target sequence at positions {InputData.coding_indexes[0] + 1} - {InputData.coding_indexes[1]}:')
+            Logger.info(
+                HEADINGS.coding_region_identified.format(
+                    start=InputData.coding_indexes[0] + 1,
+                    end=InputData.coding_indexes[1],
+                ) + ":"
+            )
             Logger.info(f"{SequenceUtils.highlight_sequence_to_terminal(InputData.cleaned_dna_sequence, InputData.coding_indexes)}")
         else:
             Logger.info(f"{InputData.cleaned_dna_sequence}")
@@ -72,7 +78,7 @@ class CommandController:
         Logger.space()
 
         # Print the list of unwanted patterns
-        Logger.debug(f"{format_text_bold_for_output('Unwanted patterns:')}")
+        Logger.debug(f"{format_text_bold_for_output(HEADINGS.unwanted_patterns + ':')}")
         Logger.info(f"{SequenceUtils.get_patterns(InputData.unwanted_patterns)}")
         Logger.space()
 
@@ -100,7 +106,7 @@ class CommandController:
                 colalign=("left", "left", "left"),
             )
 
-            Logger.debug(format_text_bold_for_output('Unwanted pattern occurrences in the target sequence:'))
+            Logger.debug(format_text_bold_for_output(HEADINGS.unwanted_pattern_occurrences + ':'))
             Logger.info(pattern_occurrences)
             Logger.space()
 
@@ -119,7 +125,7 @@ class CommandController:
         Logger.info(EliminationData.info)
         Logger.notice(format_text_bold_for_output('\n' + '_' * 90 + '\n'))
 
-        Logger.debug(format_text_bold_for_output('Optimized Sequence:'))
+        Logger.debug(format_text_bold_for_output(HEADINGS.optimized_sequence + ':'))
         Logger.info(OutputData.optimized_sequence)
         Logger.space()
 
@@ -131,7 +137,7 @@ class CommandController:
             colalign=("left", "left", "left", "left")
         )
 
-        Logger.debug(format_text_bold_for_output('Detailed cost contributions relative to the target sequence:'))
+        Logger.debug(format_text_bold_for_output(HEADINGS.detailed_cost_contributions + ':'))
         Logger.info(detailed_cost_contributions)
         Logger.space()
 
@@ -142,7 +148,7 @@ class CommandController:
             colalign=("left", "left", "left", "left")
         )
 
-        Logger.debug(format_text_bold_for_output('Detailed cost substitutions relative to the target sequence:'))
+        Logger.debug(format_text_bold_for_output(HEADINGS.detailed_cost_substitutions + ':'))
         Logger.info(detailed_cost_substitutions)
         Logger.space()
 

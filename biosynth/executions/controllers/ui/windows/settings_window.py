@@ -17,6 +17,7 @@ from biosynth.data.app_data import InputData
 from biosynth.executions.controllers.ui.theme import (
     COLORS,
     FONTS,
+    HEADINGS,
     MARGINS,
     SIZES,
     card_text_edit_qss,
@@ -314,7 +315,7 @@ class SettingsWindow(WizardPage):
         self.attach_floating_indicator(scroll_area)
 
     def _add_target_sequence(self, content_layout):
-        content_layout.addWidget(QLabel("<h2>Input</h2><h3>Target Sequence:</h3>"))
+        content_layout.addWidget(QLabel(f"<h2>Input</h2><h3>{HEADINGS.target_sequence}:</h3>"))
 
         InputData.coding_positions, InputData.coding_indexes = (
             CodingRegionLocator.get_coding_and_non_coding_regions_positions(
@@ -323,13 +324,11 @@ class SettingsWindow(WizardPage):
         )
 
         if InputData.coding_indexes is not None and len(InputData.coding_indexes) > 0:
-            description = (
-                f"<p>A coding region was identified in the target sequence at "
-                f"positions {InputData.coding_indexes[0] + 1} - "
-                f"{InputData.coding_indexes[1]}:</p>"
+            text = HEADINGS.coding_region_identified.format(
+                start=InputData.coding_indexes[0] + 1,
+                end=InputData.coding_indexes[1],
             )
-
-            content_layout.addWidget(QLabel(description))
+            content_layout.addWidget(QLabel(f"<p>{text}:</p>"))
 
         view = _AutoFitSequenceView(
             InputData.cleaned_dna_sequence,
@@ -341,7 +340,7 @@ class SettingsWindow(WizardPage):
         self._sequence_view = view
 
     def _add_unwanted_patterns(self, content_layout):
-        content_layout.addWidget(QLabel("<h3>Unwanted Patterns:</h3>"))
+        content_layout.addWidget(QLabel(f"<h3>{HEADINGS.unwanted_patterns}:</h3>"))
 
         html = f"<p>{SequenceUtils.get_patterns(InputData.unwanted_patterns)}</p>"
         view = _AutoHeightHtmlView(html)
@@ -360,7 +359,7 @@ class SettingsWindow(WizardPage):
             return
 
         content_layout.addWidget(
-            QLabel("<h3>Unwanted Patterns Occurrences in the Target Sequence:</h3>")
+            QLabel(f"<h3>{HEADINGS.unwanted_pattern_occurrences}:</h3>")
         )
 
         table = QTableWidget()

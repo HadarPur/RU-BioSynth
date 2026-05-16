@@ -255,6 +255,21 @@ class Titles:
     busy_dialog: str = "Please wait"
 
 
+@dataclass(frozen=True)
+class Headings:
+    """Section headings shown across the CLI, GUI and HTML report."""
+
+    target_sequence: str = "Target Sequence"
+    unwanted_patterns: str = "Unwanted Patterns"
+    unwanted_pattern_occurrences: str = "Unwanted Pattern Occurrences in the Target Sequence"
+    optimized_sequence: str = "Optimized Sequence"
+    dna_sequences_difference: str = "DNA Sequences Difference"
+    elimination_process: str = "Elimination Process"
+    detailed_cost_contributions: str = "Detailed cost contributions relative to the target sequence"
+    detailed_cost_substitutions: str = "Detailed cost substitutions relative to the target sequence"
+    coding_region_identified: str = "A coding region was identified in the target sequence at positions {start} - {end}"
+
+
 # Module-level singletons — import these instead of instantiating.
 COLORS = Colors()
 FONTS = Fonts()
@@ -262,3 +277,4 @@ SIZES = Sizes()
 MARGINS = Margins()
 LABELS = Labels()
 TITLES = Titles()
+HEADINGS = Headings()

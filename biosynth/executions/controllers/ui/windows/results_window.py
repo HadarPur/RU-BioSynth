@@ -17,6 +17,7 @@ from PyQt5.QtWidgets import (
 
 from biosynth.data.app_data import EliminationData, InputData, OutputData
 from biosynth.executions.controllers.ui.theme import (
+    HEADINGS,
     LABELS,
     MARGINS,
     SIZES,
@@ -82,7 +83,7 @@ class ResultsWindow(WizardPage):
 
         info_layout = QHBoxLayout()
         middle_layout.addLayout(info_layout)
-        info_layout.addWidget(QLabel("<h3>DNA Sequences Difference:</h3>"))
+        info_layout.addWidget(QLabel(f"<h3>{HEADINGS.dna_sequences_difference}:</h3>"))
 
         info_button = CircularButton(LABELS.info_glyph, self)
         info_button.clicked.connect(self.show_info)
@@ -103,7 +104,7 @@ class ResultsWindow(WizardPage):
         text_edit.setStyleSheet(card_text_edit_qss())
         text_edit.setFixedHeight(SIZES.sequence_diff_height)
 
-        middle_layout.addWidget(QLabel("<h3>Optimized Sequence:</h3>"))
+        middle_layout.addWidget(QLabel(f"<h3>{HEADINGS.optimized_sequence}:</h3>"))
 
         file_date = datetime.today().strftime("%d-%b-%Y, %H-%M-%S")
         add_code_block(

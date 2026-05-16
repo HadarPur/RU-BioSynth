@@ -2,7 +2,7 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QSizePolicy, QTextBrowser, QVBoxLayout
 
 from biosynth.data.app_data import EliminationData
-from biosynth.executions.controllers.ui.theme import MARGINS, SIZES, transparent_text_edit_qss
+from biosynth.executions.controllers.ui.theme import HEADINGS, MARGINS, SIZES, transparent_text_edit_qss
 from biosynth.executions.controllers.ui.windows.wizard_page import WizardPage
 from biosynth.utils.logger import Logger
 
@@ -30,7 +30,7 @@ class EliminationWindow(WizardPage):
             "\n", "<br>"
         )
         html = (
-            f'<h2>Elimination Process</h2>'
+            f'<h2>{HEADINGS.elimination_process}</h2>'
             f'<div style="margin-right: 25px;">{wrapped_info}</div>'
         )
 

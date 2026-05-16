@@ -24,12 +24,14 @@ from biosynth.executions.controllers.ui.theme.styles import (
 from biosynth.executions.controllers.ui.theme.tokens import (
     COLORS,
     FONTS,
+    HEADINGS,
     LABELS,
     MARGINS,
     SIZES,
     TITLES,
     Colors,
     Fonts,
+    Headings,
     Labels,
     Margins,
     Sizes,
@@ -38,8 +40,8 @@ from biosynth.executions.controllers.ui.theme.tokens import (
 
 __all__ = [
     # Tokens
-    "COLORS", "FONTS", "SIZES", "MARGINS", "LABELS", "TITLES",
-    "Colors", "Fonts", "Sizes", "Margins", "Labels", "Titles",
+    "COLORS", "FONTS", "SIZES", "MARGINS", "LABELS", "TITLES", "HEADINGS",
+    "Colors", "Fonts", "Sizes", "Margins", "Labels", "Titles", "Headings",
     # Styles
     "global_app_qss",
     "transparent_text_edit_qss",

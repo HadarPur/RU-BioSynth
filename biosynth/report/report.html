@@ -525,28 +525,28 @@
 
         <div class="sidepanel">
             <a class="title" href="#">Input</a>
-            <a class="section" href="#dna-sequence">Target Sequence</a>
-            <a class="section" href="#unwanted-patterns">Unwanted Patterns</a>
-            <a class="section" href="#unwanted-pattern-occurrences">Unwanted Patterns Occurrences</a>
+            <a class="section" href="#dna-sequence">{{ headings.target_sequence }}</a>
+            <a class="section" href="#unwanted-patterns">{{ headings.unwanted_patterns }}</a>
+            <a class="section" href="#unwanted-pattern-occurrences">{{ headings.unwanted_pattern_occurrences }}</a>
 
             <div class="divider"></div>
 
             <a class="title" href="#elimination">Elimination</a>
-            <a class="section" href="#elimination-process">Elimination Process</a>
+            <a class="section" href="#elimination-process">{{ headings.elimination_process }}</a>
 
             <div class="divider"></div>
 
             <a class="title" href="#results">Results</a>
-            <a class="section" href="#dna-sequences-difference">DNA Sequences Difference</a>
-            <a class="section" href="#dna-cost_contribution">Detailed contributions relative to the target sequence</a>
-            <a class="section" href="#dna-cost_substitution">Detailed substitutions relative to the target sequence</a>
-            <a class="section" href="#optimized-dna-sequence">Optimized Sequence</a>
+            <a class="section" href="#dna-sequences-difference">{{ headings.dna_sequences_difference }}</a>
+            <a class="section" href="#dna-cost_contribution">{{ headings.detailed_cost_contributions }}</a>
+            <a class="section" href="#dna-cost_substitution">{{ headings.detailed_cost_substitutions }}</a>
+            <a class="section" href="#optimized-dna-sequence">{{ headings.optimized_sequence }}</a>
         </div>
 
         <div class="right-col">
             <div>
                 <h1 id="dna-sequence">Input</h1>
-                <h2>Target Sequence:</h2>
+                <h2>{{ headings.target_sequence }}:</h2>
 
                 {% if coding_idx is not none and coding_idx | length > 0 %}
                     <p>A coding region was identified in the target sequence at positions {{coding_idx}}:</p>
@@ -560,13 +560,13 @@
             </div>
 
             <div>
-                <h2 id="unwanted-patterns">Unwanted Patterns:</h2>
+                <h2 id="unwanted-patterns">{{ headings.unwanted_patterns }}:</h2>
                 <p class="pre-scrollable-paragraph" style="font-family: monospace;">{{patterns}}</p>
             </div>
 
             {% if unwanted_patterns_occurrences %}
             <div>
-                <h2 id="unwanted-pattern-occurrences">Unwanted Patterns Occurrences in the Target Sequence:</h2>
+                <h2 id="unwanted-pattern-occurrences">{{ headings.unwanted_pattern_occurrences }}:</h2>
                 <div class="table-container">
                     <table class="pattern-table">
                         <thead>
@@ -608,7 +608,7 @@
             </div>
 
             <div>
-                <h2 id="elimination-process">Elimination Process</h2>
+                <h2 id="elimination-process">{{ headings.elimination_process }}</h2>
                 <p>{{elimination_process_description}}</p>
             </div>
 
@@ -627,7 +627,7 @@
             <div>
                 <h1 id="results">Results</h1>
 
-                <h2 id="dna-sequences-difference">DNA Sequences Difference:</h2>
+                <h2 id="dna-sequences-difference">{{ headings.dna_sequences_difference }}:</h2>
                 <div class="horizontal-scroll">
                     <pre style="color: lightgray;">{{index_seq_str}}</pre>
                     <pre>{{marked_input_seq}}</pre>
@@ -636,7 +636,7 @@
             </div>
 
             <div>
-                <h2 id="dna-cost_contribution">Detailed contributions relative to the target sequence:</h2>
+                <h2 id="dna-cost_contribution">{{ headings.detailed_cost_contributions }}:</h2>
                 <div class="table-container">
                     <table class="changes-table">
                         <thead>
@@ -663,7 +663,7 @@
             </div>
 
             <div>
-                <h2 id="dna-cost_substitution">Detailed substitutions relative to the target sequence:</h2>
+                <h2 id="dna-cost_substitution">{{ headings.detailed_cost_substitutions }}:</h2>
                 <div class="table-container">
                     <table class="changes-table">
                         <thead>
@@ -690,7 +690,7 @@
             </div>
 
             <div>
-                <h2 id="optimized-dna-sequence">Optimized Sequence:</h2>
+                <h2 id="optimized-dna-sequence">{{ headings.optimized_sequence }}:</h2>
                 <p class="highlight-block pre-scrollable-paragraph" style="word-break: break-all; white-space: pre-wrap;">{{ highlight_optimized_selected | safe }}</p>
             </div>
 

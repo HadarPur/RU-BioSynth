@@ -4,6 +4,7 @@ import jinja2
 
 # Application-specific data and utilities
 from biosynth.data.app_data import InputData, EliminationData, OutputData
+from biosynth.executions.controllers.ui.theme import HEADINGS
 from biosynth.utils.display_utils import SequenceUtils
 from biosynth.utils.coding_region import CodingRegionLocator
 from biosynth.utils.file_utils import create_dir, resource_path, save_file
@@ -118,7 +119,8 @@ class ReportBuilder:
             'cost_contribution': self.cost_contribution,
             'cost_substitution': self.cost_substitution,
             'execution_mode' : get_execution_mode(),
-            'highlight_optimized_selected': self.highlight_optimized_selected
+            'highlight_optimized_selected': self.highlight_optimized_selected,
+            'headings': HEADINGS,
         }
 
         try:
