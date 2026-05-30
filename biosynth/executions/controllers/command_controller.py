@@ -150,6 +150,7 @@ class CommandController:
 
         Logger.debug(format_text_bold_for_output(HEADINGS.detailed_cost_substitutions + ':'))
         Logger.info(detailed_cost_substitutions)
+
         Logger.space()
 
         # Save the results
@@ -173,3 +174,8 @@ class CommandController:
         path = save_file(detailed_cost_substitutions, filename, OutputData.output_path)
         Logger.notice(path)
         Logger.space()
+
+        # Logger.info(f"target sequence length: {len(InputData.cleaned_dna_sequence)}")
+        # Logger.info(f"number of contribution: {len(EliminationData.cost_contribution)}")
+        # Logger.info(f"number of substitutions: {len(EliminationData.cost_substitution)}")
+        # Logger.info(f"total cost = {EliminationData.min_cost}")
