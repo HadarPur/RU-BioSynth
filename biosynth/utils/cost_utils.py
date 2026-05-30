@@ -40,7 +40,7 @@ def normalize_codon_usage(codon_usage):
     relative_adaptiveness = codon_frequencies / max_synonymous_frequencies
 
     # Convert to cost space
-    codon_costs_array = -np.log10(relative_adaptiveness)
+    codon_costs_array = -np.log(relative_adaptiveness)
 
     # Clean numerical noise
     codon_costs_array[np.isclose(codon_costs_array, 0.0, atol=1e-9)] = 0.0
