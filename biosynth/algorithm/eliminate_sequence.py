@@ -127,7 +127,7 @@ class EliminationController:
                     {"Position": i, "Original": original_codon, "Optimized": modified_codon, "Cost": f"{cost_f:.3f}".rstrip('0').rstrip('.')})
 
             # Record the change that actually occurred
-            if original_codon != modified_codon:
+            if original_codon != modified_codon and cost_f == 0:
                 cost_substitution.append({"Position": i, "Original": original_codon, "Optimized": modified_codon, "Cost": f"{cost_f:.3f}".rstrip('0').rstrip('.')})
 
             path.append((i, current_state))
@@ -150,7 +150,7 @@ class EliminationController:
                 cost_contribution.append(
                     {"Position": 2, "Original": original_base, "Optimized": modified_base, "Cost": f"{cost_f:.3f}".rstrip('0').rstrip('.')})
 
-            if current_state[1] != original_1:
+            if current_state[1] != original_1 and cost_f == 0:
                 cost_substitution.append({"Position": 2, "Original": original_base, "Optimized": modified_base, "Cost": f"{cost_f:.3f}".rstrip('0').rstrip('.')})
 
         if coding_positions[0] == 0:
@@ -159,7 +159,7 @@ class EliminationController:
             if cost_f > 0:
                 cost_contribution.append({"Position": 1, "Original": original_base, "Optimized": modified_base, "Cost": f"{cost_f:.3f}".rstrip('0').rstrip('.')})
 
-            if current_state[0] != original_0:
+            if current_state[0] != original_0 and cost_f == 0:
                 cost_substitution.append({"Position": 1, "Original": original_base, "Optimized": modified_base, "Cost": f"{cost_f:.3f}".rstrip('0').rstrip('.')})
 
 
