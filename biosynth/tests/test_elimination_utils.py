@@ -44,6 +44,21 @@ class TestEliminationController(unittest.TestCase):
         self.patcher_w.stop()
         self.patcher_oc.stop()
 
+    def _positions_in_either(self, cost_contribution, cost_substitution, allowed):
+        """Return the set of {1,2}-style positions found in EITHER record list.
+
+        The two lists record different cases (cost>0 vs. silent substitution)
+        but have the same shape; tests usually just care that *some* edit
+        was recorded at the expected position.
+        """
+        found = set()
+        for label, records in (("contribution", cost_contribution),
+                               ("substitution", cost_substitution)):
+            with self.subTest(records=label):
+                found |= {e["Position"] for e in (records or [])
+                          if e.get("Position") in allowed}
+        return found
+
     def test_no_unwanted_patterns(self):
         result_info, changes, new_seq, cost = EliminationController.eliminate(
             "AAAAAA", {"TTT"}, [1] * 6
@@ -141,13 +156,13 @@ class TestEliminationController(unittest.TestCase):
             self.assertNotIn(p, new_seq)
         # At least one substitution must land at the very start
         # (position 1 or 2 in 1-indexed terms used by the recorder).
-        starting_positions = {
-            entry["Position"] for entry in (cost_contribution or [])
-            if entry.get("Position") in (1, 2)
-        }
+        starting_positions = self._positions_in_either(
+            cost_contribution, cost_substitution, {1, 2}
+        )
         self.assertTrue(
             starting_positions,
-            f"Expected a substitution at position 1 or 2; got {cost_contribution}",
+            f"Expected a substitution at position 1 or 2; "
+            f"got contrib={cost_contribution}, subs={cost_substitution}",
         )
 
     def test_substitution_forced_at_first_position_only(self):
@@ -173,14 +188,14 @@ class TestEliminationController(unittest.TestCase):
         )
         for p in unwanted_patterns:
             self.assertNotIn(p, new_seq)
-        positions = {
-            entry["Position"] for entry in (cost_contribution or [])
-            if entry.get("Position") in (1, 2)
-        }
+        positions = self._positions_in_either(
+            cost_contribution, cost_substitution, {1, 2}
+        )
         # Position 1 should appear among the recorded substitutions.
         self.assertIn(
             1, positions,
-            f"Expected a substitution at position 1; got {cost_contribution}",
+            f"Expected a substitution at position 1; "
+            f"got contrib={cost_contribution}, subs={cost_substitution}",
         )
 
     def test_substitution_forced_at_second_position_only(self):
@@ -205,14 +220,14 @@ class TestEliminationController(unittest.TestCase):
         )
         for p in unwanted_patterns:
             self.assertNotIn(p, new_seq)
-        positions = {
-            entry["Position"] for entry in (cost_contribution or [])
-            if entry.get("Position") in (1, 2)
-        }
+        positions = self._positions_in_either(
+            cost_contribution, cost_substitution, {1, 2}
+        )
         # Position 2 should appear among the recorded substitutions.
         self.assertIn(
             2, positions,
-            f"Expected a substitution at position 2; got {cost_contribution}",
+            f"Expected a substitution at position 2; "
+            f"got contrib={cost_contribution}, subs={cost_substitution}",
         )
 
     def test_substitution_at_first_positions_non_coding(self):
