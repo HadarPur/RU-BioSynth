@@ -142,12 +142,12 @@ class TestEliminationController(unittest.TestCase):
         # At least one substitution must land at the very start
         # (position 1 or 2 in 1-indexed terms used by the recorder).
         starting_positions = {
-            entry["Position"] for entry in (cost_substitution or [])
+            entry["Position"] for entry in (cost_contribution or [])
             if entry.get("Position") in (1, 2)
         }
         self.assertTrue(
             starting_positions,
-            f"Expected a substitution at position 1 or 2; got {cost_substitution}",
+            f"Expected a substitution at position 1 or 2; got {cost_contribution}",
         )
 
     def test_substitution_forced_at_first_position_only(self):
@@ -174,13 +174,13 @@ class TestEliminationController(unittest.TestCase):
         for p in unwanted_patterns:
             self.assertNotIn(p, new_seq)
         positions = {
-            entry["Position"] for entry in (cost_substitution or [])
+            entry["Position"] for entry in (cost_contribution or [])
             if entry.get("Position") in (1, 2)
         }
         # Position 1 should appear among the recorded substitutions.
         self.assertIn(
             1, positions,
-            f"Expected a substitution at position 1; got {cost_substitution}",
+            f"Expected a substitution at position 1; got {cost_contribution}",
         )
 
     def test_substitution_forced_at_second_position_only(self):
@@ -206,13 +206,13 @@ class TestEliminationController(unittest.TestCase):
         for p in unwanted_patterns:
             self.assertNotIn(p, new_seq)
         positions = {
-            entry["Position"] for entry in (cost_substitution or [])
+            entry["Position"] for entry in (cost_contribution or [])
             if entry.get("Position") in (1, 2)
         }
         # Position 2 should appear among the recorded substitutions.
         self.assertIn(
             2, positions,
-            f"Expected a substitution at position 2; got {cost_substitution}",
+            f"Expected a substitution at position 2; got {cost_contribution}",
         )
 
     def test_substitution_at_first_positions_non_coding(self):
