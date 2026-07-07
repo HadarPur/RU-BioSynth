@@ -216,12 +216,12 @@ class Labels:
     info_glyph: str = "ⓘ"
     indicator_glyph: str = "▼"
 
-    load_target_sequence: str = "Load Target Sequence"
+    load_target_sequence: str = "Load Sequence"
     load_patterns: str = "Load Patterns"
     load_codon_usage: str = "Load Codon Usage"
 
     placeholder_target_sequence: str = (
-        "Upload Target Sequence/Drag&Drop Target Sequence file (.txt)"
+        "Upload/Drag&Drop Sequence file (.txt)"
     )
     placeholder_patterns: str = "Upload Patterns file/Drag&Drop Patterns file (.txt)"
     placeholder_codon_usage: str = (
@@ -237,8 +237,8 @@ class Labels:
     report_available: str = "Elimination report is now available"
     tab_coding_region: str = "Coding Region Criteria"
     tab_substitution_costs: str = "Substitution Costs"
-    tab_cost_contribution: str = "Cost Contribution"
-    tab_cost_substitution: str = "Cost Substitution"
+    tab_cost_contribution: str = "Cost Substitutions"
+    tab_cost_substitution: str = "Zero-Cost Substitution"
 
     busy_message: str = "Computation in progress.\nThis may take a few moments for long sequences."
     elimination_failed: str = "Elimination failed"
@@ -259,16 +259,15 @@ class Titles:
 class Headings:
     """Section headings shown across the CLI, GUI and HTML report."""
 
-    target_sequence: str = "Target Sequence"
+    target_sequence: str = "Original Sequence"
     unwanted_patterns: str = "Unwanted Patterns"
-    unwanted_pattern_occurrences: str = "Unwanted Pattern Occurrences in the Target Sequence"
+    unwanted_pattern_occurrences: str = "Unwanted Pattern Occurrences in the original sequence"
     optimized_sequence: str = "Optimized Sequence"
     dna_sequences_difference: str = "DNA Sequences Difference"
     elimination_process: str = "Elimination Process"
-    detailed_cost_contributions: str = "Detailed cost contributions relative to the target sequence"
-    detailed_cost_substitutions: str = "Detailed cost substitutions relative to the target sequence"
-    coding_region_identified: str = "A coding region was identified in the target sequence at positions {start} - {end}"
-
+    detailed_cost_contributions: str = "List of substitutions (relative to optimal sequence)"
+    detailed_cost_substitutions: str = "List of zero-cost substitutions (relative to original sequence)"
+    coding_region_identified: str = "A coding region was identified in the original sequence at positions {start} - {end}"
 
 # Module-level singletons — import these instead of instantiating.
 COLORS = Colors()

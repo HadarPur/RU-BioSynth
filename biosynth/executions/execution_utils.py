@@ -57,15 +57,15 @@ def is_valid_input(sequence, unwanted_patterns, codon_usage_table):
         True if all inputs are present and well-formed, otherwise False.
     """
     if sequence is None:
-        Logger.error(f"Target Sequence file is missing.")
+        Logger.error(f"Sequence file is missing.")
         return False
 
     if len(sequence) == 0:
-        Logger.error(f"Invalid target sequence format in file.")
+        Logger.error(f"Invalid sequence format in file.")
         return False
 
     if not is_valid_dna(sequence):
-        Logger.error(f"Invalid target sequence format in file.")
+        Logger.error(f"Invalid sequence format in file.")
         return False
 
     if unwanted_patterns is None:

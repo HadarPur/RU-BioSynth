@@ -93,7 +93,7 @@ class TestIsValidInput(unittest.TestCase):
             output = fake_out.getvalue()
 
         self.assertFalse(result)
-        self.assertIn("Target Sequence file is missing.", output)
+        self.assertIn("Sequence file is missing.", output)
 
     def test_empty_sequence(self):
         with patch("sys.stdout", new=io.StringIO()) as fake_out:
@@ -101,7 +101,7 @@ class TestIsValidInput(unittest.TestCase):
             output = fake_out.getvalue()
 
         self.assertFalse(result)
-        self.assertIn("Invalid target sequence format in file.", output)
+        self.assertIn("Invalid sequence format in file.", output)
 
     def test_invalid_sequence(self):
         with patch("sys.stdout", new=io.StringIO()) as fake_out:
@@ -109,7 +109,7 @@ class TestIsValidInput(unittest.TestCase):
             output = fake_out.getvalue()
 
         self.assertFalse(result)
-        self.assertIn("Invalid target sequence format in file.", output)
+        self.assertIn("Invalid sequence format in file.", output)
 
     def test_missing_patterns(self):
         with patch("sys.stdout", new=io.StringIO()) as fake_out:

@@ -83,7 +83,7 @@ class SequenceReader(FileDataReader):
         """
 
         if self.file_path is None:
-            handle_critical_error("Target sequence file path is not set. Cannot proceed without a valid file.")
+            handle_critical_error("Sequence file path is not set. Cannot proceed without a valid file.")
 
         raw_seq = [line.strip() for line in self.read_lines() if not line.isspace()]
 

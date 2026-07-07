@@ -191,7 +191,7 @@ class UploadWindow(QWidget):
     def load_dna_file(self):
         """Open a file picker to choose a target-sequence ``.txt`` file."""
         file_name, _ = QFileDialog.getOpenFileName(
-            self, "Open Target Sequence File", "", "Text Files (*.txt)"
+            self, "Open Sequence File", "", "Text Files (*.txt)"
         )
         if not file_name:
             return
@@ -209,7 +209,7 @@ class UploadWindow(QWidget):
             UploadData.dna_sequence_content_file = content
             self.dna_text_edit.setPlainText(content)
         else:
-            QMessageBox.critical(self, "Error", "Invalid target sequence format in file")
+            QMessageBox.critical(self, "Error", "Invalid sequence format in file")
 
     def dna_text_edit_changed(self):
         """Mirror the DNA text edit's current content back into UploadData."""

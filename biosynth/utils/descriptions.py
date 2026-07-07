@@ -31,11 +31,11 @@ def get_non_coding_region_cost_description():
 def get_info_usage():
     """Return formatted help text describing the expected target-sequence properties."""
     lines = [
-        "Your target sequence should satisfy the following properties:",
-        "• The target sequence must contain at most one asterisk character (*) marking the coding region.",
+        "Your sequence should satisfy the following properties:",
+        "• The sequence must contain at most one asterisk character (*) marking the coding region.",
         "• The asterisk character should be immediately followed by a start codon, and the coding region continues",
         "  until the first in-frame stop codon.",
-        "• If the target sequence does not contain an asterisk, then the entire target sequence will be treated as non-coding."
+        "• If the sequence does not contain an asterisk, then the entire sequence will be treated as non-coding."
     ]
 
     width = max(len(line.expandtabs(4)) for line in lines)

@@ -29,13 +29,13 @@ class GuiValidator:
     def validate_target_sequence(self, dna_sequence):
         """Returns (ok, start_codon_index, cleaned_sequence)."""
         if dna_sequence is None:
-            self._error("Target sequence file is missing")
+            self._error("Sequence file is missing")
             return False, None, None
         if len(dna_sequence) == 0:
-            self._error("Target sequence file is empty")
+            self._error("Sequence file is empty")
             return False, None, None
         if not is_valid_dna(dna_sequence):
-            self._error("Invalid target sequence format in file")
+            self._error("Invalid sequence format in file")
             return False, None, None
         try:
             start_codon_identified, cleaned = CodingRegionLocator.find_start_codon(dna_sequence)
