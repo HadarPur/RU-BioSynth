@@ -53,6 +53,15 @@ class EliminationController:
                                                                                 CostData.optimized_codon)
         fsm = FSM(unwanted_patterns, elimination_scorer.alphabet)
 
+        # Invert fsm.f into a predecessor map so the DP inner loop iterates only
+        # over states that actually transition into v, instead of scanning every
+        # (u, sigma) pair. Drops the fill complexity from O(n·|V|²·|Σ|) to
+        # O(n·|V|·|Σ|).
+        predecessors = defaultdict(list)
+        for (u, sigma), v_next in fsm.f.items():
+            if v_next is not None:
+                predecessors[v_next].append((u, sigma))
+
         # Dynamic programming table A, initialized with infinity
         A = defaultdict(lambda: float('inf'))
         # A* table for backtracking (stores the previous state and transition symbol)
@@ -77,15 +86,13 @@ class EliminationController:
                 best_cost = float('inf')
                 best_prev = None
                 best_info = None
-                for u in fsm.V:
-                    for sigma in fsm.sigma:
-                        if fsm.f.get((u, sigma)) == v:
-                            changes, cost_f = cost_function(i, u, sigma)
-                            cost = A[(i - 1, u)] + cost_f
-                            if cost < best_cost:
-                                best_cost = cost
-                                best_prev = (u, sigma)
-                                best_info = (changes, cost_f)
+                for (u, sigma) in predecessors[v]:
+                    changes, cost_f = cost_function(i, u, sigma)
+                    cost = A[(i - 1, u)] + cost_f
+                    if cost < best_cost:
+                        best_cost = cost
+                        best_prev = (u, sigma)
+                        best_info = (changes, cost_f)
 
                 if best_prev is not None:
                     A[(i, v)] = best_cost
