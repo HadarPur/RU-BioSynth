@@ -138,14 +138,8 @@ import time
 def eliminate_unwanted_patterns(seq, unwanted_patterns, coding_positions):
     """Run the elimination algorithm and persist its outputs into ``EliminationData`` and ``OutputData``."""
     # Start elimination
-    start_time = time.perf_counter()
-
     EliminationData.info, EliminationData.cost_contribution, EliminationData.cost_substitution, OutputData.optimized_sequence, EliminationData.min_cost = EliminationController.eliminate(
         seq, unwanted_patterns, coding_positions)
-
-    end_time = time.perf_counter()
-    Logger.critical(f"Total execution time: {end_time - start_time:.3f} seconds")
-
 
 def mark_non_equal_codons(input_seq, optimized_seq, coding_positions):
     """Compute a marked diff between input and optimized sequences.
