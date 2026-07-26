@@ -2,7 +2,7 @@ import sys
 from datetime import datetime
 from tabulate import tabulate
 
-from biosynth.data.app_data import InputData, EliminationData, OutputData
+from biosynth.data.app_data import InputData, EliminationData, OutputData, CostData
 from biosynth.executions.controllers.ui.theme import HEADINGS
 from biosynth.executions.execution_utils import eliminate_unwanted_patterns
 from biosynth.report.report_builder import ReportBuilder
@@ -12,6 +12,7 @@ from biosynth.utils.file_utils import save_file
 from biosynth.utils.logger import Logger
 from biosynth.utils.spinner import run_with_spinner
 from biosynth.utils.text_utils import format_text_bold_for_output
+from biosynth.utils.cai_utils import calculate_cai
 
 app_icon_text = """
 =================================================================
@@ -124,6 +125,11 @@ class CommandController:
         Logger.notice(format_text_bold_for_output('\n' + '_' * 90 + '\n'))
         Logger.info(EliminationData.info)
         Logger.notice(format_text_bold_for_output('\n' + '_' * 90 + '\n'))
+
+        if CostData.optimized_codon:
+            cai = calculate_cai(OutputData.optimized_sequence, InputData.coding_indexes, CostData.codon_usage)
+            Logger.debug(f"CAI for the optimized sequence = {cai}")
+            Logger.space()
 
         Logger.debug(format_text_bold_for_output(HEADINGS.optimized_sequence + ':'))
         Logger.info(OutputData.optimized_sequence)
