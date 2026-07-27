@@ -158,9 +158,8 @@ class CommandController:
 
         Logger.critical("The final report and optimized sequence can be found in the following paths:\n")
         file_date = datetime.today().strftime("%d-%b-%Y_%H-%M-%S")
-        report.create_report(file_date)
-        path = report.download_report(OutputData.output_path)
-        Logger.notice(path)
+        report_path = report.create_report(file_date, OutputData.output_path)
+        Logger.notice(f"{report_path}\n")
 
         filename = f"Optimized-Sequence_{file_date}.txt"
         path = save_file(OutputData.optimized_sequence, filename, OutputData.output_path)

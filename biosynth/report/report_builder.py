@@ -1,4 +1,6 @@
 import os
+import tempfile
+from pathlib import Path
 
 import jinja2
 
@@ -91,11 +93,17 @@ class ReportBuilder:
         # Format cost with good numerical precision
         self.min_cost = f"{EliminationData.min_cost:.10g}"
 
-    def create_report(self, file_date):
-        """Render the HTML report from the Jinja2 template and save it under ``output/``.
+    def create_report(self, file_date, output_path=None):
+        """Render the HTML report from the Jinja2 template and write it to disk.
 
         Args:
             file_date: Timestamp string embedded in the report and used in its filename.
+            output_path: When provided, the report is written to
+                ``<output_path>/BioSynth-Outputs/`` (used by the CLI so the file
+                lands next to the other exports on first write). When ``None``,
+                the report is rendered into a temporary directory so the caller
+                (e.g. the UI) can preview it and later choose whether to save it
+                via :meth:`download_report`.
 
         Returns:
             Local path to the rendered HTML report, or ``None`` if rendering failed.
@@ -133,10 +141,17 @@ class ReportBuilder:
             # Render the HTML using the context dictionary
             self.output_text = template.render(context)
 
-            # Save report to 'output' folder
-            create_dir('output')
+            if output_path is None:
+                # Interactive/UI flow: render into a scratch dir so the user
+                # decides whether/where to save via download_report()/save_as.
+                output_dir = Path(tempfile.mkdtemp(prefix="biosynth-report-"))
+            else:
+                # CLI flow: write directly to the final export location.
+                output_dir = Path(output_path) / 'BioSynth-Outputs'
+                create_dir(output_dir)
+
             self.report_filename = f"BioSynth-Report_{file_date}.html"
-            report_local_path = f'output/{self.report_filename}'
+            report_local_path = str(output_dir / self.report_filename)
 
             with open(report_local_path, 'w', encoding="utf-8") as file:
                 file.write(self.output_text)

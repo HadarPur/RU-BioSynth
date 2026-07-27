@@ -2,6 +2,7 @@
 
 import os
 import io
+import shutil
 import tempfile
 import unittest
 import unittest.mock
@@ -84,12 +85,25 @@ class TestReportBuilder(unittest.TestCase):
         self.assertIn("GGGG", html)  # unwanted patterns block
         self.assertIn("BioSynth Report", html)  # title rendered
         self.assertIn("01-Jan-1970", html)  # date rendered
-        # Cleanup the file we wrote.
-        os.remove(path)
+        # Cleanup the scratch dir the report was rendered into.
+        shutil.rmtree(os.path.dirname(path), ignore_errors=True)
+
+    def test_create_report_with_output_path_writes_under_biosynth_outputs(self):
+        ctrl = ReportBuilder()
+        with tempfile.TemporaryDirectory() as tmp:
+            path = ctrl.create_report(
+                file_date="01-Jan-1970_00-00-00", output_path=tmp
+            )
+            self.assertIsNotNone(path)
+            self.assertTrue(os.path.exists(path))
+            self.assertEqual(
+                os.path.dirname(path),
+                os.path.join(tmp, "BioSynth-Outputs"),
+            )
 
     def test_download_report_to_custom_dir(self):
         ctrl = ReportBuilder()
-        ctrl.create_report(file_date="01-Jan-1970_00-00-00")
+        render_path = ctrl.create_report(file_date="01-Jan-1970_00-00-00")
         with tempfile.TemporaryDirectory() as tmp:
             result = ctrl.download_report(path=tmp)
             self.assertIn("BioSynth-Outputs", result)
@@ -98,10 +112,8 @@ class TestReportBuilder(unittest.TestCase):
             self.assertTrue(os.path.isdir(outputs_dir))
             files = os.listdir(outputs_dir)
             self.assertTrue(any(f.endswith(".html") for f in files))
-
-        # Cleanup local report file too.
-        if os.path.exists(f"output/{ctrl.report_filename}"):
-            os.remove(f"output/{ctrl.report_filename}")
+        # Cleanup the scratch dir create_report rendered into.
+        shutil.rmtree(os.path.dirname(render_path), ignore_errors=True)
 
     def test_create_report_template_not_found_exits(self):
         # Patch resource_path so jinja2 cannot find the template — the

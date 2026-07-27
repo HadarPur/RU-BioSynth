@@ -11,7 +11,7 @@ from calculate_cai import load_and_calculate_cai
 # Define paths
 # -------------------------------
 
-output_dir = Path("./results/MYH9")
+output_dir = Path("./results/SAUR11")
 
 sequence_file = Path("../files/maize_yeast_example/SAUR11.txt")
 pattern_file = Path("../files/maize_yeast_example/ACE2_binding_patterns.txt")
