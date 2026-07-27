@@ -119,6 +119,9 @@ print("Optimized sequence length:", len(optimized_seq))
 print("Optimized sequence:")
 print(optimized_seq)
 
+print("Optimized sequence in coding region:")
+print(optimized_seq[location[0]:location[1]])
+
 # -------------------------------
 # Calculate CAI
 # -------------------------------
