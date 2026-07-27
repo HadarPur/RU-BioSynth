@@ -3,7 +3,7 @@ from biosynth.data.app_data import EliminationData, OutputData
 from biosynth.report.report_builder import ReportBuilder
 from biosynth.utils.display_utils import SequenceUtils
 from biosynth.utils.logger import Logger
-
+from biosynth.utils.cai_utils import calculate_cai
 
 def is_valid_dna(sequence):
     """Return ``True`` if every character in ``sequence`` is one of A/T/C/G/U/* (case-insensitive)."""
@@ -138,8 +138,10 @@ import time
 def eliminate_unwanted_patterns(seq, unwanted_patterns, coding_positions):
     """Run the elimination algorithm and persist its outputs into ``EliminationData`` and ``OutputData``."""
     # Start elimination
-    EliminationData.info, EliminationData.cost_contribution, EliminationData.cost_substitution, OutputData.optimized_sequence, EliminationData.min_cost = EliminationController.eliminate(
+    EliminationData.info, EliminationData.cost_contribution, EliminationData.cost_substitution, OutputData.optimized_sequence, EliminationData.min_cost, sum_log, count_log = EliminationController.eliminate(
         seq, unwanted_patterns, coding_positions)
+
+    OutputData.cai = calculate_cai(sum_log, count_log)
 
 def mark_non_equal_codons(input_seq, optimized_seq, coding_positions):
     """Compute a marked diff between input and optimized sequences.

@@ -127,8 +127,7 @@ class CommandController:
         Logger.notice(format_text_bold_for_output('\n' + '_' * 90 + '\n'))
 
         if CostData.optimized_codon:
-            cai = calculate_cai(OutputData.optimized_sequence, InputData.coding_indexes, CostData.codon_usage)
-            Logger.debug(f"CAI for the optimized sequence = {cai}")
+            Logger.debug(f"CAI for the optimized sequence = {OutputData.cai}")
             Logger.space()
 
         Logger.debug(format_text_bold_for_output(HEADINGS.optimized_sequence + ':'))

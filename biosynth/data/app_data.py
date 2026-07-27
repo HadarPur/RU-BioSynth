@@ -78,9 +78,9 @@ class EliminationData:
     cost_substitution = None
     min_cost = None
 
-
 class OutputData:
     """Holds the optimized sequence and the destination path for exported results."""
 
     output_path = Path.home() / 'Downloads'
     optimized_sequence = None
+    cai = None

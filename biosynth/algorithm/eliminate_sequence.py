@@ -118,6 +118,10 @@ class EliminationController:
         cost_contribution = []
         cost_substitution = []
 
+        # cai vars
+        sum_log = 0.0
+        count_log = 0
+
         # starting from the end
         current_state = final_state
 
@@ -136,6 +140,13 @@ class EliminationController:
             # Record the change that actually occurred
             if original_codon != modified_codon and cost_f == 0:
                 cost_substitution.append({"Position": i, "Original": original_codon, "Optimized": modified_codon, "Cost": f"{cost_f:.3f}".rstrip('0').rstrip('.')})
+
+            if coding_positions[i - 1] == 3:
+                # Update CAI calculation for coding positions
+                if modified_codon in CostData.codon_usage:
+                    freq = CostData.codon_usage[modified_codon]
+                    sum_log += max(freq, 0.01)
+                    count_log += 1
 
             path.append((i, current_state))
             sequence.append(char)
@@ -181,4 +192,4 @@ class EliminationController:
         info += "\n🚀 Elimination Process Completed!\n"
         info += f"📆 {format_current_date()}"
 
-        return info, cost_contribution, cost_substitution, ''.join(sequence), min_cost
+        return info, cost_contribution, cost_substitution, ''.join(sequence), min_cost, sum_log, count_log
