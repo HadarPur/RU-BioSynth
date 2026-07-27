@@ -141,7 +141,7 @@ class EliminationController:
             if original_codon != modified_codon and cost_f == 0:
                 cost_substitution.append({"Position": i, "Original": original_codon, "Optimized": modified_codon, "Cost": f"{cost_f:.3f}".rstrip('0').rstrip('.')})
 
-            if coding_positions[i - 1] == 3:
+            if coding_positions[i - 1] in {3, -3}:  # Only consider coding positions for CAI
                 # Update CAI calculation for coding positions
                 if modified_codon in CostData.codon_usage:
                     freq = CostData.codon_usage[modified_codon]
