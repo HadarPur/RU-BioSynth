@@ -56,8 +56,7 @@ class CodingRegionLocator:
     @staticmethod
     def get_coding_and_non_coding_regions_positions(clean_seq, atg_index):
         """
-        Computes codon positions and a single coding region defined by a given start codon,
-        subject to a minimum coding region length.
+        Computes codon positions and a single coding region defined by a given start codon.
 
         Args:
             clean_seq (str): DNA sequence without '*'
@@ -84,10 +83,10 @@ class CodingRegionLocator:
         # Search for first in-frame stop codon
         for j in range(start_idx + 3, N - 2, 3):
             if clean_seq[j:j + 3] in stop_codons:
-                candidate_end = j + 3  # exclusive
-                stop_idx = candidate_end
+                stop_idx = j + 3  # exclusive
+                break  # stop at the first stop codon
 
-        # No valid coding region satisfying length constraint
+        # No stop codon found
         if stop_idx is None:
             return codon_positions, None
 
