@@ -1,11 +1,16 @@
 import numpy as np
 from Bio.Data import CodonTable
 
+genetic_code = CodonTable.ambiguous_dna_by_id[1]
+
+def translate_codon(codon):
+    if codon in genetic_code.stop_codons:
+        return "*"
+    return genetic_code.forward_table.get(codon)
+
 def load_and_normalize_weights(codon_usage_table):
     """Load codon frequencies from DNA Chisel and normalize them into
     relative adaptiveness weights (w = f / max(f_synonymous))."""
-
-    genetic_code = CodonTable.ambiguous_dna_by_id[1].forward_table
 
     try:
         raw_freqs = {}
@@ -16,14 +21,16 @@ def load_and_normalize_weights(codon_usage_table):
         # Group frequencies by amino acid
         aa_groups: dict[str, list[float]] = {}
         for codon, freq in raw_freqs.items():
-            aa = genetic_code.get(codon)
+            aa = translate_codon(codon)
             if aa:
                 aa_groups.setdefault(aa, []).append(freq)
+
+        print(f"aa_groups = {aa_groups}")
 
         # Normalize
         normalized_weights: dict[str, float] = {}
         for codon, freq in raw_freqs.items():
-            aa = genetic_code.get(codon)
+            aa = translate_codon(codon)
             if aa:
                 max_freq = max(aa_groups[aa])
                 normalized_weights[codon] = (
@@ -32,9 +39,8 @@ def load_and_normalize_weights(codon_usage_table):
             else:
                 normalized_weights[codon] = 0.0
 
-        print(
-            f"Normalized {len(normalized_weights)} codons.."
-        )
+        print(f"Normalized {len(normalized_weights)} codons..")
+        print(f"normalized_weights = {normalized_weights}")
         return normalized_weights
 
     except Exception as e:
@@ -51,12 +57,11 @@ def calculate_cai(sequence: str, weights: dict[str, float]):
     for codon in codons:
         if (w := weights.get(codon)) is not None:
             # Use 0.01 as a floor for very rare codons to avoid log(0)
-            val = max(w, 0.01)
-            sum_log_w += np.log(val)
+            sum_log_w += np.log(w)
             count += 1
 
+    print(f"count = {count}, sum_log_w = {sum_log_w}")
     return np.exp(sum_log_w / count) if count > 0 else 0.0
-
 
 def load_and_calculate_cai(sequence, codon_usage_table):
     weights = load_and_normalize_weights(codon_usage_table)
