@@ -1,5 +1,6 @@
 import sys
 import shutil
+import time
 from pathlib import Path
 
 from biosynth.BioSynth import BioSynthApp
@@ -40,6 +41,8 @@ sys.argv = [
 
 print("Running BioSynth...")
 
+time_start = time.time()
+
 try:
     BioSynthApp.execute(sys.argv[1:])
 except SystemExit as e:
@@ -47,8 +50,9 @@ except SystemExit as e:
     if e.code not in (0, None):
         raise RuntimeError(f"BioSynth failed with exit code {e.code}")
 
-print("BioSynth finished successfully.")
+time_end = time.time()
 
+print(f"BioSynth finished successfully in {time_end - time_start:.4f} seconds.")
 
 # -------------------------------
 # Load codon usage table
