@@ -67,6 +67,7 @@ codon_to_amino_acid = {
 
 
 class AminoAcidConfig:
+    """Static helpers operating on codons and amino-acid equivalence."""
 
     @staticmethod
     def get_last2(v):
@@ -174,3 +175,37 @@ class AminoAcidConfig:
         # Compare each pair (a, b) and count +1 if they are different
         # The sum(...) collects the total count of mismatches
         return sum(1 for a, b in zip(target_codon, proposed_codon) if a != b)
+
+class GeneticCodeTable:
+    """
+    Utility class for translating DNA/RNA codons into their corresponding amino acids.
+
+    This class provides a static interface to access a codon-to-amino-acid
+    mapping, typically based on the standard genetic code.
+
+    The mapping itself (`codon_to_amino_acid`) is expected to be defined
+    externally as a dictionary where:
+        - keys: str (codon, e.g., "ATG")
+        - values: str (amino acid symbol, e.g., "M" for Methionine)
+    """
+
+    @staticmethod
+    def lookup(codon: str) -> str | None:
+        """
+        Retrieve the amino acid corresponding to a given codon.
+
+        Args:
+            codon (str): A 3-nucleotide sequence (e.g., "ATG", "TAA").
+
+        Returns:
+            str | None:
+                - The single-letter amino acid code if the codon exists.
+                - None if the codon is not found in the mapping.
+
+        Notes:
+            - This function assumes the codon is already normalized
+              (e.g., uppercase, valid alphabet {A, T/U, C, G}).
+            - Stop codons may map to a special symbol (e.g., "*"),
+              depending on the `codon_to_amino_acid` dictionary.
+        """
+        return codon_to_amino_acid.get(codon)

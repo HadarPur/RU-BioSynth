@@ -1,0 +1,93 @@
+import unittest
+from pathlib import Path
+from biosynth.data import app_data  # replace with your actual module path
+
+
+class TestDataClasses(unittest.TestCase):
+
+    def test_input_data_defaults(self):
+        self.assertIsNone(app_data.InputData.dna_sequence)
+        self.assertIsNone(app_data.InputData.cleaned_dna_sequence)
+        self.assertIsNone(app_data.InputData.unwanted_patterns)
+        self.assertIsNone(app_data.InputData.coding_indexes)
+        self.assertIsNone(app_data.InputData.coding_positions)
+
+    def test_input_data_reset(self):
+        # Set some dummy values
+        app_data.InputData.dna_sequence = "ATG"
+        app_data.InputData.coding_indexes = [0, 1, 2]
+
+        # Reset
+        app_data.InputData.reset()
+
+        # All fields should be None
+        self.assertIsNone(app_data.InputData.dna_sequence)
+        self.assertIsNone(app_data.InputData.cleaned_dna_sequence)
+        self.assertIsNone(app_data.InputData.unwanted_patterns)
+        self.assertIsNone(app_data.InputData.coding_indexes)
+        self.assertIsNone(app_data.InputData.coding_positions)
+
+    def test_cost_data_defaults(self):
+        self.assertIsNone(app_data.CostData.codon_usage)
+        self.assertIsNone(app_data.CostData.codon_usage_filename)
+        self.assertEqual(app_data.CostData.alpha, 1.0)
+        self.assertEqual(app_data.CostData.beta, 2.0)
+        self.assertEqual(app_data.CostData.w, 100.0)
+        self.assertEqual(app_data.CostData.optimized_codon, True)
+        self.assertEqual(app_data.CostData.stop_codon, float('inf'))
+
+    def test_elimination_data_defaults(self):
+        self.assertIsNone(app_data.EliminationData.info)
+        self.assertIsNone(app_data.EliminationData.cost_contribution)
+        self.assertIsNone(app_data.EliminationData.cost_substitution)
+        self.assertIsNone(app_data.EliminationData.min_cost)
+
+    def test_output_data_defaults(self):
+        self.assertEqual(app_data.OutputData.output_path, Path.home() / 'Downloads')
+        self.assertIsNone(app_data.OutputData.optimized_sequence)
+
+    def test_input_data_mutation(self):
+        app_data.InputData.dna_sequence = "ATGCGT"
+        app_data.InputData.coding_positions = [0,1,2]
+        self.assertEqual(app_data.InputData.dna_sequence, "ATGCGT")
+        self.assertEqual(app_data.InputData.coding_positions, [0,1,2])
+
+    def test_output_data_path_assignment(self):
+        new_path = Path("/tmp")
+        app_data.OutputData.output_path = new_path
+        self.assertEqual(app_data.OutputData.output_path, new_path)
+
+    def test_cost_data_numeric(self):
+        self.assertGreaterEqual(app_data.CostData.alpha, 0)
+        self.assertGreaterEqual(app_data.CostData.beta, 0)
+        self.assertGreaterEqual(app_data.CostData.w, 0)
+        self.assertTrue(app_data.CostData.stop_codon == float('inf'))
+
+    def test_upload_data_reset_clears_all_fields(self):
+        app_data.UploadData.dna_sequence_content_file = "ATG"
+        app_data.UploadData.unwanted_patterns_content_file = ["GGG"]
+        app_data.UploadData.codon_usage_content_file = {"ATG": 1.0}
+        app_data.UploadData.reset()
+        self.assertIsNone(app_data.UploadData.dna_sequence_content_file)
+        self.assertIsNone(app_data.UploadData.unwanted_patterns_content_file)
+        self.assertIsNone(app_data.UploadData.codon_usage_content_file)
+
+    def test_cost_data_reset_restores_defaults(self):
+        app_data.CostData.codon_usage = {"ATG": 1.0}
+        app_data.CostData.codon_usage_filename = "table.txt"
+        app_data.CostData.alpha = 99.0
+        app_data.CostData.beta = 100.0
+        app_data.CostData.w = 9999.0
+        app_data.CostData.stop_codon = 1
+        app_data.CostData.optimized_codon = False
+        app_data.CostData.reset()
+        self.assertIsNone(app_data.CostData.codon_usage)
+        self.assertIsNone(app_data.CostData.codon_usage_filename)
+        self.assertEqual(app_data.CostData.alpha, 1.0)
+        self.assertEqual(app_data.CostData.beta, 2.0)
+        self.assertEqual(app_data.CostData.w, 100.0)
+        self.assertEqual(app_data.CostData.stop_codon, float('inf'))
+        self.assertTrue(app_data.CostData.optimized_codon)
+
+
+

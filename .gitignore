@@ -25,6 +25,7 @@ share/python-wheels/
 .installed.cfg
 *.egg
 MANIFEST
+**/files/**/BioSynth-Outputs/
 
 # PyInstaller
 #  Usually these files are written by a python script from a template
@@ -36,7 +37,7 @@ MANIFEST
 pip-log.txt
 pip-delete-this-directory.txt
 
-# Unit test / coverage reports
+# Unit tests / coverage reports
 htmlcov/
 .tox/
 .nox/
@@ -201,3 +202,4 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+/cai_calculation/results/

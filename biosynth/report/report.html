@@ -18,7 +18,7 @@
     <style>
         html, body {
             scroll-behavior: smooth;
-            overflow-x: hidden;
+            overflow-x: clip;
             max-width: 100%;
             margin: 0;
             font-family: 'Open Sans', sans-serif;
@@ -114,7 +114,11 @@
         .sidepanel {
             flex: 0 0 200px;
             padding: 20px;
-            position: relative;
+            position: sticky;
+            top: 130px;
+            align-self: flex-start;
+            max-height: calc(100vh - 130px);
+            overflow-y: auto;
         }
 
         .sidepanel a.title {
@@ -221,6 +225,102 @@
             border-radius: 10px;
         }
 
+        .table-container {
+            max-height: 300px;
+            overflow-y: auto;
+            overflow-x: auto;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            width: 100%;
+        }
+
+        .pattern-table {
+            width: 100%;
+            border-collapse: collapse;
+            table-layout: fixed;
+        }
+
+        .pattern-table th,
+        .pattern-table td {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+            text-align: left;
+            word-break: break-word;
+        }
+
+        .pattern-table th:nth-child(1),
+        .pattern-table td:nth-child(1) {
+            width: 15%;
+        }
+
+        .pattern-table th:nth-child(2),
+        .pattern-table td:nth-child(2) {
+            width: 10%;
+        }
+
+        .pattern-table th:nth-child(3),
+        .pattern-table td:nth-child(3) {
+            width: 75%;
+        }
+
+        .pattern-table thead th {
+            position: sticky;
+            top: 0;
+            background: white;
+            z-index: 2;
+            box-shadow: inset 0 -3px 0 #245076;
+        }
+
+        .pattern-table tbody tr:nth-child(even) {
+            background-color: #fafafa;
+        }
+
+        .pos-range {
+            display: inline-block;
+            padding: 1px 6px;
+            margin: 2px 2px;
+            border: 1px solid #245076;
+            border-radius: 4px;
+            color: #245076;
+            font-family: monospace;
+            cursor: pointer;
+        }
+
+        .pos-range:hover {
+            background: #245076;
+            color: #fff;
+            text-decoration: none;
+        }
+
+        .base.hi {
+            background: #ffe066;
+            border-radius: 2px;
+        }
+
+        .changes-table {
+            width: 100%;
+            border-collapse: collapse;
+            table-layout: fixed;
+        }
+
+        .changes-table th,
+        .changes-table td {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+            text-align: center;
+        }
+
+        .changes-table thead th {
+            position: sticky;
+            top: 0;
+            background: white;
+            z-index: 2;
+            box-shadow: inset 0 -3px 0 #245076;
+        }
+
+        .changes-table tbody tr:nth-child(even) {
+            background-color: #fafafa;
+        }
         /* Responsive styles */
         @media (max-width: 768px) {
             .row.wrapper {
@@ -278,6 +378,11 @@
 
         /* Print-specific styling */
         @media print {
+            #dna-sequences-difference,
+            #dna-sequences-difference + .horizontal-scroll {
+                display: none !important;
+            }
+
             body {
                 padding-top: 0.5in;
             }
@@ -355,6 +460,40 @@
                 margin: 20px 0 !important;
             }
 
+            .table-container {
+                max-height: none !important;
+                overflow: visible !important;
+                height: auto !important;
+            }
+
+            .changes-table {
+                width: 100%;
+                border-collapse: collapse !important;
+            }
+
+            .changes-table thead th {
+                position: static !important;
+                box-shadow: none !important;
+                border-bottom: 3px solid #245076 !important;
+            }
+
+            .changes-table {
+                page-break-inside: auto;
+            }
+
+            .changes-table tr {
+                page-break-inside: avoid;
+                page-break-after: auto;
+            }
+
+            .changes-table thead {
+                display: table-header-group;
+            }
+
+            .changes-table tfoot {
+                display: table-footer-group;
+            }
+
             /* Page layout */
             @page :first {
                 margin: 0 0 1in 0; /* top, right, bottom, left */
@@ -390,26 +529,28 @@
 
         <div class="sidepanel">
             <a class="title" href="#">Input</a>
-            <a class="section" href="#dna-sequence">Target Sequence</a>
-            <a class="section" href="#unwanted-patterns">Unwanted Patterns</a>
+            <a class="section" href="#dna-sequence">{{ headings.target_sequence }}</a>
+            <a class="section" href="#unwanted-patterns">{{ headings.unwanted_patterns }}</a>
+            <a class="section" href="#unwanted-pattern-occurrences">{{ headings.unwanted_pattern_occurrences }}</a>
 
             <div class="divider"></div>
 
             <a class="title" href="#elimination">Elimination</a>
-            <a class="section" href="#elimination-process">Elimination Process</a>
+            <a class="section" href="#elimination-process">{{ headings.elimination_process }}</a>
 
             <div class="divider"></div>
 
             <a class="title" href="#results">Results</a>
-            <a class="section" href="#dna-sequences-difference">DNA Sequences Difference</a>
-            <a class="section" href="#dna-detailed_changes">Detailed substitutions relative to the target sequence</a>
-            <a class="section" href="#optimized-dna-sequence">Optimized Sequence</a>
+            <a class="section" href="#dna-sequences-difference">{{ headings.dna_sequences_difference }}</a>
+            <a class="section" href="#dna-cost_contribution">{{ headings.detailed_cost_contributions }}</a>
+            <a class="section" href="#dna-cost_substitution">{{ headings.detailed_cost_substitutions }}</a>
+            <a class="section" href="#optimized-dna-sequence">{{ headings.optimized_sequence }}</a>
         </div>
 
         <div class="right-col">
             <div>
                 <h1 id="dna-sequence">Input</h1>
-                <h2>Target Sequence:</h2>
+                <h2>{{ headings.target_sequence }}:</h2>
 
                 {% if coding_idx is not none and coding_idx | length > 0 %}
                     <p>A coding region was identified in the target sequence at positions {{coding_idx}}:</p>
@@ -423,9 +564,46 @@
             </div>
 
             <div>
-                <h2 id="unwanted-patterns">Unwanted Patterns:</h2>
+                <h2 id="unwanted-patterns">{{ headings.unwanted_patterns }}:</h2>
                 <p class="pre-scrollable-paragraph" style="font-family: monospace;">{{patterns}}</p>
             </div>
+
+            {% if unwanted_patterns_occurrences %}
+            <div>
+                <h2 id="unwanted-pattern-occurrences">{{ headings.unwanted_pattern_occurrences }}:</h2>
+                <div class="table-container">
+                    <table class="pattern-table">
+                        <thead>
+                            <tr>
+                                <th>Pattern</th>
+                                <th>Count</th>
+                                <th>Positions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for row in unwanted_patterns_occurrences %}
+                            <tr>
+                                <td>{{ row.Pattern }}</td>
+                                <td>{{ row.Count }}</td>
+                                <td>
+                                    {% if row.Positions %}
+                                        {% for token in row.Positions %}
+                                            {% set bounds = token.split('-') %}
+                                            <a href="#dna-sequence" class="pos-range"
+                                               data-start="{{ bounds[0] }}"
+                                               data-end="{{ bounds[1] }}">{{ token }}</a>{% if not loop.last %}{% endif %}
+                                        {% endfor %}
+                                    {% else %}
+                                        —
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            {% endif %}
 
             <div class="divider" style="width:24%; margin:30px 0;"></div>
 
@@ -434,7 +612,7 @@
             </div>
 
             <div>
-                <h2 id="elimination-process">Elimination Process</h2>
+                <h2 id="elimination-process">{{ headings.elimination_process }}</h2>
                 <p>{{elimination_process_description}}</p>
             </div>
 
@@ -453,7 +631,7 @@
             <div>
                 <h1 id="results">Results</h1>
 
-                <h2 id="dna-sequences-difference">DNA Sequences Difference:</h2>
+                <h2 id="dna-sequences-difference">{{ headings.dna_sequences_difference }}:</h2>
                 <div class="horizontal-scroll">
                     <pre style="color: lightgray;">{{index_seq_str}}</pre>
                     <pre>{{marked_input_seq}}</pre>
@@ -462,14 +640,61 @@
             </div>
 
             <div>
-                <h2 id="dna-detailed_changes">Detailed substitutions relative to the target sequence:</h2>
-                <div class="scrollable-paragraph">
-                    <pre>{{detailed_changes}}</pre>
+                <h2 id="dna-cost_contribution">{{ headings.detailed_cost_contributions }}:</h2>
+                <div class="table-container">
+                    <table class="changes-table">
+                        <thead>
+                            <tr>
+                                <th>Position</th>
+                                <th>Original</th>
+                                <th>Optimized</th>
+                                <th>Cost</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            {% for change in cost_contribution %}
+                            <tr>
+                                <td>{{ change.Position }}</td>
+                                <td>{{ change.Original }}</td>
+                                <td>{{ change.Optimized }}</td>
+                                <td>{{ change.Cost }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
                 </div>
             </div>
 
             <div>
-                <h2 id="optimized-dna-sequence">Optimized Sequence:</h2>
+                <h2 id="dna-cost_substitution">{{ headings.detailed_cost_substitutions }}:</h2>
+                <div class="table-container">
+                    <table class="changes-table">
+                        <thead>
+                            <tr>
+                                <th>Position</th>
+                                <th>Original</th>
+                                <th>Optimized</th>
+                                <th>Cost</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            {% for change in cost_substitution %}
+                            <tr>
+                                <td>{{ change.Position }}</td>
+                                <td>{{ change.Original }}</td>
+                                <td>{{ change.Optimized }}</td>
+                                <td>{{ change.Cost }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div>
+                <h2 id="optimized-dna-sequence">{{ headings.optimized_sequence }}:</h2>
                 <p class="highlight-block pre-scrollable-paragraph" style="word-break: break-all; white-space: pre-wrap;">{{ highlight_optimized_selected | safe }}</p>
             </div>
 
@@ -477,6 +702,40 @@
 
     </div>
 </div>
+
+<script>
+    (function () {
+        function clearHighlights() {
+            document.querySelectorAll('.base.hi').forEach(function (el) {
+                el.classList.remove('hi');
+            });
+        }
+
+        document.querySelectorAll('.pos-range').forEach(function (link) {
+            link.addEventListener('click', function (event) {
+                var start = parseInt(link.getAttribute('data-start'), 10);
+                var end = parseInt(link.getAttribute('data-end'), 10);
+                if (isNaN(start) || isNaN(end)) return;
+
+                clearHighlights();
+
+                var firstSpan = null;
+                for (var pos = start; pos <= end; pos++) {
+                    var span = document.querySelector('.base[data-pos="' + pos + '"]');
+                    if (span) {
+                        span.classList.add('hi');
+                        if (firstSpan === null) firstSpan = span;
+                    }
+                }
+
+                if (firstSpan) {
+                    event.preventDefault();
+                    firstSpan.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+            });
+        });
+    })();
+</script>
 
 </body>
 </html>

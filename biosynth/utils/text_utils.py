@@ -1,10 +1,12 @@
 
 import sys
 from enum import Enum
-from biosynth.utils.output_utils import Logger
+from biosynth.utils.logger import Logger
 
 
 class OutputFormat(Enum):
+    """Enumerates the supported output rendering modes for the application."""
+
     TEST = -1
     NONE = 0
     TERMINAL = 1
@@ -13,6 +15,7 @@ class OutputFormat(Enum):
 output_format = OutputFormat.NONE
 
 def set_output_format(o_format):
+    """Set the module-level output format used by formatting helpers."""
     global output_format
     try:
         output_format = o_format
@@ -21,6 +24,12 @@ def set_output_format(o_format):
 
 
 def format_text_bold_for_output(text):
+    """Return ``text`` wrapped in bold markers appropriate for the active output format.
+
+    Returns:
+        ANSI-bolded text for TERMINAL/TEST, ``<b>``-wrapped text for GUI, or
+        an empty string when the output format is not set.
+    """
     if output_format in (OutputFormat.TERMINAL, OutputFormat.TEST):
         return f"\033[1m{text}\033[0m"
     elif output_format == OutputFormat.GUI:
@@ -45,6 +54,7 @@ def handle_critical_error(message: str):
         sys.exit(2)
 
 def get_execution_mode():
+    """Return a human-readable string identifying the active execution mode."""
     if output_format == OutputFormat.GUI:
         return "GUI"
     elif output_format == OutputFormat.TERMINAL:

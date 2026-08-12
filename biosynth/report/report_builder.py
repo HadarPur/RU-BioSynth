@@ -1,0 +1,171 @@
+import os
+import tempfile
+from pathlib import Path
+
+import jinja2
+
+# Application-specific data and utilities
+from biosynth.data.app_data import InputData, EliminationData, OutputData
+from biosynth.executions.controllers.ui.theme import HEADINGS
+from biosynth.utils.display_utils import SequenceUtils
+from biosynth.utils.coding_region import CodingRegionLocator
+from biosynth.utils.file_utils import create_dir, resource_path, save_file
+from biosynth.utils.descriptions import (
+    get_elimination_process_description,
+    get_coding_region_cost_description,
+    get_non_coding_region_cost_description,
+)
+from biosynth.utils.text_utils import handle_critical_error, get_execution_mode
+
+
+# Convert plain text with dash-prefixed lines into HTML <ul>/<ol> + paragraphs
+def convert_to_html_list(text: str, ordered=False) -> str:
+    """Convert dash-prefixed text into an HTML list with non-list lines rendered as paragraphs.
+
+    Args:
+        text: Source text where lines starting with ``-`` become list items.
+        ordered: When True emit ``<ol>``, otherwise ``<ul>``.
+
+    Returns:
+        HTML string containing the paragraph preamble followed by the list element.
+    """
+    lines = text.strip().split("\n")
+    list_items = []
+
+    for line in lines:
+        stripped = line.strip()
+        if stripped.startswith("-"):
+            content = stripped[1:].strip()
+            list_items.append(f"<li>{content}</li>")
+        else:
+            list_items.append(f"<p>{stripped}</p>")  # treat non-list lines as paragraphs
+
+    tag = "ol" if ordered else "ul"
+    html = f"<{tag}>\n" + "\n".join(li for li in list_items if li.startswith("<li>")) + f"\n</{tag}>"
+    preamble = "\n".join(li for li in list_items if li.startswith("<p>"))
+    return preamble + "\n" + html
+
+
+class ReportBuilder:
+    """Builds the final HTML report from app data and writes/exports it to disk."""
+
+    # Controller responsible for constructing and saving the final HTML report
+    def __init__(self):
+        self.input_seq = InputData.cleaned_dna_sequence
+
+        # Save input DNA sequence and visually highlight coding regions
+        self.highlight_input = SequenceUtils.highlight_sequences_to_html(
+            InputData.cleaned_dna_sequence,
+            InputData.coding_indexes,
+            line_length=85,
+            addressable=True,
+        )
+
+        # Store optimized DNA sequence from backend
+        self.optimized_seq = OutputData.optimized_sequence
+
+        # Mark character-level differences between input and optimized sequences
+        self.index_seq_str, self.marked_input_seq, self.marked_optimized_seq = \
+            SequenceUtils.mark_non_equal_characters(
+                InputData.cleaned_dna_sequence,
+                OutputData.optimized_sequence,
+                InputData.coding_positions
+            )
+
+        # Format other user input and results
+        self.unwanted_patterns = ', '.join(InputData.unwanted_patterns)
+        self.unwanted_patterns_occurrences = InputData.unwanted_patterns_occurrences
+        self.coding_idx = "" if InputData.coding_indexes is None else f"{InputData.coding_indexes[0] + 1} - {InputData.coding_indexes[1]}"
+        self.cost_contribution = EliminationData.cost_contribution
+        self.cost_substitution = EliminationData.cost_substitution
+
+        # These are generated during report creation
+        self.output_text = None
+        self.report_filename = None
+
+        self.highlight_optimized_selected = SequenceUtils.highlight_differences_with_coding_html(
+            InputData.cleaned_dna_sequence,
+            OutputData.optimized_sequence,
+            InputData.coding_positions,
+            line_length=85
+        )
+
+        # Format cost with good numerical precision
+        self.min_cost = f"{EliminationData.min_cost:.10g}"
+
+    def create_report(self, file_date, output_path=None):
+        """Render the HTML report from the Jinja2 template and write it to disk.
+
+        Args:
+            file_date: Timestamp string embedded in the report and used in its filename.
+            output_path: When provided, the report is written to
+                ``<output_path>/BioSynth-Outputs/`` (used by the CLI so the file
+                lands next to the other exports on first write). When ``None``,
+                the report is rendered into a temporary directory so the caller
+                (e.g. the UI) can preview it and later choose whether to save it
+                via :meth:`download_report`.
+
+        Returns:
+            Local path to the rendered HTML report, or ``None`` if rendering failed.
+        """
+        # Build the context dictionary to render the Jinja2 HTML template
+        context = {
+            'today_date': file_date,
+            'input': self.input_seq,
+            'patterns': self.unwanted_patterns,
+            'unwanted_patterns_occurrences': self.unwanted_patterns_occurrences,
+            'highlight_input': self.highlight_input,
+            'coding_idx': self.coding_idx,
+            'elimination_process_description': convert_to_html_list(get_elimination_process_description()),
+            'coding_region_cost_description': convert_to_html_list(get_coding_region_cost_description()),
+            'non_coding_region_cost_description': convert_to_html_list(get_non_coding_region_cost_description()),
+            'cost': self.min_cost,
+            'index_seq_str': self.index_seq_str,
+            'marked_input_seq': self.marked_input_seq,
+            'marked_optimized_seq': self.marked_optimized_seq,
+            'optimized_seq': self.optimized_seq,
+            'cost_contribution': self.cost_contribution,
+            'cost_substitution': self.cost_substitution,
+            'execution_mode' : get_execution_mode(),
+            'highlight_optimized_selected': self.highlight_optimized_selected,
+            'headings': HEADINGS,
+        }
+
+        try:
+            # Load the HTML template using absolute path
+            template_path = resource_path('report/report.html')
+            template_loader = jinja2.FileSystemLoader(searchpath=os.path.dirname(template_path))
+            template_env = jinja2.Environment(loader=template_loader)
+            template = template_env.get_template(os.path.basename(template_path))
+
+            # Render the HTML using the context dictionary
+            self.output_text = template.render(context)
+
+            if output_path is None:
+                # Interactive/UI flow: render into a scratch dir so the user
+                # decides whether/where to save via download_report()/save_as.
+                output_dir = Path(tempfile.mkdtemp(prefix="biosynth-report-"))
+            else:
+                # CLI flow: write directly to the final export location.
+                output_dir = Path(output_path) / 'BioSynth-Outputs'
+                create_dir(output_dir)
+
+            self.report_filename = f"BioSynth-Report_{file_date}.html"
+            report_local_path = str(output_dir / self.report_filename)
+
+            with open(report_local_path, 'w', encoding="utf-8") as file:
+                file.write(self.output_text)
+
+            return report_local_path
+
+        except jinja2.exceptions.TemplateNotFound as e:
+            handle_critical_error(f"Template not found:\n{e}")
+        except Exception as e:
+            handle_critical_error(f"Exception has occurred:\n{e}")
+
+        return None
+
+    def download_report(self, path=None):
+        """Save the rendered report to ``path`` (or the default location) and return the saved path."""
+        # Allow external module (e.g., UI) to download/export the report
+        return save_file(self.output_text, self.report_filename, path)

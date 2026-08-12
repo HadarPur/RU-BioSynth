@@ -2,6 +2,7 @@ from datetime import datetime
 
 
 def format_current_date():
+    """Return the current date and time as ``"Month Dth, HH:MM"`` with an ordinal day suffix."""
     # Get the current date and time
     date = datetime.now()
 

@@ -1,49 +1,54 @@
 import numpy as np
 
-from biosynth.utils.amino_acid_utils import AminoAcidConfig
-from biosynth.utils.output_utils import Logger
+from biosynth.utils.amino_acid_utils import AminoAcidConfig, GeneticCodeTable
+from biosynth.utils.logger import Logger
 
 def normalize_codon_usage(codon_usage):
     """
-    Normalize codon usage frequencies into log-scaled costs.
-
-    The cost for a codon with frequency f is defined as:
-        cost(f) = log(f) / log(min_frequency)
-
-    This assigns:
-      - cost = 1.0 to the least frequent codon
-      - cost = 0.0 to the most frequent codon
-
-    Parameters
-    ----------
-    codon_usage : dict[str, float]
-        Mapping from codon to raw usage frequency (f > 0).
-
-    Returns
-    -------
-    dict[str, float]
-        Mapping from codon to normalized cost.
+    Normalize codon usage frequencies into CAI-aligned log-scaled costs.
     """
     if not codon_usage:
         return {}
 
-    freq_values = np.fromiter(codon_usage.values(), dtype=float)
+    genetic_code = GeneticCodeTable()
 
-    if np.any(freq_values <= 0):
-        raise ValueError("Codon usage frequencies must be strictly positive")
+    # Map each amino acid to its maximum synonymous codon frequency
+    aa_to_max_freq: dict[str, float] = {}
+    for codon, frequency in codon_usage.items():
+        amino_acid = genetic_code.lookup(codon)
+        if amino_acid:
+            aa_to_max_freq[amino_acid] = max(
+                aa_to_max_freq.get(amino_acid, 0.0),
+                frequency
+            )
 
-    log_freq = np.log10(freq_values)
-    min_log = np.min(log_freq)
-    max_log = np.max(log_freq)
+    codon_list = list(codon_usage.keys())
 
-    # inverted normalization: [0, 1]
-    norm = 1 - (log_freq - min_log) / (max_log - min_log)
+    # Raw codon frequencies
+    codon_frequencies = np.fromiter(
+        map(codon_usage.get, codon_list),
+        dtype=float
+    )
 
-    # rescale to [eps, 1]
-    eps = 0.01
-    costs = eps + (1 - eps) * norm
+    # Maximum synonymous frequency per codon
+    max_synonymous_frequencies = np.fromiter(
+        map(lambda c: aa_to_max_freq.get(genetic_code.lookup(c)), codon_list),
+        dtype=float
+    )
 
-    return dict(zip(codon_usage.keys(), costs))
+    # Relative adaptiveness (CAI weight)
+    relative_adaptiveness = codon_frequencies / max_synonymous_frequencies
+
+    # Convert to cost space
+    codon_costs_array = -np.log(relative_adaptiveness)
+
+    # Clean numerical noise
+    codon_costs_array[np.isclose(codon_costs_array, 0.0, atol=1e-9)] = 0.0
+    codon_costs_array = np.round(codon_costs_array, 6)
+
+    codon_costs = dict(zip(codon_list, codon_costs_array))
+
+    return codon_costs
 
 def evaluate_substitution(target_sequence, i, sigma, alpha, beta):
     """
@@ -59,7 +64,7 @@ def evaluate_substitution(target_sequence, i, sigma, alpha, beta):
     Returns:
         tuple: ((original_nucleotide, proposed_nucleotide), substitution_cost)
     """
-    changes = target_sequence[i], sigma
+    changes = (target_sequence[i], sigma)
     if target_sequence[i] == sigma:
         # No substitution
         return changes, 0.0
@@ -71,7 +76,7 @@ def evaluate_substitution(target_sequence, i, sigma, alpha, beta):
         return changes, beta
 
 
-def calculate_cost(target_sequence, coding_positions, codon_usage, i, v, sigma, alpha, beta, w):
+def calculate_cost(target_sequence, coding_positions, codon_usage, i, v, sigma, alpha, beta, w, optimized_codon):
     """
     Calculate the substitution cost for a given position in a nucleotide sequence.
 
@@ -97,6 +102,8 @@ def calculate_cost(target_sequence, coding_positions, codon_usage, i, v, sigma, 
         The cost for a transversion substitution in a non-coding region.
     w : float
         The cost for non-synonymous substitutions in coding regions.
+    optimized_codon : bool
+        A flag indicating whether to optimize codon usage without enforcing equality with the target codon.
 
     Returns:
     -------
@@ -120,7 +127,7 @@ def calculate_cost(target_sequence, coding_positions, codon_usage, i, v, sigma, 
     """
 
     # Validate codon usage
-    if any(freq <= 0 for freq in codon_usage.values()):
+    if any(freq < 0 for freq in codon_usage.values()):
         raise ValueError("Invalid codon usage: probabilities must be positive and normalized.")
 
     # Determine coding position of the current index.
@@ -128,7 +135,7 @@ def calculate_cost(target_sequence, coding_positions, codon_usage, i, v, sigma, 
 
     # Non-coding region logic
     if codon_pos == 0:
-        changes = target_sequence[i], sigma
+        changes = (target_sequence[i], sigma)
         if target_sequence[i] == sigma:
             # No substitution
             return changes, 0.0
@@ -151,9 +158,9 @@ def calculate_cost(target_sequence, coding_positions, codon_usage, i, v, sigma, 
         last2_bases = AminoAcidConfig.get_last2(v)
         proposed_codon = f'{last2_bases}{sigma}'
 
-        changes = target_codon, proposed_codon
+        changes = (target_codon, proposed_codon)
         # Evaluate substitution costs
-        if proposed_codon == target_codon:
+        if not optimized_codon and proposed_codon == target_codon:
             # No substitution
             return changes, 0.0
         elif AminoAcidConfig.encodes_same_amino_acid(proposed_codon, target_codon):
@@ -172,6 +179,8 @@ def calculate_cost(target_sequence, coding_positions, codon_usage, i, v, sigma, 
 
 
 class EliminationScorerConfig:
+    """Configuration object holding the DNA alphabet and factory for cost functions."""
+
     def __init__(self):
         """
         Initializes a DNASequenceAnalyzer object.
@@ -180,7 +189,7 @@ class EliminationScorerConfig:
         self.alphabet = {'A', 'G', 'T', 'C'}
 
     @staticmethod
-    def cost_function(target_sequence, coding_positions, codon_usage, alpha, beta, w):
+    def cost_function(target_sequence, coding_positions, codon_usage, alpha, beta, w, optimized_codon):
         """
         Creates a dynamic cost function based on the given sequence properties and scoring parameters.
 
@@ -191,6 +200,7 @@ class EliminationScorerConfig:
             alpha (float): Cost for transition substitution in non-coding regions.
             beta (float): Cost for transversion substitution in non-coding regions.
             w (float): Cost for non-synonymous substitution in coding regions.
+            optimized_codon (bool): Flag indicating whether to optimize codon usage without enforcing equality with the target codon.
 
         Returns:
             function: A cost function that takes index i, current state v, and proposed symbol σ
@@ -198,9 +208,11 @@ class EliminationScorerConfig:
         """
 
         def initial_cost_function(i, sigma):
+            """Return the substitution cost at the start of the sequence for the proposed base ``sigma``."""
             return evaluate_substitution(target_sequence, i - 1, sigma, alpha, beta)
 
         def cost_function(i, v, sigma):
-            return calculate_cost(target_sequence, coding_positions, codon_usage, i - 1, v, sigma, alpha, beta, w)
+            """Return the substitution cost for proposing ``sigma`` at position ``i`` given FSM state ``v``."""
+            return calculate_cost(target_sequence, coding_positions, codon_usage, i - 1, v, sigma, alpha, beta, w, optimized_codon)
 
         return initial_cost_function, cost_function

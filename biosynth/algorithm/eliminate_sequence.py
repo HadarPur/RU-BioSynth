@@ -2,7 +2,7 @@ from collections import defaultdict
 
 from biosynth.algorithm.fsm import FSM
 from biosynth.data.app_data import CostData
-from biosynth.utils.info_utils import format_cost, get_elimination_process_description, \
+from biosynth.utils.descriptions import format_cost, get_elimination_process_description, \
     get_non_coding_region_cost_description, get_coding_region_cost_description
 from biosynth.utils.cost_utils import EliminationScorerConfig
 from biosynth.utils.date_utils import format_current_date
@@ -10,8 +10,23 @@ from biosynth.utils.text_utils import format_text_bold_for_output
 
 
 class EliminationController:
+    """Driver for the DP-based elimination of unwanted patterns from a DNA sequence."""
+
     @staticmethod
     def eliminate(target_sequence, unwanted_patterns, coding_positions):
+        """Run the FSM-guided dynamic-programming optimizer that removes ``unwanted_patterns``.
+
+        Args:
+            target_sequence: The input DNA sequence (without the ``*`` marker).
+            unwanted_patterns: Iterable of patterns that must not appear in the result.
+            coding_positions: Per-base codon-phase array (0 for non-coding).
+
+        Returns:
+            A tuple ``(info, cost_contribution, cost_substitution, optimized_seq,
+            min_cost)``. When no patterns are present the original sequence is
+            returned unchanged; when no valid sequence exists ``min_cost`` is
+            ``inf`` and the sequence is ``None``.
+        """
         # Initialize information string for the elimination process
         info = ""
 
@@ -34,8 +49,18 @@ class EliminationController:
                                                                                 CostData.codon_usage,
                                                                                 CostData.alpha,
                                                                                 CostData.beta,
-                                                                                CostData.w)
+                                                                                CostData.w,
+                                                                                CostData.optimized_codon)
         fsm = FSM(unwanted_patterns, elimination_scorer.alphabet)
+
+        # Invert fsm.f into a predecessor map so the DP inner loop iterates only
+        # over states that actually transition into v, instead of scanning every
+        # (u, sigma) pair. Drops the fill complexity from O(n·|V|²·|Σ|) to
+        # O(n·|V|·|Σ|).
+        predecessors = defaultdict(list)
+        for (u, sigma), v_next in fsm.f.items():
+            if v_next is not None:
+                predecessors[v_next].append((u, sigma))
 
         # Dynamic programming table A, initialized with infinity
         A = defaultdict(lambda: float('inf'))
@@ -61,15 +86,13 @@ class EliminationController:
                 best_cost = float('inf')
                 best_prev = None
                 best_info = None
-                for u in fsm.V:
-                    for sigma in fsm.sigma:
-                        if fsm.f.get((u, sigma)) == v:
-                            changes, cost_f = cost_function(i, u, sigma)
-                            cost = A[(i - 1, u)] + cost_f
-                            if cost < best_cost:
-                                best_cost = cost
-                                best_prev = (u, sigma)
-                                best_info = (changes, cost_f)
+                for (u, sigma) in predecessors[v]:
+                    changes, cost_f = cost_function(i, u, sigma)
+                    cost = A[(i - 1, u)] + cost_f
+                    if cost < best_cost:
+                        best_cost = cost
+                        best_prev = (u, sigma)
+                        best_info = (changes, cost_f)
 
                 if best_prev is not None:
                     A[(i, v)] = best_cost
@@ -92,7 +115,8 @@ class EliminationController:
         # Reconstruct the sequence with the minimum cost
         path = []
         sequence = []
-        changes_info = []
+        cost_contribution = []
+        cost_substitution = []
 
         # starting from the end
         current_state = final_state
@@ -103,13 +127,15 @@ class EliminationController:
                 raise ValueError(f"No transition found for position {i} and state {current_state}")
 
             prev_state, char = A_star[(i, current_state)]  # Get the previous state and symbol
-            changes, cost_f = A_info[(i, current_state)]
+            (original_codon, modified_codon), cost_f = A_info[(i, current_state)]
+
+            if cost_f > 0:
+                cost_contribution.append(
+                    {"Position": i, "Original": original_codon, "Optimized": modified_codon, "Cost": f"{cost_f:.3f}".rstrip('0').rstrip('.')})
 
             # Record the change that actually occurred
-            if cost_f > 0.0:
-                changes_info.append(
-                    f"Position {str(i).ljust(6)}  {changes[0].ljust(6)} ->   {changes[1].ljust(6)}   Cost: {cost_f:.2f}"
-                )
+            if original_codon != modified_codon and cost_f == 0:
+                cost_substitution.append({"Position": i, "Original": original_codon, "Optimized": modified_codon, "Cost": f"{cost_f:.3f}".rstrip('0').rstrip('.')})
 
             path.append((i, current_state))
             sequence.append(char)
@@ -125,27 +151,34 @@ class EliminationController:
         original_0, original_1 = target_sequence[0], target_sequence[1]
 
         if coding_positions[1] == 0:
-            if current_state[1] != original_1:
-                changes, cost_f = initial_cost_function(2, current_state[1])
-                changes_info.append(
-                    f"Position {str(2).ljust(6)}  {changes[0].ljust(6)} ->   {changes[1].ljust(6)}   Cost: {cost_f:.2f}"
-                )
+            (original_base, modified_base), cost_f = initial_cost_function(2, current_state[1])
+
+            if cost_f > 0:
+                cost_contribution.append(
+                    {"Position": 2, "Original": original_base, "Optimized": modified_base, "Cost": f"{cost_f:.3f}".rstrip('0').rstrip('.')})
+
+            if current_state[1] != original_1 and cost_f == 0:
+                cost_substitution.append({"Position": 2, "Original": original_base, "Optimized": modified_base, "Cost": f"{cost_f:.3f}".rstrip('0').rstrip('.')})
 
         if coding_positions[0] == 0:
-            if current_state[0] != original_0:
-                changes, cost_f = initial_cost_function(1, current_state[0])
-                changes_info.append(
-                    f"Position {str(1).ljust(6)}  {changes[0].ljust(6)} ->   {changes[1].ljust(6)}   Cost: {cost_f:.2f}"
-                )
+            (original_base, modified_base), cost_f = initial_cost_function(1, current_state[0])
+
+            if cost_f > 0:
+                cost_contribution.append({"Position": 1, "Original": original_base, "Optimized": modified_base, "Cost": f"{cost_f:.3f}".rstrip('0').rstrip('.')})
+
+            if current_state[0] != original_0 and cost_f == 0:
+                cost_substitution.append({"Position": 1, "Original": original_base, "Optimized": modified_base, "Cost": f"{cost_f:.3f}".rstrip('0').rstrip('.')})
+
 
         # Reverse the sequence and changes info for correct order
         path.reverse()
         sequence.reverse()
-        changes_info.reverse()
+        cost_substitution.reverse()
+        cost_contribution.reverse()
 
         # Append final information to the info string
         info += f"\n{format_text_bold_for_output('_' * 50)}\n"
         info += "\n🚀 Elimination Process Completed!\n"
         info += f"📆 {format_current_date()}"
 
-        return info, changes_info, ''.join(sequence), min_cost
+        return info, cost_contribution, cost_substitution, ''.join(sequence), min_cost
