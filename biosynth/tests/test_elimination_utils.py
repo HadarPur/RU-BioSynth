@@ -134,7 +134,7 @@ class TestEliminationController(unittest.TestCase):
         )
         self.assertIsNone(new_seq)
         self.assertEqual(cost, float("inf"))
-        self.assertIn("No valid sequence", info)
+        self.assertIn("There is no solution that avoids all patterns and adheres to the protein coding constraints.", info)
 
     def test_substitution_forced_at_initial_bigram(self):
         """If every continuation from the input's initial bigram is blocked
