@@ -109,7 +109,7 @@ class EliminationController:
 
         # If no valid sequence was found
         if min_cost == float('inf'):
-            info += "\nNo valid sequence found that avoids the unwanted patterns."
+            info += "\nThere is no solution that avoids all patterns and adheres to the protein coding constraints."
             return info, None, None, min_cost
 
         # Reconstruct the sequence with the minimum cost
