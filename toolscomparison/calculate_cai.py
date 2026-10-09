@@ -61,7 +61,8 @@ def calculate_cai(sequence: str, weights: dict[str, float]):
 def load_and_calculate_cai(sequence, codon_usage_table):
     weights = load_and_normalize_weights(codon_usage_table)
     if not weights:
-        return
+        return None
 
     cai_val: float = calculate_cai(sequence, weights)
     print(f"CAI =  {cai_val:.4f}")
+    return cai_val

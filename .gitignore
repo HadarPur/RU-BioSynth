@@ -203,3 +203,7 @@ __marimo__/
 # Streamlit
 .streamlit/secrets.toml
 /toolscomparison/BioSynth/results/
+/toolscomparison/COSMO/results/
+/toolscomparison/DNAChisel/results/
+/toolscomparison/COSMO/__MACOSX/
+toolscomparison/COSMO/cosmo0.9/*

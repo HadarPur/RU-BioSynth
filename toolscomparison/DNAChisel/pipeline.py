@@ -26,6 +26,7 @@ def run_dnachisel(gene_dir, gene_name, pattern_file_name, codon_usage_file_name,
     if output_dir.exists():
         shutil.rmtree(output_dir)
         print(f"Deleted {output_dir} before running DNAChisel.")
+    output_dir.mkdir(parents=True, exist_ok=True)
 
     if not sequence_file.exists():
         raise FileNotFoundError(f"Sequence file not found: {sequence_file}")
@@ -84,6 +85,10 @@ def run_dnachisel(gene_dir, gene_name, pattern_file_name, codon_usage_file_name,
     if not optimized_seq:
         return
 
+    optimized_file = output_dir / f"Optimized-Sequence-{gene_name}.txt"
+    optimized_file.write_text(optimized_seq)
+    print(f"Wrote optimized sequence to {optimized_file}")
+
     print("Optimized sequence length:", len(optimized_seq))
     print("Optimized sequence:")
     print(optimized_seq)
@@ -100,7 +105,7 @@ def run_dnachisel(gene_dir, gene_name, pattern_file_name, codon_usage_file_name,
                 codon_usage_table[codon.replace("U", "T")] = float(freq)
     print(f"Loaded {len(codon_usage_table)} codons.")
 
-    load_and_calculate_cai(
+    cai = load_and_calculate_cai(
         optimized_seq[coding_start:coding_end],
         codon_usage_table,
     )
@@ -122,3 +127,32 @@ def run_dnachisel(gene_dir, gene_name, pattern_file_name, codon_usage_file_name,
     print(f"5' UTR substitutions: {five_utr_changes}")
     print(f"3' UTR substitutions: {three_utr_changes}")
     print(f"Non-coding substitutions: {non_coding_changes}")
+
+    summary_file = output_dir / f"Summary-{gene_name}.txt"
+    summary_lines = [
+        f"Gene: {gene_name}",
+        f"Species: {species}",
+        f"Runtime (s): {time_end - time_start:.4f}",
+        f"Coding region: {coding_start}-{coding_end}",
+        f"Sequence length: {len(optimized_seq)}",
+        f"5' UTR substitutions: {five_utr_changes}",
+        f"3' UTR substitutions: {three_utr_changes}",
+        f"Non-coding substitutions: {non_coding_changes}",
+        "",
+        "Constraints:",
+        problem.constraints_text_summary(),
+        "Objectives:",
+        problem.objectives_text_summary(),
+    ]
+    summary_file.write_text("\n".join(summary_lines))
+    print(f"Wrote summary to {summary_file}")
+
+    pattern_hits = {p: optimized_seq.count(p) for p in unwanted_patterns if p}
+    all_patterns_removed = all(count == 0 for count in pattern_hits.values())
+
+    return {
+        "cai": cai,
+        "non_coding_substitutions": non_coding_changes,
+        "all_patterns_removed": all_patterns_removed,
+        "pattern_hits": pattern_hits,
+    }

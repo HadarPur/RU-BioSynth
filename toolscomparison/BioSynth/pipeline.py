@@ -84,7 +84,7 @@ def run_biosynth(gene_dir, gene_name, pattern_file_name, codon_usage_file_name):
     print("Optimized sequence in coding region:")
     print(optimized_seq[coding_start:coding_end])
 
-    load_and_calculate_cai(
+    cai = load_and_calculate_cai(
         optimized_seq[coding_start:coding_end],
         codon_usage_table,
     )
@@ -106,3 +106,16 @@ def run_biosynth(gene_dir, gene_name, pattern_file_name, codon_usage_file_name):
     print(f"5' UTR substitutions: {five_utr_changes}")
     print(f"3' UTR substitutions: {three_utr_changes}")
     print(f"Non-coding substitutions: {non_coding_changes}")
+
+    unwanted_patterns = [
+        p.strip() for p in pattern_file.read_text().splitlines() if p.strip()
+    ]
+    pattern_hits = {p: optimized_seq.count(p) for p in unwanted_patterns}
+    all_patterns_removed = all(count == 0 for count in pattern_hits.values())
+
+    return {
+        "cai": cai,
+        "non_coding_substitutions": non_coding_changes,
+        "all_patterns_removed": all_patterns_removed,
+        "pattern_hits": pattern_hits,
+    }
