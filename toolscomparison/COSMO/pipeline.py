@@ -171,10 +171,10 @@ def run_cosmo(gene_dir, gene_name, pattern_file_name, codon_usage_file_name):
     print(f"3' UTR substitutions: {three_utr_changes}")
     print(f"Non-coding substitutions: {non_coding_changes}")
 
-    pattern_hits = {p: optimized_seq.count(p) for p in patterns.split("|") if p}
+    pattern_hits = {p: optimized_cds.count(p) for p in patterns.split("|") if p}
     for pattern, count in pattern_hits.items():
         if count > 0:
-            print(f"Pattern '{pattern}' occurs {count} time(s) in optimized sequence.")
+            print(f"Pattern '{pattern}' occurs {count} time(s) in optimized coding region.")
     all_patterns_removed = all(count == 0 for count in pattern_hits.values())
 
     return {

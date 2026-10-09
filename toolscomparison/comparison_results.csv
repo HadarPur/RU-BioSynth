@@ -6,7 +6,7 @@ SAUR11,BioSynth,0.9814,9,True,ok
 SAUR11,DNAChisel,,,,"error: While solving AvoidPattern[0-1600](pattern:AGCAGCA) in 691-707:
 
 Exhaustive search failed to satisfy all constraints."
-SAUR11,COSMO,0.9814,0,False,ok
+SAUR11,COSMO,0.9814,0,True,ok
 SAUR40,BioSynth,0.9877,5,True,ok
-SAUR40,DNAChisel,0.9789,5,True,ok
-SAUR40,COSMO,0.9877,0,False,ok
+SAUR40,DNAChisel,0.9789,6,True,ok
+SAUR40,COSMO,0.9877,0,True,ok
